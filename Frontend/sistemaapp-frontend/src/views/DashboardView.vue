@@ -143,7 +143,7 @@ const actions = [
 ]
 
 const goTo = (route) => {
-  if (route === '/usuarios') {
+  if (route === '/usuarios' || route === '/estadisticas') {
     router.push(route)
   } else {
     alert(`👉 Próximamente: ${route}`)
