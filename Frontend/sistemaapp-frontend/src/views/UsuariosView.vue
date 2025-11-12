@@ -19,7 +19,7 @@
           <Users class="header-icon" />
           <h1>Gestión de Usuarios</h1>
         </div>
-        <button @click="fetchUsuarios" class="reload-button">
+        <button @click="reload" class="reload-button">
           <RotateCw class="reload-icon" />
           <span>Recargar</span>
         </button>
@@ -48,8 +48,8 @@
           </div>
         </div>
 
-        <!-- Tabla responsiva -->
-        <div class="table-wrapper">
+        <!-- Tabla responsiva (Desktop) -->
+        <div class="hidden md:block table-wrapper">
           <table class="users-table">
             <thead>
               <tr>
@@ -60,6 +60,14 @@
               </tr>
             </thead>
             <tbody>
+              <!-- Skeleton loader -->
+              <tr v-if="loading" v-for="n in limit" :key="'skeleton-' + n" class="skeleton-row">
+                <td colspan="4">
+                  <div class="skeleton-line"></div>
+                </td>
+              </tr>
+
+              <!-- Datos reales -->
               <tr
                 v-for="u in filteredUsuarios"
                 :key="u.id"
@@ -85,27 +93,95 @@
           </table>
 
           <!-- Estado vacío -->
-          <div v-if="filteredUsuarios.length === 0" class="empty-state">
+          <div v-if="!loading && filteredUsuarios.length === 0" class="empty-state">
             <Search class="empty-icon" />
             <h3>No se encontraron usuarios</h3>
             <p>Intenta con otros términos de búsqueda</p>
           </div>
         </div>
 
-        <!-- Estadísticas -->
-        <div class="stats-section">
-          <div class="stat-card">
-            <div class="stat-number">{{ adminCount }}</div>
-            <div class="stat-label">Administradores</div>
+        <!-- Cards Mobile -->
+        <div class="md:hidden cards-wrapper">
+          <!-- Skeleton loader -->
+          <div v-if="loading" v-for="n in limit" :key="'card-skeleton-' + n" class="skeleton-card">
+            <div class="skeleton-line" style="width: 60%"></div>
+            <div class="skeleton-line" style="width: 80%; margin-top: 0.5rem"></div>
           </div>
-          <div class="stat-card">
-            <div class="stat-number">{{ usuarioCount }}</div>
-            <div class="stat-label">Usuarios</div>
+
+          <!-- Datos reales -->
+          <div
+            v-for="u in filteredUsuarios"
+            :key="u.id"
+            class="user-card"
+          >
+            <div class="card-header">
+              <div class="card-nombre">
+                <div class="card-avatar">{{ u.nombre.charAt(0).toUpperCase() }}</div>
+                <div>
+                  <h3>{{ u.nombre }}</h3>
+                  <p class="card-email">{{ u.email }}</p>
+                </div>
+              </div>
+              <span :class="['rol-badge', `rol-${u.rol}`]">
+                {{ u.rol.toUpperCase() }}
+              </span>
+            </div>
           </div>
-          <div class="stat-card">
-            <div class="stat-number">{{ usuarios.length }}</div>
-            <div class="stat-label">Total</div>
+
+          <!-- Estado vacío -->
+          <div v-if="!loading && filteredUsuarios.length === 0" class="empty-state">
+            <Search class="empty-icon" />
+            <h3>No se encontraron usuarios</h3>
+            <p>Intenta con otros términos de búsqueda</p>
           </div>
+        </div>
+      </div>
+
+      <!-- Paginación -->
+      <div class="pagination-section">
+        <button
+          @click="prevPage"
+          :disabled="page === 1"
+          class="pagination-btn"
+        >
+          <ChevronLeft class="pagination-icon" />
+          <span>Anterior</span>
+        </button>
+
+        <div class="pagination-info">
+          <span class="page-current">{{ page }}</span>
+          <span class="page-separator">/</span>
+          <span class="page-total">{{ totalPages }}</span>
+        </div>
+
+        <button
+          @click="nextPage"
+          :disabled="page === totalPages"
+          class="pagination-btn"
+        >
+          <span>Siguiente</span>
+          <ChevronRight class="pagination-icon" />
+        </button>
+      </div>
+
+      <!-- Estadísticas -->
+      <div
+        v-motion
+        :initial="{ opacity: 0 }"
+        :enter="{ opacity: 1, transition: { delay: 600, duration: 600 } }"
+        class="stats-section"
+      >
+        <div class="stat-card">
+          <div class="stat-number">{{ adminCount }}</div>
+          <div class="stat-label">Administradores</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">{{ usuarioCount }}</div>
+          <div class="stat-label">Usuarios</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">{{ total }}</div>
+          <div class="stat-label">Total</div>
         </div>
       </div>
     </div>
@@ -115,12 +191,18 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import axios from 'axios'
-import { Users, RotateCw, Search } from 'lucide-vue-next'
+import { Users, RotateCw, Search, ChevronLeft, ChevronRight } from 'lucide-vue-next'
 import { useAuthStore } from '../stores/auth'
 
 const auth = useAuthStore()
 const usuarios = ref([])
 const search = ref('')
+const loading = ref(true)
+const page = ref(1)
+const limit = 6
+const total = ref(0)
+
+const totalPages = computed(() => Math.ceil(total.value / limit))
 
 const filteredUsuarios = computed(() =>
   usuarios.value.filter(u =>
@@ -134,18 +216,37 @@ const usuarioCount = computed(() => usuarios.value.filter(u => u.rol === 'usuari
 
 const fetchUsuarios = async () => {
   try {
+    loading.value = true
     const { data } = await axios.get(`${import.meta.env.VITE_API_URL}/auth/users`, {
+      params: { page: page.value, limit },
       headers: { Authorization: `Bearer ${auth.token}` },
     })
-    usuarios.value = data
+    usuarios.value = data.users
+    total.value = data.total
   } catch (err) {
     console.error('Error al cargar usuarios:', err)
+  } finally {
+    loading.value = false
   }
 }
 
-onMounted(() => {
-  fetchUsuarios()
-})
+const reload = () => fetchUsuarios()
+
+const nextPage = () => {
+  if (page.value < totalPages.value) {
+    page.value++
+    fetchUsuarios()
+  }
+}
+
+const prevPage = () => {
+  if (page.value > 1) {
+    page.value--
+    fetchUsuarios()
+  }
+}
+
+onMounted(fetchUsuarios)
 </script>
 
 <style scoped>
@@ -273,16 +374,6 @@ onMounted(() => {
 .reload-icon {
   width: 18px;
   height: 18px;
-  animation: rotate 0.6s ease;
-}
-
-.reload-button:active .reload-icon {
-  animation: rotate 0.6s ease;
-}
-
-@keyframes rotate {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
 }
 
 /* ========== USUARIOS CARD ========== */
@@ -293,6 +384,7 @@ onMounted(() => {
   padding: 2rem;
   backdrop-filter: blur(10px);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  margin-bottom: 2rem;
 }
 
 /* ========== SEARCH SECTION ========== */
@@ -349,10 +441,10 @@ onMounted(() => {
   padding: 0.5rem 1rem;
 }
 
-/* ========== TABLE ========== */
+/* ========== TABLE (DESKTOP) ========== */
 .table-wrapper {
   overflow-x: auto;
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
   border-radius: 12px;
   border: 1px solid rgba(148, 163, 184, 0.1);
 }
@@ -376,6 +468,28 @@ onMounted(() => {
   text-transform: uppercase;
   letter-spacing: 0.05em;
   font-size: 0.8rem;
+}
+
+.skeleton-row {
+  animation: pulse-loading 2s ease-in-out infinite;
+}
+
+.skeleton-line {
+  height: 1rem;
+  background: linear-gradient(90deg, rgba(16, 185, 129, 0.1) 0%, rgba(16, 185, 129, 0.2) 50%, rgba(16, 185, 129, 0.1) 100%);
+  border-radius: 4px;
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes pulse-loading {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
 }
 
 .user-row {
@@ -459,6 +573,73 @@ onMounted(() => {
   color: #86efac;
 }
 
+/* ========== CARDS (MOBILE) ========== */
+.cards-wrapper {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+.skeleton-card {
+  padding: 1.25rem;
+  background: rgba(15, 23, 42, 0.5);
+  border: 1px solid rgba(148, 163, 184, 0.1);
+  border-radius: 12px;
+  animation: pulse-loading 2s ease-in-out infinite;
+}
+
+.user-card {
+  padding: 1.25rem;
+  background: rgba(15, 23, 42, 0.5);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 12px;
+  transition: all 0.3s ease;
+}
+
+.user-card:hover {
+  background: rgba(15, 23, 42, 0.7);
+  border-color: rgba(16, 185, 129, 0.3);
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.card-nombre {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex: 1;
+}
+
+.card-avatar {
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(135deg, #10b981, #059669);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.card-nombre h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #e2e8f0;
+  margin-bottom: 0.25rem;
+}
+
+.card-email {
+  font-size: 0.85rem;
+  color: #94a3b8;
+}
+
 /* ========== EMPTY STATE ========== */
 .empty-state {
   text-align: center;
@@ -483,14 +664,78 @@ onMounted(() => {
   font-size: 0.95rem;
 }
 
+/* ========== PAGINATION ========== */
+.pagination-section {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+  padding: 1.5rem;
+  background: rgba(30, 41, 59, 0.4);
+  border: 1px solid rgba(148, 163, 184, 0.1);
+  border-radius: 16px;
+  backdrop-filter: blur(10px);
+  margin-bottom: 2rem;
+}
+
+.pagination-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.2) 0%, rgba(16, 185, 129, 0.1) 100%);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  color: #10b981;
+  padding: 0.75rem 1.25rem;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.pagination-btn:hover:not(:disabled) {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.3) 0%, rgba(16, 185, 129, 0.2) 100%);
+  border-color: rgba(16, 185, 129, 0.5);
+  transform: translateY(-2px);
+}
+
+.pagination-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.pagination-icon {
+  width: 18px;
+  height: 18px;
+}
+
+.pagination-info {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #cbd5e1;
+}
+
+.page-current {
+  color: #10b981;
+  font-size: 1.25rem;
+}
+
+.page-separator {
+  color: #64748b;
+}
+
+.page-total {
+  color: #94a3b8;
+}
+
 /* ========== STATS SECTION ========== */
 .stats-section {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
   gap: 1rem;
-  margin-top: 2rem;
-  padding-top: 2rem;
-  border-top: 1px solid rgba(148, 163, 184, 0.1);
 }
 
 .stat-card {
@@ -558,22 +803,14 @@ onMounted(() => {
     width: 100%;
   }
 
-  .users-table {
-    font-size: 0.85rem;
+  .pagination-section {
+    flex-wrap: wrap;
+    gap: 1rem;
   }
 
-  .users-table thead th,
-  .users-table td {
-    padding: 0.75rem;
-  }
-
-  .nombre-content {
-    flex-direction: column;
-    text-align: center;
-  }
-
-  .cell-nombre {
-    text-align: center;
+  .pagination-btn {
+    flex: 1;
+    min-width: 120px;
   }
 
   .stats-section {
@@ -608,26 +845,34 @@ onMounted(() => {
     padding: 1rem;
   }
 
-  .users-table {
-    font-size: 0.8rem;
-  }
-
-  .users-table thead th {
-    padding: 0.5rem;
-  }
-
-  .users-table td {
-    padding: 0.5rem;
-  }
-
-  .nombre-avatar {
-    width: 30px;
-    height: 30px;
-    font-size: 0.8rem;
-  }
-
   .search-input {
     font-size: 16px; /* Previene zoom en iOS */
+  }
+
+  .pagination-section {
+    padding: 1rem;
+  }
+
+  .pagination-btn {
+    padding: 0.6rem 1rem;
+    font-size: 0.85rem;
+  }
+
+  .pagination-info {
+    font-size: 0.85rem;
+  }
+
+  .page-current {
+    font-size: 1.1rem;
+  }
+
+  .card-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .rol-badge {
+    align-self: flex-start;
   }
 }
 
