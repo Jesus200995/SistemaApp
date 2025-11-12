@@ -43,6 +43,12 @@ const router = createRouter({
       component: () => import('../views/EstadisticasView.vue'),
       meta: { requiresAuth: true }, // 🔒 protegida
     },
+    {
+      path: '/mapa',
+      name: 'mapa',
+      component: () => import('../views/MapaView.vue'),
+      meta: { requiresAuth: true }, // 🔒 protegida
+    },
   ],
 })
 
