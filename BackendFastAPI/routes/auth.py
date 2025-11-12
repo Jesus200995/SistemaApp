@@ -96,6 +96,7 @@ def get_current_user(
 def list_users(
     page: int = 1,
     limit: int = 6,
+    rol: str | None = None,
     credentials: HTTPAuthorizationCredentials = Security(bearer_scheme),
     db: Session = Depends(get_db)
 ):
@@ -105,15 +106,26 @@ def list_users(
         if payload.get("rol") != "admin":
             raise HTTPException(status_code=403, detail="No autorizado")
 
-        total = db.query(User).count()
-        users = db.query(User).offset((page - 1) * limit).limit(limit).all()
+        query = db.query(User)
+        if rol:
+            query = query.filter(User.rol == rol)
+
+        total = query.count()
+        users = query.offset((page - 1) * limit).limit(limit).all()
 
         return {
             "total": total,
             "page": page,
             "limit": limit,
             "users": [
-                {"id": u.id, "nombre": u.nombre, "email": u.email, "rol": u.rol}
+                {
+                    "id": u.id,
+                    "nombre": u.nombre,
+                    "email": u.email,
+                    "rol": u.rol,
+                    "lat": None,
+                    "lng": None,
+                }
                 for u in users
             ],
         }
