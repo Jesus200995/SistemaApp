@@ -21,7 +21,7 @@ export const useAuthStore = defineStore('auth', {
         this.error = null
         return true
       } catch (err) {
-        this.error = err.response?.data?.error || 'Error al iniciar sesión'
+        this.error = err.response?.data?.detail || 'Error al iniciar sesión'
         return false
       }
     },
@@ -37,7 +37,7 @@ export const useAuthStore = defineStore('auth', {
         this.error = null
         return true
       } catch (err) {
-        this.error = err.response?.data?.error || 'Error al registrar usuario'
+        this.error = err.response?.data?.detail || 'Error al registrar usuario'
         return false
       }
     },
