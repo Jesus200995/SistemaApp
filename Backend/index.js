@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import { PrismaClient } from "@prisma/client";
+import authRoutes from "./auth.js";
 
 dotenv.config();
 const app = express();
@@ -14,6 +15,9 @@ app.use(express.json());
 app.get("/", (req, res) => {
   res.send("✅ Servidor SistemaApp funcionando correctamente 🚀");
 });
+
+// Rutas de autenticación
+app.use("/auth", authRoutes);
 
 // Obtener todos los usuarios
 app.get("/usuarios", async (req, res) => {
