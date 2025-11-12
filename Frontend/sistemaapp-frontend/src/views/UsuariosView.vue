@@ -57,12 +57,13 @@
                 <th>Nombre</th>
                 <th>Email</th>
                 <th>Rol</th>
+                <th>Acciones</th>
               </tr>
             </thead>
             <tbody>
               <!-- Skeleton loader -->
               <tr v-if="loading" v-for="n in limit" :key="'skeleton-' + n" class="skeleton-row">
-                <td colspan="4">
+                <td colspan="5">
                   <div class="skeleton-line"></div>
                 </td>
               </tr>
@@ -87,6 +88,22 @@
                   <span :class="['rol-badge', `rol-${u.rol}`]">
                     {{ u.rol.toUpperCase() }}
                   </span>
+                </td>
+                <td class="cell-actions">
+                  <button
+                    @click="editUser(u)"
+                    class="action-btn edit-btn"
+                    title="Editar"
+                  >
+                    ✏️
+                  </button>
+                  <button
+                    @click="deleteUser(u.id)"
+                    class="action-btn delete-btn"
+                    title="Eliminar"
+                  >
+                    🗑️
+                  </button>
                 </td>
               </tr>
             </tbody>
@@ -125,6 +142,22 @@
               <span :class="['rol-badge', `rol-${u.rol}`]">
                 {{ u.rol.toUpperCase() }}
               </span>
+            </div>
+            <div class="card-actions">
+              <button
+                @click="editUser(u)"
+                class="action-btn edit-btn"
+                title="Editar"
+              >
+                ✏️ Editar
+              </button>
+              <button
+                @click="deleteUser(u.id)"
+                class="action-btn delete-btn"
+                title="Eliminar"
+              >
+                🗑️ Eliminar
+              </button>
             </div>
           </div>
 
@@ -193,6 +226,8 @@ import { ref, computed, onMounted } from 'vue'
 import axios from 'axios'
 import { Users, RotateCw, Search, ChevronLeft, ChevronRight } from 'lucide-vue-next'
 import { useAuthStore } from '../stores/auth'
+import Swal from 'sweetalert2'
+import 'sweetalert2/dist/sweetalert2.min.css'
 
 const auth = useAuthStore()
 const usuarios = ref([])
@@ -243,6 +278,61 @@ const prevPage = () => {
   if (page.value > 1) {
     page.value--
     fetchUsuarios()
+  }
+}
+
+const editUser = async (user) => {
+  const { value: formValues } = await Swal.fire({
+    title: 'Editar usuario',
+    html:
+      `<input id="nombre" class="swal2-input" placeholder="Nombre" value="${user.nombre}">` +
+      `<input id="email" class="swal2-input" placeholder="Email" value="${user.email}">` +
+      `<input id="rol" class="swal2-input" placeholder="Rol" value="${user.rol}">`,
+    focusConfirm: false,
+    showCancelButton: true,
+    confirmButtonText: 'Guardar',
+    preConfirm: () => {
+      return {
+        nombre: document.getElementById('nombre').value,
+        email: document.getElementById('email').value,
+        rol: document.getElementById('rol').value,
+      }
+    },
+  })
+
+  if (formValues) {
+    try {
+      await axios.put(`${import.meta.env.VITE_API_URL}/auth/users/${user.id}`, formValues, {
+        headers: { Authorization: `Bearer ${auth.token}` },
+      })
+      Swal.fire('✅ Actualizado', 'El usuario fue modificado correctamente.', 'success')
+      fetchUsuarios()
+    } catch (err) {
+      Swal.fire('❌ Error', 'No se pudo actualizar el usuario.', 'error')
+    }
+  }
+}
+
+const deleteUser = async (id) => {
+  const result = await Swal.fire({
+    title: '¿Eliminar usuario?',
+    text: 'Esta acción no se puede deshacer.',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonText: 'Sí, eliminar',
+    cancelButtonText: 'Cancelar',
+  })
+
+  if (result.isConfirmed) {
+    try {
+      await axios.delete(`${import.meta.env.VITE_API_URL}/auth/users/${id}`, {
+        headers: { Authorization: `Bearer ${auth.token}` },
+      })
+      Swal.fire('🗑️ Eliminado', 'El usuario ha sido eliminado.', 'success')
+      fetchUsuarios()
+    } catch (err) {
+      Swal.fire('❌ Error', 'No se pudo eliminar el usuario.', 'error')
+    }
   }
 }
 
@@ -554,6 +644,33 @@ onMounted(fetchUsuarios)
   text-align: center;
 }
 
+.cell-actions {
+  text-align: center;
+  width: 100px;
+}
+
+.action-btn {
+  display: inline-block;
+  background: none;
+  border: none;
+  font-size: 1.25rem;
+  cursor: pointer;
+  padding: 0.25rem 0.5rem;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+  margin: 0 0.25rem;
+}
+
+.edit-btn:hover {
+  background: rgba(59, 130, 246, 0.1);
+  transform: scale(1.2);
+}
+
+.delete-btn:hover {
+  background: rgba(239, 68, 68, 0.1);
+  transform: scale(1.2);
+}
+
 .rol-badge {
   display: inline-block;
   padding: 0.375rem 1rem;
@@ -638,6 +755,46 @@ onMounted(fetchUsuarios)
 .card-email {
   font-size: 0.85rem;
   color: #94a3b8;
+}
+
+.card-actions {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(148, 163, 184, 0.1);
+}
+
+.card-actions .action-btn {
+  flex: 1;
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.card-actions .edit-btn {
+  background: rgba(59, 130, 246, 0.1);
+  color: #3b82f6;
+  border: 1px solid rgba(59, 130, 246, 0.3);
+}
+
+.card-actions .edit-btn:hover {
+  background: rgba(59, 130, 246, 0.2);
+  border-color: rgba(59, 130, 246, 0.5);
+  transform: scale(1.05);
+}
+
+.card-actions .delete-btn {
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.card-actions .delete-btn:hover {
+  background: rgba(239, 68, 68, 0.2);
+  border-color: rgba(239, 68, 68, 0.5);
+  transform: scale(1.05);
 }
 
 /* ========== EMPTY STATE ========== */
