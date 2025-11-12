@@ -24,6 +24,11 @@ class LoginRequest(BaseModel):
     email: str
     password: str
 
+class UpdateUserRequest(BaseModel):
+    nombre: str | None = None
+    email: str | None = None
+    rol: str | None = None
+
 def get_db():
     db = SessionLocal()
     try:
@@ -112,5 +117,57 @@ def list_users(
                 for u in users
             ],
         }
+    except jwt.InvalidTokenError:
+        raise HTTPException(status_code=401, detail="Token inválido")
+
+@router.put("/users/{user_id}")
+def update_user(
+    user_id: int,
+    body: UpdateUserRequest,
+    credentials: HTTPAuthorizationCredentials = Security(bearer_scheme),
+    db: Session = Depends(get_db)
+):
+    try:
+        token = credentials.credentials
+        payload = jwt.decode(token, SECRET, algorithms=["HS256"])
+        if payload.get("rol") != "admin":
+            raise HTTPException(status_code=403, detail="No autorizado")
+
+        user = db.query(User).filter(User.id == user_id).first()
+        if not user:
+            raise HTTPException(status_code=404, detail="Usuario no encontrado")
+
+        if body.nombre:
+            user.nombre = body.nombre
+        if body.email:
+            user.email = body.email
+        if body.rol:
+            user.rol = body.rol
+
+        db.commit()
+        db.refresh(user)
+        return {"success": True, "user": {"id": user.id, "nombre": user.nombre, "email": user.email, "rol": user.rol}}
+    except jwt.InvalidTokenError:
+        raise HTTPException(status_code=401, detail="Token inválido")
+
+@router.delete("/users/{user_id}")
+def delete_user(
+    user_id: int,
+    credentials: HTTPAuthorizationCredentials = Security(bearer_scheme),
+    db: Session = Depends(get_db)
+):
+    try:
+        token = credentials.credentials
+        payload = jwt.decode(token, SECRET, algorithms=["HS256"])
+        if payload.get("rol") != "admin":
+            raise HTTPException(status_code=403, detail="No autorizado")
+
+        user = db.query(User).filter(User.id == user_id).first()
+        if not user:
+            raise HTTPException(status_code=404, detail="Usuario no encontrado")
+
+        db.delete(user)
+        db.commit()
+        return {"success": True, "message": f"Usuario {user.nombre} eliminado correctamente"}
     except jwt.InvalidTokenError:
         raise HTTPException(status_code=401, detail="Token inválido")
