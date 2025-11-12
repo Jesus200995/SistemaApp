@@ -110,7 +110,7 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import { MapPin, Navigation } from 'lucide-vue-next'
-import { LMap, LTileLayer, LMarker, LPopup } from 'vue-leaflet'
+import { LMap, LTileLayer, LMarker, LPopup } from '@vue-leaflet/vue-leaflet'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 import 'leaflet-defaulticon-compatibility'
