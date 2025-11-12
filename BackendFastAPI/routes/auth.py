@@ -89,19 +89,28 @@ def get_current_user(
 
 @router.get("/users")
 def list_users(
+    page: int = 1,
+    limit: int = 6,
     credentials: HTTPAuthorizationCredentials = Security(bearer_scheme),
     db: Session = Depends(get_db)
 ):
     try:
         token = credentials.credentials
         payload = jwt.decode(token, SECRET, algorithms=["HS256"])
-        # Solo admin puede ver lista de usuarios
         if payload.get("rol") != "admin":
             raise HTTPException(status_code=403, detail="No autorizado")
-        users = db.query(User).all()
-        return [
-            {"id": u.id, "nombre": u.nombre, "email": u.email, "rol": u.rol}
-            for u in users
-        ]
+
+        total = db.query(User).count()
+        users = db.query(User).offset((page - 1) * limit).limit(limit).all()
+
+        return {
+            "total": total,
+            "page": page,
+            "limit": limit,
+            "users": [
+                {"id": u.id, "nombre": u.nombre, "email": u.email, "rol": u.rol}
+                for u in users
+            ],
+        }
     except jwt.InvalidTokenError:
         raise HTTPException(status_code=401, detail="Token inválido")
