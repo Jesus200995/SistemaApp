@@ -164,7 +164,7 @@ const logout = () => {
 }
 
 .dashboard-container {
-  height: 100vh;
+  min-height: 100vh;
   width: 100vw;
   display: flex;
   flex-direction: column;
@@ -173,7 +173,8 @@ const logout = () => {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   margin: 0;
   padding: 0;
-  overflow: hidden;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 /* ========== HEADER ========== */
@@ -221,7 +222,7 @@ const logout = () => {
 }
 
 .logo-text h1 {
-  font-size: 1.5rem;
+  font-size: 1.25rem;
   font-weight: 700;
   background: linear-gradient(135deg, #10b981, #6ee7b7);
   -webkit-background-clip: text;
@@ -242,12 +243,13 @@ const logout = () => {
   background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
   color: white;
   border: none;
-  padding: 0.75rem 1rem;
+  padding: 0.5rem 0.75rem;
   border-radius: 8px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
   box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+  font-size: 0.75rem;
 }
 
 .logout-btn:hover {
@@ -260,12 +262,12 @@ const logout = () => {
 }
 
 .logout-icon {
-  width: 18px;
-  height: 18px;
+  width: 16px;
+  height: 16px;
 }
 
 .logout-text {
-  font-size: 0.875rem;
+  font-size: 0.75rem;
 }
 
 @media (max-width: 768px) {
@@ -291,9 +293,10 @@ const logout = () => {
 .dashboard-main {
   flex: 1;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
-  padding: 2rem 1rem;
+  padding: 1.5rem 0.75rem;
+  overflow-y: auto;
 }
 
 .dashboard-content {
@@ -306,10 +309,10 @@ const logout = () => {
   background: linear-gradient(135deg, rgba(30, 41, 59, 0.8) 0%, rgba(15, 23, 42, 0.8) 100%);
   border: 1px solid rgba(148, 163, 184, 0.2);
   border-radius: 24px;
-  padding: 2rem;
+  padding: 1.25rem;
   backdrop-filter: blur(10px);
   text-align: center;
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
   transition: all 0.3s ease;
 }
@@ -321,9 +324,9 @@ const logout = () => {
 
 .avatar-wrapper {
   position: relative;
-  width: 140px;
-  height: 140px;
-  margin: 0 auto 2rem;
+  width: 110px;
+  height: 110px;
+  margin: 0 auto 1.25rem;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -335,7 +338,6 @@ const logout = () => {
   background: linear-gradient(135deg, #10b981, #06b6d4);
   border-radius: 50%;
   opacity: 0.2;
-  blur: 20px;
   animation: glow-pulse 3s ease-in-out infinite;
 }
 
@@ -346,8 +348,8 @@ const logout = () => {
 
 .avatar-image {
   position: relative;
-  width: 120px;
-  height: 120px;
+  width: 90px;
+  height: 90px;
   border-radius: 50%;
   border: 4px solid #10b981;
   object-fit: cover;
@@ -355,34 +357,34 @@ const logout = () => {
 }
 
 .welcome-section {
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
 }
 
 .welcome-title {
-  font-size: 1.75rem;
+  font-size: 1.4rem;
   font-weight: 600;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.25rem;
   color: #e2e8f0;
 }
 
 .user-name {
-  font-size: 2rem;
+  font-size: 1.5rem;
   font-weight: 700;
   background: linear-gradient(135deg, #10b981, #6ee7b7);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
 }
 
 .info-box {
   background: rgba(15, 23, 42, 0.5);
   border: 1px solid rgba(148, 163, 184, 0.1);
   border-radius: 16px;
-  padding: 1.5rem;
+  padding: 0.875rem;
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 0.75rem;
 }
 
 .info-item {
@@ -392,8 +394,8 @@ const logout = () => {
 }
 
 .info-icon {
-  width: 24px;
-  height: 24px;
+  width: 20px;
+  height: 20px;
   color: #10b981;
   flex-shrink: 0;
 }
@@ -405,14 +407,14 @@ const logout = () => {
 }
 
 .info-label {
-  font-size: 0.75rem;
+  font-size: 0.65rem;
   color: #94a3b8;
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
 
 .info-value {
-  font-size: 1rem;
+  font-size: 0.85rem;
   font-weight: 600;
   color: #e2e8f0;
   word-break: break-all;
@@ -425,22 +427,22 @@ const logout = () => {
 
 /* ========== ACTIONS SECTION ========== */
 .actions-section {
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem;
 }
 
 .section-title {
-  font-size: 1.25rem;
+  font-size: 1rem;
   font-weight: 600;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
   color: #cbd5e1;
   text-align: center;
 }
 
 .actions-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-  gap: 1rem;
-  margin-bottom: 2rem;
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
 }
 
 @media (max-width: 768px) {
@@ -454,13 +456,13 @@ const logout = () => {
   background: linear-gradient(135deg, rgba(30, 41, 59, 0.8) 0%, rgba(15, 23, 42, 0.8) 100%);
   border: 1px solid rgba(148, 163, 184, 0.2);
   border-radius: 16px;
-  padding: 1.5rem;
+  padding: 1rem;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.75rem;
+  gap: 0.5rem;
   text-decoration: none;
   color: inherit;
 }
@@ -477,8 +479,8 @@ const logout = () => {
 }
 
 .action-icon-wrapper {
-  width: 56px;
-  height: 56px;
+  width: 48px;
+  height: 48px;
   background: linear-gradient(135deg, #10b981 0%, #059669 100%);
   border-radius: 12px;
   display: flex;
@@ -494,13 +496,13 @@ const logout = () => {
 }
 
 .action-icon {
-  width: 28px;
-  height: 28px;
+  width: 24px;
+  height: 24px;
   color: white;
 }
 
 .action-title {
-  font-size: 0.875rem;
+  font-size: 0.75rem;
   font-weight: 600;
   color: #cbd5e1;
   text-align: center;
@@ -514,16 +516,16 @@ const logout = () => {
 /* ========== STATS GRID ========== */
 .stats-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-  gap: 1rem;
-  margin-bottom: 2rem;
+  grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
 }
 
 .stat-card {
   background: rgba(30, 41, 59, 0.6);
   border: 1px solid rgba(148, 163, 184, 0.2);
   border-radius: 12px;
-  padding: 1.5rem;
+  padding: 1rem;
   text-align: center;
   transition: all 0.3s ease;
 }
@@ -534,12 +536,12 @@ const logout = () => {
 }
 
 .stat-icon {
-  font-size: 1.75rem;
-  margin-bottom: 0.5rem;
+  font-size: 1.4rem;
+  margin-bottom: 0.25rem;
 }
 
 .stat-text {
-  font-size: 0.75rem;
+  font-size: 0.65rem;
   color: #94a3b8;
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -561,11 +563,11 @@ const logout = () => {
 /* ========== FOOTER ========== */
 .dashboard-footer {
   text-align: center;
-  padding: 1.5rem;
+  padding: 1rem;
   border-top: 1px solid rgba(148, 163, 184, 0.1);
   background: rgba(15, 23, 42, 0.5);
   backdrop-filter: blur(10px);
-  font-size: 0.875rem;
+  font-size: 0.75rem;
   color: #94a3b8;
 }
 
