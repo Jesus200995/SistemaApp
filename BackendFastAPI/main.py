@@ -5,17 +5,17 @@ from database import Base, engine
 
 Base.metadata.create_all(bind=engine)
 
-app = FastAPI(title="SistemaApp API (FastAPI + Uvicorn)")
+app = FastAPI(title="SistemaApp API (FastAPI + PostgreSQL)")
 
-# ✅ Configuración correcta de CORS
+# ✅ Configuración CORS correcta
 origins = [
-    "http://localhost:5173",                 # Frontend local (desarrollo)
-    "https://sistemaapp.sembrandodatos.com", # Frontend en producción
+    "http://localhost:5173",                 # desarrollo local
+    "https://sistemaapp.sembrandodatos.com", # frontend desplegado
 ]
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,            # 👈 no uses ["*"] ni combines
+    allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -27,4 +27,4 @@ app.include_router(layers.router)
 
 @app.get("/")
 def root():
-    return {"message": "✅ API SistemaApp con FastAPI funcionando correctamente 🚀"}
+    return {"status": "✅ API corriendo correctamente"}

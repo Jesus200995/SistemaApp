@@ -145,6 +145,7 @@ import { LMap, LTileLayer, LMarker, LPopup } from '@vue-leaflet/vue-leaflet'
 import L from 'leaflet'
 import axios from 'axios'
 import { useAuthStore } from '../stores/auth'
+import { addOfflinePoint, getOfflinePoints, clearOfflinePoints } from '../utils/db'
 import 'leaflet/dist/leaflet.css'
 import 'leaflet-defaulticon-compatibility'
 import 'leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css'
@@ -233,23 +234,45 @@ const onMapClick = async (event) => {
   const { lat, lng } = event.latlng
   const tipo = prompt("¿Qué tipo de capa deseas agregar? (ambiental/productiva/social/infraestructura)")
   const nombre = prompt("Nombre del punto:")
-  if (tipo && nombre) {
-    try {
-      await axios.post(`${import.meta.env.VITE_API_URL}/layers/${tipo}`, {
-        nombre,
-        descripcion: "",
-        lat,
-        lng
-      }, {
-        headers: { Authorization: `Bearer ${auth.token}` }
-      })
-      alert("✅ Punto agregado correctamente")
-      loadLayers()
-    } catch {
-      alert("❌ Error al agregar punto")
-    }
+
+  if (!tipo || !nombre) return
+
+  const point = { tipo, nombre, lat, lng }
+
+  try {
+    await axios.post(`${import.meta.env.VITE_API_URL}/layers/${tipo}`, point, {
+      headers: { Authorization: `Bearer ${auth.token}` },
+    })
+    alert("✅ Punto guardado en servidor")
+    loadLayers()
+  } catch {
+    alert("📡 Sin conexión, guardando offline...")
+    await addOfflinePoint(point)
   }
 }
+
+// Sincronizar puntos guardados offline cuando vuelva la conexión
+const syncOfflinePoints = async () => {
+  const offlinePoints = await getOfflinePoints()
+  if (offlinePoints.length === 0) return
+
+  for (const p of offlinePoints) {
+    try {
+      await axios.post(`${import.meta.env.VITE_API_URL}/layers/${p.tipo}`, p, {
+        headers: { Authorization: `Bearer ${auth.token}` },
+      })
+    } catch {
+      console.warn('Aún sin conexión, reintentaré más tarde.')
+      return
+    }
+  }
+
+  await clearOfflinePoints()
+  alert("✅ Datos offline sincronizados con el servidor.")
+  loadLayers()
+}
+
+window.addEventListener('online', syncOfflinePoints)
 
 onMounted(loadLayers)
 </script>
