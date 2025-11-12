@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
+// @ts-ignore
 import { useAuthStore } from '../stores/auth'
 
 const router = createRouter({
@@ -14,6 +15,7 @@ const router = createRouter({
     {
       path: '/dashboard',
       name: 'dashboard',
+      // @ts-ignore
       component: () => import('../views/DashboardView.vue'),
       meta: { requiresAuth: true }, // 🔒 protegida
     },
@@ -29,23 +31,27 @@ const router = createRouter({
     {
       path: '/login',
       name: 'login',
+      // @ts-ignore
       component: () => import('../views/LoginView.vue'),
     },
     {
       path: '/usuarios',
       name: 'usuarios',
+      // @ts-ignore
       component: () => import('../views/UsuariosView.vue'),
       meta: { requiresAuth: true }, // 🔒 protegida
     },
     {
       path: '/estadisticas',
       name: 'estadisticas',
+      // @ts-ignore
       component: () => import('../views/EstadisticasView.vue'),
       meta: { requiresAuth: true }, // 🔒 protegida
     },
     {
       path: '/mapa',
       name: 'mapa',
+      // @ts-ignore
       component: () => import('../views/MapaView.vue'),
       meta: { requiresAuth: true }, // 🔒 protegida
     },
