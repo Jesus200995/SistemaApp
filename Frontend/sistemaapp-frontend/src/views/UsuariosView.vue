@@ -348,12 +348,16 @@ onMounted(fetchUsuarios)
 
 /* ========== CONTAINER ========== */
 .usuarios-container {
-  min-height: 100vh;
+  height: 100vh;
+  width: 100vw;
   background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
   position: relative;
-  overflow: hidden;
+  overflow: auto;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  padding: 2rem 0;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
 }
 
 /* ========== BACKGROUND BLOBS ========== */

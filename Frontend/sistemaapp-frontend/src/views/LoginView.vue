@@ -141,7 +141,8 @@ const goToRegister = () => {
 
 /* ========== CONTAINER ========== */
 .login-container {
-  min-height: 100vh;
+  height: 100vh;
+  width: 100vw;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -149,6 +150,8 @@ const goToRegister = () => {
   position: relative;
   overflow: hidden;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  margin: 0;
+  padding: 0;
 }
 
 /* ========== BACKGROUND BLOBS ========== */
