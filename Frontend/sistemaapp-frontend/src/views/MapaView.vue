@@ -12,11 +12,11 @@
       <div class="header-wrapper">
         <div class="header-left">
           <div class="icon-box">
-            <MapPin class="icon-header" />
+            <Layers class="icon-header" />
           </div>
           <div class="header-text">
-            <h1 class="header-title">Mapa Territorial</h1>
-            <p class="header-subtitle">Localización de usuarios en tiempo real</p>
+            <h1 class="header-title">Capas Temáticas</h1>
+            <p class="header-subtitle">Ambiental, Social, Productiva e Infraestructura</p>
           </div>
         </div>
         <button @click="centerOnUser" class="btn-location">
@@ -26,110 +26,112 @@
       </div>
     </header>
 
-    <!-- Filtros por rol -->
-    <div class="filters-section">
-      <div class="filters-wrapper">
-        <h3 class="filters-title">Filtrar por rol:</h3>
-        <div class="filters-grid">
-          <label
-            v-for="r in roles"
-            :key="r.value"
-            class="filter-checkbox"
-            :class="{ 'filter-active': selectedRoles.includes(r.value) }"
+    <!-- Panel lateral de capas -->
+    <div class="layers-panel">
+      <div class="panel-wrapper">
+        <h3 class="panel-title">Capas disponibles:</h3>
+        <div class="layers-list">
+          <label v-for="c in capas" :key="c.value" class="layer-checkbox"
+            :class="{ 'layer-active': activeLayers.includes(c.value) }"
           >
-            <input
-              type="checkbox"
-              v-model="selectedRoles"
-              :value="r.value"
-              class="checkbox-input"
-            />
-            <span class="checkbox-label">{{ r.label }}</span>
-            <span class="checkbox-count">({{ roleCount(r.value) }})</span>
+            <input type="checkbox" v-model="activeLayers" :value="c.value" class="checkbox-input" />
+            <span class="checkbox-circle" :style="{ backgroundColor: c.colorBg }"></span>
+            <span class="checkbox-label">{{ c.label }}</span>
           </label>
         </div>
+        <hr class="panel-divider" />
+        <p class="panel-hint">
+          Selecciona las capas para mostrar información ambiental, social, productiva o de infraestructura.
+        </p>
       </div>
     </div>
 
-    <!-- Estadísticas -->
-    <div class="stats-section">
-      <div class="stats-wrapper">
-        <div class="stat-item">
-          <span class="stat-emoji">📍</span>
-          <span class="stat-label">Total:</span>
-          <span class="stat-value">{{ markers.length }}</span>
-        </div>
-        <div class="stat-item">
-          <span class="stat-emoji">👁️</span>
-          <span class="stat-label">Mostrados:</span>
-          <span class="stat-value">{{ filteredMarkers.length }}</span>
-        </div>
-        <div class="stat-item">
-          <span class="stat-emoji">🔍</span>
-          <span class="stat-label">Zoom:</span>
-          <span class="stat-value">{{ zoom }}</span>
-        </div>
-      </div>
-    </div>
+    <!-- Mapa principal -->
+    <div id="map-container" class="map-section">
+      <l-map ref="map" v-model:zoom="zoom" :center="center" style="height: 100%; width: 100%;">
+        <l-tile-layer :url="tileUrl" :attribution="tileAttr" />
 
-    <!-- Mapa -->
-    <div class="map-section">
-      <l-map ref="map" v-model:zoom="zoom" :center="center" class="map-container-leaflet">
-        <l-tile-layer :url="tileUrl" :attribution="tileAttr" layer-type="base" name="OpenStreetMap" />
-
+        <!-- Capa ambiental -->
         <l-marker
-          v-for="marker in filteredMarkers"
-          :key="marker.id"
-          :lat-lng="marker.latlng"
-          :icon="getMarkerIcon(marker.rol)"
+          v-for="p in visibleCapas.ambiental"
+          :key="'amb'+p.id"
+          :lat-lng="p.latlng"
+          :icon="greenIcon"
         >
-          <l-popup class="marker-popup-custom">
-            <div class="popup-card">
-              <div class="popup-nombre">{{ marker.nombre }}</div>
-              <div class="popup-rol" :class="`rol-${marker.rol}`">{{ marker.rol }}</div>
-              <div class="popup-email">{{ marker.email }}</div>
-              <div class="popup-coords">{{ marker.latlng[0].toFixed(4) }}, {{ marker.latlng[1].toFixed(4) }}</div>
+          <l-popup class="popup-custom">
+            <div class="popup-content">
+              <strong class="popup-type">🌱 Zona Ambiental</strong><br />
+              <span class="popup-name">{{ p.nombre }}</span>
+            </div>
+          </l-popup>
+        </l-marker>
+
+        <!-- Capa productiva -->
+        <l-marker
+          v-for="p in visibleCapas.productiva"
+          :key="'prod'+p.id"
+          :lat-lng="p.latlng"
+          :icon="orangeIcon"
+        >
+          <l-popup class="popup-custom">
+            <div class="popup-content">
+              <strong class="popup-type">🌾 Área Productiva</strong><br />
+              <span class="popup-name">{{ p.nombre }}</span>
+            </div>
+          </l-popup>
+        </l-marker>
+
+        <!-- Capa social -->
+        <l-marker
+          v-for="p in visibleCapas.social"
+          :key="'soc'+p.id"
+          :lat-lng="p.latlng"
+          :icon="blueIcon"
+        >
+          <l-popup class="popup-custom">
+            <div class="popup-content">
+              <strong class="popup-type">👥 Proyecto Social</strong><br />
+              <span class="popup-name">{{ p.nombre }}</span>
+            </div>
+          </l-popup>
+        </l-marker>
+
+        <!-- Capa infraestructura -->
+        <l-marker
+          v-for="p in visibleCapas.infraestructura"
+          :key="'infra'+p.id"
+          :lat-lng="p.latlng"
+          :icon="grayIcon"
+        >
+          <l-popup class="popup-custom">
+            <div class="popup-content">
+              <strong class="popup-type">🏗️ Infraestructura</strong><br />
+              <span class="popup-name">{{ p.nombre }}</span>
             </div>
           </l-popup>
         </l-marker>
       </l-map>
-
-      <!-- Loading -->
-      <div v-if="loading" class="loading-overlay">
-        <div class="loading-content">
-          <div class="spinner"></div>
-          <p>Cargando ubicaciones...</p>
-        </div>
-      </div>
-
-      <!-- Sin resultados -->
-      <div v-if="!loading && filteredMarkers.length === 0" class="empty-state">
-        <div class="empty-content">
-          <MapPin class="empty-icon" />
-          <p class="empty-title">No hay usuarios para mostrar</p>
-          <p class="empty-text">Intenta cambiar los filtros</p>
-        </div>
-      </div>
     </div>
 
-    <!-- Leyenda -->
+    <!-- Leyenda flotante -->
     <div class="legend-box">
-      <h3 class="legend-title">Leyenda de Roles</h3>
+      <h3 class="legend-title">Leyenda</h3>
       <div class="legend-items">
         <div class="legend-item">
-          <div class="legend-marker admin"></div>
-          <span>Admin</span>
+          <div class="legend-marker" style="background: #10b981;"></div>
+          <span>Ambiental</span>
         </div>
         <div class="legend-item">
-          <div class="legend-marker territorial"></div>
-          <span>Territorial</span>
+          <div class="legend-marker" style="background: #f97316;"></div>
+          <span>Productiva</span>
         </div>
         <div class="legend-item">
-          <div class="legend-marker facilitador"></div>
-          <span>Facilitador</span>
+          <div class="legend-marker" style="background: #3b82f6;"></div>
+          <span>Social</span>
         </div>
         <div class="legend-item">
-          <div class="legend-marker tecnico"></div>
-          <span>Técnico</span>
+          <div class="legend-marker" style="background: #6b7280;"></div>
+          <span>Infraestructura</span>
         </div>
       </div>
     </div>
@@ -138,112 +140,100 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
-import { MapPin } from 'lucide-vue-next'
+import { Layers, MapPin } from 'lucide-vue-next'
 import { LMap, LTileLayer, LMarker, LPopup } from '@vue-leaflet/vue-leaflet'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 import 'leaflet-defaulticon-compatibility'
 import 'leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css'
-import axios from 'axios'
-import { useAuthStore } from '../stores/auth'
 
-const auth = useAuthStore()
+// Íconos personalizados
+const greenIcon = new L.Icon({
+  iconUrl: 'https://cdn-icons-png.flaticon.com/512/609/609803.png',
+  iconSize: [30, 30],
+})
+const orangeIcon = new L.Icon({
+  iconUrl: 'https://cdn-icons-png.flaticon.com/512/609/609814.png',
+  iconSize: [30, 30],
+})
+const blueIcon = new L.Icon({
+  iconUrl: 'https://cdn-icons-png.flaticon.com/512/684/684908.png',
+  iconSize: [30, 30],
+})
+const grayIcon = new L.Icon({
+  iconUrl: 'https://cdn-icons-png.flaticon.com/512/861/861128.png',
+  iconSize: [30, 30],
+})
 
-// Referencias del mapa
-const map = ref(null)
-const center = ref([19.4326, -99.1332]) // CDMX
+const center = ref([19.4326, -99.1332])
 const zoom = ref(6)
-
-// URLs de mapas
 const tileUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
-const tileAttr = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+const tileAttr = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
 
-// Datos
-const markers = ref([])
-const loading = ref(true)
-
-// Filtros por rol
-const roles = [
-  { label: 'Admin', value: 'admin' },
-  { label: 'Territorial', value: 'territorial' },
-  { label: 'Facilitador', value: 'facilitador' },
-  { label: 'Técnico', value: 'tecnico' },
+const capas = [
+  { label: 'Ambiental', value: 'ambiental', colorBg: '#10b981' },
+  { label: 'Productiva', value: 'productiva', colorBg: '#f97316' },
+  { label: 'Social', value: 'social', colorBg: '#3b82f6' },
+  { label: 'Infraestructura', value: 'infraestructura', colorBg: '#6b7280' },
 ]
-const selectedRoles = ref(['admin', 'territorial', 'facilitador', 'tecnico'])
 
-// Computed
-const filteredMarkers = computed(() =>
-  markers.value.filter(m => selectedRoles.value.includes(m.rol))
-)
+const activeLayers = ref(['ambiental', 'productiva'])
+const dataCapas = ref({
+  ambiental: [],
+  productiva: [],
+  social: [],
+  infraestructura: [],
+})
 
-const roleCount = (role) => markers.value.filter(m => m.rol === role).length
-
-// Íconos personalizados por rol
-const getRoleColor = (rol) => {
-  const colors = {
-    admin: '#ef4444',
-    territorial: '#3b82f6',
-    facilitador: '#10b981',
-    tecnico: '#eab308',
+const visibleCapas = computed(() => {
+  const visible = {}
+  for (const c of capas) {
+    visible[c.value] = activeLayers.value.includes(c.value)
+      ? dataCapas.value[c.value]
+      : []
   }
-  return colors[rol] || '#6b7280'
-}
+  return visible
+})
 
-const getMarkerIcon = (rol) => {
-  const color = getRoleColor(rol)
-  return L.icon({
-    iconUrl: `data:image/svg+xml;base64,${btoa(`
-      <svg xmlns="http://www.w3.org/2000/svg" width="32" height="40" viewBox="0 0 24 24">
-        <circle cx="12" cy="8" r="4" fill="${color}"/>
-        <path d="M12 14c-4 0-6 2-6 5v3c0 .55.45 1 1 1h10c.55 0 1-.45 1-1v-3c0-3-2-5-6-5z" fill="${color}"/>
-      </svg>
-    `)}`,
-    iconSize: [32, 40],
-    iconAnchor: [16, 40],
-    popupAnchor: [0, -40],
-  })
-}
-
-// Cargar marcadores
-const fetchMarkers = async () => {
-  try {
-    loading.value = true
-    const { data } = await axios.get(`${import.meta.env.VITE_API_URL}/auth/users?limit=100`, {
-      headers: { Authorization: `Bearer ${auth.token}` },
-    })
-
-    markers.value = data.users.map(u => ({
-      id: u.id,
-      nombre: u.nombre,
-      email: u.email,
-      rol: u.rol || 'usuario',
-      latlng: [
-        u.lat || 19.4326 + (Math.random() * 4 - 2),
-        u.lng || -99.1332 + (Math.random() * 4 - 2),
-      ],
-    }))
-    loading.value = false
-  } catch (err) {
-    console.error('Error al cargar marcadores:', err)
-    loading.value = false
-  }
-}
-
-// Centrar en ubicación actual
 const centerOnUser = () => {
   if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(
       pos => {
         center.value = [pos.coords.latitude, pos.coords.longitude]
-        zoom.value = 13
+        zoom.value = 12
       },
-      err => console.warn('Geolocalización no disponible:', err)
+      err => console.warn('No se pudo obtener ubicación:', err)
     )
   }
 }
 
-// Ciclo de vida
-onMounted(fetchMarkers)
+// Simulación de datos iniciales (por ahora)
+const loadLayers = () => {
+  dataCapas.value = {
+    ambiental: Array.from({ length: 4 }, (_, i) => ({
+      id: i,
+      nombre: `Área Verde ${i + 1}`,
+      latlng: [19.4 + Math.random() * 4 - 2, -99.1 + Math.random() * 4 - 2],
+    })),
+    productiva: Array.from({ length: 3 }, (_, i) => ({
+      id: i,
+      nombre: `Parcela Productiva ${i + 1}`,
+      latlng: [19.2 + Math.random() * 4 - 2, -99.3 + Math.random() * 4 - 2],
+    })),
+    social: Array.from({ length: 2 }, (_, i) => ({
+      id: i,
+      nombre: `Centro Social ${i + 1}`,
+      latlng: [19.1 + Math.random() * 4 - 2, -99.2 + Math.random() * 4 - 2],
+    })),
+    infraestructura: Array.from({ length: 2 }, (_, i) => ({
+      id: i,
+      nombre: `Infraestructura ${i + 1}`,
+      latlng: [19.3 + Math.random() * 4 - 2, -99.0 + Math.random() * 4 - 2],
+    })),
+  }
+}
+
+onMounted(loadLayers)
 </script>
 
 <style scoped>
@@ -270,6 +260,7 @@ onMounted(fetchMarkers)
   inset: 0;
   overflow: hidden;
   pointer-events: none;
+  z-index: 0;
 }
 
 .blob {
@@ -404,42 +395,49 @@ onMounted(fetchMarkers)
   height: 18px;
 }
 
-/* ========== FILTERS SECTION ========== */
-.filters-section {
-  position: relative;
+/* ========== LAYERS PANEL ========== */
+.layers-panel {
+  position: absolute;
+  top: 80px;
+  left: 0;
+  width: 300px;
+  max-height: calc(100vh - 80px);
   z-index: 20;
   backdrop-filter: blur(10px);
-  background: rgba(30, 41, 59, 0.4);
-  border-bottom: 1px solid rgba(148, 163, 184, 0.1);
-  padding: 1.25rem 1.5rem;
+  background: rgba(15, 23, 42, 0.95);
+  border-right: 1px solid rgba(148, 163, 184, 0.15);
+  border-bottom: 1px solid rgba(148, 163, 184, 0.15);
+  border-radius: 0 0 16px 0;
+  overflow-y: auto;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
 }
 
-.filters-wrapper {
-  max-width: 1400px;
-  margin: 0 auto;
+.panel-wrapper {
+  padding: 1.5rem;
 }
 
-.filters-title {
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: #94a3b8;
-  margin-bottom: 0.75rem;
+.panel-title {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #e2e8f0;
+  margin-bottom: 1rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
 
-.filters-grid {
+.layers-list {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
   gap: 0.75rem;
+  margin-bottom: 1rem;
 }
 
-.filter-checkbox {
+.layer-checkbox {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem 0.875rem;
-  background: rgba(71, 85, 105, 0.5);
+  gap: 0.75rem;
+  padding: 0.75rem;
+  background: rgba(71, 85, 105, 0.4);
   border: 1px solid rgba(148, 163, 184, 0.2);
   border-radius: 8px;
   cursor: pointer;
@@ -447,21 +445,29 @@ onMounted(fetchMarkers)
   user-select: none;
 }
 
-.filter-checkbox:hover {
-  background: rgba(71, 85, 105, 0.7);
+.layer-checkbox:hover {
+  background: rgba(71, 85, 105, 0.6);
   border-color: rgba(148, 163, 184, 0.4);
 }
 
-.filter-checkbox.filter-active {
+.layer-checkbox.layer-active {
   background: rgba(16, 185, 129, 0.2);
   border-color: rgba(16, 185, 129, 0.5);
 }
 
 .checkbox-input {
-  width: 16px;
-  height: 16px;
+  width: 18px;
+  height: 18px;
   cursor: pointer;
   accent-color: #10b981;
+}
+
+.checkbox-circle {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
 .checkbox-label {
@@ -470,50 +476,17 @@ onMounted(fetchMarkers)
   color: #cbd5e1;
 }
 
-.checkbox-count {
+.panel-divider {
+  border: none;
+  border-top: 1px solid rgba(148, 163, 184, 0.2);
+  margin: 1rem 0;
+}
+
+.panel-hint {
   font-size: 0.8rem;
   color: #64748b;
-  font-weight: 400;
-}
-
-/* ========== STATS SECTION ========== */
-.stats-section {
-  position: relative;
-  z-index: 20;
-  backdrop-filter: blur(10px);
-  background: rgba(30, 41, 59, 0.3);
-  border-bottom: 1px solid rgba(148, 163, 184, 0.1);
-  padding: 0.875rem 1.5rem;
-}
-
-.stats-wrapper {
-  max-width: 1400px;
-  margin: 0 auto;
-  display: flex;
-  gap: 2rem;
-  flex-wrap: wrap;
-}
-
-.stat-item {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 0.9rem;
-}
-
-.stat-emoji {
-  font-size: 1.2rem;
-}
-
-.stat-label {
-  color: #94a3b8;
-  font-weight: 500;
-}
-
-.stat-value {
-  color: #10b981;
-  font-weight: 700;
-  font-size: 1.1rem;
+  line-height: 1.4;
+  font-style: italic;
 }
 
 /* ========== MAP SECTION ========== */
@@ -522,95 +495,14 @@ onMounted(fetchMarkers)
   position: relative;
   z-index: 10;
   overflow: hidden;
+  margin-left: 300px;
 }
 
-.map-container-leaflet {
-  width: 100%;
-  height: 100%;
-}
-
-/* ========== LOADING STATE ========== */
-.loading-overlay {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(0, 0, 0, 0.4);
-  backdrop-filter: blur(4px);
-  z-index: 100;
-}
-
-.loading-content {
-  text-align: center;
-}
-
-.spinner {
-  width: 48px;
-  height: 48px;
-  border: 4px solid rgba(16, 185, 129, 0.2);
-  border-top-color: #10b981;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-  margin: 0 auto 1rem;
-}
-
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
-
-.loading-overlay p {
-  color: #cbd5e1;
-  font-weight: 500;
-  font-size: 1rem;
-}
-
-/* ========== EMPTY STATE ========== */
-.empty-state {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(0, 0, 0, 0.3);
-  backdrop-filter: blur(4px);
-  z-index: 100;
-}
-
-.empty-content {
-  text-align: center;
-  background: rgba(30, 41, 59, 0.9);
-  border: 1px solid rgba(148, 163, 184, 0.2);
-  border-radius: 16px;
-  padding: 2rem;
-  backdrop-filter: blur(10px);
-}
-
-.empty-icon {
-  width: 56px;
-  height: 56px;
-  color: #64748b;
-  margin-bottom: 1rem;
-  opacity: 0.5;
-}
-
-.empty-title {
-  color: #cbd5e1;
-  font-size: 1.1rem;
-  font-weight: 600;
-  margin-bottom: 0.5rem;
-}
-
-.empty-text {
-  color: #94a3b8;
-  font-size: 0.9rem;
-}
-
-/* ========== LEGEND ========== */
+/* ========== LEGEND BOX ========== */
 .legend-box {
   position: absolute;
   bottom: 1.5rem;
-  left: 1.5rem;
+  right: 1.5rem;
   z-index: 40;
   background: linear-gradient(135deg, rgba(30, 41, 59, 0.95) 0%, rgba(15, 23, 42, 0.95) 100%);
   border: 1px solid rgba(148, 163, 184, 0.2);
@@ -653,92 +545,48 @@ onMounted(fetchMarkers)
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
 }
 
-.legend-marker.admin {
-  background: #ef4444;
-  border-color: #dc2626;
-}
-
-.legend-marker.territorial {
-  background: #3b82f6;
-  border-color: #1d4ed8;
-}
-
-.legend-marker.facilitador {
-  background: #10b981;
-  border-color: #059669;
-}
-
-.legend-marker.tecnico {
-  background: #eab308;
-  border-color: #ca8a04;
-}
-
 /* ========== POPUP STYLES ========== */
 :deep(.leaflet-popup-content-wrapper) {
   border-radius: 10px;
-  background: white;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  background: rgba(15, 23, 42, 0.98);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(10px);
 }
 
 :deep(.leaflet-popup-tip) {
-  border-top-color: white;
+  border-top-color: rgba(15, 23, 42, 0.98);
 }
 
-.popup-card {
+:deep(.leaflet-popup-close-button) {
+  color: #cbd5e1;
+}
+
+:deep(.leaflet-popup-close-button:hover) {
+  color: #10b981;
+}
+
+.popup-custom {
+  color: #cbd5e1;
+}
+
+.popup-content {
   padding: 0.5rem 0;
-  min-width: 200px;
+  min-width: 180px;
 }
 
-.popup-nombre {
-  font-size: 1rem;
-  font-weight: 700;
-  color: #1f2937;
-  margin-bottom: 0.5rem;
-}
-
-.popup-rol {
-  display: inline-block;
-  font-size: 0.75rem;
+.popup-type {
+  font-size: 0.95rem;
   font-weight: 600;
-  padding: 0.25rem 0.625rem;
-  border-radius: 6px;
+  color: #10b981;
+  display: block;
   margin-bottom: 0.5rem;
-  text-transform: uppercase;
-  letter-spacing: 0.03em;
 }
 
-.popup-rol.rol-admin {
-  background: #fee2e2;
-  color: #991b1b;
-}
-
-.popup-rol.rol-territorial {
-  background: #dbeafe;
-  color: #1e3a8a;
-}
-
-.popup-rol.rol-facilitador {
-  background: #dcfce7;
-  color: #166534;
-}
-
-.popup-rol.rol-tecnico {
-  background: #fef3c7;
-  color: #854d0e;
-}
-
-.popup-email {
-  font-size: 0.875rem;
-  color: #6b7280;
-  margin-bottom: 0.25rem;
-  font-style: italic;
-}
-
-.popup-coords {
-  font-size: 0.75rem;
-  color: #9ca3af;
-  font-family: 'Courier New', monospace;
-  margin-top: 0.25rem;
+.popup-name {
+  font-size: 0.85rem;
+  color: #e2e8f0;
+  display: block;
 }
 
 /* ========== RESPONSIVE ========== */
@@ -751,9 +599,17 @@ onMounted(fetchMarkers)
     font-size: 1.5rem;
   }
 
+  .layers-panel {
+    width: 280px;
+  }
+
+  .map-section {
+    margin-left: 280px;
+  }
+
   .legend-box {
     bottom: 1rem;
-    left: 1rem;
+    right: 1rem;
     max-width: 260px;
   }
 }
@@ -772,28 +628,31 @@ onMounted(fetchMarkers)
     justify-content: center;
   }
 
-  .filters-section {
-    padding: 0.875rem 1rem;
+  .layers-panel {
+    width: 100%;
+    height: auto;
+    max-height: none;
+    position: relative;
+    top: auto;
+    border-radius: 0;
+    border-right: none;
+    margin-bottom: 0;
   }
 
-  .filters-grid {
-    gap: 0.5rem;
+  .panel-wrapper {
+    padding: 1rem;
   }
 
-  .filter-checkbox {
-    padding: 0.4rem 0.75rem;
-    font-size: 0.85rem;
-  }
-
-  .stats-wrapper {
-    gap: 1rem;
+  .map-section {
+    margin-left: 0;
   }
 
   .legend-box {
     bottom: 0.75rem;
-    left: 0.75rem;
+    right: 0.75rem;
     right: 0.75rem;
     max-width: none;
+    width: auto;
   }
 }
 
@@ -825,25 +684,23 @@ onMounted(fetchMarkers)
     font-size: 0.85rem;
   }
 
-  .filters-grid {
-    gap: 0.4rem;
+  .panel-title {
+    font-size: 0.8rem;
   }
 
-  .filter-checkbox {
-    padding: 0.35rem 0.625rem;
-    font-size: 0.8rem;
+  .layer-checkbox {
+    padding: 0.6rem;
+    gap: 0.5rem;
   }
 
   .checkbox-label {
     font-size: 0.85rem;
   }
 
-  .stat-item {
-    font-size: 0.8rem;
-  }
-
   .legend-box {
     padding: 0.75rem;
+    bottom: 0.5rem;
+    right: 0.5rem;
   }
 
   .legend-title {
@@ -851,7 +708,7 @@ onMounted(fetchMarkers)
   }
 
   .legend-item {
-    font-size: 0.8rem;
+    font-size: 0.75rem;
     gap: 0.5rem;
   }
 
