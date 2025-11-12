@@ -48,7 +48,7 @@
 
     <!-- Mapa principal -->
     <div id="map-container" class="map-section">
-      <l-map ref="map" v-model:zoom="zoom" :center="center" style="height: 100%; width: 100%;">
+      <l-map ref="map" v-model:zoom="zoom" :center="center" style="height: 100%; width: 100%;" @click="onMapClick">
         <l-tile-layer :url="tileUrl" :attribution="tileAttr" />
 
         <!-- Capa ambiental -->
@@ -143,9 +143,13 @@ import { ref, computed, onMounted } from 'vue'
 import { Layers, MapPin } from 'lucide-vue-next'
 import { LMap, LTileLayer, LMarker, LPopup } from '@vue-leaflet/vue-leaflet'
 import L from 'leaflet'
+import axios from 'axios'
+import { useAuthStore } from '../stores/auth'
 import 'leaflet/dist/leaflet.css'
 import 'leaflet-defaulticon-compatibility'
 import 'leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css'
+
+const auth = useAuthStore()
 
 // Íconos personalizados
 const greenIcon = new L.Icon({
@@ -207,29 +211,43 @@ const centerOnUser = () => {
   }
 }
 
-// Simulación de datos iniciales (por ahora)
-const loadLayers = () => {
-  dataCapas.value = {
-    ambiental: Array.from({ length: 4 }, (_, i) => ({
-      id: i,
-      nombre: `Área Verde ${i + 1}`,
-      latlng: [19.4 + Math.random() * 4 - 2, -99.1 + Math.random() * 4 - 2],
-    })),
-    productiva: Array.from({ length: 3 }, (_, i) => ({
-      id: i,
-      nombre: `Parcela Productiva ${i + 1}`,
-      latlng: [19.2 + Math.random() * 4 - 2, -99.3 + Math.random() * 4 - 2],
-    })),
-    social: Array.from({ length: 2 }, (_, i) => ({
-      id: i,
-      nombre: `Centro Social ${i + 1}`,
-      latlng: [19.1 + Math.random() * 4 - 2, -99.2 + Math.random() * 4 - 2],
-    })),
-    infraestructura: Array.from({ length: 2 }, (_, i) => ({
-      id: i,
-      nombre: `Infraestructura ${i + 1}`,
-      latlng: [19.3 + Math.random() * 4 - 2, -99.0 + Math.random() * 4 - 2],
-    })),
+const loadLayers = async () => {
+  try {
+    for (const c of capas) {
+      const { data } = await axios.get(`${import.meta.env.VITE_API_URL}/layers/${c.value}`, {
+        headers: { Authorization: `Bearer ${auth.token}` },
+      })
+      dataCapas.value[c.value] = data.items.map(p => ({
+        id: p.id,
+        nombre: p.nombre,
+        latlng: [p.lat, p.lng],
+      }))
+    }
+  } catch (err) {
+    console.error('Error al cargar capas:', err)
+  }
+}
+
+// Evento para crear nuevos puntos al hacer clic en el mapa
+const onMapClick = async (event) => {
+  const { lat, lng } = event.latlng
+  const tipo = prompt("¿Qué tipo de capa deseas agregar? (ambiental/productiva/social/infraestructura)")
+  const nombre = prompt("Nombre del punto:")
+  if (tipo && nombre) {
+    try {
+      await axios.post(`${import.meta.env.VITE_API_URL}/layers/${tipo}`, {
+        nombre,
+        descripcion: "",
+        lat,
+        lng
+      }, {
+        headers: { Authorization: `Bearer ${auth.token}` }
+      })
+      alert("✅ Punto agregado correctamente")
+      loadLayers()
+    } catch {
+      alert("❌ Error al agregar punto")
+    }
   }
 }
 
