@@ -86,3 +86,22 @@ def get_current_user(
         raise HTTPException(status_code=401, detail="Token expirado")
     except jwt.InvalidTokenError:
         raise HTTPException(status_code=401, detail="Token inválido")
+
+@router.get("/users")
+def list_users(
+    credentials: HTTPAuthorizationCredentials = Security(bearer_scheme),
+    db: Session = Depends(get_db)
+):
+    try:
+        token = credentials.credentials
+        payload = jwt.decode(token, SECRET, algorithms=["HS256"])
+        # Solo admin puede ver lista de usuarios
+        if payload.get("rol") != "admin":
+            raise HTTPException(status_code=403, detail="No autorizado")
+        users = db.query(User).all()
+        return [
+            {"id": u.id, "nombre": u.nombre, "email": u.email, "rol": u.rol}
+            for u in users
+        ]
+    except jwt.InvalidTokenError:
+        raise HTTPException(status_code=401, detail="Token inválido")
