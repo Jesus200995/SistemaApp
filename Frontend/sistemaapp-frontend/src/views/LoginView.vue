@@ -34,13 +34,17 @@
 <script setup>
 import { ref } from 'vue'
 import { useAuthStore } from '../stores/auth'
+import { useRouter } from 'vue-router'
 
 const email = ref('')
 const password = ref('')
 const auth = useAuthStore()
+const router = useRouter()
 
 const handleLogin = async () => {
   const ok = await auth.login(email.value, password.value)
-  if (ok) alert('✅ Sesión iniciada correctamente')
+  if (ok) {
+    router.push('/')
+  }
 }
 </script>
