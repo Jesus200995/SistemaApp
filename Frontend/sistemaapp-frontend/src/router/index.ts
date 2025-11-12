@@ -55,6 +55,13 @@ const router = createRouter({
       component: () => import('../views/MapaView.vue'),
       meta: { requiresAuth: true }, // 🔒 protegida
     },
+    {
+      path: '/chat',
+      name: 'chat',
+      // @ts-ignore
+      component: () => import('../views/ChatView.vue'),
+      meta: { requiresAuth: true }, // 🔒 protegida
+    },
   ],
 })
 
