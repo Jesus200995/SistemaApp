@@ -44,7 +44,7 @@ const router = useRouter()
 const handleLogin = async () => {
   const ok = await auth.login(email.value, password.value)
   if (ok) {
-    router.push('/')
+    router.push('/dashboard')
   }
 }
 </script>

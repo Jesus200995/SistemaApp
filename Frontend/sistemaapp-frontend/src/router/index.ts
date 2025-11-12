@@ -12,6 +12,12 @@ const router = createRouter({
       meta: { requiresAuth: true }, // 🔒 protegida
     },
     {
+      path: '/dashboard',
+      name: 'dashboard',
+      component: () => import('../views/DashboardView.vue'),
+      meta: { requiresAuth: true }, // 🔒 protegida
+    },
+    {
       path: '/about',
       name: 'about',
       // route level code-splitting

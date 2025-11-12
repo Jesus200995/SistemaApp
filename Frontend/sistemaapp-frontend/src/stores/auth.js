@@ -42,6 +42,28 @@ export const useAuthStore = defineStore('auth', {
       }
     },
 
+    async fetchProfile() {
+      if (!this.token) return
+      try {
+        const { data } = await axios.get(
+          `${import.meta.env.VITE_API_URL}/auth/me`,
+          {
+            headers: {
+              Authorization: `Bearer ${this.token}`,
+            },
+          }
+        )
+        this.user = data
+        this.error = null
+      } catch (err) {
+        this.error = err.response?.data?.detail || 'Error al obtener perfil'
+        // Si el token es inválido, limpiar la sesión
+        if (err.response?.status === 401) {
+          this.logout()
+        }
+      }
+    },
+
     logout() {
       this.user = null
       this.token = null
