@@ -125,9 +125,11 @@
 <script setup>
 import { onMounted } from 'vue'
 import { useAuthStore } from '../stores/auth'
+import { useRouter } from 'vue-router'
 import { LogOut, User, Mail, LayoutDashboard, BarChart3, Users, Settings, MapPin } from 'lucide-vue-next'
 
 const auth = useAuthStore()
+const router = useRouter()
 
 onMounted(() => {
   auth.fetchProfile()
@@ -141,7 +143,11 @@ const actions = [
 ]
 
 const goTo = (route) => {
-  alert(`👉 Próximamente: ${route}`)
+  if (route === '/usuarios') {
+    router.push(route)
+  } else {
+    alert(`👉 Próximamente: ${route}`)
+  }
 }
 
 const logout = () => {
