@@ -67,8 +67,8 @@ def register(request: RegisterRequest, db: Session = Depends(get_db)):
         raise HTTPException(status_code=400, detail="La contraseña debe tener al menos 6 caracteres")
     
     # ✅ Validar rol permitido
-    roles_permitidos = ["tecnico", "facilitador", "territorial", "admin"]
-    rol = request.rol.lower() if request.rol else "tecnico"
+    roles_permitidos = ["tecnico_productivo", "tecnico_social", "facilitador", "territorial", "admin"]
+    rol = request.rol.lower() if request.rol else "tecnico_productivo"
     if rol not in roles_permitidos:
         raise HTTPException(status_code=400, detail=f"Rol inválido. Permite: {', '.join(roles_permitidos)}")
     
@@ -165,10 +165,31 @@ def list_users(
     try:
         token = credentials.credentials
         payload = jwt.decode(token, SECRET, algorithms=["HS256"])
-        if payload.get("rol") != "admin":
-            raise HTTPException(status_code=403, detail="No autorizado")
-
+        current_user_id = payload.get("id")
+        current_rol = payload.get("rol")
+        
         query = db.query(User)
+        
+        # 🔒 Filtros según jerarquía del usuario actual
+        if current_rol == "admin":
+            # Admin ve todos los usuarios
+            pass
+        elif current_rol == "territorial":
+            # Territorial ve solo sus subordinados
+            sub_ids = [u.id for u in db.query(User).filter(User.superior_id == current_user_id).all()]
+            query = query.filter(User.id.in_(sub_ids))
+        elif current_rol == "facilitador":
+            # Facilitador ve solo sus técnicos subordinados
+            sub_ids = [u.id for u in db.query(User).filter(
+                User.superior_id == current_user_id,
+                User.rol.like("tecnico%")
+            ).all()]
+            query = query.filter(User.id.in_(sub_ids))
+        else:
+            # Otros usuarios solo se ven a sí mismos
+            query = query.filter(User.id == current_user_id)
+        
+        # Filtro adicional por rol si se especifica
         if rol:
             query = query.filter(User.rol == rol)
 

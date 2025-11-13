@@ -113,7 +113,8 @@
                 required
               >
                 <option value="">-- Selecciona un rol --</option>
-                <option value="tecnico">Técnico de Campo</option>
+                <option value="tecnico_productivo">Técnico Productivo</option>
+                <option value="tecnico_social">Técnico Social</option>
                 <option value="facilitador">Facilitador</option>
               </select>
             </div>

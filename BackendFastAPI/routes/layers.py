@@ -85,9 +85,27 @@ def get_layer(
         ).all()]
         sub_ids.append(user_id)  # Incluye también sus propias capas
         query = query.filter(model.user_id.in_(sub_ids))
-    else:
-        # Técnico/otro ve solo sus propias capas
+    elif rol == "tecnico_productivo":
+        # Técnico productivo ve solo sus propias capas
         query = query.filter(model.user_id == user_id)
+    elif rol == "tecnico_social":
+        # Técnico social ve solo sus propias capas
+        query = query.filter(model.user_id == user_id)
+    else:
+        # Otro tipo de usuario ve solo sus propias capas
+        query = query.filter(model.user_id == user_id)
+    
+    # 📍 Filtrar por tipo de capa según tipo de técnico
+    if tipo == "productiva":
+        # Solo técnicos productivos y sus superiores pueden ver capas productivas
+        if rol.startswith("tecnico_") and rol != "tecnico_productivo":
+            # Si es técnico social, no ver capas productivas
+            query = query.filter(False)  # No retornar nada
+    elif tipo == "social":
+        # Solo técnicos sociales y sus superiores pueden ver capas sociales
+        if rol.startswith("tecnico_") and rol != "tecnico_social":
+            # Si es técnico productivo, no ver capas sociales
+            query = query.filter(False)  # No retornar nada
     
     items = query.all()
     
