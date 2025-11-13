@@ -90,10 +90,10 @@
           <span>¿No tienes cuenta?</span>
         </div>
 
-        <!-- Botón registrarse -->
-        <button @click="mostrarRegistro = true" class="register-button">
+        <!-- Link a registro -->
+        <router-link to="/register" class="register-button">
           Crear una cuenta nueva
-        </button>
+        </router-link>
       </div>
 
       <!-- Footer -->
@@ -106,9 +106,6 @@
         <p>© 2025 <span class="footer-highlight">SistemaApp</span>. Todos los derechos reservados.</p>
       </div>
     </div>
-
-    <!-- Modal de registro -->
-    <RegisterForm :mostrar="mostrarRegistro" @close="mostrarRegistro = false" />
   </div>
 </template>
 
@@ -117,11 +114,9 @@ import { ref } from 'vue'
 import { useAuthStore } from '../stores/auth'
 import { useRouter } from 'vue-router'
 import { LogIn, Mail, Lock, AlertCircle } from 'lucide-vue-next'
-import RegisterForm from '../components/RegisterForm.vue'
 
 const email = ref('')
 const password = ref('')
-const mostrarRegistro = ref(false)
 const auth = useAuthStore()
 const router = useRouter()
 

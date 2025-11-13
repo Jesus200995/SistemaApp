@@ -35,6 +35,13 @@ const router = createRouter({
       component: () => import('../views/LoginView.vue'),
     },
     {
+      path: '/register',
+      name: 'register',
+      // @ts-ignore
+      component: () => import('../views/RegisterView.vue'),
+      meta: { requiresAuth: false },
+    },
+    {
       path: '/usuarios',
       name: 'usuarios',
       // @ts-ignore
