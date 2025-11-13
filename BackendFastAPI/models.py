@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Boolean, DateTime, Float, Text, func
+from sqlalchemy import Column, Integer, String, Boolean, DateTime, Float, Text, func, ForeignKey
 from database import Base
 
 class User(Base):
@@ -21,6 +21,7 @@ class Ambiental(Base):
     descripcion = Column(Text)
     lat = Column(Float, nullable=False)
     lng = Column(Float, nullable=False)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
 
@@ -32,6 +33,7 @@ class Productiva(Base):
     descripcion = Column(Text)
     lat = Column(Float, nullable=False)
     lng = Column(Float, nullable=False)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
 
@@ -43,6 +45,7 @@ class Social(Base):
     descripcion = Column(Text)
     lat = Column(Float, nullable=False)
     lng = Column(Float, nullable=False)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
 
@@ -54,6 +57,7 @@ class Infraestructura(Base):
     descripcion = Column(Text)
     lat = Column(Float, nullable=False)
     lng = Column(Float, nullable=False)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
 

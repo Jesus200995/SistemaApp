@@ -2,11 +2,37 @@
 <html lang="es">
   <head>
     <meta charset="UTF-8">
-    <link rel="icon" href="/favicon.ico">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
+    
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#10b981">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>SistemaApp</title>
+    <meta name="apple-mobile-web-app-title" content="SistemaApp">
+    <meta name="description" content="Sistema Territorial de Administración - Panel de control completo con notificaciones en tiempo real">
+    <meta name="keywords" content="sistema, administración, territorial, control, dashboard">
+    
+    <!-- Icons -->
+    <link rel="icon" href="/favicon.ico">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="/pwa-192x192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="/pwa-512x512.png">
+    
+    <!-- Manifest -->
+    <link rel="manifest" href="/manifest.json">
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content="SistemaApp">
+    <meta property="og:description" content="Sistema Territorial de Administración">
+    <meta property="og:image" content="/pwa-512x512.png">
+    <meta property="og:type" content="application/web">
+    
+    <!-- PWA Preload -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="dns-prefetch" href="https://sistemaapi.sembrandodatos.com">
+    
+    <title>SistemaApp - Panel de Control</title>
+    
     <style>
       html, body {
         margin: 0;
@@ -15,10 +41,29 @@
         height: 100%;
         overflow: hidden;
       }
+      
+      /* Asegurar que las notificaciones push se vean bien */
+      @supports (padding: max(0px)) {
+        body {
+          padding-left: max(0px, env(safe-area-inset-left));
+          padding-right: max(0px, env(safe-area-inset-right));
+          padding-top: max(0px, env(safe-area-inset-top));
+          padding-bottom: max(0px, env(safe-area-inset-bottom));
+        }
+      }
     </style>
   </head>
   <body>
     <div id="app"></div>
     <script type="module" src="/src/main.ts"></script>
+    
+    <!-- Script de actualización de SW -->
+    <script>
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/sw.js').catch(() => {
+          console.log('Service Worker registration failed')
+        })
+      }
+    </script>
   </body>
 </html>

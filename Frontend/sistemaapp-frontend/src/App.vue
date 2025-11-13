@@ -1,19 +1,22 @@
 <script setup lang="ts">
 import { RouterView } from 'vue-router'
+import PWAInstall from './components/PWAInstall.vue'
 </script>
 
 <template>
-  <RouterView />
+  <div id="app">
+    <!-- Componente de instalación PWA -->
+    <PWAInstall />
+    
+    <!-- Vistas del Router -->
+    <RouterView />
+  </div>
 </template>
 
 <style scoped>
-:deep(#app) {
-  height: 100vh;
-  width: 100vw;
-  margin: 0;
-  padding: 0;
-  overflow: hidden;
-}
-</style>
+#app {
+  height: 100%;
+  width: 100%;
+}</style>
 
 

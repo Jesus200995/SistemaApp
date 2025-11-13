@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, Security
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from sqlalchemy.orm import Session
 from database import get_db
-from models import Ambiental, Productiva, Social, Infraestructura
+from models import Ambiental, Productiva, Social, Infraestructura, User
 import jwt
 from dotenv import load_dotenv
 import os
@@ -13,43 +13,83 @@ SECRET = os.getenv("SECRET_KEY")
 router = APIRouter(prefix="/layers", tags=["Capas"])
 bearer_scheme = HTTPBearer()
 
+model_map = {
+    "ambiental": Ambiental,
+    "productiva": Productiva,
+    "social": Social,
+    "infraestructura": Infraestructura
+}
 
-def authorize(credentials: HTTPAuthorizationCredentials):
-    """Validar token JWT"""
+
+def get_current_user(credentials: HTTPAuthorizationCredentials = Security(bearer_scheme), db: Session = Depends(get_db)):
+    """Validar token JWT y obtener usuario actual"""
     try:
         token = credentials.credentials
-        return jwt.decode(token, SECRET, algorithms=["HS256"])
-    except:
+        payload = jwt.decode(token, SECRET, algorithms=["HS256"])
+        user_id = payload.get("id")
+        rol = payload.get("rol")
+        
+        if not user_id:
+            raise HTTPException(status_code=401, detail="Token inválido")
+        
+        user = db.query(User).filter(User.id == user_id).first()
+        if not user:
+            raise HTTPException(status_code=401, detail="Usuario no encontrado")
+        
+        return {"user_id": user_id, "rol": rol, "user": user}
+    except jwt.InvalidTokenError:
         raise HTTPException(status_code=401, detail="Token inválido")
 
 
-# Obtener todas las capas de un tipo específico
+# ========== GET: Obtener capas según jerarquía ==========
 @router.get("/{tipo}")
 def get_layer(
     tipo: str,
-    credentials: HTTPAuthorizationCredentials = Security(bearer_scheme),
+    current_user: dict = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
     """
     Obtener todos los puntos de una capa específica.
-    Tipos válidos: ambiental, productiva, social, infraestructura
+    Aplica filtros según la jerarquía del usuario:
+    - admin: Ve todas las capas
+    - territorial: Ve capas de usuarios subordinados
+    - facilitador: Ve capas de técnicos a su cargo
+    - técnico/otro: Ve solo sus propias capas
     """
-    authorize(credentials)
-    
-    model_map = {
-        "ambiental": Ambiental,
-        "productiva": Productiva,
-        "social": Social,
-        "infraestructura": Infraestructura
-    }
-    
     if tipo not in model_map:
         raise HTTPException(
             status_code=400,
             detail="Tipo de capa no válido. Usa: ambiental, productiva, social, infraestructura"
         )
     
-    items = db.query(model_map[tipo]).all()
+    user_id = current_user["user_id"]
+    rol = current_user["rol"]
+    model = model_map[tipo]
+    
+    query = db.query(model)
+    
+    # 🔒 Filtros según jerarquía
+    if rol == "admin":
+        # Admin ve todo
+        pass
+    elif rol == "territorial":
+        # Territorial ve capas de usuarios subordinados
+        sub_ids = [u.id for u in db.query(User).filter(User.superior_id == user_id).all()]
+        sub_ids.append(user_id)  # Incluye también sus propias capas
+        query = query.filter(model.user_id.in_(sub_ids))
+    elif rol == "facilitador":
+        # Facilitador ve capas de técnicos a su cargo
+        sub_ids = [u.id for u in db.query(User).filter(
+            User.superior_id == user_id,
+            User.rol.like("tecnico%")
+        ).all()]
+        sub_ids.append(user_id)  # Incluye también sus propias capas
+        query = query.filter(model.user_id.in_(sub_ids))
+    else:
+        # Técnico/otro ve solo sus propias capas
+        query = query.filter(model.user_id == user_id)
+    
+    items = query.all()
     
     return {
         "tipo": tipo,
@@ -61,6 +101,7 @@ def get_layer(
                 "descripcion": i.descripcion,
                 "lat": i.lat,
                 "lng": i.lng,
+                "user_id": i.user_id,
                 "created_at": i.created_at
             }
             for i in items
@@ -68,16 +109,17 @@ def get_layer(
     }
 
 
-# Crear nuevo punto en una capa
+# ========== POST: Crear nuevo punto ==========
 @router.post("/{tipo}")
 def create_layer(
     tipo: str,
     data: dict,
-    credentials: HTTPAuthorizationCredentials = Security(bearer_scheme),
+    current_user: dict = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
     """
     Crear un nuevo punto en una capa específica.
+    El punto se asocia automáticamente al usuario actual.
     
     Body esperado:
     {
@@ -87,22 +129,13 @@ def create_layer(
         "lng": -99.1332
     }
     """
-    authorize(credentials)
-    
-    model_map = {
-        "ambiental": Ambiental,
-        "productiva": Productiva,
-        "social": Social,
-        "infraestructura": Infraestructura
-    }
-    
     if tipo not in model_map:
         raise HTTPException(
             status_code=400,
             detail="Tipo de capa no válido. Usa: ambiental, productiva, social, infraestructura"
         )
     
-    # Validar que tenga campos requeridos
+    # Validar campos requeridos
     if not all(k in data for k in ["nombre", "lat", "lng"]):
         raise HTTPException(
             status_code=400,
@@ -110,7 +143,17 @@ def create_layer(
         )
     
     try:
-        obj = model_map[tipo](**data)
+        user_id = current_user["user_id"]
+        model = model_map[tipo]
+        
+        obj = model(
+            nombre=data.get("nombre"),
+            descripcion=data.get("descripcion"),
+            lat=data.get("lat"),
+            lng=data.get("lng"),
+            user_id=user_id  # 🔑 Guardar user_id automáticamente
+        )
+        
         db.add(obj)
         db.commit()
         db.refresh(obj)
@@ -119,6 +162,7 @@ def create_layer(
             "success": True,
             "id": obj.id,
             "tipo": tipo,
+            "user_id": user_id,
             "message": f"Punto creado exitosamente en la capa {tipo}"
         }
     except Exception as e:
@@ -126,31 +170,43 @@ def create_layer(
         raise HTTPException(status_code=400, detail=f"Error al crear punto: {str(e)}")
 
 
-# Obtener un punto específico
+# ========== GET: Obtener punto específico ==========
 @router.get("/{tipo}/{id}")
 def get_layer_item(
     tipo: str,
     id: int,
-    credentials: HTTPAuthorizationCredentials = Security(bearer_scheme),
+    current_user: dict = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
     """Obtener un punto específico de una capa"""
-    authorize(credentials)
-    
-    model_map = {
-        "ambiental": Ambiental,
-        "productiva": Productiva,
-        "social": Social,
-        "infraestructura": Infraestructura
-    }
-    
     if tipo not in model_map:
         raise HTTPException(status_code=400, detail="Tipo de capa no válido")
     
-    item = db.query(model_map[tipo]).filter(model_map[tipo].id == id).first()
+    model = model_map[tipo]
+    item = db.query(model).filter(model.id == id).first()
     
     if not item:
         raise HTTPException(status_code=404, detail="Punto no encontrado")
+    
+    # 🔒 Verificar permisos de lectura
+    user_id = current_user["user_id"]
+    rol = current_user["rol"]
+    
+    if rol != "admin" and item.user_id != user_id:
+        # Verificar si está en su jerarquía
+        can_view = False
+        if rol == "territorial":
+            sub_ids = [u.id for u in db.query(User).filter(User.superior_id == user_id).all()]
+            can_view = item.user_id in sub_ids
+        elif rol == "facilitador":
+            sub_ids = [u.id for u in db.query(User).filter(
+                User.superior_id == user_id,
+                User.rol.like("tecnico%")
+            ).all()]
+            can_view = item.user_id in sub_ids
+        
+        if not can_view:
+            raise HTTPException(status_code=403, detail="No tienes permiso para ver este punto")
     
     return {
         "id": item.id,
@@ -158,40 +214,40 @@ def get_layer_item(
         "descripcion": item.descripcion,
         "lat": item.lat,
         "lng": item.lng,
+        "user_id": item.user_id,
         "created_at": item.created_at
     }
 
 
-# Actualizar un punto
+# ========== PUT: Actualizar punto ==========
 @router.put("/{tipo}/{id}")
 def update_layer(
     tipo: str,
     id: int,
     data: dict,
-    credentials: HTTPAuthorizationCredentials = Security(bearer_scheme),
+    current_user: dict = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
     """Actualizar un punto específico de una capa"""
-    authorize(credentials)
-    
-    model_map = {
-        "ambiental": Ambiental,
-        "productiva": Productiva,
-        "social": Social,
-        "infraestructura": Infraestructura
-    }
-    
     if tipo not in model_map:
         raise HTTPException(status_code=400, detail="Tipo de capa no válido")
     
-    item = db.query(model_map[tipo]).filter(model_map[tipo].id == id).first()
+    model = model_map[tipo]
+    item = db.query(model).filter(model.id == id).first()
     
     if not item:
         raise HTTPException(status_code=404, detail="Punto no encontrado")
     
-    # Actualizar campos
+    # 🔒 Solo el propietario o admin puede actualizar
+    user_id = current_user["user_id"]
+    rol = current_user["rol"]
+    
+    if rol != "admin" and item.user_id != user_id:
+        raise HTTPException(status_code=403, detail="No tienes permiso para actualizar este punto")
+    
+    # Actualizar campos (excepto id, created_at y user_id)
     for key, value in data.items():
-        if hasattr(item, key) and key != "id" and key != "created_at":
+        if hasattr(item, key) and key not in ["id", "created_at", "user_id"]:
             setattr(item, key, value)
     
     db.commit()
@@ -205,36 +261,36 @@ def update_layer(
             "nombre": item.nombre,
             "descripcion": item.descripcion,
             "lat": item.lat,
-            "lng": item.lng
+            "lng": item.lng,
+            "user_id": item.user_id
         }
     }
 
 
-# Eliminar un punto
+# ========== DELETE: Eliminar punto ==========
 @router.delete("/{tipo}/{id}")
 def delete_layer(
     tipo: str,
     id: int,
-    credentials: HTTPAuthorizationCredentials = Security(bearer_scheme),
+    current_user: dict = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
     """Eliminar un punto específico de una capa"""
-    authorize(credentials)
-    
-    model_map = {
-        "ambiental": Ambiental,
-        "productiva": Productiva,
-        "social": Social,
-        "infraestructura": Infraestructura
-    }
-    
     if tipo not in model_map:
         raise HTTPException(status_code=400, detail="Tipo de capa no válido")
     
-    item = db.query(model_map[tipo]).filter(model_map[tipo].id == id).first()
+    model = model_map[tipo]
+    item = db.query(model).filter(model.id == id).first()
     
     if not item:
         raise HTTPException(status_code=404, detail="Punto no encontrado")
+    
+    # 🔒 Solo el propietario o admin puede eliminar
+    user_id = current_user["user_id"]
+    rol = current_user["rol"]
+    
+    if rol != "admin" and item.user_id != user_id:
+        raise HTTPException(status_code=403, detail="No tienes permiso para eliminar este punto")
     
     db.delete(item)
     db.commit()
@@ -243,3 +299,4 @@ def delete_layer(
         "success": True,
         "message": f"Punto {id} eliminado exitosamente"
     }
+
