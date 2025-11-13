@@ -110,12 +110,88 @@
             </div>
           </l-popup>
         </l-marker>
+
+        <!-- Sembradores Productivos -->
+        <l-marker
+          v-for="s in sembradores.filter(sem => mostrarSembradores && sem.tecnico_rol && sem.tecnico_rol.toLowerCase().includes('productivo'))"
+          :key="'sembrador-prod-' + s.id"
+          :lat-lng="[s.lat, s.lng]"
+          :icon="sembradorProductivoIcon"
+        >
+          <l-popup class="popup-sembrador">
+            <div class="popup-content-sembrador">
+              <div class="popup-header-sembrador">
+                <strong class="popup-type-sembrador">🌱 Sembrador Productivo</strong>
+              </div>
+              <div class="popup-body-sembrador">
+                <p class="popup-field">
+                  <span class="popup-label">Nombre:</span>
+                  <span class="popup-value">{{ s.nombre }}</span>
+                </p>
+                <p class="popup-field">
+                  <span class="popup-label">Comunidad:</span>
+                  <span class="popup-value">{{ s.comunidad }}</span>
+                </p>
+                <p class="popup-field">
+                  <span class="popup-label">Cultivo:</span>
+                  <span class="popup-value">{{ s.cultivo }}</span>
+                </p>
+                <p class="popup-field">
+                  <span class="popup-label">Técnico:</span>
+                  <span class="popup-value">{{ s.tecnico_nombre }}</span>
+                </p>
+                <p class="popup-field text-xs">
+                  <span class="popup-label">Ubicación:</span>
+                  <span class="popup-value">{{ s.lat?.toFixed(4) }}, {{ s.lng?.toFixed(4) }}</span>
+                </p>
+              </div>
+            </div>
+          </l-popup>
+        </l-marker>
+
+        <!-- Sembradores Sociales -->
+        <l-marker
+          v-for="s in sembradores.filter(sem => mostrarSembradores && sem.tecnico_rol && sem.tecnico_rol.toLowerCase().includes('social'))"
+          :key="'sembrador-soc-' + s.id"
+          :lat-lng="[s.lat, s.lng]"
+          :icon="sembradorSocialIcon"
+        >
+          <l-popup class="popup-sembrador">
+            <div class="popup-content-sembrador">
+              <div class="popup-header-sembrador">
+                <strong class="popup-type-sembrador">👥 Sembrador Social</strong>
+              </div>
+              <div class="popup-body-sembrador">
+                <p class="popup-field">
+                  <span class="popup-label">Nombre:</span>
+                  <span class="popup-value">{{ s.nombre }}</span>
+                </p>
+                <p class="popup-field">
+                  <span class="popup-label">Comunidad:</span>
+                  <span class="popup-value">{{ s.comunidad }}</span>
+                </p>
+                <p class="popup-field">
+                  <span class="popup-label">Cultivo:</span>
+                  <span class="popup-value">{{ s.cultivo }}</span>
+                </p>
+                <p class="popup-field">
+                  <span class="popup-label">Técnico:</span>
+                  <span class="popup-value">{{ s.tecnico_nombre }}</span>
+                </p>
+                <p class="popup-field text-xs">
+                  <span class="popup-label">Ubicación:</span>
+                  <span class="popup-value">{{ s.lat?.toFixed(4) }}, {{ s.lng?.toFixed(4) }}</span>
+                </p>
+              </div>
+            </div>
+          </l-popup>
+        </l-marker>
       </l-map>
     </div>
 
-    <!-- Leyenda flotante -->
+    <!-- Leyenda flotante CON SEMBRADORES -->
     <div class="legend-box">
-      <h3 class="legend-title">Leyenda</h3>
+      <h3 class="legend-title">🗺️ Leyenda</h3>
       <div class="legend-items">
         <div class="legend-item">
           <div class="legend-marker" style="background: #10b981;"></div>
@@ -133,6 +209,21 @@
           <div class="legend-marker" style="background: #6b7280;"></div>
           <span>Infraestructura</span>
         </div>
+        <hr class="legend-divider" />
+        <div class="legend-item">
+          <div class="legend-marker" style="background: #10b981; border-radius: 3px;"></div>
+          <span>🌱 Sembrador</span>
+        </div>
+        <div class="legend-item">
+          <div class="legend-marker" style="background: #3b82f6; border-radius: 3px;"></div>
+          <span>👥 Sembrador Social</span>
+        </div>
+      </div>
+      <div class="legend-controls">
+        <label class="legend-checkbox">
+          <input type="checkbox" v-model="mostrarSembradores" />
+          <span>Mostrar sembradores ({{ contadorSembradores }})</span>
+        </label>
       </div>
     </div>
   </div>
@@ -152,7 +243,7 @@ import 'leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility
 
 const auth = useAuthStore()
 
-// Íconos personalizados
+// Íconos personalizados para capas temáticas
 const greenIcon = new L.Icon({
   iconUrl: 'https://cdn-icons-png.flaticon.com/512/609/609803.png',
   iconSize: [30, 30],
@@ -170,6 +261,22 @@ const grayIcon = new L.Icon({
   iconSize: [30, 30],
 })
 
+// Íconos para sembradores (productivo y social)
+const sembradorProductivoIcon = new L.Icon({
+  iconUrl: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%2310b981" %3E%3Cpath d="M12 2c-5.52 5.52-8 8-8 11 0 4.41 3.59 8 8 8s8-3.59 8-8c0-3-2.48-5.48-8-11z"/%3E%3Ccircle cx="12" cy="13" r="3" fill="white"/%3E%3C/svg%3E',
+  iconSize: [32, 40],
+  iconAnchor: [16, 40],
+  popupAnchor: [0, -40]
+})
+
+const sembradorSocialIcon = new L.Icon({
+  iconUrl: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%233b82f6" %3E%3Cpath d="M12 2c-5.52 5.52-8 8-8 11 0 4.41 3.59 8 8 8s8-3.59 8-8c0-3-2.48-5.48-8-11z"/%3E%3Ccircle cx="12" cy="13" r="3" fill="white"/%3E%3C/svg%3E',
+  iconSize: [32, 40],
+  iconAnchor: [16, 40],
+  popupAnchor: [0, -40]
+})
+
+// ========== DATOS Y REFERENCIAS ==========
 const center = ref([19.4326, -99.1332])
 const zoom = ref(6)
 const tileUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
@@ -190,6 +297,11 @@ const dataCapas = ref({
   infraestructura: [],
 })
 
+// ========== SEMBRADORES ==========
+const sembradores = ref([])
+const mostrarSembradores = ref(true)
+const contadorSembradores = computed(() => sembradores.value.length)
+
 const visibleCapas = computed(() => {
   const visible = {}
   for (const c of capas) {
@@ -199,6 +311,26 @@ const visibleCapas = computed(() => {
   }
   return visible
 })
+
+// ========== FUNCIONES PARA SEMBRADORES ==========
+const getSembradoresMapa = async () => {
+  try {
+    const { data } = await axios.get(`${import.meta.env.VITE_API_URL}/sembradores/map`, {
+      headers: { Authorization: `Bearer ${auth.token}` }
+    })
+    sembradores.value = data.items || data || []
+  } catch (err) {
+    console.error('Error al cargar sembradores para mapa:', err)
+  }
+}
+
+const getIconSembrador = (s) => {
+  // Determinar icono según rol del técnico
+  if (s.tecnico_rol && s.tecnico_rol.toLowerCase().includes('social')) {
+    return sembradorSocialIcon
+  }
+  return sembradorProductivoIcon
+}
 
 const centerOnUser = () => {
   if (navigator.geolocation) {
@@ -274,7 +406,10 @@ const syncOfflinePoints = async () => {
 
 window.addEventListener('online', syncOfflinePoints)
 
-onMounted(loadLayers)
+onMounted(() => {
+  loadLayers()
+  getSembradoresMapa()
+})
 </script>
 
 <style scoped>
@@ -783,5 +918,98 @@ onMounted(loadLayers)
 
 :deep(.leaflet-control-attribution a:hover) {
   text-decoration: underline;
+}
+
+/* ========== ESTILOS POPUP SEMBRADORES ========== */
+.popup-sembrador {
+  color: #cbd5e1;
+}
+
+.popup-content-sembrador {
+  padding: 0;
+  min-width: 220px;
+}
+
+.popup-header-sembrador {
+  padding: 0.75rem 0.75rem 0.5rem 0.75rem;
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, rgba(16, 185, 129, 0.05) 100%);
+  border-bottom: 1px solid rgba(16, 185, 129, 0.3);
+  border-radius: 8px 8px 0 0;
+}
+
+.popup-type-sembrador {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #10b981;
+  display: block;
+}
+
+.popup-body-sembrador {
+  padding: 0.75rem;
+}
+
+.popup-field {
+  margin: 0 0 0.5rem 0;
+  font-size: 0.85rem;
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.5rem;
+  background: rgba(71, 85, 105, 0.3);
+  border-radius: 4px;
+}
+
+.popup-field:last-child {
+  margin-bottom: 0;
+}
+
+.popup-label {
+  font-weight: 600;
+  color: #cbd5e1;
+  white-space: nowrap;
+}
+
+.popup-value {
+  color: #e2e8f0;
+  text-align: right;
+  word-break: break-word;
+}
+
+.popup-field.text-xs {
+  font-size: 0.75rem;
+}
+
+/* ========== LEGEND CONTROLS ========== */
+.legend-divider {
+  border: none;
+  border-top: 1px solid rgba(148, 163, 184, 0.2);
+  margin: 0.5rem 0;
+}
+
+.legend-controls {
+  padding-top: 0.75rem;
+  border-top: 1px solid rgba(148, 163, 184, 0.2);
+  margin-top: 0.75rem;
+}
+
+.legend-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  font-size: 0.85rem;
+  color: #cbd5e1;
+  user-select: none;
+}
+
+.legend-checkbox input {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+  accent-color: #10b981;
+}
+
+.legend-checkbox:hover {
+  color: #e2e8f0;
 }
 </style>
