@@ -73,3 +73,17 @@ class Notificacion(Base):
     leido = Column(Boolean, default=False)
     usuario_id = Column(Integer)  # Opcional: para notificaciones personales
     created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+
+class Sembrador(Base):
+    __tablename__ = "sembradores"
+
+    id = Column(Integer, primary_key=True, index=True)
+    nombre = Column(String(100))
+    comunidad = Column(String(100))
+    cultivo_principal = Column(String(100))
+    telefono = Column(String(30))
+    lat = Column(Float)
+    lng = Column(Float)
+    user_id = Column(Integer, ForeignKey("users.id"))
+    creado_en = Column(DateTime(timezone=True), server_default=func.now())
