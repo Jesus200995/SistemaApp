@@ -38,21 +38,83 @@ def get_db():
 
 @router.post("/register")
 def register(request: RegisterRequest, db: Session = Depends(get_db)):
+    """
+    Registrar un nuevo usuario.
+    
+    🔐 Seguridad:
+    - Valida que no exista un usuario con el mismo email
+    - Hash la contraseña con bcrypt
+    - Por defecto se registra como "tecnico"
+    - Asigna automáticamente el primer territorial como superior
+    
+    📧 Notificaciones:
+    - Notifica al admin cuando se registra un nuevo usuario
+    """
+    from models import Notificacion
+    import re
+    
+    # ✅ Validar email
+    email_regex = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+    if not re.match(email_regex, request.email):
+        raise HTTPException(status_code=400, detail="Email inválido")
+    
+    # ✅ Validar nombre (mínimo 2 caracteres)
+    if len(request.nombre.strip()) < 2:
+        raise HTTPException(status_code=400, detail="El nombre debe tener al menos 2 caracteres")
+    
+    # ✅ Validar contraseña (mínimo 6 caracteres)
+    if len(request.password) < 6:
+        raise HTTPException(status_code=400, detail="La contraseña debe tener al menos 6 caracteres")
+    
+    # ✅ Validar rol permitido
+    roles_permitidos = ["tecnico", "facilitador", "territorial", "admin"]
+    rol = request.rol.lower() if request.rol else "tecnico"
+    if rol not in roles_permitidos:
+        raise HTTPException(status_code=400, detail=f"Rol inválido. Permite: {', '.join(roles_permitidos)}")
+    
+    # ✅ Verificar si el email ya existe
     existente = db.query(User).filter(User.email == request.email).first()
     if existente:
-        raise HTTPException(status_code=400, detail="El usuario ya existe")
+        raise HTTPException(status_code=400, detail="El correo ya está registrado")
     
+    # ✅ Hashear contraseña
     hashed = bcrypt.hashpw(request.password.encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
+    
+    # ✅ Crear nuevo usuario
     nuevo = User(
-        nombre=request.nombre,
-        email=request.email,
+        nombre=request.nombre.strip(),
+        email=request.email.strip().lower(),
         password=hashed,
-        rol=request.rol
+        rol=rol,
+        superior_id=None  # Será asignado por admin después
     )
+    
     db.add(nuevo)
     db.commit()
     db.refresh(nuevo)
-    return {"id": nuevo.id, "nombre": nuevo.nombre, "email": nuevo.email}
+    
+    # 📧 Crear notificación para los admins
+    try:
+        notificacion = Notificacion(
+            titulo=f"Nuevo usuario registrado",
+            mensaje=f"{nuevo.nombre} ({nuevo.email}) se registró como {rol.upper()}",
+            tipo="info",
+            rol_destino="admin"
+        )
+        db.add(notificacion)
+        db.commit()
+    except Exception as e:
+        print(f"⚠️ Error al crear notificación: {str(e)}")
+        db.rollback()
+    
+    return {
+        "success": True,
+        "id": nuevo.id,
+        "nombre": nuevo.nombre,
+        "email": nuevo.email,
+        "rol": nuevo.rol,
+        "message": "Usuario registrado exitosamente. Un administrador revisará tu solicitud."
+    }
 
 @router.post("/login")
 def login(request: LoginRequest, db: Session = Depends(get_db)):

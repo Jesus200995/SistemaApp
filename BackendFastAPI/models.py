@@ -10,6 +10,7 @@ class User(Base):
     password = Column(String, nullable=False)
     rol = Column(String, nullable=False)
     activo = Column(Boolean, default=True)
+    superior_id = Column(Integer, ForeignKey("users.id"), nullable=True)  # 🔑 Jerarquía
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
 
