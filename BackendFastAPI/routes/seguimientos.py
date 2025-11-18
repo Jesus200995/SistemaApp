@@ -450,3 +450,83 @@ def reportes_por_cultivo(
     
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error generando reporte: {str(e)}")
+
+
+@router.get("/stats")
+def obtener_estadisticas(
+    current_user: dict = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """
+    Endpoint de estadísticas generales
+    Retorna: total sembradores, seguimientos, promedio avance, distribución cultivos
+    
+    Respuesta:
+    {
+        "total_sembradores": 15,
+        "total_seguimientos": 42,
+        "promedio_avance": 65.5,
+        "cultivos": {
+            "Maíz": 8,
+            "Frijol": 7,
+            "Papa": 5
+        }
+    }
+    """
+    try:
+        user_id = current_user["user_id"]
+        rol = current_user["rol"]
+
+        # Construir queries base
+        query_seg = db.query(Seguimiento)
+        query_sem = db.query(Sembrador)
+
+        # Filtrar según rol
+        if rol == "admin":
+            pass  # Ver todos los datos
+        elif rol == "territorial":
+            subordinado_ids = [u.id for u in db.query(User).filter(User.superior_id == user_id).all()]
+            query_seg = query_seg.filter(Seguimiento.user_id.in_(subordinado_ids))
+            query_sem = query_sem.filter(Sembrador.user_id.in_(subordinado_ids))
+        elif rol in ["facilitador", "gestor_facilitador"]:
+            tecnico_ids = [u.id for u in db.query(User).filter(
+                User.superior_id == user_id,
+                User.rol.like("tecnico%")
+            ).all()]
+            query_seg = query_seg.filter(Seguimiento.user_id.in_(tecnico_ids))
+            query_sem = query_sem.filter(Sembrador.user_id.in_(tecnico_ids))
+        else:
+            query_seg = query_seg.filter(Seguimiento.user_id == user_id)
+            query_sem = query_sem.filter(Sembrador.user_id == user_id)
+
+        # Calcular métricas
+        total_sembradores = query_sem.count()
+        total_seguimientos = query_seg.count()
+        
+        # Promedio de avance
+        if total_seguimientos > 0:
+            suma_avance = sum([s.avance_porcentaje or 0 for s in query_seg.all()])
+            promedio_avance = round((suma_avance / total_seguimientos), 2)
+        else:
+            promedio_avance = 0
+
+        # Contar cultivos más comunes
+        cultivos = {}
+        for sembrador in query_sem.all():
+            if sembrador.cultivo_principal:
+                cultivos[sembrador.cultivo_principal] = cultivos.get(sembrador.cultivo_principal, 0) + 1
+
+        # Ordenar cultivos por cantidad
+        cultivos_ordenados = dict(sorted(cultivos.items(), key=lambda x: x[1], reverse=True))
+
+        return {
+            "total_sembradores": total_sembradores,
+            "total_seguimientos": total_seguimientos,
+            "promedio_avance": promedio_avance,
+            "cultivos": cultivos_ordenados
+        }
+
+    except jwt.InvalidTokenError:
+        raise HTTPException(status_code=401, detail="Token inválido")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error en estadísticas: {str(e)}")

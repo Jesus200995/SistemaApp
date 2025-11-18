@@ -1,479 +1,534 @@
 <template>
   <div class="estadisticas-container">
-    <!-- Fondo decorativo -->
-    <div class="background-decoration">
+    <!-- Fondo decorativo con blobs -->
+    <div class="background-blobs">
       <div class="blob blob-1"></div>
       <div class="blob blob-2"></div>
+      <div class="blob blob-3"></div>
     </div>
 
-    <!-- Contenido principal -->
-    <div class="estadisticas-content">
-      <!-- Header -->
-      <div
-        v-motion
-        :initial="{ opacity: 0, y: -50 }"
-        :enter="{ opacity: 1, y: 0, transition: { duration: 600 } }"
-        class="estadisticas-header"
-      >
-        <div class="header-title">
-          <BarChart3 class="header-icon" />
-          <h1>Estadísticas del Sistema</h1>
-        </div>
-        <button @click="reload" class="reload-button">
-          <RotateCw class="reload-icon" />
-          <span>Recargar</span>
-        </button>
-      </div>
-
-      <!-- KPI Cards -->
-      <div class="kpi-grid">
-        <div
-          v-motion
-          :initial="{ opacity: 0, scale: 0.9, y: 20 }"
-          :enter="{ opacity: 1, scale: 1, y: 0, transition: { delay: 100, duration: 600 } }"
-          class="kpi-card"
-        >
-          <div class="kpi-icon users-icon">
-            <Users class="icon-svg" />
+    <!-- Header -->
+    <header class="header-estadisticas">
+      <div class="header-wrapper">
+        <div class="header-left">
+          <div class="icon-box">
+            <BarChart3 class="header-icon" />
           </div>
-          <div class="kpi-content">
-            <p class="kpi-label">Total de Usuarios</p>
-            <h2 class="kpi-value">{{ totalUsuarios }}</h2>
-          </div>
-        </div>
-
-        <div
-          v-motion
-          :initial="{ opacity: 0, scale: 0.9, y: 20 }"
-          :enter="{ opacity: 1, scale: 1, y: 0, transition: { delay: 200, duration: 600 } }"
-          class="kpi-card"
-        >
-          <div class="kpi-icon admins-icon">
-            <Shield class="icon-svg" />
-          </div>
-          <div class="kpi-content">
-            <p class="kpi-label">Administradores</p>
-            <h2 class="kpi-value">{{ totalAdmins }}</h2>
-          </div>
-        </div>
-
-        <div
-          v-motion
-          :initial="{ opacity: 0, scale: 0.9, y: 20 }"
-          :enter="{ opacity: 1, scale: 1, y: 0, transition: { delay: 300, duration: 600 } }"
-          class="kpi-card"
-        >
-          <div class="kpi-icon regular-icon">
-            <UserCheck class="icon-svg" />
-          </div>
-          <div class="kpi-content">
-            <p class="kpi-label">Usuarios Regulares</p>
-            <h2 class="kpi-value">{{ totalRegulares }}</h2>
-          </div>
-        </div>
-
-        <div
-          v-motion
-          :initial="{ opacity: 0, scale: 0.9, y: 20 }"
-          :enter="{ opacity: 1, scale: 1, y: 0, transition: { delay: 400, duration: 600 } }"
-          class="kpi-card"
-        >
-          <div class="kpi-icon percent-icon">
-            <TrendingUp class="icon-svg" />
-          </div>
-          <div class="kpi-content">
-            <p class="kpi-label">% Admins</p>
-            <h2 class="kpi-value">{{ adminPercentage }}%</h2>
+          <div class="header-text">
+            <h1 class="header-title">Reportes y Estadísticas</h1>
+            <p class="header-subtitle">Análisis en tiempo real del sistema</p>
           </div>
         </div>
       </div>
+    </header>
 
-      <!-- Gráficas -->
-      <div class="charts-grid">
-        <!-- Doughnut Chart -->
-        <div
+    <!-- Main Content -->
+    <main class="estadisticas-main">
+      <div class="estadisticas-content">
+        <!-- Estadísticas Principales -->
+        <section
           v-motion
-          :initial="{ opacity: 0, y: 50 }"
-          :enter="{ opacity: 1, y: 0, transition: { delay: 500, duration: 700 } }"
-          class="chart-card"
+          :initial="{ opacity: 0, y: 30 }"
+          :enter="{ opacity: 1, y: 0, transition: { duration: 600 } }"
+          class="stats-section"
         >
-          <h3 class="chart-title">
-            <Users class="chart-icon" />
-            Distribución por Rol
-          </h3>
-          <div class="chart-container">
-            <DoughnutChart :data="rolesChartData" :options="chartOptions" />
-          </div>
-        </div>
+          <div class="stats-grid">
+            <!-- Card 1: Total Sembradores -->
+            <div class="stat-card stat-card-1">
+              <div class="stat-icon-wrapper">
+                <Users class="stat-icon" />
+              </div>
+              <div class="stat-content">
+                <p class="stat-label">Total Sembradores</p>
+                <p class="stat-value">{{ stats.total_sembradores }}</p>
+                <p class="stat-change">
+                  <span class="badge-success">✓ Activos</span>
+                </p>
+              </div>
+            </div>
 
-        <!-- Line Chart -->
-        <div
+            <!-- Card 2: Total Seguimientos -->
+            <div class="stat-card stat-card-2">
+              <div class="stat-icon-wrapper">
+                <CheckCircle2 class="stat-icon" />
+              </div>
+              <div class="stat-content">
+                <p class="stat-label">Seguimientos Realizados</p>
+                <p class="stat-value">{{ stats.total_seguimientos }}</p>
+                <p class="stat-change">
+                  <span class="badge-info">Registros</span>
+                </p>
+              </div>
+            </div>
+
+            <!-- Card 3: Promedio Avance -->
+            <div class="stat-card stat-card-3">
+              <div class="stat-icon-wrapper">
+                <TrendingUp class="stat-icon" />
+              </div>
+              <div class="stat-content">
+                <p class="stat-label">Promedio de Avance</p>
+                <p class="stat-value">{{ stats.promedio_avance }}%</p>
+                <div class="progress-mini">
+                  <div class="progress-bar-mini">
+                    <div class="progress-fill-mini" :style="{ width: stats.promedio_avance + '%' }"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Gráfico de Cultivos -->
+        <section
           v-motion
-          :initial="{ opacity: 0, y: 50 }"
-          :enter="{ opacity: 1, y: 0, transition: { delay: 600, duration: 700 } }"
-          class="chart-card"
+          :initial="{ opacity: 0, y: 30 }"
+          :enter="{ opacity: 1, y: 0, transition: { delay: 200, duration: 600 } }"
+          class="chart-section"
         >
-          <h3 class="chart-title">
-            <TrendingUp class="chart-icon" />
-            Crecimiento Simulado (Últimos 7 meses)
-          </h3>
-          <div class="chart-container">
-            <LineChart :data="usersChartData" :options="chartOptions" />
+          <div class="chart-header">
+            <div class="chart-title-wrapper">
+              <BarChart3 class="chart-title-icon" />
+              <h2 class="chart-title">Distribución de Cultivos</h2>
+            </div>
+            <p class="chart-subtitle">Cantidad de sembradores por tipo de cultivo</p>
           </div>
-        </div>
-      </div>
 
-      <!-- Tabla de Resumen -->
-      <div
-        v-motion
-        :initial="{ opacity: 0 }"
-        :enter="{ opacity: 1, transition: { delay: 700, duration: 600 } }"
-        class="summary-card"
-      >
-        <h3 class="summary-title">
-          <BarChart3 class="summary-icon" />
-          Resumen General
-        </h3>
-        <div class="summary-content">
-          <div class="summary-item">
-            <span class="summary-label">Total de Usuarios:</span>
-            <span class="summary-value">{{ totalUsuarios }}</span>
+          <div v-if="cultivoData.length > 0" class="chart-container">
+            <div class="chart-wrapper">
+              <Bar :data="chartData" :options="chartOptions" />
+            </div>
           </div>
-          <div class="summary-item">
-            <span class="summary-label">Admins:</span>
-            <span class="summary-value admin">{{ totalAdmins }}</span>
+
+          <div v-else class="empty-chart">
+            <BarChart3 class="empty-icon" />
+            <p class="empty-text">No hay datos suficientes para mostrar gráficas</p>
+            <p class="empty-subtext">Completa más seguimientos para ver análisis</p>
           </div>
-          <div class="summary-item">
-            <span class="summary-label">Usuarios Regulares:</span>
-            <span class="summary-value regular">{{ totalRegulares }}</span>
+        </section>
+
+        <!-- Tabla de Cultivos Detallada -->
+        <section
+          v-motion
+          :initial="{ opacity: 0, y: 30 }"
+          :enter="{ opacity: 1, y: 0, transition: { delay: 400, duration: 600 } }"
+          class="table-section"
+        >
+          <div class="table-header">
+            <div class="table-title-wrapper">
+              <List class="table-title-icon" />
+              <h2 class="table-title">Detalle por Cultivo</h2>
+            </div>
           </div>
-          <div class="summary-item">
-            <span class="summary-label">Ratio Admin/Total:</span>
-            <span class="summary-value ratio">{{ adminPercentage }}%</span>
+
+          <div v-if="cultivoData.length > 0" class="table-wrapper">
+            <table class="cultivos-table">
+              <thead>
+                <tr>
+                  <th>Tipo de Cultivo</th>
+                  <th>Cantidad</th>
+                  <th>Porcentaje</th>
+                  <th>Barra Visual</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="(cultivo, idx) in cultivoDataDetailed" :key="idx" class="table-row">
+                  <td class="cultivo-name">
+                    <span class="cultivo-badge">{{ cultivo.nombre }}</span>
+                  </td>
+                  <td class="cultivo-cantidad">
+                    <span class="cantidad-badge">{{ cultivo.cantidad }}</span>
+                  </td>
+                  <td class="cultivo-porcentaje">
+                    {{ cultivo.porcentaje }}%
+                  </td>
+                  <td class="cultivo-bar">
+                    <div class="bar-container">
+                      <div class="bar-fill" :style="{ width: cultivo.porcentaje + '%', background: cultivo.color }"></div>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </div>
-        </div>
+
+          <div v-else class="empty-table">
+            <p>Sin datos de cultivos</p>
+          </div>
+        </section>
+
+        <!-- Resumen General -->
+        <section
+          v-motion
+          :initial="{ opacity: 0, y: 30 }"
+          :enter="{ opacity: 1, y: 0, transition: { delay: 600, duration: 600 } }"
+          class="summary-section"
+        >
+          <div class="summary-card">
+            <div class="summary-header">
+              <div class="summary-title-wrapper">
+                <BarChart2 class="summary-title-icon" />
+                <h3 class="summary-title">Resumen General</h3>
+              </div>
+            </div>
+            <div class="summary-content">
+              <div class="summary-item">
+                <Users class="summary-item-icon" />
+                <span class="summary-text">
+                  Total de <strong>{{ stats.total_sembradores }}</strong> sembradores registrados en el sistema
+                </span>
+              </div>
+              <div class="summary-item">
+                <CheckCircle2 class="summary-item-icon" />
+                <span class="summary-text">
+                  Se han realizado <strong>{{ stats.total_seguimientos }}</strong> visitas de campo
+                </span>
+              </div>
+              <div class="summary-item">
+                <Leaf class="summary-item-icon" />
+                <span class="summary-text">
+                  Hay <strong>{{ Object.keys(stats.cultivos).length }}</strong> tipos de cultivos diferentes
+                </span>
+              </div>
+              <div class="summary-item">
+                <TrendingUp class="summary-item-icon" />
+                <span class="summary-text">
+                  Promedio de avance general es de <strong>{{ stats.promedio_avance }}%</strong>
+                </span>
+              </div>
+            </div>
+          </div>
+        </section>
       </div>
-    </div>
+    </main>
+
+    <!-- Pie de página -->
+    <footer
+      v-motion
+      :initial="{ opacity: 0 }"
+      :enter="{ opacity: 1, transition: { delay: 800, duration: 600 } }"
+      class="estadisticas-footer"
+    >
+      <p>© 2025 <span class="footer-highlight">SistemaApp</span>. Reportes actualizados en tiempo real.</p>
+    </footer>
   </div>
 </template>
 
-<script setup>
-import { ref, computed, onMounted } from 'vue'
+<script setup lang="ts">
+import { ref, onMounted, computed } from 'vue'
 import axios from 'axios'
-import { BarChart3, Users, TrendingUp, RotateCw, Shield, UserCheck } from 'lucide-vue-next'
-import { Doughnut, Line } from 'vue-chartjs'
+import { useAuthStore } from '../stores/auth'
+import { Bar } from 'vue-chartjs'
 import {
   Chart as ChartJS,
   Title,
   Tooltip,
   Legend,
-  ArcElement,
-  LineElement,
+  BarElement,
   CategoryScale,
-  LinearScale,
-  PointElement,
+  LinearScale
 } from 'chart.js'
-import { useAuthStore } from '../stores/auth'
+import { BarChart3, Users, CheckCircle2, TrendingUp, List, BarChart2, Leaf } from 'lucide-vue-next'
 
-ChartJS.register(
-  Title,
-  Tooltip,
-  Legend,
-  ArcElement,
-  LineElement,
-  CategoryScale,
-  LinearScale,
-  PointElement
-)
-
-// Componentes para gráficas
-const DoughnutChart = {
-  extends: Doughnut,
-  props: ['data', 'options'],
-}
-const LineChart = {
-  extends: Line,
-  props: ['data', 'options'],
-}
+// Registrar componentes de Chart.js
+ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale)
 
 const auth = useAuthStore()
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000'
 
-const totalUsuarios = ref(0)
-const totalAdmins = ref(0)
-const totalRegulares = ref(0)
-
-const adminPercentage = computed(() => {
-  if (totalUsuarios.value === 0) return 0
-  return Math.round((totalAdmins.value / totalUsuarios.value) * 100)
+// Estado
+const stats = ref({
+  total_sembradores: 0,
+  total_seguimientos: 0,
+  promedio_avance: 0,
+  cultivos: {} as Record<string, number>
 })
 
-const rolesChartData = ref({
-  labels: ['Administradores', 'Usuarios Regulares'],
+const loading = ref(false)
+
+// Colores para los cultivos
+const coloresFormatos: Record<string, string> = {
+  'Maíz': '#f59e0b',
+  'Frijol': '#ef4444',
+  'Papa': '#8b5cf6',
+  'Tomate': '#f87171',
+  'Cebolla': '#fbbf24',
+  'Lechuga': '#10b981',
+  'Pepino': '#06b6d4',
+  'Calabaza': '#f59e0b',
+  'Zanahoria': '#fb923c',
+  'Remolacha': '#ec4899'
+}
+
+// Funciones
+const obtenerEstadisticas = async () => {
+  try {
+    loading.value = true
+    const res = await axios.get(`${API_URL}/seguimientos/stats`, {
+      headers: { Authorization: `Bearer ${auth.token}` }
+    })
+    stats.value = res.data
+  } catch (error) {
+    console.error('Error obteniendo estadísticas:', error)
+  } finally {
+    loading.value = false
+  }
+}
+
+// Computed properties
+const cultivoData = computed(() => {
+  return Object.entries(stats.value.cultivos || {}).sort((a, b) => b[1] - a[1])
+})
+
+const cultivoDataDetailed = computed(() => {
+  const total = Object.values(stats.value.cultivos || {}).reduce((a, b) => a + b, 0)
+  return cultivoData.value.map(([nombre, cantidad], idx) => {
+    const colores = ['#10b981', '#3b82f6', '#f59e0b', '#ef4444', '#8b5cf6', '#06b6d4', '#ec4899', '#14b8a6', '#f97316', '#6366f1']
+    return {
+      nombre,
+      cantidad,
+      porcentaje: total > 0 ? Math.round((cantidad / total) * 100) : 0,
+      color: coloresFormatos[nombre] || colores[idx % colores.length]
+    }
+  })
+})
+
+const chartData = computed(() => ({
+  labels: cultivoData.value.map(([nombre]) => nombre),
   datasets: [
     {
-      label: 'Cantidad',
-      backgroundColor: ['#ef4444', '#10b981'],
-      borderColor: ['#dc2626', '#059669'],
+      label: 'Número de Sembradores',
+      data: cultivoData.value.map(([, cantidad]) => cantidad),
+      backgroundColor: [
+        '#10b981', '#3b82f6', '#f59e0b', '#ef4444', '#8b5cf6',
+        '#06b6d4', '#ec4899', '#14b8a6', '#f97316', '#6366f1'
+      ],
+      borderColor: 'rgba(255, 255, 255, 0.1)',
       borderWidth: 2,
-      data: [0, 0],
-    },
-  ],
-})
+      borderRadius: 8
+    }
+  ]
+}))
 
-const usersChartData = ref({
-  labels: ['Semana 1', 'Semana 2', 'Semana 3', 'Semana 4', 'Semana 5', 'Semana 6', 'Semana 7'],
-  datasets: [
-    {
-      label: 'Nuevos Usuarios',
-      borderColor: '#10b981',
-      backgroundColor: 'rgba(16, 185, 129, 0.1)',
-      borderWidth: 3,
-      fill: true,
-      tension: 0.4,
-      pointBackgroundColor: '#10b981',
-      pointBorderColor: '#fff',
-      pointBorderWidth: 2,
-      pointRadius: 5,
-      pointHoverRadius: 7,
-      data: [],
-    },
-  ],
-})
-
-const chartOptions = {
+const chartOptions: any = {
   responsive: true,
-  maintainAspectRatio: false,
+  maintainAspectRatio: true,
   plugins: {
     legend: {
-      position: 'bottom',
-      labels: {
-        usePointStyle: true,
-        padding: 15,
-        font: { size: 12, weight: 'bold' },
-        color: '#64748b',
-      },
+      display: false
     },
     tooltip: {
       backgroundColor: 'rgba(0, 0, 0, 0.8)',
       padding: 12,
-      titleFont: { size: 14, weight: 'bold' },
-      bodyFont: { size: 13 },
       cornerRadius: 8,
-    },
+      titleFont: { size: 14, weight: 600 },
+      bodyFont: { size: 13 }
+    }
   },
   scales: {
     y: {
       beginAtZero: true,
       grid: {
         color: 'rgba(148, 163, 184, 0.1)',
-        drawBorder: false,
+        drawBorder: false
       },
       ticks: {
-        color: '#64748b',
-        font: { size: 11 },
-      },
+        color: '#cbd5e1',
+        font: { size: 12 }
+      }
     },
     x: {
       grid: {
-        display: false,
-        drawBorder: false,
+        display: false
       },
       ticks: {
-        color: '#64748b',
-        font: { size: 11 },
-      },
-    },
-  },
-}
-
-const reload = async () => {
-  try {
-    const { data } = await axios.get(`${import.meta.env.VITE_API_URL}/auth/users`, {
-      params: { page: 1, limit: 100 },
-      headers: { Authorization: `Bearer ${auth.token}` },
-    })
-
-    totalUsuarios.value = data.total
-    totalAdmins.value = data.users.filter(u => u.rol === 'admin').length
-    totalRegulares.value = data.users.filter(u => u.rol !== 'admin').length
-
-    rolesChartData.value.datasets[0].data = [totalAdmins.value, totalRegulares.value]
-
-    // Datos simulados para crecimiento
-    usersChartData.value.datasets[0].data = [5, 8, 6, 10, 7, 9, 12].map(() =>
-      Math.floor(Math.random() * 15 + 5)
-    )
-  } catch (err) {
-    console.error('Error al cargar estadísticas:', err)
+        color: '#cbd5e1',
+        font: { size: 12 }
+      }
+    }
   }
 }
 
+// Ciclo de vida
 onMounted(() => {
-  reload()
+  obtenerEstadisticas()
 })
 </script>
 
 <style scoped>
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+:root {
+  --color-primary: #10b981;
+  --color-primary-dark: #059669;
+  --color-bg: #0f172a;
+  --color-bg-dark: #0a0f1e;
+  --color-card: #1e293b;
+  --color-input: #1a2332;
+  --color-border: #334155;
+  --color-text: #f1f5f9;
+  --color-text-sec: #cbd5e1;
+  --color-text-dim: #94a3b8;
 }
 
-/* ========== CONTAINER ========== */
 .estadisticas-container {
-  height: 100vh;
-  width: 100vw;
-  background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+  min-height: 100vh;
+  background: linear-gradient(135deg, var(--color-bg) 0%, var(--color-bg-dark) 100%);
   position: relative;
-  overflow: auto;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
+  overflow: hidden;
 }
 
-/* ========== BACKGROUND BLOBS ========== */
-.background-decoration {
-  position: absolute;
-  inset: 0;
-  overflow: hidden;
+/* ========== BLOBS ========== */
+.background-blobs {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  z-index: 0;
+  pointer-events: none;
 }
 
 .blob {
   position: absolute;
-  opacity: 0.1;
-  filter: blur(100px);
-  mix-blend-mode: screen;
+  filter: blur(40px);
+  opacity: 0.08;
+  border-radius: 50%;
 }
 
 .blob-1 {
-  width: 500px;
-  height: 500px;
-  background: linear-gradient(135deg, #06b6d4, #3b82f6);
-  border-radius: 50%;
-  top: 0;
-  left: -200px;
-  animation: blob-animate 8s ease-in-out infinite;
+  width: 400px;
+  height: 400px;
+  background: var(--color-primary);
+  top: -50%;
+  left: -10%;
+  animation: float 20s infinite ease-in-out;
 }
 
 .blob-2 {
-  width: 400px;
-  height: 400px;
-  background: linear-gradient(135deg, #8b5cf6, #ec4899);
-  border-radius: 50%;
-  bottom: -100px;
-  right: -100px;
-  animation: blob-animate 10s ease-in-out infinite reverse;
+  width: 300px;
+  height: 300px;
+  background: #3b82f6;
+  top: 50%;
+  right: -5%;
+  animation: float 15s infinite ease-in-out reverse;
 }
 
-@keyframes blob-animate {
+.blob-3 {
+  width: 350px;
+  height: 350px;
+  background: #8b5cf6;
+  bottom: -10%;
+  left: 50%;
+  animation: float 25s infinite ease-in-out;
+}
+
+@keyframes float {
   0%, 100% { transform: translate(0, 0); }
-  50% { transform: translate(30px, 50px); }
-}
-
-/* ========== CONTENT ========== */
-.estadisticas-content {
-  position: relative;
-  z-index: 10;
-  width: 100%;
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 0 1.5rem;
+  33% { transform: translate(30px, -50px); }
+  66% { transform: translate(-20px, 20px); }
 }
 
 /* ========== HEADER ========== */
-.estadisticas-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 2rem;
-  padding: 1.5rem;
-  background: rgba(30, 41, 59, 0.4);
-  border: 1px solid rgba(148, 163, 184, 0.1);
-  border-radius: 16px;
+.header-estadisticas {
+  position: relative;
+  z-index: 10;
+  padding: 2rem 1rem;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.1);
   backdrop-filter: blur(10px);
 }
 
-.header-title {
+.header-wrapper {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.header-left {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 1.5rem;
+}
+
+.icon-box {
+  width: 60px;
+  height: 60px;
+  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 16px rgba(16, 185, 129, 0.2);
 }
 
 .header-icon {
   width: 32px;
   height: 32px;
-  color: #10b981;
+  color: #ffffff;
+  stroke-width: 2;
 }
 
-.estadisticas-header h1 {
-  font-size: 1.75rem;
+.icon-emoji {
+  font-size: 32px;
+}
+
+.header-title {
+  font-size: 2rem;
   font-weight: 700;
-  color: #e2e8f0;
+  color: var(--color-text);
+  margin: 0;
 }
 
-.reload-button {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-  color: white;
-  border: none;
-  border-radius: 10px;
-  padding: 0.75rem 1.25rem;
-  font-size: 0.9rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+.header-subtitle {
+  color: var(--color-text-dim);
+  margin: 0.5rem 0 0 0;
+  font-size: 0.95rem;
 }
 
-.reload-button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 25px rgba(16, 185, 129, 0.4);
+/* ========== MAIN ========== */
+.estadisticas-main {
+  position: relative;
+  z-index: 5;
+  padding: 2rem 1rem;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
-.reload-button:active {
-  transform: translateY(0);
-}
-
-.reload-icon {
-  width: 18px;
-  height: 18px;
-}
-
-/* ========== KPI GRID ========== */
-.kpi-grid {
+.estadisticas-content {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 1.5rem;
-  margin-bottom: 3rem;
+  gap: 2rem;
 }
 
-.kpi-card {
-  background: linear-gradient(135deg, rgba(30, 41, 59, 0.8) 0%, rgba(15, 23, 42, 0.8) 100%);
-  border: 1px solid rgba(148, 163, 184, 0.2);
+/* ========== STATS SECTION ========== */
+.stats-section {
+  position: relative;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+.stat-card {
+  background: rgba(30, 41, 59, 0.5);
+  border: 1px solid rgba(148, 163, 184, 0.1);
   border-radius: 16px;
   padding: 1.5rem;
   backdrop-filter: blur(10px);
   display: flex;
   align-items: center;
-  gap: 1.25rem;
+  gap: 1.5rem;
   transition: all 0.3s ease;
 }
 
-.kpi-card:hover {
-  background: linear-gradient(135deg, rgba(30, 41, 59, 0.95) 0%, rgba(15, 23, 42, 0.95) 100%);
-  border-color: rgba(148, 163, 184, 0.3);
+.stat-card:hover {
+  border-color: rgba(16, 185, 129, 0.3);
+  background: rgba(30, 41, 59, 0.7);
   transform: translateY(-4px);
-  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 12px 24px rgba(16, 185, 129, 0.15);
 }
 
-.kpi-icon {
-  width: 60px;
-  height: 60px;
+.stat-icon-wrapper {
+  width: 64px;
+  height: 64px;
   border-radius: 12px;
   display: flex;
   align-items: center;
@@ -481,218 +536,428 @@ onMounted(() => {
   flex-shrink: 0;
 }
 
-.users-icon {
-  background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(16, 185, 129, 0.1));
+.stat-icon {
+  width: 32px;
+  height: 32px;
+  color: #10b981;
+  stroke-width: 2;
+}
+
+.stat-card-1 .stat-icon-wrapper {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(34, 197, 94, 0.15));
   border: 1px solid rgba(16, 185, 129, 0.3);
 }
 
-.admins-icon {
-  background: linear-gradient(135deg, rgba(239, 68, 68, 0.2), rgba(239, 68, 68, 0.1));
-  border: 1px solid rgba(239, 68, 68, 0.3);
-}
-
-.regular-icon {
-  background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(59, 130, 246, 0.1));
+.stat-card-2 .stat-icon-wrapper {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(37, 99, 235, 0.15));
   border: 1px solid rgba(59, 130, 246, 0.3);
 }
 
-.percent-icon {
-  background: linear-gradient(135deg, rgba(168, 85, 247, 0.2), rgba(168, 85, 247, 0.1));
-  border: 1px solid rgba(168, 85, 247, 0.3);
+.stat-card-3 .stat-icon-wrapper {
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(217, 119, 6, 0.15));
+  border: 1px solid rgba(245, 158, 11, 0.3);
 }
 
-.icon-svg {
-  width: 28px;
-  height: 28px;
-  color: #10b981;
-}
-
-.admins-icon .icon-svg {
-  color: #ef4444;
-}
-
-.regular-icon .icon-svg {
-  color: #3b82f6;
-}
-
-.percent-icon .icon-svg {
-  color: #a855f7;
-}
-
-.kpi-content {
+.stat-content {
   flex: 1;
 }
 
-.kpi-label {
-  font-size: 0.875rem;
-  color: #94a3b8;
-  font-weight: 500;
+.stat-label {
+  font-size: 0.85rem;
+  color: var(--color-text-dim);
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  margin-bottom: 0.5rem;
+  margin: 0 0 0.5rem 0;
 }
 
-.kpi-value {
-  font-size: 2rem;
+.stat-value {
+  font-size: 2.2rem;
   font-weight: 700;
-  color: #e2e8f0;
+  color: var(--color-text);
+  margin: 0 0 0.5rem 0;
 }
 
-/* ========== CHARTS GRID ========== */
-.charts-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-  gap: 2rem;
-  margin-bottom: 2rem;
+.stat-change {
+  font-size: 0.8rem;
+  margin: 0;
 }
 
-.chart-card {
-  background: linear-gradient(135deg, rgba(30, 41, 59, 0.8) 0%, rgba(15, 23, 42, 0.8) 100%);
-  border: 1px solid rgba(148, 163, 184, 0.2);
-  border-radius: 16px;
-  padding: 1.5rem;
-  backdrop-filter: blur(10px);
-}
-
-.chart-title {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  font-size: 1.125rem;
-  font-weight: 600;
-  color: #e2e8f0;
-  margin-bottom: 1.5rem;
-}
-
-.chart-icon {
-  width: 24px;
-  height: 24px;
+.badge-success {
+  display: inline-block;
+  padding: 0.3rem 0.75rem;
+  background: rgba(16, 185, 129, 0.2);
   color: #10b981;
+  border-radius: 20px;
+  font-weight: 600;
 }
 
-.chart-container {
-  position: relative;
-  height: 300px;
-  width: 100%;
+.badge-info {
+  display: inline-block;
+  padding: 0.3rem 0.75rem;
+  background: rgba(59, 130, 246, 0.2);
+  color: #3b82f6;
+  border-radius: 20px;
+  font-weight: 600;
 }
 
-/* ========== SUMMARY CARD ========== */
-.summary-card {
-  background: linear-gradient(135deg, rgba(30, 41, 59, 0.8) 0%, rgba(15, 23, 42, 0.8) 100%);
-  border: 1px solid rgba(148, 163, 184, 0.2);
+.progress-mini {
+  margin-top: 0.5rem;
+}
+
+.progress-bar-mini {
+  height: 6px;
+  background: rgba(148, 163, 184, 0.2);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.progress-fill-mini {
+  height: 100%;
+  background: linear-gradient(90deg, var(--color-primary), var(--color-primary-dark));
+  transition: width 0.3s ease;
+}
+
+/* ========== CHART SECTION ========== */
+.chart-section {
+  background: rgba(30, 41, 59, 0.5);
+  border: 1px solid rgba(148, 163, 184, 0.1);
   border-radius: 16px;
   padding: 2rem;
   backdrop-filter: blur(10px);
 }
 
-.summary-title {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: #e2e8f0;
+.chart-header {
   margin-bottom: 1.5rem;
-  padding-bottom: 1.5rem;
+  padding-bottom: 1rem;
   border-bottom: 1px solid rgba(148, 163, 184, 0.1);
 }
 
-.summary-icon {
-  width: 28px;
-  height: 28px;
+.chart-title-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.chart-title-icon {
+  width: 24px;
+  height: 24px;
   color: #10b981;
+  stroke-width: 2;
+  flex-shrink: 0;
+}
+
+.chart-title {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--color-text);
+  margin: 0 0 0.25rem 0;
+}
+
+.chart-subtitle {
+  font-size: 0.85rem;
+  color: var(--color-text-dim);
+  margin: 0;
+}
+
+.chart-container {
+  position: relative;
+  height: 400px;
+  margin-bottom: 1rem;
+}
+
+.chart-wrapper {
+  width: 100%;
+  height: 100%;
+}
+
+.empty-chart {
+  text-align: center;
+  padding: 3rem 2rem;
+}
+
+.empty-icon {
+  width: 48px;
+  height: 48px;
+  color: #10b981;
+  stroke-width: 2;
+  margin: 0 auto 1rem;
+}
+
+.empty-text {
+  font-size: 1.1rem;
+  color: var(--color-text);
+  margin: 0 0 0.5rem 0;
+}
+
+.empty-subtext {
+  color: var(--color-text-dim);
+  margin: 0;
+}
+
+/* ========== TABLE SECTION ========== */
+.table-section {
+  background: rgba(30, 41, 59, 0.5);
+  border: 1px solid rgba(148, 163, 184, 0.1);
+  border-radius: 16px;
+  padding: 2rem;
+  backdrop-filter: blur(10px);
+}
+
+.table-header {
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+}
+
+.table-title-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.table-title-icon {
+  width: 24px;
+  height: 24px;
+  color: #10b981;
+  stroke-width: 2;
+  flex-shrink: 0;
+}
+
+.table-title {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--color-text);
+  margin: 0;
+}
+
+.table-wrapper {
+  overflow-x: auto;
+  border-radius: 8px;
+  border: 1px solid rgba(148, 163, 184, 0.1);
+}
+
+.cultivos-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.cultivos-table thead {
+  background: rgba(16, 185, 129, 0.1);
+  border-bottom: 2px solid rgba(16, 185, 129, 0.2);
+}
+
+.cultivos-table th {
+  padding: 1rem;
+  text-align: left;
+  color: var(--color-text-sec);
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.cultivos-table tbody tr {
+  border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+  transition: background-color 0.2s ease;
+}
+
+.cultivos-table tbody tr:hover {
+  background-color: rgba(16, 185, 129, 0.05);
+}
+
+.table-row td {
+  padding: 1rem;
+  color: var(--color-text-dim);
+}
+
+.cultivo-name {
+  min-width: 150px;
+}
+
+.cultivo-badge {
+  display: inline-block;
+  padding: 0.4rem 0.75rem;
+  background: rgba(16, 185, 129, 0.1);
+  border-left: 3px solid var(--color-primary);
+  border-radius: 4px;
+  color: var(--color-text);
+  font-weight: 500;
+}
+
+.cultivo-cantidad {
+  min-width: 100px;
+}
+
+.cantidad-badge {
+  display: inline-block;
+  padding: 0.4rem 0.75rem;
+  background: rgba(59, 130, 246, 0.2);
+  color: #93c5fd;
+  border-radius: 6px;
+  font-weight: 600;
+}
+
+.cultivo-porcentaje {
+  min-width: 100px;
+  color: var(--color-text);
+  font-weight: 500;
+}
+
+.cultivo-bar {
+  min-width: 200px;
+}
+
+.bar-container {
+  width: 100%;
+  height: 24px;
+  background: rgba(148, 163, 184, 0.1);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.bar-fill {
+  height: 100%;
+  transition: width 0.3s ease;
+  border-radius: 4px;
+}
+
+.empty-table {
+  text-align: center;
+  padding: 2rem;
+  color: var(--color-text-dim);
+}
+
+/* ========== SUMMARY SECTION ========== */
+.summary-section {
+  position: relative;
+}
+
+.summary-card {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(6, 182, 212, 0.05));
+  border: 1px solid rgba(16, 185, 129, 0.2);
+  border-radius: 16px;
+  padding: 2rem;
+  backdrop-filter: blur(10px);
+}
+
+.summary-header {
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(16, 185, 129, 0.2);
+}
+
+.summary-title-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.summary-title-icon {
+  width: 24px;
+  height: 24px;
+  color: #10b981;
+  stroke-width: 2;
+  flex-shrink: 0;
+}
+
+.summary-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--color-text);
+  margin: 0;
 }
 
 .summary-content {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 2rem;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
 }
 
 .summary-item {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1rem;
-  background: rgba(16, 185, 129, 0.05);
-  border: 1px solid rgba(16, 185, 129, 0.2);
-  border-radius: 12px;
-  transition: all 0.3s ease;
+  align-items: flex-start;
+  gap: 1rem;
 }
 
-.summary-item:hover {
-  background: rgba(16, 185, 129, 0.1);
-  border-color: rgba(16, 185, 129, 0.4);
-}
-
-.summary-label {
-  font-size: 0.95rem;
-  color: #94a3b8;
-  font-weight: 500;
-}
-
-.summary-value {
-  font-size: 1.5rem;
-  font-weight: 700;
+.summary-item-icon {
+  width: 24px;
+  height: 24px;
   color: #10b981;
+  stroke-width: 2;
+  flex-shrink: 0;
+  margin-top: 0.1rem;
 }
 
-.summary-value.admin {
-  color: #ef4444;
+.summary-text {
+  color: var(--color-text-dim);
+  line-height: 1.6;
+  font-size: 0.95rem;
 }
 
-.summary-value.regular {
-  color: #3b82f6;
+.summary-text strong {
+  color: var(--color-primary);
+  font-weight: 600;
 }
 
-.summary-value.ratio {
-  color: #a855f7;
+/* ========== FOOTER ========== */
+.estadisticas-footer {
+  position: relative;
+  z-index: 5;
+  text-align: center;
+  padding: 1.5rem;
+  border-top: 1px solid rgba(148, 163, 184, 0.1);
+  background: rgba(15, 23, 42, 0.5);
+  backdrop-filter: blur(10px);
+  font-size: 0.85rem;
+  color: var(--color-text-dim);
+}
+
+.footer-highlight {
+  color: var(--color-primary);
+  font-weight: 600;
 }
 
 /* ========== RESPONSIVE ========== */
 @media (max-width: 768px) {
-  .estadisticas-header {
-    flex-direction: column;
-    gap: 1rem;
-    text-align: center;
+  .estadisticas-main {
+    padding: 1rem 0.5rem;
   }
 
   .header-title {
-    width: 100%;
-    justify-content: center;
-  }
-
-  .estadisticas-header h1 {
     font-size: 1.5rem;
   }
 
-  .reload-button {
-    width: 100%;
-    justify-content: center;
+  .stats-grid {
+    grid-template-columns: 1fr;
   }
 
-  .kpi-grid {
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1rem;
-  }
-
-  .kpi-card {
+  .stat-card {
     flex-direction: column;
     text-align: center;
-    gap: 1rem;
   }
 
-  .kpi-label {
-    font-size: 0.8rem;
+  .stat-icon-wrapper {
+    width: 56px;
+    height: 56px;
   }
 
-  .kpi-value {
-    font-size: 1.75rem;
+  .icon-emoji {
+    font-size: 28px;
   }
 
-  .charts-grid {
-    grid-template-columns: 1fr;
-    gap: 1.5rem;
+  .stat-icon {
+    font-size: 2rem;
+  }
+
+  .chart-container {
+    height: 300px;
+  }
+
+  .cultivos-table {
+    font-size: 0.85rem;
+  }
+
+  .cultivos-table th,
+  .cultivos-table td {
+    padding: 0.75rem 0.5rem;
   }
 
   .summary-content {
@@ -700,68 +965,50 @@ onMounted(() => {
   }
 }
 
-@media (max-width: 640px) {
+@media (max-width: 480px) {
   .estadisticas-container {
-    padding: 1rem 0;
+    padding: 0;
   }
 
-  .estadisticas-content {
-    padding: 0 1rem;
-  }
-
-  .estadisticas-header {
+  .header-estadisticas {
     padding: 1rem;
-    gap: 0.75rem;
   }
 
-  .header-icon {
-    width: 24px;
-    height: 24px;
+  .header-left {
+    gap: 1rem;
   }
 
-  .estadisticas-header h1 {
+  .icon-box {
+    width: 48px;
+    height: 48px;
+  }
+
+  .icon-emoji {
+    font-size: 24px;
+  }
+
+  .header-title {
     font-size: 1.25rem;
   }
 
-  .kpi-grid {
-    grid-template-columns: 1fr;
+  .stat-value {
+    font-size: 1.8rem;
   }
 
-  .kpi-card {
-    padding: 1rem;
-  }
-
-  .kpi-icon {
-    width: 50px;
-    height: 50px;
-  }
-
-  .icon-svg {
-    width: 24px;
-    height: 24px;
-  }
-
-  .kpi-value {
-    font-size: 1.5rem;
-  }
-
-  .chart-card {
-    padding: 1rem;
-  }
-
+  .chart-section,
+  .table-section,
   .summary-card {
-    padding: 1rem;
+    padding: 1.25rem 1rem;
   }
 
+  .chart-title,
+  .table-title,
   .summary-title {
     font-size: 1.1rem;
-    margin-bottom: 1rem;
-    padding-bottom: 1rem;
   }
-}
 
-/* ========== CHART CANVAS ========== */
-canvas {
-  height: 300px !important;
+  .chart-container {
+    height: 250px;
+  }
 }
 </style>
