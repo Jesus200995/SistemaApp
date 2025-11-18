@@ -87,6 +87,80 @@
           </div>
         </div>
 
+        <!-- Sección de módulos especializados -->
+        <div class="specialized-section">
+          <h3 class="section-title">Módulos Especializados</h3>
+          
+          <div class="specialized-grid">
+            <!-- Seguimiento de Campo - Solo técnicos -->
+            <router-link
+              v-if="auth.user?.rol && (auth.user.rol.includes('tecnico'))"
+              to="/seguimiento"
+              v-motion
+              :initial="{ opacity: 0, y: 30 }"
+              :enter="{ opacity: 1, y: 0, transition: { delay: 600, duration: 500 } }"
+              class="specialized-card specialized-seguimiento"
+            >
+              <div class="specialized-icon-wrapper">
+                <span class="specialized-icon">📋</span>
+              </div>
+              <h4 class="specialized-title">Seguimiento de Campo</h4>
+              <p class="specialized-desc">Registrar visitas y avances</p>
+              <div class="card-arrow">→</div>
+            </router-link>
+
+            <!-- Sembradores - Todos los roles -->
+            <router-link
+              to="/sembradores"
+              v-motion
+              :initial="{ opacity: 0, y: 30 }"
+              :enter="{ opacity: 1, y: 0, transition: { delay: 700, duration: 500 } }"
+              class="specialized-card specialized-sembradores"
+            >
+              <div class="specialized-icon-wrapper">
+                <span class="specialized-icon">🌱</span>
+              </div>
+              <h4 class="specialized-title">Sembradores en Mapa</h4>
+              <p class="specialized-desc">Gestionar sembradores</p>
+              <div class="card-arrow">→</div>
+            </router-link>
+
+            <!-- Reportes - Facilitadores, Territoriales, Admins -->
+            <router-link
+              v-if="auth.user?.rol && ['facilitador', 'territorial', 'admin'].includes(auth.user.rol)"
+              to="/estadisticas"
+              v-motion
+              :initial="{ opacity: 0, y: 30 }"
+              :enter="{ opacity: 1, y: 0, transition: { delay: 800, duration: 500 } }"
+              class="specialized-card specialized-reportes"
+            >
+              <div class="specialized-icon-wrapper">
+                <span class="specialized-icon">📊</span>
+              </div>
+              <h4 class="specialized-title">Reportes y Estadísticas</h4>
+              <p class="specialized-desc">Análisis general</p>
+              <div class="card-arrow">→</div>
+            </router-link>
+
+            <!-- Gestión de Usuarios - Solo admins -->
+            <router-link
+              v-if="auth.user?.rol === 'admin'"
+              to="/usuarios"
+              v-motion
+              :initial="{ opacity: 0, y: 30 }"
+              :enter="{ opacity: 1, y: 0, transition: { delay: 900, duration: 500 } }"
+              class="specialized-card specialized-usuarios"
+            >
+              <div class="specialized-icon-wrapper">
+                <span class="specialized-icon">👥</span>
+              </div>
+              <h4 class="specialized-title">Gestión de Usuarios</h4>
+              <p class="specialized-desc">Administrar usuarios</p>
+              <div class="card-arrow">→</div>
+            </router-link>
+          </div>
+        </div>
+
         <!-- Stats -->
         <div
           v-motion
@@ -126,7 +200,7 @@
 import { onMounted } from 'vue'
 import { useAuthStore } from '../stores/auth'
 import { useRouter } from 'vue-router'
-import { LogOut, User, Mail, LayoutDashboard, BarChart3, Users, Settings, MapPin } from 'lucide-vue-next'
+import { LogOut, User, Mail, LayoutDashboard, BarChart3, Users, Settings, MapPin, Sprout } from 'lucide-vue-next'
 
 const auth = useAuthStore()
 const router = useRouter()
@@ -139,11 +213,11 @@ const actions = [
   { title: 'Usuarios', icon: Users, route: '/usuarios' },
   { title: 'Estadísticas', icon: BarChart3, route: '/estadisticas' },
   { title: 'Mapa', icon: MapPin, route: '/mapa' },
-  { title: 'Configuración', icon: Settings, route: '/config' },
+  { title: 'Sembradores', icon: Sprout, route: '/sembradores' },
 ]
 
 const goTo = (route) => {
-  if (route === '/usuarios' || route === '/estadisticas' || route === '/mapa') {
+  if (route === '/usuarios' || route === '/estadisticas' || route === '/mapa' || route === '/sembradores') {
     router.push(route)
   } else {
     alert(`👉 Próximamente: ${route}`)
@@ -513,6 +587,174 @@ const logout = () => {
   color: #10b981;
 }
 
+/* ========== SPECIALIZED MODULES SECTION ========== */
+.specialized-section {
+  margin-bottom: 1.5rem;
+}
+
+.specialized-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+@media (max-width: 768px) {
+  .specialized-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.specialized-card {
+  position: relative;
+  background: linear-gradient(135deg, rgba(30, 41, 59, 0.7) 0%, rgba(15, 23, 42, 0.7) 100%);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 16px;
+  padding: 1.5rem;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.75rem;
+  text-decoration: none;
+  color: inherit;
+  overflow: hidden;
+}
+
+.specialized-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+  transition: left 0.5s ease;
+  z-index: 0;
+}
+
+.specialized-card:hover::before {
+  left: 100%;
+}
+
+.specialized-card:hover {
+  transform: translateY(-8px);
+  border-color: rgba(16, 185, 129, 0.4);
+  box-shadow: 0 16px 32px rgba(16, 185, 129, 0.15);
+}
+
+.specialized-card:active {
+  transform: translateY(-2px);
+}
+
+.specialized-icon-wrapper {
+  position: relative;
+  z-index: 1;
+  width: 60px;
+  height: 60px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.specialized-icon {
+  font-size: 2rem;
+  transition: transform 0.3s ease;
+}
+
+.specialized-card:hover .specialized-icon {
+  transform: scale(1.2);
+}
+
+/* Variantes de color por tarjeta */
+.specialized-seguimiento .specialized-icon-wrapper {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(34, 197, 94, 0.15));
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.specialized-seguimiento:hover .specialized-icon-wrapper {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.3), rgba(34, 197, 94, 0.25));
+  box-shadow: 0 8px 16px rgba(16, 185, 129, 0.3);
+}
+
+.specialized-sembradores .specialized-icon-wrapper {
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.2), rgba(16, 185, 129, 0.15));
+  border: 1px solid rgba(34, 197, 94, 0.3);
+}
+
+.specialized-sembradores:hover .specialized-icon-wrapper {
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.3), rgba(16, 185, 129, 0.25));
+  box-shadow: 0 8px 16px rgba(34, 197, 94, 0.3);
+}
+
+.specialized-reportes .specialized-icon-wrapper {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(37, 99, 235, 0.15));
+  border: 1px solid rgba(59, 130, 246, 0.3);
+}
+
+.specialized-reportes:hover .specialized-icon-wrapper {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.3), rgba(37, 99, 235, 0.25));
+  box-shadow: 0 8px 16px rgba(59, 130, 246, 0.3);
+}
+
+.specialized-usuarios .specialized-icon-wrapper {
+  background: linear-gradient(135deg, rgba(168, 85, 247, 0.2), rgba(139, 92, 246, 0.15));
+  border: 1px solid rgba(168, 85, 247, 0.3);
+}
+
+.specialized-usuarios:hover .specialized-icon-wrapper {
+  background: linear-gradient(135deg, rgba(168, 85, 247, 0.3), rgba(139, 92, 246, 0.25));
+  box-shadow: 0 8px 16px rgba(168, 85, 247, 0.3);
+}
+
+.specialized-title {
+  position: relative;
+  z-index: 1;
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0;
+  color: #e2e8f0;
+  transition: color 0.3s ease;
+}
+
+.specialized-card:hover .specialized-title {
+  color: #10b981;
+}
+
+.specialized-desc {
+  position: relative;
+  z-index: 1;
+  font-size: 0.75rem;
+  color: #94a3b8;
+  margin: 0;
+  transition: color 0.3s ease;
+}
+
+.specialized-card:hover .specialized-desc {
+  color: #cbd5e1;
+}
+
+.card-arrow {
+  position: absolute;
+  bottom: 1rem;
+  right: 1.5rem;
+  font-size: 1.25rem;
+  color: #10b981;
+  opacity: 0;
+  transform: translateX(-8px);
+  transition: all 0.3s ease;
+  z-index: 1;
+}
+
+.specialized-card:hover .card-arrow {
+  opacity: 1;
+  transform: translateX(0);
+}
+
 /* ========== STATS GRID ========== */
 .stats-grid {
   display: grid;
@@ -630,6 +872,35 @@ const logout = () => {
   .action-icon {
     width: 24px;
     height: 24px;
+  }
+
+  .specialized-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .specialized-card {
+    padding: 1.25rem;
+  }
+
+  .specialized-icon-wrapper {
+    width: 56px;
+    height: 56px;
+  }
+
+  .specialized-icon {
+    font-size: 1.75rem;
+  }
+
+  .specialized-title {
+    font-size: 0.95rem;
+  }
+
+  .specialized-desc {
+    font-size: 0.7rem;
+  }
+
+  .card-arrow {
+    font-size: 1rem;
   }
 }
 
