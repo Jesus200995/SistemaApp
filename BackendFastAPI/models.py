@@ -87,3 +87,18 @@ class Sembrador(Base):
     lng = Column(Float)
     user_id = Column(Integer, ForeignKey("users.id"))
     creado_en = Column(DateTime(timezone=True), server_default=func.now())
+
+
+class Seguimiento(Base):
+    __tablename__ = "seguimientos"
+
+    id = Column(Integer, primary_key=True, index=True)
+    sembrador_id = Column(Integer, ForeignKey("sembradores.id"), nullable=False)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    fecha_visita = Column(DateTime, nullable=False)
+    estado_cultivo = Column(String(100))
+    observaciones = Column(Text)
+    avance_porcentaje = Column(Float, default=0.0)
+    foto_url = Column(String(255), nullable=True)
+    creado_en = Column(DateTime(timezone=True), server_default=func.now())
+    actualizado_en = Column(DateTime(timezone=True), onupdate=func.now())

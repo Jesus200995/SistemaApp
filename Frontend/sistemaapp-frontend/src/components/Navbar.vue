@@ -11,6 +11,7 @@
       <router-link v-if="auth.user" to="/mapa" class="nav-link">🗺️ Mapa</router-link>
       <router-link v-if="auth.user" to="/chat" class="nav-link">💬 Chat</router-link>
       <router-link v-if="auth.user" to="/sembradores" class="nav-link">🌱 Sembradores</router-link>
+      <router-link v-if="auth.user" to="/seguimiento" class="nav-link">📊 Seguimiento</router-link>
       <router-link v-if="auth.user" to="/usuarios" class="nav-link">👥 Usuarios</router-link>
     </div>
 
