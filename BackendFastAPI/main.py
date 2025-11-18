@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from routes import auth, layers, chat, notificaciones, sembradores, seguimientos
+from routes import auth, layers, chat, notificaciones, sembradores, seguimientos, solicitudes
 from database import Base, engine
 
 Base.metadata.create_all(bind=engine)
@@ -28,6 +28,7 @@ app.include_router(chat.router)
 app.include_router(notificaciones.router)
 app.include_router(sembradores.router)
 app.include_router(seguimientos.router)
+app.include_router(solicitudes.router)
 
 @app.get("/")
 def root():

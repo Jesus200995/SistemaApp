@@ -102,3 +102,15 @@ class Seguimiento(Base):
     foto_url = Column(String(255), nullable=True)
     creado_en = Column(DateTime(timezone=True), server_default=func.now())
     actualizado_en = Column(DateTime(timezone=True), onupdate=func.now())
+
+
+class Solicitud(Base):
+    __tablename__ = "solicitudes"
+
+    id = Column(Integer, primary_key=True, index=True)
+    tipo = Column(String(50))
+    descripcion = Column(Text)
+    usuario_id = Column(Integer, ForeignKey("users.id"))
+    destino_id = Column(Integer, ForeignKey("users.id"))
+    estado = Column(String(20), default="pendiente")
+    fecha = Column(DateTime(timezone=True), server_default=func.now())
