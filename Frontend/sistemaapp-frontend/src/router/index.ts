@@ -83,6 +83,13 @@ const router = createRouter({
       component: () => import('../views/SeguimientoView.vue'),
       meta: { requiresAuth: true }, // 🔒 protegida
     },
+    {
+      path: '/solicitudes',
+      name: 'solicitudes',
+      // @ts-ignore
+      component: () => import('../views/SolicitudesView.vue'),
+      meta: { requiresAuth: true }, // 🔒 protegida
+    },
   ],
 })
 

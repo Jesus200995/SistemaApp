@@ -142,6 +142,22 @@
               <div class="card-arrow">→</div>
             </router-link>
 
+            <!-- Solicitudes Jerárquicas - Todos los roles -->
+            <router-link
+              to="/solicitudes"
+              v-motion
+              :initial="{ opacity: 0, y: 30 }"
+              :enter="{ opacity: 1, y: 0, transition: { delay: 850, duration: 500 } }"
+              class="specialized-card specialized-solicitudes"
+            >
+              <div class="specialized-icon-wrapper">
+                <FileText class="specialized-icon-lucide" />
+              </div>
+              <h4 class="specialized-title">Solicitudes</h4>
+              <p class="specialized-desc">Gestionar solicitudes jerárquicas</p>
+              <div class="card-arrow">→</div>
+            </router-link>
+
             <!-- Gestión de Usuarios - Solo admins -->
             <router-link
               v-if="auth.user?.rol === 'admin'"
@@ -200,7 +216,7 @@
 import { onMounted } from 'vue'
 import { useAuthStore } from '../stores/auth'
 import { useRouter } from 'vue-router'
-import { LogOut, User, Mail, LayoutDashboard, BarChart3, Users, Settings, MapPin, Sprout } from 'lucide-vue-next'
+import { LogOut, User, Mail, LayoutDashboard, BarChart3, Users, Settings, MapPin, Sprout, FileText } from 'lucide-vue-next'
 
 const auth = useAuthStore()
 const router = useRouter()
@@ -212,12 +228,13 @@ onMounted(() => {
 const actions = [
   { title: 'Usuarios', icon: Users, route: '/usuarios' },
   { title: 'Estadísticas', icon: BarChart3, route: '/estadisticas' },
+  { title: 'Solicitudes', icon: FileText, route: '/solicitudes' },
   { title: 'Mapa', icon: MapPin, route: '/mapa' },
   { title: 'Sembradores', icon: Sprout, route: '/sembradores' },
 ]
 
 const goTo = (route) => {
-  if (route === '/usuarios' || route === '/estadisticas' || route === '/mapa' || route === '/sembradores') {
+  if (route === '/usuarios' || route === '/estadisticas' || route === '/mapa' || route === '/sembradores' || route === '/solicitudes') {
     router.push(route)
   } else {
     alert(`👉 Próximamente: ${route}`)
@@ -709,6 +726,16 @@ const logout = () => {
 .specialized-usuarios:hover .specialized-icon-wrapper {
   background: linear-gradient(135deg, rgba(168, 85, 247, 0.3), rgba(139, 92, 246, 0.25));
   box-shadow: 0 8px 16px rgba(168, 85, 247, 0.3);
+}
+
+.specialized-solicitudes .specialized-icon-wrapper {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(5, 150, 105, 0.15));
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.specialized-solicitudes:hover .specialized-icon-wrapper {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.3), rgba(5, 150, 105, 0.25));
+  box-shadow: 0 8px 16px rgba(16, 185, 129, 0.3);
 }
 
 .specialized-title {

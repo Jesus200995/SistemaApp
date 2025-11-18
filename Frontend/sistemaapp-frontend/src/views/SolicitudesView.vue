@@ -1,0 +1,977 @@
+<template>
+  <div class="solicitudes-container">
+    <!-- Background decorativo -->
+    <div class="background-blobs">
+      <div class="blob blob-1"></div>
+      <div class="blob blob-2"></div>
+      <div class="blob blob-3"></div>
+    </div>
+
+    <!-- Header -->
+    <header class="solicitudes-header">
+      <div class="header-wrapper">
+        <div class="header-left">
+          <div class="icon-box">
+            <FileText class="header-icon" />
+          </div>
+          <div class="header-text">
+            <h1 class="header-title">Solicitudes Jerárquicas</h1>
+            <p class="header-subtitle">Gestiona tus solicitudes de cambios organizacionales</p>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="solicitudes-main">
+      <div class="solicitudes-content">
+        <!-- Formulario de creación -->
+        <section
+          v-motion
+          :initial="{ opacity: 0, y: 30 }"
+          :enter="{ opacity: 1, y: 0, transition: { duration: 600 } }"
+          class="form-section"
+        >
+          <div class="form-card">
+            <div class="form-header">
+              <h2 class="form-title">Crear Nueva Solicitud</h2>
+              <p class="form-subtitle">Completa los campos para enviar una solicitud</p>
+            </div>
+
+            <form @submit.prevent="crearSolicitud" class="form-container">
+              <div class="form-grid">
+                <!-- Tipo de solicitud -->
+                <div class="form-group">
+                  <label class="form-label">Tipo de Solicitud *</label>
+                  <select v-model="form.tipo" class="form-select" required>
+                    <option value="">-- Selecciona tipo de solicitud --</option>
+                    <option value="cambio_superior">Cambio de superior</option>
+                    <option value="alta_subordinado">Alta de subordinado</option>
+                    <option value="baja_subordinado">Baja de subordinado</option>
+                    <option value="cambio_territorio">Cambio de territorio</option>
+                    <option value="otro">Otro</option>
+                  </select>
+                </div>
+
+                <!-- ID de destino -->
+                <div class="form-group">
+                  <label class="form-label">Usuario Destino (ID)</label>
+                  <input
+                    v-model="form.destino_id"
+                    type="number"
+                    placeholder="Ej: 5"
+                    class="form-input"
+                  />
+                  <p class="form-hint">ID del usuario que recibirá la solicitud</p>
+                </div>
+
+                <!-- Descripción -->
+                <div class="form-group form-group-full">
+                  <label class="form-label">Descripción o Motivo *</label>
+                  <textarea
+                    v-model="form.descripcion"
+                    placeholder="Detalla el motivo de tu solicitud..."
+                    class="form-textarea"
+                    required
+                    rows="4"
+                  ></textarea>
+                </div>
+
+                <!-- Botón de envío -->
+                <button type="submit" class="form-button" :disabled="loading">
+                  <Send class="button-icon" />
+                  <span>{{ loading ? 'Enviando...' : 'Enviar Solicitud' }}</span>
+                </button>
+              </div>
+            </form>
+          </div>
+        </section>
+
+        <!-- Sección de solicitudes -->
+        <section
+          v-motion
+          :initial="{ opacity: 0, y: 30 }"
+          :enter="{ opacity: 1, y: 0, transition: { delay: 200, duration: 600 } }"
+          class="solicitudes-section"
+        >
+          <div class="section-header">
+            <h2 class="section-title">Historial de Solicitudes</h2>
+            <div class="section-stats">
+              <div class="stat-item">
+                <span class="stat-label">Total:</span>
+                <span class="stat-value">{{ solicitudes.length }}</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-label">Pendientes:</span>
+                <span class="stat-value pending">{{ countByStatus('pendiente') }}</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-label">Aprobadas:</span>
+                <span class="stat-value approved">{{ countByStatus('aprobada') }}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Lista de solicitudes -->
+          <div v-if="solicitudes.length > 0" class="solicitudes-table-wrapper">
+            <div class="table-responsive">
+              <table class="solicitudes-table">
+                <thead>
+                  <tr>
+                    <th>Tipo</th>
+                    <th>Descripción</th>
+                    <th>Estado</th>
+                    <th>Fecha</th>
+                    <th>Acciones</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="solicitud in solicitudes" :key="solicitud.id" class="solicitud-row">
+                    <td class="cell-tipo">
+                      <span class="badge" :class="getBadgeClass(solicitud.tipo)">
+                        {{ formatTipo(solicitud.tipo) }}
+                      </span>
+                    </td>
+                    <td class="cell-descripcion">{{ solicitud.descripcion }}</td>
+                    <td class="cell-estado">
+                      <span class="status-badge" :class="`status-${solicitud.estado}`">
+                        {{ formatEstado(solicitud.estado) }}
+                      </span>
+                    </td>
+                    <td class="cell-fecha">{{ formatFecha(solicitud.fecha) }}</td>
+                    <td class="cell-acciones">
+                      <button
+                        v-if="canApprove(solicitud) && solicitud.estado === 'pendiente'"
+                        @click="actualizarEstado(solicitud.id, 'aprobada')"
+                        class="action-btn approve-btn"
+                        title="Aprobar"
+                      >
+                        <Check class="action-icon" />
+                      </button>
+                      <button
+                        v-if="canApprove(solicitud) && solicitud.estado === 'pendiente'"
+                        @click="actualizarEstado(solicitud.id, 'rechazada')"
+                        class="action-btn reject-btn"
+                        title="Rechazar"
+                      >
+                        <X class="action-icon" />
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Estado vacío -->
+          <div v-else class="empty-state">
+            <FileText class="empty-icon" />
+            <p class="empty-title">No hay solicitudes</p>
+            <p class="empty-text">Crea una nueva solicitud para comenzar</p>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="solicitudes-footer">
+      <p>© 2025 <span class="footer-highlight">SistemaApp</span>. Solicitudes en tiempo real.</p>
+    </footer>
+  </div>
+</template>
+
+<script setup lang="ts">
+import { ref, onMounted, computed } from 'vue'
+import axios from 'axios'
+import Swal from 'sweetalert2'
+import { useAuthStore } from '../stores/auth'
+import { FileText, Send, Check, X } from 'lucide-vue-next'
+
+const auth = useAuthStore()
+const form = ref({ tipo: '', destino_id: null, descripcion: '' })
+const solicitudes = ref([])
+const loading = ref(false)
+
+// Funciones auxiliares
+const formatTipo = (tipo: string) => {
+  const tipos: { [key: string]: string } = {
+    cambio_superior: 'Cambio de Superior',
+    alta_subordinado: 'Alta de Subordinado',
+    baja_subordinado: 'Baja de Subordinado',
+    cambio_territorio: 'Cambio de Territorio',
+    otro: 'Otro'
+  }
+  return tipos[tipo] || tipo
+}
+
+const formatEstado = (estado: string) => {
+  const estados: { [key: string]: string } = {
+    pendiente: 'Pendiente',
+    aprobada: 'Aprobada',
+    rechazada: 'Rechazada'
+  }
+  return estados[estado] || estado
+}
+
+const formatFecha = (fecha: string) => {
+  return new Date(fecha).toLocaleString('es-ES', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit'
+  })
+}
+
+const getBadgeClass = (tipo: string) => {
+  const tipos: { [key: string]: string } = {
+    cambio_superior: 'badge-blue',
+    alta_subordinado: 'badge-green',
+    baja_subordinado: 'badge-red',
+    cambio_territorio: 'badge-purple',
+    otro: 'badge-gray'
+  }
+  return tipos[tipo] || 'badge-gray'
+}
+
+const countByStatus = (estado: string) => {
+  return solicitudes.value.filter(s => s.estado === estado).length
+}
+
+const canApprove = (solicitud: any) => {
+  // Admin puede aprobar todas
+  if (auth.user?.rol === 'admin') return true
+  // Territorial/Facilitador puede aprobar las dirigidas a él
+  if (auth.user?.rol === 'territorial' || auth.user?.rol === 'facilitador') {
+    return solicitud.destino_id === auth.user?.id
+  }
+  return false
+}
+
+// API calls
+const getSolicitudes = async () => {
+  try {
+    const res = await axios.get(`${import.meta.env.VITE_API_URL}/solicitudes`, {
+      headers: { Authorization: `Bearer ${auth.token}` }
+    })
+    solicitudes.value = res.data
+  } catch (err) {
+    console.error('Error al obtener solicitudes:', err)
+  }
+}
+
+const crearSolicitud = async () => {
+  if (!form.value.tipo || !form.value.descripcion) {
+    await Swal.fire('⚠️ Campos requeridos', 'Completa el tipo y la descripción', 'warning')
+    return
+  }
+
+  loading.value = true
+  try {
+    const payload: any = {
+      tipo: form.value.tipo,
+      descripcion: form.value.descripcion
+    }
+    if (form.value.destino_id) {
+      payload.destino_id = parseInt(form.value.destino_id as any)
+    }
+
+    await axios.post(`${import.meta.env.VITE_API_URL}/solicitudes`, payload, {
+      headers: { Authorization: `Bearer ${auth.token}` }
+    })
+
+    await Swal.fire('✅ Enviada', 'La solicitud se ha registrado correctamente', 'success')
+    form.value = { tipo: '', destino_id: null, descripcion: '' }
+    await getSolicitudes()
+  } catch (err: any) {
+    await Swal.fire(
+      '❌ Error',
+      err.response?.data?.detail || 'No se pudo enviar la solicitud',
+      'error'
+    )
+  } finally {
+    loading.value = false
+  }
+}
+
+const actualizarEstado = async (id: number, nuevo_estado: string) => {
+  const confirmacion = await Swal.fire({
+    title: '¿Confirmar acción?',
+    text: `¿Deseas ${nuevo_estado === 'aprobada' ? 'aprobar' : 'rechazar'} esta solicitud?`,
+    icon: 'question',
+    showCancelButton: true,
+    confirmButtonText: 'Sí, confirmar',
+    cancelButtonText: 'Cancelar'
+  })
+
+  if (!confirmacion.isConfirmed) return
+
+  try {
+    await axios.put(
+      `${import.meta.env.VITE_API_URL}/solicitudes/${id}/estado`,
+      { estado: nuevo_estado },
+      { headers: { Authorization: `Bearer ${auth.token}` } }
+    )
+
+    await Swal.fire('✅ Actualizada', 'El estado se actualizó correctamente', 'success')
+    await getSolicitudes()
+  } catch (err: any) {
+    await Swal.fire('❌ Error', err.response?.data?.detail || 'No se pudo actualizar', 'error')
+  }
+}
+
+onMounted(getSolicitudes)
+</script>
+
+<style scoped>
+/* ========== VARIABLES ========== */
+:root {
+  --color-primary: #10b981;
+  --color-primary-dark: #059669;
+  --color-bg-primary: #0f172a;
+  --color-bg-secondary: #1e293b;
+  --color-bg-tertiary: #111827;
+  --color-text-primary: #f1f5f9;
+  --color-text-secondary: #cbd5e1;
+  --color-text-dim: #94a3b8;
+  --color-border: rgba(148, 163, 184, 0.1);
+  --color-blue: #3b82f6;
+  --color-red: #ef4444;
+  --color-yellow: #f59e0b;
+  --color-purple: #8b5cf6;
+}
+
+/* ========== LAYOUT ========== */
+.solicitudes-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: linear-gradient(135deg, var(--color-bg-primary) 0%, var(--color-bg-tertiary) 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+/* ========== BACKGROUND BLOBS ========== */
+.background-blobs {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.blob {
+  position: absolute;
+  opacity: 0.15;
+  filter: blur(120px);
+  border-radius: 50%;
+}
+
+.blob-1 {
+  width: 600px;
+  height: 600px;
+  background: #10b981;
+  top: -200px;
+  left: -100px;
+  animation: float 25s infinite ease-in-out;
+}
+
+.blob-2 {
+  width: 400px;
+  height: 400px;
+  background: #06b6d4;
+  bottom: -100px;
+  right: -100px;
+  animation: float 30s infinite ease-in-out reverse;
+}
+
+.blob-3 {
+  width: 300px;
+  height: 300px;
+  background: #8b5cf6;
+  top: 50%;
+  right: 10%;
+  animation: float 28s infinite ease-in-out;
+}
+
+@keyframes float {
+  0%, 100% { transform: translate(0, 0); }
+  33% { transform: translate(30px, -50px); }
+  66% { transform: translate(-20px, 20px); }
+}
+
+/* ========== HEADER ========== */
+.solicitudes-header {
+  position: relative;
+  z-index: 10;
+  padding: 2rem 1rem;
+  border-bottom: 1px solid var(--color-border);
+  backdrop-filter: blur(10px);
+}
+
+.header-wrapper {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.icon-box {
+  width: 60px;
+  height: 60px;
+  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 16px rgba(16, 185, 129, 0.2);
+}
+
+.header-icon {
+  width: 32px;
+  height: 32px;
+  color: #ffffff;
+  stroke-width: 2;
+}
+
+.header-text h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin: 0;
+}
+
+.header-text p {
+  font-size: 0.9rem;
+  color: var(--color-text-dim);
+  margin: 0.25rem 0 0 0;
+}
+
+/* ========== MAIN CONTENT ========== */
+.solicitudes-main {
+  flex: 1;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 2rem 1rem;
+  overflow-y: auto;
+  position: relative;
+  z-index: 5;
+}
+
+.solicitudes-content {
+  width: 100%;
+  max-width: 1000px;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+/* ========== FORM SECTION ========== */
+.form-section {
+  position: relative;
+}
+
+.form-card {
+  background: rgba(30, 41, 59, 0.5);
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  padding: 2rem;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+}
+
+.form-header {
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.form-title {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin: 0 0 0.5rem 0;
+}
+
+.form-subtitle {
+  font-size: 0.85rem;
+  color: var(--color-text-dim);
+  margin: 0;
+}
+
+.form-container {
+  width: 100%;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group-full {
+  grid-column: 1 / -1;
+}
+
+.form-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.5rem;
+}
+
+.form-select,
+.form-input,
+.form-textarea {
+  background: rgba(15, 23, 42, 0.5);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  color: var(--color-text-primary);
+  font-size: 0.9rem;
+  font-family: inherit;
+  transition: all 0.3s ease;
+}
+
+.form-select:focus,
+.form-input:focus,
+.form-textarea:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+  background: rgba(15, 23, 42, 0.7);
+}
+
+.form-input,
+.form-select {
+  height: 42px;
+}
+
+.form-textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.form-hint {
+  font-size: 0.75rem;
+  color: var(--color-text-dim);
+  margin-top: 0.25rem;
+}
+
+.form-button {
+  grid-column: 1 / -1;
+  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
+  border: none;
+  color: white;
+  padding: 0.875rem 1.5rem;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+.form-button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+}
+
+.form-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.button-icon {
+  width: 18px;
+  height: 18px;
+}
+
+/* ========== SOLICITUDES SECTION ========== */
+.solicitudes-section {
+  position: relative;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--color-border);
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.section-title {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin: 0;
+}
+
+.section-stats {
+  display: flex;
+  gap: 2rem;
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.stat-label {
+  font-size: 0.75rem;
+  color: var(--color-text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.stat-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+.stat-value.pending {
+  color: var(--color-yellow);
+}
+
+.stat-value.approved {
+  color: var(--color-primary);
+}
+
+/* ========== TABLE ========== */
+.solicitudes-table-wrapper {
+  background: rgba(30, 41, 59, 0.5);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  backdrop-filter: blur(10px);
+  overflow: hidden;
+}
+
+.table-responsive {
+  overflow-x: auto;
+}
+
+.solicitudes-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.solicitudes-table thead {
+  background: rgba(16, 185, 129, 0.1);
+  border-bottom: 2px solid var(--color-border);
+}
+
+.solicitudes-table th {
+  padding: 1rem;
+  text-align: left;
+  font-weight: 600;
+  color: var(--color-primary);
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+}
+
+.solicitud-row {
+  border-bottom: 1px solid var(--color-border);
+  transition: all 0.3s ease;
+}
+
+.solicitud-row:hover {
+  background: rgba(16, 185, 129, 0.05);
+}
+
+.solicitudes-table td {
+  padding: 1rem;
+  color: var(--color-text-secondary);
+}
+
+.cell-tipo {
+  width: 15%;
+}
+
+.cell-descripcion {
+  width: 35%;
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cell-estado {
+  width: 12%;
+}
+
+.cell-fecha {
+  width: 20%;
+  font-size: 0.85rem;
+}
+
+.cell-acciones {
+  width: 18%;
+  display: flex;
+  gap: 0.5rem;
+}
+
+/* ========== BADGES ========== */
+.badge {
+  display: inline-block;
+  padding: 0.4rem 0.75rem;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.badge-green {
+  background: rgba(16, 185, 129, 0.15);
+  color: #10b981;
+}
+
+.badge-blue {
+  background: rgba(59, 130, 246, 0.15);
+  color: #3b82f6;
+}
+
+.badge-red {
+  background: rgba(239, 68, 68, 0.15);
+  color: #ef4444;
+}
+
+.badge-purple {
+  background: rgba(139, 92, 246, 0.15);
+  color: #8b5cf6;
+}
+
+.badge-gray {
+  background: rgba(148, 163, 184, 0.15);
+  color: #cbd5e1;
+}
+
+/* ========== STATUS BADGES ========== */
+.status-badge {
+  display: inline-block;
+  padding: 0.4rem 0.75rem;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.status-pendiente {
+  background: rgba(245, 158, 11, 0.15);
+  color: #f59e0b;
+}
+
+.status-aprobada {
+  background: rgba(16, 185, 129, 0.15);
+  color: #10b981;
+}
+
+.status-rechazada {
+  background: rgba(239, 68, 68, 0.15);
+  color: #ef4444;
+}
+
+/* ========== ACTION BUTTONS ========== */
+.action-btn {
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.approve-btn {
+  background: rgba(16, 185, 129, 0.15);
+  color: #10b981;
+}
+
+.approve-btn:hover {
+  background: rgba(16, 185, 129, 0.3);
+  transform: translateY(-2px);
+}
+
+.reject-btn {
+  background: rgba(239, 68, 68, 0.15);
+  color: #ef4444;
+}
+
+.reject-btn:hover {
+  background: rgba(239, 68, 68, 0.3);
+  transform: translateY(-2px);
+}
+
+.action-icon {
+  width: 18px;
+  height: 18px;
+}
+
+/* ========== EMPTY STATE ========== */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 2rem;
+  background: rgba(30, 41, 59, 0.5);
+  border: 1px dashed var(--color-border);
+  border-radius: 12px;
+  text-align: center;
+}
+
+.empty-icon {
+  width: 48px;
+  height: 48px;
+  color: var(--color-text-dim);
+  margin-bottom: 1rem;
+  opacity: 0.5;
+}
+
+.empty-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  margin: 0 0 0.5rem 0;
+}
+
+.empty-text {
+  font-size: 0.9rem;
+  color: var(--color-text-dim);
+  margin: 0;
+}
+
+/* ========== FOOTER ========== */
+.solicitudes-footer {
+  position: relative;
+  z-index: 5;
+  text-align: center;
+  padding: 1.5rem;
+  border-top: 1px solid var(--color-border);
+  background: rgba(15, 23, 42, 0.5);
+  backdrop-filter: blur(10px);
+  font-size: 0.85rem;
+  color: var(--color-text-dim);
+}
+
+.footer-highlight {
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+/* ========== RESPONSIVE ========== */
+@media (max-width: 768px) {
+  .solicitudes-main {
+    padding: 1rem 0.5rem;
+  }
+
+  .header-text h1 {
+    font-size: 1.5rem;
+  }
+
+  .header-text p {
+    font-size: 0.8rem;
+  }
+
+  .form-card {
+    padding: 1.5rem;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .section-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .section-stats {
+    flex-direction: row;
+    gap: 1rem;
+  }
+
+  .solicitudes-table {
+    font-size: 0.8rem;
+  }
+
+  .solicitudes-table th,
+  .solicitudes-table td {
+    padding: 0.75rem 0.5rem;
+  }
+
+  .cell-descripcion {
+    max-width: 100px;
+  }
+
+  .cell-acciones {
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 480px) {
+  .solicitudes-container {
+    min-height: auto;
+  }
+
+  .header-left {
+    gap: 1rem;
+  }
+
+  .icon-box {
+    width: 50px;
+    height: 50px;
+  }
+
+  .header-icon {
+    width: 28px;
+    height: 28px;
+  }
+
+  .header-text h1 {
+    font-size: 1.25rem;
+  }
+
+  .form-card {
+    padding: 1rem;
+  }
+
+  .section-stats {
+    gap: 0.5rem;
+  }
+
+  .stat-value {
+    font-size: 1.2rem;
+  }
+
+  .table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+</style>
