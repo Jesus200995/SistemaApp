@@ -7,10 +7,13 @@
       <div class="blob blob-3"></div>
     </div>
 
-    <!-- Header -->
+    <!-- Header con botón de regreso -->
     <header class="solicitudes-header">
       <div class="header-wrapper">
         <div class="header-left">
+          <router-link to="/dashboard" class="back-button" title="Volver al Dashboard">
+            <ArrowLeft class="back-icon" />
+          </router-link>
           <div class="icon-box">
             <FileText class="header-icon" />
           </div>
@@ -185,7 +188,7 @@ import { ref, onMounted, computed } from 'vue'
 import axios from 'axios'
 import Swal from 'sweetalert2'
 import { useAuthStore } from '../stores/auth'
-import { FileText, Send, Check, X } from 'lucide-vue-next'
+import { FileText, Send, Check, X, ArrowLeft } from 'lucide-vue-next'
 
 const auth = useAuthStore()
 const form = ref({ tipo: '', destino_id: null, descripcion: '' })
@@ -343,55 +346,58 @@ onMounted(getSolicitudes)
 
 /* ========== LAYOUT ========== */
 .solicitudes-container {
+  min-height: 100vh;
+  width: 100%;
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+  position: relative;
+  overflow-x: hidden;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
-  background: linear-gradient(135deg, var(--color-bg-primary) 0%, var(--color-bg-tertiary) 100%);
-  position: relative;
-  overflow: hidden;
 }
 
 /* ========== BACKGROUND BLOBS ========== */
 .background-blobs {
-  position: absolute;
+  position: fixed;
   inset: 0;
   overflow: hidden;
-  z-index: 0;
   pointer-events: none;
+  z-index: 0;
 }
 
 .blob {
   position: absolute;
-  opacity: 0.15;
+  opacity: 0.08;
   filter: blur(120px);
+  mix-blend-mode: screen;
   border-radius: 50%;
 }
 
 .blob-1 {
   width: 600px;
   height: 600px;
-  background: #10b981;
-  top: -200px;
-  left: -100px;
-  animation: float 25s infinite ease-in-out;
+  background: linear-gradient(135deg, #10b981, #06b6d4);
+  top: -300px;
+  left: -300px;
+  animation: float 8s ease-in-out infinite;
 }
 
 .blob-2 {
-  width: 400px;
-  height: 400px;
-  background: #06b6d4;
-  bottom: -100px;
-  right: -100px;
-  animation: float 30s infinite ease-in-out reverse;
+  width: 500px;
+  height: 500px;
+  background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+  top: 50%;
+  right: -250px;
+  animation: float 10s ease-in-out infinite reverse;
 }
 
 .blob-3 {
-  width: 300px;
-  height: 300px;
-  background: #8b5cf6;
-  top: 50%;
-  right: 10%;
-  animation: float 28s infinite ease-in-out;
+  width: 400px;
+  height: 400px;
+  background: linear-gradient(135deg, #ec4899, #f59e0b);
+  bottom: -200px;
+  left: 50%;
+  animation: float 12s ease-in-out infinite;
 }
 
 @keyframes float {
@@ -404,9 +410,11 @@ onMounted(getSolicitudes)
 .solicitudes-header {
   position: relative;
   z-index: 10;
-  padding: 2rem 1rem;
-  border-bottom: 1px solid var(--color-border);
+  background: linear-gradient(135deg, rgba(15, 23, 42, 0.95) 0%, rgba(30, 41, 59, 0.95) 100%);
+  border-bottom: 1px solid rgba(148, 163, 184, 0.1);
   backdrop-filter: blur(10px);
+  padding: 1.5rem 2rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
 }
 
 .header-wrapper {
@@ -418,6 +426,38 @@ onMounted(getSolicitudes)
   display: flex;
   align-items: center;
   gap: 1.5rem;
+}
+
+/* ========== BACK BUTTON ========== */
+.back-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  background: rgba(16, 185, 129, 0.1);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  color: var(--color-primary);
+}
+
+.back-button:hover {
+  background: rgba(16, 185, 129, 0.2);
+  transform: translateX(-4px);
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25);
+}
+
+.back-button:active {
+  transform: translateX(-2px);
+}
+
+.back-icon {
+  width: 20px;
+  height: 20px;
+  stroke-width: 2.5;
 }
 
 .icon-box {
@@ -439,15 +479,18 @@ onMounted(getSolicitudes)
 }
 
 .header-text h1 {
-  font-size: 2rem;
+  font-size: 1.75rem;
   font-weight: 700;
-  color: var(--color-text-primary);
+  background: linear-gradient(135deg, #10b981, #34d399);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
   margin: 0;
 }
 
 .header-text p {
   font-size: 0.9rem;
-  color: var(--color-text-dim);
+  color: #94a3b8;
   margin: 0.25rem 0 0 0;
 }
 
@@ -494,13 +537,13 @@ onMounted(getSolicitudes)
 .form-title {
   font-size: 1.3rem;
   font-weight: 700;
-  color: var(--color-text-primary);
+  color: #f1f5f9;
   margin: 0 0 0.5rem 0;
 }
 
 .form-subtitle {
   font-size: 0.85rem;
-  color: var(--color-text-dim);
+  color: #cbd5e1;
   margin: 0;
 }
 
@@ -526,7 +569,7 @@ onMounted(getSolicitudes)
 .form-label {
   font-size: 0.8rem;
   font-weight: 600;
-  color: var(--color-text-secondary);
+  color: #e2e8f0;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   margin-bottom: 0.5rem;
@@ -536,10 +579,10 @@ onMounted(getSolicitudes)
 .form-input,
 .form-textarea {
   background: rgba(15, 23, 42, 0.5);
-  border: 1px solid var(--color-border);
+  border: 1px solid rgba(148, 163, 184, 0.3);
   border-radius: 8px;
   padding: 0.75rem 1rem;
-  color: var(--color-text-primary);
+  color: #f1f5f9;
   font-size: 0.9rem;
   font-family: inherit;
   transition: all 0.3s ease;
@@ -566,7 +609,7 @@ onMounted(getSolicitudes)
 
 .form-hint {
   font-size: 0.75rem;
-  color: var(--color-text-dim);
+  color: #cbd5e1;
   margin-top: 0.25rem;
 }
 
@@ -622,7 +665,7 @@ onMounted(getSolicitudes)
 .section-title {
   font-size: 1.3rem;
   font-weight: 700;
-  color: var(--color-text-primary);
+  color: #f1f5f9;
   margin: 0;
 }
 
@@ -639,7 +682,7 @@ onMounted(getSolicitudes)
 
 .stat-label {
   font-size: 0.75rem;
-  color: var(--color-text-dim);
+  color: #cbd5e1;
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
@@ -647,7 +690,7 @@ onMounted(getSolicitudes)
 .stat-value {
   font-size: 1.5rem;
   font-weight: 700;
-  color: var(--color-text-primary);
+  color: #f1f5f9;
 }
 
 .stat-value.pending {
@@ -890,6 +933,16 @@ onMounted(getSolicitudes)
     padding: 1rem 0.5rem;
   }
 
+  .back-button {
+    width: 40px;
+    height: 40px;
+  }
+
+  .back-icon {
+    width: 18px;
+    height: 18px;
+  }
+
   .header-text h1 {
     font-size: 1.5rem;
   }
@@ -937,6 +990,16 @@ onMounted(getSolicitudes)
 @media (max-width: 480px) {
   .solicitudes-container {
     min-height: auto;
+  }
+
+  .back-button {
+    width: 36px;
+    height: 36px;
+  }
+
+  .back-icon {
+    width: 16px;
+    height: 16px;
   }
 
   .header-left {

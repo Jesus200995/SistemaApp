@@ -7,10 +7,13 @@
       <div class="blob blob-3"></div>
     </div>
 
-    <!-- Header principal -->
+    <!-- Header principal con botón de regreso -->
     <header class="header-mapa">
       <div class="header-wrapper">
         <div class="header-left">
+          <router-link to="/dashboard" class="back-button" title="Volver al Dashboard">
+            <ArrowLeft class="back-icon" />
+          </router-link>
           <div class="icon-box">
             <Layers class="icon-header" />
           </div>
@@ -231,7 +234,7 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
-import { Layers, MapPin } from 'lucide-vue-next'
+import { Layers, MapPin, ArrowLeft } from 'lucide-vue-next'
 import { LMap, LTileLayer, LMarker, LPopup } from '@vue-leaflet/vue-leaflet'
 import L from 'leaflet'
 import axios from 'axios'
@@ -506,6 +509,38 @@ onMounted(() => {
   display: flex;
   align-items: center;
   gap: 1rem;
+}
+
+/* ========== BACK BUTTON ========== */
+.back-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  background: rgba(16, 185, 129, 0.1);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  color: #10b981;
+}
+
+.back-button:hover {
+  background: rgba(16, 185, 129, 0.2);
+  transform: translateX(-4px);
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25);
+}
+
+.back-button:active {
+  transform: translateX(-2px);
+}
+
+.back-icon {
+  width: 20px;
+  height: 20px;
+  stroke-width: 2.5;
 }
 
 .icon-box {
@@ -798,6 +833,16 @@ onMounted(() => {
     padding: 1rem;
   }
 
+  .back-button {
+    width: 40px;
+    height: 40px;
+  }
+
+  .back-icon {
+    width: 18px;
+    height: 18px;
+  }
+
   .header-wrapper {
     flex-direction: column;
   }
@@ -1011,5 +1056,31 @@ onMounted(() => {
 
 .legend-checkbox:hover {
   color: #e2e8f0;
+}
+
+@media (max-width: 480px) {
+  .back-button {
+    width: 36px;
+    height: 36px;
+  }
+
+  .back-icon {
+    width: 16px;
+    height: 16px;
+  }
+
+  .header-left {
+    gap: 0.75rem;
+  }
+
+  .icon-box {
+    width: 44px;
+    height: 44px;
+  }
+
+  .icon-header {
+    width: 24px;
+    height: 24px;
+  }
 }
 </style>

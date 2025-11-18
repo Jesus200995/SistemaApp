@@ -41,7 +41,10 @@
 
           <!-- Bienvenida -->
           <div class="welcome-section">
-            <h2 class="welcome-title">¡Bienvenido! 👋</h2>
+            <div class="welcome-icon-wrapper">
+              <Smile class="welcome-icon" />
+            </div>
+            <h2 class="welcome-title">¡Bienvenido!</h2>
             <p class="user-name">{{ auth.user?.nombre || 'Usuario' }}</p>
           </div>
 
@@ -102,7 +105,7 @@
               class="specialized-card specialized-seguimiento"
             >
               <div class="specialized-icon-wrapper">
-                <span class="specialized-icon">📋</span>
+                <Clipboard class="specialized-icon-lucide" />
               </div>
               <h4 class="specialized-title">Seguimiento de Campo</h4>
               <p class="specialized-desc">Registrar visitas y avances</p>
@@ -118,7 +121,7 @@
               class="specialized-card specialized-sembradores"
             >
               <div class="specialized-icon-wrapper">
-                <span class="specialized-icon">🌱</span>
+                <Sprout class="specialized-icon-lucide" />
               </div>
               <h4 class="specialized-title">Sembradores en Mapa</h4>
               <p class="specialized-desc">Gestionar sembradores</p>
@@ -135,7 +138,7 @@
               class="specialized-card specialized-reportes"
             >
               <div class="specialized-icon-wrapper">
-                <span class="specialized-icon">📊</span>
+                <BarChart3 class="specialized-icon-lucide" />
               </div>
               <h4 class="specialized-title">Reportes y Estadísticas</h4>
               <p class="specialized-desc">Análisis general</p>
@@ -168,7 +171,7 @@
               class="specialized-card specialized-usuarios"
             >
               <div class="specialized-icon-wrapper">
-                <span class="specialized-icon">👥</span>
+                <Users class="specialized-icon-lucide" />
               </div>
               <h4 class="specialized-title">Gestión de Usuarios</h4>
               <p class="specialized-desc">Administrar usuarios</p>
@@ -185,15 +188,15 @@
           class="stats-grid"
         >
           <div class="stat-card stat-online">
-            <div class="stat-icon">✓</div>
+            <div class="stat-icon"><Check class="stat-lucide" /></div>
             <p class="stat-text">Conectado</p>
           </div>
           <div class="stat-card stat-secure">
-            <div class="stat-icon">🛡️</div>
+            <div class="stat-icon"><Shield class="stat-lucide" /></div>
             <p class="stat-text">Seguro</p>
           </div>
           <div class="stat-card stat-active">
-            <div class="stat-icon">⚡</div>
+            <div class="stat-icon"><Zap class="stat-lucide" /></div>
             <p class="stat-text">Activo</p>
           </div>
         </div>
@@ -216,7 +219,7 @@
 import { onMounted } from 'vue'
 import { useAuthStore } from '../stores/auth'
 import { useRouter } from 'vue-router'
-import { LogOut, User, Mail, LayoutDashboard, BarChart3, Users, Settings, MapPin, Sprout, FileText } from 'lucide-vue-next'
+import { LogOut, User, Mail, LayoutDashboard, BarChart3, Users, Settings, MapPin, Sprout, FileText, Smile, Clipboard, Check, Shield, Zap } from 'lucide-vue-next'
 
 const auth = useAuthStore()
 const router = useRouter()
@@ -451,6 +454,36 @@ const logout = () => {
   margin-bottom: 1rem;
 }
 
+.welcome-icon-wrapper {
+  width: 56px;
+  height: 56px;
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(34, 197, 94, 0.15));
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 0.75rem;
+  transition: all 0.3s ease;
+}
+
+.welcome-icon {
+  width: 28px;
+  height: 28px;
+  color: #10b981;
+  transition: transform 0.3s ease;
+}
+
+.profile-card:hover .welcome-icon-wrapper {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.3), rgba(34, 197, 94, 0.25));
+  box-shadow: 0 8px 16px rgba(16, 185, 129, 0.3);
+  transform: scale(1.05);
+}
+
+.profile-card:hover .welcome-icon {
+  transform: scale(1.15);
+}
+
 .welcome-title {
   font-size: 1.4rem;
   font-weight: 600;
@@ -683,7 +716,14 @@ const logout = () => {
   transition: transform 0.3s ease;
 }
 
-.specialized-card:hover .specialized-icon {
+.specialized-icon-lucide {
+  width: 32px;
+  height: 32px;
+  color: white;
+  transition: transform 0.3s ease;
+}
+
+.specialized-card:hover .specialized-icon-lucide {
   transform: scale(1.2);
 }
 
@@ -807,6 +847,15 @@ const logout = () => {
 .stat-icon {
   font-size: 1.4rem;
   margin-bottom: 0.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.stat-lucide {
+  width: 24px;
+  height: 24px;
+  color: inherit;
 }
 
 .stat-text {

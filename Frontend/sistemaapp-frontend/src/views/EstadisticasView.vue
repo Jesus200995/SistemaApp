@@ -7,10 +7,13 @@
       <div class="blob blob-3"></div>
     </div>
 
-    <!-- Header -->
+    <!-- Header con botón de regreso -->
     <header class="header-estadisticas">
       <div class="header-wrapper">
         <div class="header-left">
+          <router-link to="/dashboard" class="back-button" title="Volver al Dashboard">
+            <ArrowLeft class="back-icon" />
+          </router-link>
           <div class="icon-box">
             <BarChart3 class="header-icon" />
           </div>
@@ -228,7 +231,7 @@ import {
   CategoryScale,
   LinearScale
 } from 'chart.js'
-import { BarChart3, Users, CheckCircle2, TrendingUp, List, BarChart2, Leaf } from 'lucide-vue-next'
+import { BarChart3, Users, CheckCircle2, TrendingUp, List, BarChart2, Leaf, ArrowLeft } from 'lucide-vue-next'
 
 // Registrar componentes de Chart.js
 ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale)
@@ -371,54 +374,55 @@ onMounted(() => {
 
 .estadisticas-container {
   min-height: 100vh;
-  background: linear-gradient(135deg, var(--color-bg) 0%, var(--color-bg-dark) 100%);
+  width: 100%;
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
   position: relative;
-  overflow: hidden;
+  overflow-x: hidden;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
 }
 
 /* ========== BLOBS ========== */
 .background-blobs {
   position: fixed;
-  width: 100%;
-  height: 100%;
-  top: 0;
-  left: 0;
-  z-index: 0;
+  inset: 0;
+  overflow: hidden;
   pointer-events: none;
+  z-index: 0;
 }
 
 .blob {
   position: absolute;
-  filter: blur(40px);
   opacity: 0.08;
+  filter: blur(120px);
+  mix-blend-mode: screen;
   border-radius: 50%;
 }
 
 .blob-1 {
-  width: 400px;
-  height: 400px;
-  background: var(--color-primary);
-  top: -50%;
-  left: -10%;
-  animation: float 20s infinite ease-in-out;
+  width: 600px;
+  height: 600px;
+  background: linear-gradient(135deg, #10b981, #06b6d4);
+  top: -300px;
+  left: -300px;
+  animation: float 8s ease-in-out infinite;
 }
 
 .blob-2 {
-  width: 300px;
-  height: 300px;
-  background: #3b82f6;
+  width: 500px;
+  height: 500px;
+  background: linear-gradient(135deg, #3b82f6, #8b5cf6);
   top: 50%;
-  right: -5%;
-  animation: float 15s infinite ease-in-out reverse;
+  right: -250px;
+  animation: float 10s ease-in-out infinite reverse;
 }
 
 .blob-3 {
-  width: 350px;
-  height: 350px;
-  background: #8b5cf6;
-  bottom: -10%;
+  width: 400px;
+  height: 400px;
+  background: linear-gradient(135deg, #ec4899, #f59e0b);
+  bottom: -200px;
   left: 50%;
-  animation: float 25s infinite ease-in-out;
+  animation: float 12s ease-in-out infinite;
 }
 
 @keyframes float {
@@ -431,9 +435,11 @@ onMounted(() => {
 .header-estadisticas {
   position: relative;
   z-index: 10;
-  padding: 2rem 1rem;
+  background: linear-gradient(135deg, rgba(15, 23, 42, 0.95) 0%, rgba(30, 41, 59, 0.95) 100%);
   border-bottom: 1px solid rgba(148, 163, 184, 0.1);
   backdrop-filter: blur(10px);
+  padding: 1.5rem 2rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
 }
 
 .header-wrapper {
@@ -445,6 +451,38 @@ onMounted(() => {
   display: flex;
   align-items: center;
   gap: 1.5rem;
+}
+
+/* ========== BACK BUTTON ========== */
+.back-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  background: rgba(16, 185, 129, 0.1);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  color: var(--color-primary);
+}
+
+.back-button:hover {
+  background: rgba(16, 185, 129, 0.2);
+  transform: translateX(-4px);
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25);
+}
+
+.back-button:active {
+  transform: translateX(-2px);
+}
+
+.back-icon {
+  width: 20px;
+  height: 20px;
+  stroke-width: 2.5;
 }
 
 .icon-box {
@@ -470,14 +508,17 @@ onMounted(() => {
 }
 
 .header-title {
-  font-size: 2rem;
+  font-size: 1.75rem;
   font-weight: 700;
-  color: var(--color-text);
+  background: linear-gradient(135deg, #10b981, #34d399);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
   margin: 0;
 }
 
 .header-subtitle {
-  color: var(--color-text-dim);
+  color: #94a3b8;
   margin: 0.5rem 0 0 0;
   font-size: 0.95rem;
 }
@@ -564,7 +605,7 @@ onMounted(() => {
 
 .stat-label {
   font-size: 0.85rem;
-  color: var(--color-text-dim);
+  color: #cbd5e1;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   margin: 0 0 0.5rem 0;
@@ -573,7 +614,7 @@ onMounted(() => {
 .stat-value {
   font-size: 2.2rem;
   font-weight: 700;
-  color: var(--color-text);
+  color: #f1f5f9;
   margin: 0 0 0.5rem 0;
 }
 
@@ -649,13 +690,13 @@ onMounted(() => {
 .chart-title {
   font-size: 1.3rem;
   font-weight: 700;
-  color: var(--color-text);
+  color: #f1f5f9;
   margin: 0 0 0.25rem 0;
 }
 
 .chart-subtitle {
   font-size: 0.85rem;
-  color: var(--color-text-dim);
+  color: #cbd5e1;
   margin: 0;
 }
 
@@ -685,12 +726,12 @@ onMounted(() => {
 
 .empty-text {
   font-size: 1.1rem;
-  color: var(--color-text);
+  color: #f1f5f9;
   margin: 0 0 0.5rem 0;
 }
 
 .empty-subtext {
-  color: var(--color-text-dim);
+  color: #cbd5e1;
   margin: 0;
 }
 
@@ -921,6 +962,16 @@ onMounted(() => {
     padding: 1rem 0.5rem;
   }
 
+  .back-button {
+    width: 40px;
+    height: 40px;
+  }
+
+  .back-icon {
+    width: 18px;
+    height: 18px;
+  }
+
   .header-title {
     font-size: 1.5rem;
   }
@@ -968,6 +1019,16 @@ onMounted(() => {
 @media (max-width: 480px) {
   .estadisticas-container {
     padding: 0;
+  }
+
+  .back-button {
+    width: 36px;
+    height: 36px;
+  }
+
+  .back-icon {
+    width: 16px;
+    height: 16px;
   }
 
   .header-estadisticas {
