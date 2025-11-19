@@ -478,8 +478,12 @@ const formatRole = (role: string): string => {
   padding: 0;
   overflow-y: auto;
   overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
   padding-top: 56px;
   box-sizing: border-box;
+  position: relative;
+  height: 100vh;
+  will-change: scroll-position;
 }
 
 /* ========== HEADER ========== */
@@ -665,6 +669,7 @@ const formatRole = (role: string): string => {
   padding: 0;
   overflow-y: auto;
   overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
   width: 100%;
   min-height: calc(100vh - 56px);
   box-sizing: border-box;
@@ -675,6 +680,8 @@ const formatRole = (role: string): string => {
   max-width: 900px;
   padding: 1.5rem 0.5rem 3rem 0.5rem;
   box-sizing: border-box;
+  position: relative;
+  z-index: 1;
 }
 
 /* ========== PROFILE LABEL ========== */
