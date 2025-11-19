@@ -1,5 +1,31 @@
 <template>
   <div class="login-container">
+    <!-- Animación de carga con flor girando -->
+    <transition name="fade-loading">
+      <div v-if="isLoading" class="loading-overlay">
+        <div class="loading-container">
+          <svg class="rotating-flower" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+            <!-- Tallo -->
+            <line x1="100" y1="100" x2="100" y2="30" stroke="#22C55E" stroke-width="3" stroke-linecap="round"/>
+            
+            <!-- Pétalos de flor -->
+            <circle cx="100" cy="30" r="12" fill="#10B981" class="petal" style="transform-origin: 100px 100px"/>
+            <circle cx="130" cy="50" r="12" fill="#10B981" class="petal" style="transform-origin: 100px 100px"/>
+            <circle cx="145" cy="85" r="12" fill="#10B981" class="petal" style="transform-origin: 100px 100px"/>
+            <circle cx="130" cy="120" r="12" fill="#10B981" class="petal" style="transform-origin: 100px 100px"/>
+            <circle cx="100" cy="140" r="12" fill="#10B981" class="petal" style="transform-origin: 100px 100px"/>
+            <circle cx="70" cy="120" r="12" fill="#10B981" class="petal" style="transform-origin: 100px 100px"/>
+            <circle cx="55" cy="85" r="12" fill="#10B981" class="petal" style="transform-origin: 100px 100px"/>
+            <circle cx="70" cy="50" r="12" fill="#10B981" class="petal" style="transform-origin: 100px 100px"/>
+            
+            <!-- Centro de la flor -->
+            <circle cx="100" cy="100" r="16" fill="#FCD34D"/>
+          </svg>
+          <p class="loading-text">Cargando...</p>
+        </div>
+      </div>
+    </transition>
+
     <!-- Fondo animado -->
     <div class="background-decoration">
       <div class="blob blob-1"></div>
@@ -170,13 +196,21 @@ import { Mail, Lock, AlertCircle } from 'lucide-vue-next'
 
 const email = ref('')
 const password = ref('')
+const isLoading = ref(false)
 const auth = useAuthStore()
 const router = useRouter()
 
 const handleLogin = async () => {
-  const ok = await auth.login(email.value, password.value)
-  if (ok) {
-    router.push('/dashboard')
+  isLoading.value = true
+  try {
+    const ok = await auth.login(email.value, password.value)
+    if (ok) {
+      // Esperar un poco para que la animación sea visible
+      await new Promise(resolve => setTimeout(resolve, 1500))
+      router.push('/dashboard')
+    }
+  } finally {
+    isLoading.value = false
   }
 }
 </script>
@@ -1220,5 +1254,124 @@ const handleLogin = async () => {
 
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(148, 163, 184, 0.5);
+}
+
+/* ========== LOADING ANIMATION ========== */
+.loading-overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(15, 23, 42, 0.95);
+  backdrop-filter: blur(4px);
+  z-index: 9999;
+}
+
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+}
+
+.rotating-flower {
+  width: 80px;
+  height: 80px;
+  animation: rotate-flower 3s linear infinite;
+}
+
+@keyframes rotate-flower {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.loading-text {
+  color: #22C55E;
+  font-size: 1.125rem;
+  font-weight: 500;
+  letter-spacing: 1px;
+  animation: pulse-text 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse-text {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/* Transición de fade para el overlay de carga */
+.fade-loading-enter-active,
+.fade-loading-leave-active {
+  transition: opacity 0.3s ease;
+}
+
+.fade-loading-enter-from,
+.fade-loading-leave-to {
+  opacity: 0;
+}
+
+/* ========== RESPONSIVE - LOADING ========== */
+@media (max-width: 1024px) {
+  .rotating-flower {
+    width: 70px;
+    height: 70px;
+  }
+  
+  .loading-text {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .rotating-flower {
+    width: 65px;
+    height: 65px;
+  }
+  
+  .loading-text {
+    font-size: 0.95rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .rotating-flower {
+    width: 60px;
+    height: 60px;
+  }
+  
+  .loading-text {
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .rotating-flower {
+    width: 55px;
+    height: 55px;
+  }
+  
+  .loading-text {
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 320px) {
+  .rotating-flower {
+    width: 50px;
+    height: 50px;
+  }
+  
+  .loading-text {
+    font-size: 0.8rem;
+  }
 }
 </style>
