@@ -46,6 +46,9 @@
     <!-- Contenido principal -->
     <main class="dashboard-main">
       <div class="dashboard-content">
+        <!-- Etiqueta de perfil -->
+        <div class="profile-label">Mi Perfil</div>
+
         <!-- Tarjeta de perfil -->
         <div
           v-motion
@@ -53,41 +56,17 @@
           :enter="{ opacity: 1, scale: 1, y: 0, transition: { delay: 200, duration: 700 } }"
           class="profile-card"
         >
-          <!-- Avatar con glow -->
-          <div class="avatar-wrapper">
-            <div class="avatar-glow"></div>
-            <img
-              src="https://ui-avatars.com/api/?name=Usuario&background=10b981&color=fff&size=200&bold=true&rounded=true"
-              alt="avatar"
-              class="avatar-image"
-            />
-          </div>
-
-          <!-- Bienvenida -->
-          <div class="welcome-section">
-            <div class="welcome-icon-wrapper">
-              <Smile class="welcome-icon" />
+          <!-- Avatar neon circle con iniciales -->
+          <div class="profile-header">
+            <div class="avatar-initials">
+              {{ getInitials(auth.user?.nombre || 'U') }}
             </div>
-            <h2 class="welcome-title">¡Bienvenido!</h2>
-            <p class="user-name">{{ auth.user?.nombre || 'Usuario' }}</p>
-          </div>
 
-          <!-- Información -->
-          <div class="info-box">
-            <div class="info-item">
-              <User class="info-icon" />
-              <div class="info-text">
-                <span class="info-label">Rol</span>
-                <span class="info-value">{{ auth.user?.rol || 'N/A' }}</span>
-              </div>
-            </div>
-            <div class="divider"></div>
-            <div class="info-item">
-              <Mail class="info-icon" />
-              <div class="info-text">
-                <span class="info-label">Correo</span>
-                <span class="info-value">{{ auth.user?.email || 'N/A' }}</span>
-              </div>
+            <!-- Información del usuario -->
+            <div class="user-info-section">
+              <h2 class="user-full-name">{{ auth.user?.nombre || 'Usuario' }}</h2>
+              <div class="role-badge">{{ formatRole(auth.user?.rol || 'N/A') }}</div>
+              <p class="user-email">{{ auth.user?.email || 'N/A' }}</p>
             </div>
           </div>
         </div>
@@ -456,6 +435,28 @@ const logout = () => {
   auth.logout()
   window.location.href = '/login'
 }
+
+// Obtener iniciales del usuario (máximo 2 caracteres)
+const getInitials = (name: string): string => {
+  return name
+    .split(' ')
+    .map((word) => word.charAt(0))
+    .slice(0, 2)
+    .join('')
+    .toUpperCase()
+}
+
+// Formatear el rol correctamente (convertir a palabras legibles)
+const formatRole = (role: string): string => {
+  const roleMap: { [key: string]: string } = {
+    admin: 'Administrador',
+    territorial: 'Territorial',
+    coordinador: 'Coordinador',
+    sembrador: 'Sembrador',
+    usuario: 'Usuario',
+  }
+  return roleMap[role?.toLowerCase()] || role
+}
 </script>
 
 <style scoped>
@@ -672,8 +673,25 @@ const logout = () => {
 .dashboard-content {
   width: 100%;
   max-width: 900px;
-  padding: 1.2rem 0.5rem 2rem 0.5rem;
+  padding: 1.5rem 0.5rem 3rem 0.5rem;
   box-sizing: border-box;
+}
+
+/* ========== PROFILE LABEL ========== */
+.profile-label {
+  display: inline-block;
+  background: linear-gradient(90deg, #10b981 0%, #84cc16 100%);
+  color: #0f172a;
+  padding: 0.35rem 1rem;
+  border-radius: 6px 6px 0 0;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-align: center;
+  margin-bottom: 0;
+  margin-left: 0.5rem;
+  text-transform: none;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25);
 }
 
 /* ========== PROFILE CARD ========== */
@@ -683,10 +701,11 @@ const logout = () => {
   border-radius: 20px;
   padding: 1rem 0.8rem;
   backdrop-filter: blur(10px);
-  text-align: center;
+  text-align: left;
   margin-bottom: 1rem;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
   transition: all 0.3s ease;
+  margin-top: -2px;
 }
 
 .profile-card:hover {
@@ -694,137 +713,121 @@ const logout = () => {
   box-shadow: 0 12px 48px rgba(16, 185, 129, 0.1);
 }
 
-.avatar-wrapper {
-  position: relative;
-  width: 90px;
-  height: 90px;
-  margin: 0 auto 0.8rem;
+/* ===== NEW PROFILE HEADER LAYOUT ===== */
+.profile-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.2rem;
+}
+
+.avatar-initials {
+  flex-shrink: 0;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  border: 2.5px solid #84cc16;
   display: flex;
   align-items: center;
   justify-content: center;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #84cc16;
+  text-shadow: 0 0 10px rgba(132, 204, 22, 0.6);
+  background: transparent;
+  box-shadow: 
+    inset 0 0 10px rgba(132, 204, 22, 0.2),
+    0 0 15px rgba(132, 204, 22, 0.3);
+}
+
+.user-info-section {
+  flex: 1;
+}
+
+.user-full-name {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #e2e8f0;
+  margin-bottom: 0.3rem;
+}
+
+.role-badge {
+  display: inline-block;
+  padding: 0.25rem 0.8rem;
+  border: 1.5px solid #84cc16;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #84cc16;
+  margin-bottom: 0.3rem;
+}
+
+.user-email {
+  font-size: 0.85rem;
+  color: #cbd5e1;
+  font-style: italic;
+  margin: 0;
+}
+
+/* ===== OLD STYLES (keeping for reference/removal) ===== */
+.avatar-wrapper {
+  display: none;
 }
 
 .avatar-glow {
-  position: absolute;
-  inset: -10px;
-  background: linear-gradient(135deg, #10b981, #06b6d4);
-  border-radius: 50%;
-  opacity: 0.2;
-  animation: glow-pulse 3s ease-in-out infinite;
-}
-
-@keyframes glow-pulse {
-  0%, 100% { opacity: 0.2; }
-  50% { opacity: 0.4; }
+  display: none;
 }
 
 .avatar-image {
-  position: relative;
-  width: 75px;
-  height: 75px;
-  border-radius: 50%;
-  border: 3px solid #10b981;
-  object-fit: cover;
-  box-shadow: 0 8px 24px rgba(16, 185, 129, 0.3);
+  display: none;
 }
 
 .welcome-section {
-  margin-bottom: 0.75rem;
+  display: none;
 }
 
 .welcome-icon-wrapper {
-  width: 48px;
-  height: 48px;
-  background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(34, 197, 94, 0.15));
-  border: 1px solid rgba(16, 185, 129, 0.3);
-  border-radius: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 0 auto 0.5rem;
-  transition: all 0.3s ease;
+  display: none;
 }
 
 .welcome-icon {
-  width: 24px;
-  height: 24px;
-  color: #10b981;
-  transition: transform 0.3s ease;
-}
-
-.profile-card:hover .welcome-icon-wrapper {
-  background: linear-gradient(135deg, rgba(16, 185, 129, 0.3), rgba(34, 197, 94, 0.25));
-  box-shadow: 0 8px 16px rgba(16, 185, 129, 0.3);
-  transform: scale(1.05);
-}
-
-.profile-card:hover .welcome-icon {
-  transform: scale(1.15);
+  display: none;
 }
 
 .welcome-title {
-  font-size: 1.2rem;
-  font-weight: 600;
-  margin-bottom: 0.25rem;
-  color: #e2e8f0;
+  display: none;
 }
 
 .user-name {
-  font-size: 1.3rem;
-  font-weight: 700;
-  background: linear-gradient(135deg, #10b981, #6ee7b7);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  margin-bottom: 0.75rem;
+  display: none;
 }
 
 .info-box {
-  background: rgba(15, 23, 42, 0.5);
-  border: 1px solid rgba(148, 163, 184, 0.1);
-  border-radius: 14px;
-  padding: 0.7rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.6rem;
+  display: none;
 }
 
 .info-item {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
+  display: none;
 }
 
 .info-icon {
-  width: 18px;
-  height: 18px;
-  color: #10b981;
-  flex-shrink: 0;
+  display: none;
 }
 
 .info-text {
-  display: flex;
-  flex-direction: column;
-  text-align: left;
+  display: none;
 }
 
 .info-label {
-  font-size: 0.6rem;
-  color: #94a3b8;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+  display: none;
 }
 
 .info-value {
-  font-size: 0.8rem;
-  font-weight: 600;
-  color: #e2e8f0;
-  word-break: break-all;
+  display: none;
 }
 
 .divider {
-  height: 1px;
-  background: rgba(148, 163, 184, 0.1);
+  display: none;
 }
 
 /* ========== ACTIONS SECTION ========== */
@@ -1328,33 +1331,37 @@ const logout = () => {
     padding: 0;
   }
 
+  .profile-label {
+    font-size: 0.65rem;
+    padding: 0.3rem 0.9rem;
+  }
+
   .profile-card {
-    padding: 0.9rem 0.7rem
-;
+    padding: 0.9rem 0.7rem;
     margin-bottom: 0.8rem;
   }
 
-  .avatar-wrapper {
-    width: 80px;
-    height: 80px;
-    margin-bottom: 0.6rem;
+  .profile-header {
+    gap: 0.8rem;
   }
 
-  .avatar-image {
-    width: 65px;
-    height: 65px;
+  .avatar-initials {
+    width: 55px;
+    height: 55px;
+    font-size: 1.3rem;
   }
 
-  .welcome-title {
+  .user-full-name {
     font-size: 1.1rem;
   }
 
-  .user-name {
-    font-size: 1.2rem;
+  .role-badge {
+    font-size: 0.8rem;
+    padding: 0.2rem 0.7rem;
   }
 
-  .info-box {
-    padding: 0.6rem;
+  .user-email {
+    font-size: 0.8rem;
   }
 
   .actions-grid {
@@ -1371,39 +1378,39 @@ const logout = () => {
     padding: 0;
   }
 
+  .profile-label {
+    font-size: 0.6rem;
+    padding: 0.25rem 0.8rem;
+  }
+
   .profile-card {
     padding: 0.8rem 0.6rem;
     margin-bottom: 0.7rem;
     border-radius: 16px;
   }
 
-  .avatar-wrapper {
-    width: 75px;
-    height: 75px;
-    margin-bottom: 0.5rem;
+  .profile-header {
+    gap: 0.7rem;
   }
 
-  .avatar-image {
-    width: 60px;
-    height: 60px;
-    border: 2px solid #10b981;
+  .avatar-initials {
+    width: 50px;
+    height: 50px;
+    font-size: 1.2rem;
+    border-width: 2px;
   }
 
-  .welcome-title {
+  .user-full-name {
     font-size: 1rem;
   }
 
-  .user-name {
-    font-size: 1.1rem;
+  .role-badge {
+    font-size: 0.75rem;
+    padding: 0.2rem 0.6rem;
   }
 
-  .info-box {
-    padding: 0.5rem;
-    gap: 0.5rem;
-  }
-
-  .info-item {
-    gap: 0.6rem;
+  .user-email {
+    font-size: 0.75rem;
   }
 
   .section-title {
@@ -1577,60 +1584,38 @@ const logout = () => {
     margin-top: 0;
   }
 
+  .profile-label {
+    font-size: 0.6rem;
+    padding: 0.25rem 0.7rem;
+  }
+
   .profile-card {
     padding: 0.7rem 0.5rem;
     margin-bottom: 0.6rem;
-  }  .avatar-wrapper {
-    width: 70px;
-    height: 70px;
-    margin-bottom: 0.4rem;
   }
 
-  .avatar-image {
-    width: 55px;
-    height: 55px;
-    border: 2px solid #10b981;
+  .profile-header {
+    gap: 0.6rem;
   }
 
-  .welcome-icon-wrapper {
-    width: 40px;
-    height: 40px;
-    margin-bottom: 0.3rem;
+  .avatar-initials {
+    width: 48px;
+    height: 48px;
+    font-size: 1.1rem;
+    border-width: 2px;
   }
 
-  .welcome-icon {
-    width: 20px;
-    height: 20px;
-  }
-
-  .welcome-title {
+  .user-full-name {
     font-size: 0.95rem;
   }
 
-  .user-name {
-    font-size: 1rem;
+  .role-badge {
+    font-size: 0.7rem;
+    padding: 0.15rem 0.5rem;
   }
 
-  .info-box {
-    padding: 0.4rem;
-    gap: 0.4rem;
-  }
-
-  .info-item {
-    gap: 0.5rem;
-  }
-
-  .info-icon {
-    width: 16px;
-    height: 16px;
-  }
-
-  .info-label {
-    font-size: 0.55rem;
-  }
-
-  .info-value {
-    font-size: 0.75rem;
+  .user-email {
+    font-size: 0.7rem;
   }
 
   .actions-section {
@@ -1819,27 +1804,37 @@ const logout = () => {
     height: 10px;
   }
 
+  .profile-label {
+    font-size: 0.55rem;
+    padding: 0.2rem 0.6rem;
+  }
+
   .profile-card {
     padding: 0.6rem 0.4rem;
   }
 
-  .avatar-wrapper {
-    width: 65px;
-    height: 65px;
-    margin-bottom: 0.3rem;
+  .profile-header {
+    gap: 0.5rem;
   }
 
-  .avatar-image {
-    width: 50px;
-    height: 50px;
+  .avatar-initials {
+    width: 44px;
+    height: 44px;
+    font-size: 1rem;
+    border-width: 2px;
   }
 
-  .welcome-title {
+  .user-full-name {
     font-size: 0.9rem;
   }
 
-  .user-name {
-    font-size: 0.95rem;
+  .role-badge {
+    font-size: 0.65rem;
+    padding: 0.1rem 0.4rem;
+  }
+
+  .user-email {
+    font-size: 0.65rem;
   }
 
   .action-card {
