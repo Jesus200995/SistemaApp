@@ -5,10 +5,34 @@
       <div class="header-content">
         <div class="logo-section">
           <div class="logo-icon">
-            <LayoutDashboard class="logo-svg" />
+            <!-- Icono SVG personalizado: Carpeta con ubicación -->
+            <svg viewBox="0 0 64 64" width="48" height="48" class="custom-logo-svg" xmlns="http://www.w3.org/2000/svg">
+              <!-- Carpeta outline -->
+              <g id="folder">
+                <!-- Línea superior de la carpeta (pestaña) -->
+                <path d="M 12 16 L 24 10 L 48 10 L 48 16" 
+                      stroke="white" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                <!-- Cuerpo de la carpeta -->
+                <rect x="8" y="16" width="48" height="28" rx="3" 
+                      stroke="white" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+              </g>
+              
+              <!-- Pin de ubicación en el centro con outline -->
+              <g transform="translate(32, 32)">
+                <!-- Pin shape outline -->
+                <path d="M 0 -8 C -4.4 -8 -8 -4.4 -8 0 C -8 4 -3.6 8 0 13 C 3.6 8 8 4 8 0 C 8 -4.4 4.4 -8 0 -8 Z" 
+                      stroke="#10b981" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                <!-- Círculo en la punta del pin -->
+                <circle cx="0" cy="0" r="2.5" fill="#10b981" stroke="none"/>
+              </g>
+              
+              <!-- Pequeños detalles de líneas dentro de la carpeta -->
+              <line x1="16" y1="26" x2="48" y2="26" stroke="white" stroke-width="1.5" opacity="0.4" stroke-linecap="round"/>
+              <line x1="16" y1="34" x2="40" y2="34" stroke="white" stroke-width="1.5" opacity="0.4" stroke-linecap="round"/>
+            </svg>
           </div>
           <div class="logo-text">
-            <h1 class="app-title">SistemaApp</h1>
+            <h1 class="app-title">Sistema de Administración</h1>
             <p class="app-subtitle">Panel de Control</p>
           </div>
         </div>
@@ -464,12 +488,24 @@ const logout = () => {
   right: 0;
   z-index: 9999;
   backdrop-filter: blur(12px);
-  background: rgba(15, 23, 42, 0.95);
-  border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+  background: linear-gradient(90deg, rgba(15, 23, 42, 0.95) 0%, rgba(15, 23, 42, 0.92) 100%);
+  border-bottom: 2px solid rgba(16, 185, 129, 0.2);
   padding: 0.6rem 0;
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 8px 40px rgba(16, 185, 129, 0.15);
   width: 100%;
   min-height: 56px;
+  animation: header-slide-down 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes header-slide-down {
+  from {
+    transform: translateY(-60px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
 
 .header-content {
@@ -487,42 +523,72 @@ const logout = () => {
 .logo-section {
   display: flex;
   align-items: center;
-  gap: 0.6rem;
+  gap: 1rem;
   min-width: 0;
 }
 
 .logo-icon {
-  width: 40px;
-  height: 40px;
-  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-  border-radius: 12px;
+  width: 56px;
+  height: 56px;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 8px 16px rgba(16, 185, 129, 0.3);
   flex-shrink: 0;
+  position: relative;
+  padding: 4px;
 }
 
-.logo-svg {
-  width: 24px;
-  height: 24px;
-  color: white;
+.custom-logo-svg {
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
 }
 
 .logo-text h1 {
-  font-size: 1.1rem;
-  font-weight: 700;
-  background: linear-gradient(135deg, #10b981, #6ee7b7);
+  font-size: 1.3rem;
+  font-weight: 600;
+  letter-spacing: -0.5px;
+  background: linear-gradient(90deg, #ffffff 0%, #10b981 25%, #ffffff 50%, #10b981 75%, #ffffff 100%);
+  background-size: 200% 100%;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
   margin: 0;
+  font-family: 'Segoe UI', 'Trebuchet MS', sans-serif;
+  animation: gradient-flow 4s ease-in-out infinite;
+}
+
+@keyframes gradient-flow {
+  0% {
+    background-position: 0% center;
+  }
+  50% {
+    background-position: 100% center;
+  }
+  100% {
+    background-position: 0% center;
+  }
 }
 
 .logo-text p {
-  font-size: 0.6rem;
-  color: #94a3b8;
-  margin: 0.1rem 0 0 0;
+  font-size: 0.7rem;
+  color: #6ee7b7;
+  margin: 0.05rem 0 0 0;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  font-family: 'Segoe UI', sans-serif;
+  animation: subtitle-fade-in 1s ease-out 0.2s forwards;
+  opacity: 0;
+}
+
+@keyframes subtitle-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .logout-btn {
@@ -534,21 +600,26 @@ const logout = () => {
   border: none;
   padding: 0.4rem 0.6rem;
   border-radius: 8px;
-  font-weight: 600;
+  font-weight: 700;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
   box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
   font-size: 0.7rem;
   flex-shrink: 0;
+  font-family: 'Segoe UI', sans-serif;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
 }
 
 .logout-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(239, 68, 68, 0.4);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(239, 68, 68, 0.5);
+  background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
 }
 
 .logout-btn:active {
-  transform: translateY(0);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
 }
 
 .logout-icon {
@@ -1465,14 +1536,9 @@ const logout = () => {
   }
 
   .logo-icon {
-    width: 32px;
-    height: 32px;
+    width: 40px;
+    height: 40px;
     flex-shrink: 0;
-  }
-
-  .logo-svg {
-    width: 18px;
-    height: 18px;
   }
 
   .logo-text h1 {
