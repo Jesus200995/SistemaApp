@@ -90,6 +90,47 @@
           </div>
         </div>
 
+        <!-- Sección de notificaciones recientes -->
+        <div
+          v-motion
+          :initial="{ opacity: 0, y: 30 }"
+          :enter="{ opacity: 1, y: 0, transition: { delay: 950, duration: 500 } }"
+          class="notifications-section"
+        >
+          <div class="notifications-header">
+            <h3 class="section-title">Notificaciones Recientes</h3>
+            <div class="notifications-badge">
+              {{ unreadNotifications }}
+            </div>
+          </div>
+
+          <div v-if="notificaciones.length === 0" class="notifications-empty">
+            <Bell :size="32" class="empty-icon" />
+            <p>Sin notificaciones nuevas</p>
+          </div>
+
+          <div v-else class="notifications-list">
+            <div 
+              v-for="notif in notificaciones.slice(0, 5)"
+              :key="notif.id"
+              class="notification-card"
+              :style="{ borderLeftColor: getNotificationColor(notif.tipo) }"
+            >
+              <div 
+                class="notif-icon"
+                :style="{ background: getNotificationColor(notif.tipo) }"
+              >
+                <component :is="getNotificationIcon(notif.tipo)" :size="18" color="white" />
+              </div>
+              <div class="notif-content">
+                <p class="notif-title">{{ notif.titulo }}</p>
+                <p class="notif-message">{{ notif.mensaje }}</p>
+                <p class="notif-time">{{ formatTime(notif.timestamp) }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <!-- Sección de módulos especializados -->
         <div class="specialized-section">
           <h3 class="section-title">Módulos Especializados</h3>
@@ -215,18 +256,127 @@
   </div>
 </template>
 
-<script setup>
-import { onMounted } from 'vue'
+<script setup lang="ts">
+import { onMounted, ref, computed, onUnmounted } from 'vue'
+// @ts-ignore
 import { useAuthStore } from '../stores/auth'
 import { useRouter } from 'vue-router'
-import { LogOut, User, Mail, LayoutDashboard, BarChart3, Users, Settings, MapPin, Sprout, FileText, Smile, Clipboard, Check, Shield, Zap } from 'lucide-vue-next'
+import { LogOut, User, Mail, LayoutDashboard, BarChart3, Users, Settings, MapPin, Sprout, FileText, Smile, Clipboard, Check, Shield, Zap, Bell, Clock, CheckCircle, AlertCircle, Info } from 'lucide-vue-next'
 
 const auth = useAuthStore()
 const router = useRouter()
+const notificaciones = ref<any[]>([])
+const ws = ref<WebSocket | null>(null)
 
 onMounted(() => {
   auth.fetchProfile()
+  connectWebSocket()
 })
+
+onUnmounted(() => {
+  if (ws.value) {
+    ws.value.close()
+  }
+})
+
+const connectWebSocket = () => {
+  try {
+    const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:'
+    const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000'
+    const host = apiUrl.replace(/^(https?:\/\/)/, '').replace(/\/$/, '')
+    
+    const wsUrl = `${protocol}//${host}/notificaciones/ws`
+    console.log('🔌 Conectando WebSocket:', wsUrl)
+    
+    ws.value = new WebSocket(wsUrl)
+
+    ws.value.onopen = () => {
+      console.log('✅ WebSocket conectado en Dashboard')
+      setInterval(() => {
+        if (ws.value?.readyState === WebSocket.OPEN) {
+          ws.value?.send('ping')
+        }
+      }, 30000)
+    }
+
+    ws.value.onmessage = (event) => {
+      try {
+        const data = JSON.parse(event.data)
+        
+        if (data.user_destino === auth.user?.id || !data.user_destino) {
+          const notif = {
+            ...data,
+            leido: false,
+            timestamp: data.timestamp || new Date().toISOString()
+          }
+          notificaciones.value.unshift(notif)
+          console.log('🔔 Nueva notificación en Dashboard:', notif)
+        }
+      } catch (error) {
+        console.error('Error procesando WebSocket:', error)
+      }
+    }
+
+    ws.value.onerror = (error) => {
+      console.error('❌ Error WebSocket:', error)
+    }
+
+    ws.value.onclose = () => {
+      console.log('🔌 Desconectado de WebSocket')
+    }
+  } catch (error) {
+    console.error('Error conectando WebSocket:', error)
+  }
+}
+
+const unreadNotifications = computed(() => {
+  return notificaciones.value.filter(n => !n.leido).length
+})
+
+const getNotificationColor = (tipo: string): string => {
+  const colores: Record<string, string> = {
+    solicitud: '#3b82f6',
+    respuesta: '#10b981',
+    info: '#78716c',
+    warning: '#f59e0b',
+    error: '#ef4444',
+    success: '#10b981'
+  }
+  return colores[tipo] || '#78716c'
+}
+
+const getNotificationIcon = (tipo: string) => {
+  switch (tipo) {
+    case 'solicitud':
+      return Clock
+    case 'respuesta':
+      return CheckCircle
+    case 'warning':
+    case 'error':
+      return AlertCircle
+    case 'info':
+      return Info
+    default:
+      return Bell
+  }
+}
+
+const formatTime = (timestamp: string): string => {
+  try {
+    const date = new Date(timestamp)
+    const ahora = new Date()
+    const diff = ahora.getTime() - date.getTime()
+    const minutos = Math.floor(diff / 60000)
+    const horas = Math.floor(diff / 3600000)
+
+    if (minutos < 1) return 'Hace poco'
+    if (minutos < 60) return `Hace ${minutos}m`
+    if (horas < 24) return `Hace ${horas}h`
+    return date.toLocaleDateString('es-CO')
+  } catch {
+    return 'Ahora'
+  }
+}
 
 const actions = [
   { title: 'Usuarios', icon: Users, route: '/usuarios' },
@@ -236,7 +386,7 @@ const actions = [
   { title: 'Sembradores', icon: Sprout, route: '/sembradores' },
 ]
 
-const goTo = (route) => {
+const goTo = (route: string) => {
   if (route === '/usuarios' || route === '/estadisticas' || route === '/mapa' || route === '/sembradores' || route === '/solicitudes') {
     router.push(route)
   } else {
@@ -876,6 +1026,113 @@ const logout = () => {
 
 .stat-active {
   border-left: 3px solid #a855f7;
+}
+
+/* ========== NOTIFICATIONS SECTION ========== */
+.notifications-section {
+  background: linear-gradient(135deg, rgba(30, 41, 59, 0.4), rgba(30, 41, 59, 0.2));
+  border: 1px solid rgba(148, 163, 184, 0.1);
+  border-radius: 16px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  backdrop-filter: blur(10px);
+}
+
+.notifications-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.notifications-badge {
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  color: white;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.875rem;
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+  min-width: 32px;
+}
+
+.notifications-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1rem;
+  color: #cbd5e1;
+  text-align: center;
+}
+
+.empty-icon {
+  color: #94a3b8;
+  margin-bottom: 1rem;
+  opacity: 0.6;
+}
+
+.notifications-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.notification-card {
+  display: flex;
+  gap: 1rem;
+  padding: 1rem;
+  background: rgba(30, 41, 59, 0.4);
+  border-radius: 10px;
+  border-left: 3px solid;
+  transition: all 0.3s ease;
+}
+
+.notification-card:hover {
+  background: rgba(30, 41, 59, 0.6);
+  transform: translateX(4px);
+}
+
+.notif-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  opacity: 0.9;
+}
+
+.notif-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.notif-title {
+  color: #f1f5f9;
+  font-weight: 600;
+  font-size: 0.95rem;
+  margin: 0 0 0.25rem 0;
+  word-break: break-word;
+}
+
+.notif-message {
+  color: #cbd5e1;
+  font-size: 0.875rem;
+  margin: 0 0 0.5rem 0;
+  line-height: 1.4;
+  word-break: break-word;
+}
+
+.notif-time {
+  color: #94a3b8;
+  font-size: 0.75rem;
+  margin: 0;
 }
 
 /* ========== FOOTER ========== */

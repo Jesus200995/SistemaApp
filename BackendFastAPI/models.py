@@ -68,11 +68,14 @@ class Notificacion(Base):
     id = Column(Integer, primary_key=True, index=True)
     titulo = Column(String(100), nullable=False)
     mensaje = Column(Text, nullable=False)
-    tipo = Column(String(50), nullable=False)  # info, warning, error, success
-    rol_destino = Column(String(50))  # admin, usuario, all
+    tipo = Column(String(50), nullable=False)  # solicitud, respuesta, info, warning, error, success
+    rol_destino = Column(String(50), nullable=True)  # admin, usuario, all (para notificaciones por rol)
+    user_destino = Column(Integer, ForeignKey("users.id"), nullable=True)  # Usuario específico
     leido = Column(Boolean, default=False)
-    usuario_id = Column(Integer)  # Opcional: para notificaciones personales
+    usuario_id = Column(Integer, ForeignKey("users.id"), nullable=True)  # Usuario que generó la notificación
+    solicitud_id = Column(Integer, ForeignKey("solicitudes.id"), nullable=True)  # Vinculación a solicitud
     created_at = Column(DateTime(timezone=True), server_default=func.now())
+    actualizado_en = Column(DateTime(timezone=True), onupdate=func.now())
 
 
 class Sembrador(Base):
