@@ -7,11 +7,21 @@ import { CacheFirst, NetworkFirst, StaleWhileRevalidate } from 'workbox-strategi
 import { ExpirationPlugin } from 'workbox-expiration';
 import { CacheableResponsePlugin } from 'workbox-cacheable-response';
 
+// Versión del SW para detectar cambios
+const SW_VERSION = 'v' + Date.now();
+
 // Precache archivos generados por Vite PWA
 precacheAndRoute(self.__WB_MANIFEST);
 
 // Limpiar cachés antiguos
 cleanupOutdatedCaches();
+
+// ========== DETECCIÓN DE ACTUALIZACIONES ==========
+
+// Verificar actualizaciones cada 1 minuto
+setInterval(() => {
+  self.registration.update();
+}, 60000);
 
 // ========== ESTRATEGIAS DE CACHÉ ==========
 
@@ -87,24 +97,65 @@ registerRoute(
 
 // Activación del Service Worker
 self.addEventListener('activate', (event: ExtendableEvent) => {
+  console.log('[SW] Activando Service Worker:', SW_VERSION);
+  
   event.waitUntil(
-    caches.keys().then((cacheNames) => {
-      return Promise.all(
-        cacheNames.map((cacheName) => {
-          if (cacheName !== 'pages-cache' && cacheName !== 'static-resources' && 
-              cacheName !== 'images-cache' && cacheName !== 'api-cache' && 
-              cacheName !== 'realtime-cache') {
-            return caches.delete(cacheName);
-          }
-        })
-      );
+    Promise.all([
+      // Limpiar cachés antiguos
+      caches.keys().then((cacheNames) => {
+        return Promise.all(
+          cacheNames.map((cacheName) => {
+            if (cacheName !== 'pages-cache' && cacheName !== 'static-resources' && 
+                cacheName !== 'images-cache' && cacheName !== 'api-cache' && 
+                cacheName !== 'realtime-cache') {
+              console.log('[SW] Eliminando caché antiguo:', cacheName);
+              return caches.delete(cacheName);
+            }
+          })
+        );
+      }),
+      // Notificar a todos los clientes sobre la activación
+      self.clients.matchAll({ type: 'window' }).then((clients) => {
+        clients.forEach((client) => {
+          client.postMessage({
+            type: 'SW_ACTIVATED',
+            version: SW_VERSION,
+          });
+        });
+      }),
+    ])
+  );
+  
+  // Forzar que este SW controle todas las páginas inmediatamente
+  self.skipWaiting();
+});
+
+// Instalación del Service Worker
+self.addEventListener('install', (event: ExtendableEvent) => {
+  console.log('[SW] Instalando Service Worker:', SW_VERSION);
+  
+  // Forzar que se convierta en activo inmediatamente
+  self.skipWaiting();
+  
+  event.waitUntil(
+    caches.open('pages-cache').then((cache) => {
+      console.log('[SW] Precaché inicializado');
+      return Promise.resolve();
     })
   );
 });
 
+// Actualización del registro del Service Worker
+self.addEventListener('controllerchange', () => {
+  console.log('[SW] Nuevo Service Worker tomó control');
+});
+
 // Mensaje desde el cliente
 self.addEventListener('message', (event: ExtendableMessageEvent) => {
+  console.log('[SW] Mensaje recibido:', event.data?.type);
+  
   if (event.data && event.data.type === 'SKIP_WAITING') {
+    console.log('[SW] SKIP_WAITING ejecutado');
     self.skipWaiting();
   }
 
@@ -115,6 +166,7 @@ self.addEventListener('message', (event: ExtendableMessageEvent) => {
 
   // Limpiar caché
   if (event.data && event.data.type === 'CLEAR_CACHE') {
+    console.log('[SW] Limpiando todo el caché');
     event.waitUntil(
       caches.keys().then((cacheNames) => {
         return Promise.all(
@@ -122,6 +174,12 @@ self.addEventListener('message', (event: ExtendableMessageEvent) => {
         );
       })
     );
+  }
+
+  // Forzar actualización
+  if (event.data && event.data.type === 'FORCE_UPDATE') {
+    console.log('[SW] Fuerza de actualización activada');
+    self.registration.update();
   }
 });
 
@@ -145,7 +203,7 @@ async function syncNotifications() {
       });
     }
   } catch (error) {
-    console.error('Error sincronizando notificaciones:', error);
+    console.error('[SW] Error sincronizando notificaciones:', error);
   }
 }
 
