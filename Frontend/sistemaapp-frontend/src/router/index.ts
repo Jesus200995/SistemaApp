@@ -100,16 +100,40 @@ const router = createRouter({
   ],
 })
 
-// ✅ Middleware de protección
-router.beforeEach((to, from, next) => {
+// ✅ Middleware de protección y autenticación
+router.beforeEach(async (to, from, next) => {
   const auth = useAuthStore()
   const token = auth.token
 
-  if (to.meta.requiresAuth && !token) {
-    next('/login') // redirigir si no está autenticado
-  } else {
-    next() // continuar
+  // 🔄 Primera carga: si hay token pero no hay usuario, obtener perfil
+  if (token && !auth.user && from.path === '/') {
+    try {
+      await auth.fetchProfile()
+    } catch (error) {
+      console.error('Error al cargar perfil:', error)
+      // Si el token es inválido, limpiar sesión
+      auth.logout()
+      return next('/login')
+    }
   }
+
+  // 🔒 Si la ruta requiere autenticación pero no hay token
+  if (to.meta.requiresAuth && !token) {
+    return next('/login')
+  }
+
+  // 🏠 Si está loguado y trata de ir a login/register, redirigir a dashboard
+  if (token && (to.name === 'login' || to.name === 'register')) {
+    return next('/dashboard')
+  }
+
+  // 🚀 Si está loguado y trata de acceder a / (home), redirigir a dashboard
+  if (token && to.path === '/') {
+    return next('/dashboard')
+  }
+
+  // ✅ Continuar normalmente
+  next()
 })
 
 export default router

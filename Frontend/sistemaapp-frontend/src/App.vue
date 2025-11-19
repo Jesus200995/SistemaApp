@@ -1,12 +1,28 @@
 <script setup lang="ts">
 import { RouterView } from 'vue-router'
+import { onMounted } from 'vue'
 import PWAInstall from './components/PWAInstall.vue'
 import FaviconManager from './components/FaviconManager.vue'
 import UpdateModal from './components/UpdateModal.vue'
 import { usePWAUpdate } from './composables/usePWAUpdate'
+import { useAuthStore } from './stores/auth'
 
 // Inicializar actualización automática de PWA
 usePWAUpdate()
+
+// 🔄 Inicializar autenticación al cargar la app
+onMounted(async () => {
+  const auth = useAuthStore()
+  
+  // Si hay token guardado, cargar el perfil del usuario
+  if (auth.token && !auth.user) {
+    try {
+      await auth.fetchProfile()
+    } catch (error) {
+      console.error('Error al cargar perfil inicial:', error)
+    }
+  }
+})
 </script>
 
 <template>

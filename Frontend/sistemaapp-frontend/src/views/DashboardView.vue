@@ -467,7 +467,7 @@ const logout = () => {
 
 .dashboard-container {
   min-height: 100vh;
-  width: 100vw;
+  width: 100%;
   display: flex;
   flex-direction: column;
   background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
@@ -478,6 +478,7 @@ const logout = () => {
   overflow-y: auto;
   overflow-x: hidden;
   padding-top: 56px;
+  box-sizing: border-box;
 }
 
 /* ========== HEADER ========== */
@@ -490,11 +491,12 @@ const logout = () => {
   backdrop-filter: blur(12px);
   background: linear-gradient(90deg, rgba(15, 23, 42, 0.95) 0%, rgba(15, 23, 42, 0.92) 100%);
   border-bottom: 2px solid rgba(16, 185, 129, 0.2);
-  padding: 0.6rem 0;
+  padding: 0;
   box-shadow: 0 8px 40px rgba(16, 185, 129, 0.15);
   width: 100%;
-  min-height: 56px;
+  height: 56px;
   animation: header-slide-down 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-sizing: border-box;
 }
 
 @keyframes header-slide-down {
@@ -509,15 +511,16 @@ const logout = () => {
 }
 
 .header-content {
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 0 1rem;
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 0.75rem;
   width: 100%;
   height: 56px;
+  box-sizing: border-box;
 }
 
 .logo-section {
@@ -525,6 +528,7 @@ const logout = () => {
   align-items: center;
   gap: 1rem;
   min-width: 0;
+  padding-left: 0.5rem;
 }
 
 .logo-icon {
@@ -609,6 +613,7 @@ const logout = () => {
   font-family: 'Segoe UI', sans-serif;
   letter-spacing: 0.03em;
   text-transform: uppercase;
+  margin-right: 0.5rem;
 }
 
 .logout-btn:hover {
@@ -656,13 +661,19 @@ const logout = () => {
   display: flex;
   align-items: flex-start;
   justify-content: center;
-  padding: 1rem 0.5rem;
+  padding: 0;
   overflow-y: auto;
+  overflow-x: hidden;
+  width: 100%;
+  min-height: calc(100vh - 56px);
+  box-sizing: border-box;
 }
 
 .dashboard-content {
   width: 100%;
   max-width: 900px;
+  padding: 1.2rem 0.5rem 2rem 0.5rem;
+  box-sizing: border-box;
 }
 
 /* ========== PROFILE CARD ========== */
@@ -1304,7 +1315,7 @@ const logout = () => {
 /* ========== RESPONSIVE ========== */
 @media (max-width: 1024px) {
   .dashboard-main {
-    padding: 0.8rem 0.4rem;
+    padding: 0;
   }
 
   .profile-card {
@@ -1314,11 +1325,12 @@ const logout = () => {
 
 @media (max-width: 768px) {
   .dashboard-main {
-    padding: 0.8rem 0.4rem;
+    padding: 0;
   }
 
   .profile-card {
-    padding: 0.9rem 0.7rem;
+    padding: 0.9rem 0.7rem
+;
     margin-bottom: 0.8rem;
   }
 
@@ -1356,7 +1368,7 @@ const logout = () => {
 
 @media (max-width: 640px) {
   .dashboard-main {
-    padding: 0.6rem 0.3rem;
+    padding: 0;
   }
 
   .profile-card {
@@ -1561,16 +1573,14 @@ const logout = () => {
   }
 
   .dashboard-main {
-    padding: 0.5rem 0.3rem;
+    padding: 0;
     margin-top: 0;
   }
 
   .profile-card {
     padding: 0.7rem 0.5rem;
     margin-bottom: 0.6rem;
-  }
-
-  .avatar-wrapper {
+  }  .avatar-wrapper {
     width: 70px;
     height: 70px;
     margin-bottom: 0.4rem;
@@ -1906,20 +1916,16 @@ const logout = () => {
 }
 
 /* ========== SCROLLBAR ========== */
-::-webkit-scrollbar {
-  width: 8px;
-}
-
-::-webkit-scrollbar-track {
+.dashboard-main::-webkit-scrollbar {
+  width: 0;
   background: transparent;
 }
 
-::-webkit-scrollbar-thumb {
-  background: rgba(148, 163, 184, 0.3);
-  border-radius: 4px;
+.dashboard-main::-webkit-scrollbar-track {
+  background: transparent;
 }
 
-::-webkit-scrollbar-thumb:hover {
-  background: rgba(148, 163, 184, 0.5);
+.dashboard-main::-webkit-scrollbar-thumb {
+  background: transparent;
 }
 </style>

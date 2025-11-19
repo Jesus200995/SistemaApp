@@ -100,7 +100,7 @@
           </svg>
         </div>
         <h1 class="app-title">Sistema de Administración</h1>
-        <p class="app-subtitle">Acceso seguro</p>
+        <p class="app-subtitle">SEMBRANDO VIDA</p>
       </div>
 
       <!-- Tarjeta de login -->
@@ -425,21 +425,39 @@ const crearAdmin = async () => {
 
 .app-title {
   font-size: 1.15rem;
-  font-weight: 700;
-  background: linear-gradient(135deg, #10b981, #6ee7b7);
+  font-weight: 600;
+  background: linear-gradient(90deg, #ffffff 0%, #10b981 25%, #ffffff 50%, #10b981 75%, #ffffff 100%);
+  background-size: 200% 100%;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
   margin-bottom: 0.2rem;
   letter-spacing: -0.02em;
   line-height: 1.2;
+  animation: gradient-flow 4s ease-in-out infinite;
+}
+
+@keyframes gradient-flow {
+  0% {
+    background-position: 0% center;
+  }
+  50% {
+    background-position: 100% center;
+  }
+  100% {
+    background-position: 0% center;
+  }
 }
 
 .app-subtitle {
   font-size: 0.75rem;
-  color: #cbd5e1;
-  font-weight: 400;
-  letter-spacing: 0.01em;
+  color: #84cc16;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  padding-bottom: 0.5rem;
+  border-bottom: 1.5px solid rgba(132, 204, 22, 0.3);
+  display: inline-block;
 }
 
 /* ========== LOGIN CARD ========== */
