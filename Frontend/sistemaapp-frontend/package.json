@@ -7,13 +7,14 @@
     "node": "^20.19.0 || >=22.12.0"
   },
   "scripts": {
-    "dev": "vite",
-    "build": "run-p type-check \"build-only {@}\" --",
+    "dev": "npm run generate-favicon && vite",
+    "build": "npm run generate-favicon && run-p type-check \"build-only {@}\" --",
     "preview": "vite preview",
     "build-only": "vite build",
     "type-check": "vue-tsc --build",
     "lint": "eslint . --fix --cache",
-    "format": "prettier --write src/"
+    "format": "prettier --write src/",
+    "generate-favicon": "node generate-favicon.js"
   },
   "dependencies": {
     "@vue-leaflet/vue-leaflet": "^0.10.1",
@@ -44,6 +45,7 @@
     "jiti": "^2.6.1",
     "npm-run-all2": "^8.0.4",
     "prettier": "3.6.2",
+    "sharp": "^0.33.5",
     "typescript": "~5.9.0",
     "vite": "^7.1.11",
     "vite-plugin-vue-devtools": "^8.0.3",

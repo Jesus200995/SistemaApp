@@ -1,0 +1,46 @@
+/* Animaciones del Favicon */
+
+@keyframes faviconPulse {
+  0% {
+    filter: drop-shadow(0 0 0px rgba(34, 197, 94, 0.8));
+  }
+  50% {
+    filter: drop-shadow(0 0 6px rgba(34, 197, 94, 0.4));
+  }
+  100% {
+    filter: drop-shadow(0 0 0px rgba(34, 197, 94, 0.8));
+  }
+}
+
+@keyframes faviconRotate {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes faviconBounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-2px);
+  }
+}
+
+/* Aplicar animaciones al favicon */
+link[rel="icon"][type="image/svg+xml"] {
+  animation: faviconPulse 2s ease-in-out infinite;
+}
+
+/* Animación del título cuando hay notificaciones */
+.favicon-notification {
+  animation: faviconBounce 0.6s ease-in-out 3;
+}
+
+/* Para navegadores que soportan :has() */
+body:has(.notification-badge) {
+  --favicon-animate: 1;
+}

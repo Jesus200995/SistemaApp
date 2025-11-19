@@ -1,4 +1,5 @@
 import './assets/main.css'
+import './assets/favicon-animations.css'
 import './registerSW'
 
 import { createApp } from 'vue'

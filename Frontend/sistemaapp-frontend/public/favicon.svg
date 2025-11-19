@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <defs>
+    <style>
+      @keyframes pulse {
+        0% {
+          r: 8;
+          opacity: 0.8;
+        }
+        50% {
+          r: 14;
+          opacity: 0.4;
+        }
+        100% {
+          r: 8;
+          opacity: 0.8;
+        }
+      }
+      
+      @keyframes rotation {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+      
+      .location-pulse {
+        animation: pulse 2s ease-in-out infinite;
+        transform-origin: 32px 20px;
+      }
+      
+      .phone-body {
+        animation: rotation 0.3s ease-in-out;
+      }
+    </style>
+  </defs>
+  
+  <!-- Fondo -->
+  <rect width="64" height="64" fill="#001a4d" rx="8"/>
+  
+  <!-- Cuerpo del celular azul marino -->
+  <g class="phone-body">
+    <!-- Marco del teléfono -->
+    <rect x="20" y="8" width="24" height="48" rx="3" fill="#001f5e" stroke="#0066cc" stroke-width="1.5"/>
+    
+    <!-- Pantalla del teléfono -->
+    <rect x="22" y="10" width="20" height="40" rx="2" fill="#001a3d"/>
+    
+    <!-- Notch/Entenada -->
+    <rect x="27" y="10" width="10" height="3" rx="1" fill="#000000"/>
+    
+    <!-- Borde de pantalla -->
+    <rect x="22" y="10" width="20" height="40" rx="2" fill="none" stroke="#0099ff" stroke-width="0.5" opacity="0.5"/>
+  </g>
+  
+  <!-- Ícono de ubicación verde en el centro -->
+  <g transform="translate(32, 32)">
+    <!-- Punto de ubicación pulsante -->
+    <circle class="location-pulse" cx="0" cy="-12" r="3" fill="#22c55e"/>
+    
+    <!-- Gota de ubicación -->
+    <path d="M 0 -8 C -2 -6 -3 -3 -3 0 C -3 3 -1.5 5 0 6 C 1.5 5 3 3 3 0 C 3 -3 2 -6 0 -8 Z" fill="#22c55e"/>
+    
+    <!-- Punto interior de la ubicación -->
+    <circle cx="0" cy="0" r="1" fill="#ffffff"/>
+  </g>
+  
+  <!-- Pulso decorativo alrededor del ícono -->
+  <circle class="location-pulse" cx="32" cy="20" r="8" fill="none" stroke="#22c55e" stroke-width="1" opacity="0.6"/>
+</svg>
