@@ -7,13 +7,14 @@
     "node": "^20.19.0 || >=22.12.0"
   },
   "scripts": {
-    "dev": "npm run generate-favicon && vite",
-    "build": "npm run generate-favicon && run-p type-check \"build-only {@}\" --",
+    "dev": "npm run generate-icons && vite",
+    "build": "npm run generate-icons && run-p type-check \"build-only {@}\" --",
     "preview": "vite preview",
     "build-only": "vite build",
     "type-check": "vue-tsc --build",
     "lint": "eslint . --fix --cache",
     "format": "prettier --write src/",
+    "generate-icons": "node generate-logo-icons.js && node generate-favicon-ico.js",
     "generate-favicon": "node generate-favicon.js"
   },
   "dependencies": {
