@@ -1227,7 +1227,10 @@ const showTerms = () => {
 /* ========== RESPONSIVE - MOBILE ULTRA PEQUEÑO (320px - 480px) ========== */
 @media (max-width: 480px) {
   .register-container {
-    padding: 0.5rem 0;
+    padding: 0.75rem 0;
+    min-height: 100vh;
+    overflow-y: auto;
+    overflow-x: hidden;
   }
 
   .back-button {
@@ -1363,7 +1366,10 @@ const showTerms = () => {
 /* ========== RESPONSIVE - MOBILE TINY (280px - 320px) ========== */
 @media (max-width: 320px) {
   .register-container {
-    padding: 0.25rem 0;
+    padding: 0.5rem 0;
+    min-height: 100vh;
+    overflow-y: auto;
+    overflow-x: hidden;
   }
 
   .back-button {
