@@ -309,7 +309,7 @@ const showTerms = () => {
   overflow-x: hidden;
   font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   margin: 0;
-  padding: 1rem 0;
+  padding: 3rem 0;
 }
 
 /* ========== BACKGROUND BLOBS ========== */
@@ -401,8 +401,8 @@ const showTerms = () => {
   position: relative;
   z-index: 10;
   width: 100%;
-  max-width: 390px;
-  padding: 1.5rem 1.2rem;
+  max-width: 300px;
+  padding: 0.8rem 0.6rem;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -413,7 +413,7 @@ const showTerms = () => {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-bottom: 1.5rem;
+  margin-bottom: 0.8rem;
   text-align: center;
   width: 100%;
 }
@@ -493,19 +493,19 @@ const showTerms = () => {
 }
 
 .app-title {
-  font-size: 1.75rem;
+  font-size: 1.3rem;
   font-weight: 700;
   background: linear-gradient(135deg, #10b981, #6ee7b7);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.25rem;
   letter-spacing: -0.02em;
   line-height: 1.2;
 }
 
 .app-subtitle {
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   color: #cbd5e1;
   font-weight: 400;
   letter-spacing: 0.01em;
@@ -517,26 +517,26 @@ const showTerms = () => {
   background: linear-gradient(135deg, rgba(30, 41, 59, 0.85) 0%, rgba(15, 23, 42, 0.85) 100%);
   border: 1px solid rgba(148, 163, 184, 0.25);
   border-radius: 24px;
-  padding: 1.8rem 1.5rem;
+  padding: 1rem 1rem;
   backdrop-filter: blur(10px);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), 0 0 1px rgba(16, 185, 129, 0.1);
-  margin-bottom: 1rem;
+  margin-bottom: 0.6rem;
 }
 
 .register-title {
-  font-size: 1.5rem;
+  font-size: 1.2rem;
   font-weight: 700;
   color: #f1f5f9;
-  margin-bottom: 0.4rem;
+  margin-bottom: 0.25rem;
   text-align: center;
   letter-spacing: -0.01em;
 }
 
 .register-subtitle {
-  font-size: 0.9rem;
+  font-size: 0.75rem;
   color: #cbd5e1;
   text-align: center;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
   font-weight: 400;
 }
 
@@ -544,17 +544,17 @@ const showTerms = () => {
 .register-form {
   display: flex;
   flex-direction: column;
-  gap: 1.1rem;
+  gap: 0.75rem;
 }
 
 .form-group {
   display: flex;
   flex-direction: column;
-  gap: 0.65rem;
+  gap: 0.5rem;
 }
 
 .form-label {
-  font-size: 0.85rem;
+  font-size: 0.75rem;
   font-weight: 600;
   color: #cbd5e1;
   text-transform: uppercase;
@@ -581,9 +581,9 @@ const showTerms = () => {
   background: rgba(15, 23, 42, 0.6);
   border: 1.5px solid rgba(148, 163, 184, 0.25);
   border-radius: 12px;
-  padding: 0.75rem 1.1rem 0.75rem 2.7rem;
+  padding: 0.6rem 0.9rem 0.6rem 2.4rem;
   color: #e2e8f0;
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   font-family: 'Inter', 'Segoe UI', sans-serif;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -621,9 +621,9 @@ const showTerms = () => {
   background: rgba(15, 23, 42, 0.6);
   border: 1.5px solid rgba(148, 163, 184, 0.25);
   border-radius: 12px;
-  padding: 0.85rem 1.2rem 0.85rem 2.8rem;
+  padding: 0.6rem 0.9rem 0.6rem 2.4rem;
   color: #e2e8f0;
-  font-size: 0.95rem;
+  font-size: 0.8rem;
   font-family: 'Inter', 'Segoe UI', sans-serif;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   cursor: pointer;
@@ -666,10 +666,10 @@ const showTerms = () => {
 }
 
 .terms-label {
-  font-size: 0.875rem;
+  font-size: 0.75rem;
   color: #cbd5e1;
   cursor: pointer;
-  line-height: 1.5;
+  line-height: 1.4;
   font-weight: 500;
 }
 
@@ -738,18 +738,18 @@ const showTerms = () => {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.65rem;
+  gap: 0.5rem;
   background: linear-gradient(135deg, #10b981 0%, #059669 100%);
   color: white;
   border: none;
   border-radius: 12px;
-  padding: 0.9rem 1.4rem;
-  font-size: 0.9rem;
+  padding: 0.7rem 1.2rem;
+  font-size: 0.8rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   box-shadow: 0 4px 15px rgba(16, 185, 129, 0.35);
-  margin-top: 0.5rem;
+  margin-top: 0.3rem;
   font-family: 'Inter', 'Segoe UI', sans-serif;
   letter-spacing: 0.01em;
 }
@@ -801,14 +801,14 @@ const showTerms = () => {
   color: #6ee7b7;
   border: 1.5px solid rgba(16, 185, 129, 0.3);
   border-radius: 12px;
-  padding: 0.8rem 1.4rem;
-  font-size: 0.9rem;
+  padding: 0.65rem 1.2rem;
+  font-size: 0.8rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   font-family: 'Inter', 'Segoe UI', sans-serif;
   text-decoration: none;
-  margin-top: 0.5rem;
+  margin-top: 0.3rem;
 }
 
 .login-link:hover {
@@ -825,9 +825,9 @@ const showTerms = () => {
 /* ========== FOOTER ========== */
 .register-footer {
   text-align: center;
-  font-size: 0.75rem;
+  font-size: 0.65rem;
   color: #475569;
-  margin-top: 1rem;
+  margin-top: 0.7rem;
   font-weight: 500;
   letter-spacing: 0.01em;
 }
