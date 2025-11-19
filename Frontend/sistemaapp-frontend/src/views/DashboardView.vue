@@ -453,18 +453,23 @@ const logout = () => {
   padding: 0;
   overflow-y: auto;
   overflow-x: hidden;
+  padding-top: 56px;
 }
 
 /* ========== HEADER ========== */
 .dashboard-header {
-  position: sticky;
+  position: fixed;
   top: 0;
-  z-index: 50;
+  left: 0;
+  right: 0;
+  z-index: 9999;
   backdrop-filter: blur(12px);
-  background: rgba(15, 23, 42, 0.8);
+  background: rgba(15, 23, 42, 0.95);
   border-bottom: 1px solid rgba(148, 163, 184, 0.1);
   padding: 0.6rem 0;
   box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+  width: 100%;
+  min-height: 56px;
 }
 
 .header-content {
@@ -475,6 +480,8 @@ const logout = () => {
   justify-content: space-between;
   align-items: center;
   gap: 0.75rem;
+  width: 100%;
+  height: 56px;
 }
 
 .logo-section {
@@ -1436,25 +1443,31 @@ const logout = () => {
 
 @media (max-width: 480px) {
   .dashboard-container {
+    padding-top: 56px;
     min-height: 100vh;
   }
 
   .dashboard-header {
-    padding: 0.5rem 0;
+    padding: 0;
+    min-height: 56px;
   }
 
   .header-content {
     padding: 0 0.6rem;
     gap: 0.5rem;
+    height: 56px;
   }
 
   .logo-section {
     gap: 0.4rem;
+    flex: 1;
+    min-width: 0;
   }
 
   .logo-icon {
     width: 32px;
     height: 32px;
+    flex-shrink: 0;
   }
 
   .logo-svg {
@@ -1473,6 +1486,7 @@ const logout = () => {
   .logout-btn {
     padding: 0.35rem 0.4rem;
     font-size: 0.65rem;
+    flex-shrink: 0;
   }
 
   .logout-icon {
@@ -1482,6 +1496,7 @@ const logout = () => {
 
   .dashboard-main {
     padding: 0.5rem 0.3rem;
+    margin-top: 0;
   }
 
   .profile-card {
@@ -1685,12 +1700,22 @@ const logout = () => {
 }
 
 @media (max-width: 360px) {
+  .dashboard-container {
+    padding-top: 50px;
+  }
+
   .dashboard-header {
-    padding: 0.4rem 0;
+    padding: 0;
+    min-height: 50px;
   }
 
   .header-content {
-    padding: 0 0.5rem;
+    padding: 0 0.4rem;
+    gap: 0.2rem;
+    height: 50px;
+  }
+
+  .logo-section {
     gap: 0.3rem;
   }
 
@@ -1700,11 +1725,22 @@ const logout = () => {
   }
 
   .logo-text h1 {
-    font-size: 0.85rem;
+    font-size: 0.8rem;
+    font-weight: 700;
+  }
+
+  .logo-text p {
+    font-size: 0.5rem;
   }
 
   .logout-btn {
     padding: 0.3rem 0.3rem;
+    font-size: 0.6rem;
+  }
+
+  .logout-icon {
+    width: 10px;
+    height: 10px;
   }
 
   .profile-card {
