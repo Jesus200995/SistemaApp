@@ -173,6 +173,15 @@
         <router-link to="/register" class="register-button">
           Crear una cuenta nueva
         </router-link>
+
+        <!-- Botón temporal para crear admin (solo desarrollo) -->
+        <button
+          @click="crearAdmin"
+          type="button"
+          class="admin-button"
+        >
+          <span>⚙️ Crear administrador (desarrollo)</span>
+        </button>
       </div>
 
       <!-- Footer -->
@@ -193,6 +202,8 @@ import { ref } from 'vue'
 import { useAuthStore } from '../stores/auth'
 import { useRouter } from 'vue-router'
 import { Mail, Lock, AlertCircle } from 'lucide-vue-next'
+import axios from 'axios'
+import Swal from 'sweetalert2'
 
 const email = ref('')
 const password = ref('')
@@ -211,6 +222,35 @@ const handleLogin = async () => {
     }
   } finally {
     isLoading.value = false
+  }
+}
+
+const crearAdmin = async () => {
+  try {
+    const nombre = prompt('Nombre del nuevo administrador:')
+    if (!nombre) return
+
+    const emailAdmin = prompt('Correo del administrador:')
+    if (!emailAdmin) return
+
+    const passwordAdmin = prompt('Contraseña del administrador:')
+    if (!passwordAdmin) return
+
+    if (!nombre || !emailAdmin || !passwordAdmin) {
+      await Swal.fire('⚠️ Campos incompletos', 'Debes llenar todos los campos', 'warning')
+      return
+    }
+
+    await axios.post(`${import.meta.env.VITE_API_URL}/auth/register`, {
+      nombre,
+      email: emailAdmin,
+      password: passwordAdmin,
+      rol: 'admin'
+    })
+
+    await Swal.fire('✅ Administrador creado', 'Ya puedes iniciar sesión con este usuario', 'success')
+  } catch (err) {
+    await Swal.fire('❌ Error', err.response?.data?.detail || 'No se pudo crear el usuario', 'error')
   }
 }
 </script>
@@ -631,6 +671,33 @@ const handleLogin = async () => {
   transform: scale(0.98);
 }
 
+/* ========== ADMIN BUTTON ========== */
+.admin-button {
+  width: 100%;
+  background: rgba(59, 130, 246, 0.1);
+  color: #60a5fa;
+  border: 1.5px solid rgba(59, 130, 246, 0.3);
+  border-radius: 12px;
+  padding: 0.8rem 1.5rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  font-family: 'Inter', 'Segoe UI', sans-serif;
+  margin-top: 0.75rem;
+}
+
+.admin-button:hover {
+  background: rgba(59, 130, 246, 0.2);
+  border-color: rgba(59, 130, 246, 0.6);
+  color: #3b82f6;
+  transform: translateY(-1px);
+}
+
+.admin-button:active {
+  transform: scale(0.98);
+}
+
 /* ========== FOOTER ========== */
 .login-footer {
   text-align: center;
@@ -728,6 +795,13 @@ const handleLogin = async () => {
     padding: 0.8rem 1.25rem;
     font-size: 0.9rem;
     border-radius: 10px;
+  }
+
+  .admin-button {
+    padding: 0.7rem 1.2rem;
+    font-size: 0.8rem;
+    border-radius: 10px;
+    margin-top: 0.6rem;
   }
 
   .login-footer {
@@ -845,6 +919,13 @@ const handleLogin = async () => {
     padding: 0.7rem 1.1rem;
     font-size: 0.85rem;
     border-radius: 9px;
+  }
+
+  .admin-button {
+    padding: 0.65rem 1rem;
+    font-size: 0.8rem;
+    border-radius: 9px;
+    margin-top: 0.5rem;
   }
 
   .login-footer {
@@ -979,6 +1060,13 @@ const handleLogin = async () => {
     border-radius: 8px;
   }
 
+  .admin-button {
+    padding: 0.6rem 0.9rem;
+    font-size: 0.75rem;
+    border-radius: 8px;
+    margin-top: 0.5rem;
+  }
+
   .login-footer {
     font-size: 0.65rem;
     margin-top: 0.8rem;
@@ -1111,6 +1199,13 @@ const handleLogin = async () => {
     border-radius: 7px;
   }
 
+  .admin-button {
+    padding: 0.55rem 0.85rem;
+    font-size: 0.7rem;
+    border-radius: 7px;
+    margin-top: 0.4rem;
+  }
+
   .login-footer {
     font-size: 0.6rem;
     margin-top: 0.7rem;
@@ -1230,6 +1325,13 @@ const handleLogin = async () => {
     padding: 0.55rem 0.8rem;
     font-size: 0.7rem;
     border-radius: 6px;
+  }
+
+  .admin-button {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.65rem;
+    border-radius: 6px;
+    margin-top: 0.35rem;
   }
 
   .login-footer {
