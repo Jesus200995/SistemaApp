@@ -114,6 +114,7 @@
               v-for="notif in notificaciones.slice(0, 5)"
               :key="notif.id"
               class="notification-card"
+              :class="{ 'notif-unread': !notif.leido }"
               :style="{ borderLeftColor: getNotificationColor(notif.tipo) }"
             >
               <div 
@@ -262,6 +263,7 @@ import { onMounted, ref, computed, onUnmounted } from 'vue'
 import { useAuthStore } from '../stores/auth'
 import { useRouter } from 'vue-router'
 import { LogOut, User, Mail, LayoutDashboard, BarChart3, Users, Settings, MapPin, Sprout, FileText, Smile, Clipboard, Check, Shield, Zap, Bell, Clock, CheckCircle, AlertCircle, Info } from 'lucide-vue-next'
+import axios from 'axios'
 
 const auth = useAuthStore()
 const router = useRouter()
@@ -270,6 +272,7 @@ const ws = ref<WebSocket | null>(null)
 
 onMounted(() => {
   auth.fetchProfile()
+  getNotificaciones()
   connectWebSocket()
 })
 
@@ -326,6 +329,20 @@ const connectWebSocket = () => {
     }
   } catch (error) {
     console.error('Error conectando WebSocket:', error)
+  }
+}
+
+const getNotificaciones = async () => {
+  try {
+    const token = localStorage.getItem('token') || auth.token
+    const response = await axios.get(
+      `${import.meta.env.VITE_API_URL}/notificaciones`,
+      { headers: { Authorization: `Bearer ${token}` } }
+    )
+    notificaciones.value = (response.data || []).reverse()
+    console.log('✅ Notificaciones cargadas en Dashboard:', notificaciones.value.length)
+  } catch (error) {
+    console.error('❌ Error cargando notificaciones:', error)
   }
 }
 
@@ -1090,6 +1107,10 @@ const logout = () => {
   border-radius: 10px;
   border-left: 3px solid;
   transition: all 0.3s ease;
+}
+
+.notification-card.notif-unread {
+  background: rgba(16, 185, 129, 0.05);
 }
 
 .notification-card:hover {

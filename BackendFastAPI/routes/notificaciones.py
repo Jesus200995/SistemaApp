@@ -175,14 +175,16 @@ async def obtener_notificaciones(
 
 # ✅ Marcar notificación como leída
 @router.patch("/{notif_id}/leer")
+@router.put("/{notif_id}/leer")
 async def marcar_como_leida(
     notif_id: int,
     credentials: HTTPAuthorizationCredentials = Security(bearer),
     db: Session = Depends(get_db)
 ):
-    """Marcar una notificación como leída"""
+    """Marcar una notificación como leída - Solo el usuario destino puede hacerlo"""
     try:
         payload = verify_token(credentials)
+        user_id = payload.get("id")
         
         notificacion = db.query(Notificacion).filter(
             Notificacion.id == notif_id
@@ -194,12 +196,21 @@ async def marcar_como_leida(
                 detail="Notificación no encontrada"
             )
         
+        # ✅ Validar que pertenece al usuario logueado
+        if notificacion.user_destino != user_id and notificacion.rol_destino is None:
+            raise HTTPException(
+                status_code=403,
+                detail="No tienes permiso para marcar esta notificación"
+            )
+        
         notificacion.leido = True
         db.commit()
+        db.refresh(notificacion)
         
         return {
             "success": True,
-            "mensaje": "Notificación marcada como leída"
+            "mensaje": "Notificación marcada como leída",
+            "leido": notificacion.leido
         }
     
     except jwt.InvalidTokenError:

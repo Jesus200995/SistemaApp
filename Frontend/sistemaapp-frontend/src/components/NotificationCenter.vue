@@ -39,6 +39,7 @@
             v-for="notif in notificaciones" 
             :key="notif.id"
             class="notification-item"
+            :class="{ leida: notif.leido }"
             :style="{ borderLeftColor: getColorScheme(notif.tipo).border }"
           >
             <!-- Ícono -->
@@ -108,7 +109,9 @@ const toggleDropdown = async () => {
   showDropdown.value = !showDropdown.value
   
   if (showDropdown.value) {
-    for (const notif of notificaciones.value.filter(n => !n.leido)) {
+    // Marcar todas las no leídas como leídas al abrir
+    const noLeidas = notificaciones.value.filter(n => !n.leido)
+    for (const notif of noLeidas) {
       await marcarComoLeida(notif.id)
     }
   }
@@ -175,7 +178,24 @@ const formatearFecha = (fecha: string) => {
   return date.toLocaleDateString('es-CO')
 }
 
+const getNotificaciones = async () => {
+  try {
+    const token = localStorage.getItem('token') || auth.token
+    const response = await axios.get(
+      `${import.meta.env.VITE_API_URL}/notificaciones`,
+      { headers: { Authorization: `Bearer ${token}` } }
+    )
+    notificaciones.value = (response.data || []).reverse()
+    console.log('✅ Notificaciones cargadas:', notificaciones.value.length)
+  } catch (error) {
+    console.error('❌ Error cargando notificaciones:', error)
+  }
+}
+
 onMounted(() => {
+  // Cargar notificaciones persistidas de la BD
+  getNotificaciones()
+  
   // Conectar WebSocket
   const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:'
   const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000'
@@ -379,6 +399,15 @@ onUnmounted(() => {
   border-radius: 8px;
   border-left: 3px solid;
   transition: all 0.2s ease;
+}
+
+.notification-item:not(.leida) {
+  background: rgba(16, 185, 129, 0.05);
+}
+
+.notification-item.leida {
+  background: rgba(241, 245, 249, 0.05);
+  opacity: 0.9;
 }
 
 .notification-item:hover {
