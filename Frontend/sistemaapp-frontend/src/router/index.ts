@@ -90,6 +90,13 @@ const router = createRouter({
       component: () => import('../views/SolicitudesView.vue'),
       meta: { requiresAuth: true }, // 🔒 protegida
     },
+    {
+      path: '/admin-panel',
+      name: 'admin-panel',
+      // @ts-ignore
+      component: () => import('../views/AdminDashboardView.vue'),
+      meta: { requiresAuth: true }, // 🔒 protegida, solo admin
+    },
   ],
 })
 

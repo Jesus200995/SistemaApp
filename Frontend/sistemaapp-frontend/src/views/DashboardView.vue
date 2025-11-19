@@ -219,6 +219,23 @@
               <p class="specialized-desc">Administrar usuarios</p>
               <div class="card-arrow">→</div>
             </router-link>
+
+            <!-- Panel de Administración Global - Solo admins -->
+            <router-link
+              v-if="auth.user?.rol === 'admin'"
+              to="/admin-panel"
+              v-motion
+              :initial="{ opacity: 0, y: 30 }"
+              :enter="{ opacity: 1, y: 0, transition: { delay: 950, duration: 500 } }"
+              class="specialized-card specialized-admin"
+            >
+              <div class="specialized-icon-wrapper">
+                <Settings class="specialized-icon-lucide" />
+              </div>
+              <h4 class="specialized-title">Panel Global</h4>
+              <p class="specialized-desc">Control centralizado del sistema</p>
+              <div class="card-arrow">→</div>
+            </router-link>
           </div>
         </div>
 
@@ -933,6 +950,16 @@ const logout = () => {
 .specialized-usuarios:hover .specialized-icon-wrapper {
   background: linear-gradient(135deg, rgba(168, 85, 247, 0.3), rgba(139, 92, 246, 0.25));
   box-shadow: 0 8px 16px rgba(168, 85, 247, 0.3);
+}
+
+.specialized-admin .specialized-icon-wrapper {
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.2), rgba(220, 38, 38, 0.15));
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.specialized-admin:hover .specialized-icon-wrapper {
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.3), rgba(220, 38, 38, 0.25));
+  box-shadow: 0 8px 16px rgba(239, 68, 68, 0.3);
 }
 
 .specialized-solicitudes .specialized-icon-wrapper {

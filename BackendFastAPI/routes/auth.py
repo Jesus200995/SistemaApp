@@ -266,3 +266,58 @@ def delete_user(
         return {"success": True, "message": f"Usuario {user.nombre} eliminado correctamente"}
     except jwt.InvalidTokenError:
         raise HTTPException(status_code=401, detail="Token inválido")
+
+@router.get("/admin/overview")
+def admin_overview(
+    credentials: HTTPAuthorizationCredentials = Security(bearer_scheme),
+    db: Session = Depends(get_db)
+):
+    """
+    Panel de control global del administrador.
+    
+    🔐 Seguridad:
+    - Solo usuarios con rol "admin" pueden acceder
+    - Retorna totales del sistema y métricas clave
+    
+    📊 Datos retornados:
+    - total_usuarios: Cantidad total de usuarios en el sistema
+    - total_sembradores: Cantidad total de sembradores
+    - total_seguimientos: Cantidad total de seguimientos
+    - pendientes: Cantidad de solicitudes en estado "pendiente"
+    - promedio_avance: Porcentaje promedio de avance global
+    """
+    try:
+        from models import Sembrador, Seguimiento, Solicitud
+        
+        token = credentials.credentials
+        payload = jwt.decode(token, SECRET, algorithms=["HS256"])
+        
+        if payload.get("rol") != "admin":
+            raise HTTPException(status_code=403, detail="Solo el administrador puede acceder")
+        
+        # ✅ Calcular totales
+        total_usuarios = db.query(User).count()
+        total_sembradores = db.query(Sembrador).count()
+        total_seguimientos = db.query(Seguimiento).count()
+        pendientes = db.query(Solicitud).filter(Solicitud.estado == "pendiente").count()
+        
+        # ✅ Calcular promedio de avance global
+        seguimientos = db.query(Seguimiento).all()
+        promedio_avance = round(
+            (sum([s.avance_porcentaje or 0 for s in seguimientos]) / len(seguimientos)), 2
+        ) if len(seguimientos) > 0 else 0
+        
+        return {
+            "total_usuarios": total_usuarios,
+            "total_sembradores": total_sembradores,
+            "total_seguimientos": total_seguimientos,
+            "pendientes": pendientes,
+            "promedio_avance": promedio_avance
+        }
+    except jwt.ExpiredSignatureError:
+        raise HTTPException(status_code=401, detail="Token expirado")
+    except jwt.InvalidTokenError:
+        raise HTTPException(status_code=401, detail="Token inválido")
+    except Exception as e:
+        print(f"❌ Error en admin_overview: {str(e)}")
+        raise HTTPException(status_code=500, detail="Error interno del servidor")
