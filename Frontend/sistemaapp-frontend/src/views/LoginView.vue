@@ -331,8 +331,8 @@ const crearAdmin = async () => {
   position: relative;
   z-index: 10;
   width: 100%;
-  max-width: 450px;
-  padding: 2rem 1.5rem;
+  max-width: 390px;
+  padding: 1.5rem 1.2rem;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -343,16 +343,16 @@ const crearAdmin = async () => {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-bottom: 2.5rem;
+  margin-bottom: 1.5rem;
   text-align: center;
   width: 100%;
 }
 
 /* Animación de maceta con flor */
 .flowerpot-animation {
-  width: 110px;
-  height: 130px;
-  margin-bottom: 1.25rem;
+  width: 85px;
+  height: 105px;
+  margin-bottom: 0.8rem;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -423,19 +423,19 @@ const crearAdmin = async () => {
 }
 
 .app-title {
-  font-size: 2.25rem;
+  font-size: 1.75rem;
   font-weight: 700;
   background: linear-gradient(135deg, #10b981, #6ee7b7);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  margin-bottom: 0.75rem;
+  margin-bottom: 0.5rem;
   letter-spacing: -0.02em;
   line-height: 1.2;
 }
 
 .app-subtitle {
-  font-size: 1rem;
+  font-size: 0.9rem;
   color: #cbd5e1;
   font-weight: 400;
   letter-spacing: 0.01em;
@@ -447,26 +447,26 @@ const crearAdmin = async () => {
   background: linear-gradient(135deg, rgba(30, 41, 59, 0.85) 0%, rgba(15, 23, 42, 0.85) 100%);
   border: 1px solid rgba(148, 163, 184, 0.25);
   border-radius: 24px;
-  padding: 2.5rem 2rem;
+  padding: 1.8rem 1.5rem;
   backdrop-filter: blur(10px);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), 0 0 1px rgba(16, 185, 129, 0.1);
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
 }
 
 .login-title {
-  font-size: 1.625rem;
+  font-size: 1.5rem;
   font-weight: 700;
   color: #f1f5f9;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.4rem;
   text-align: center;
   letter-spacing: -0.01em;
 }
 
 .login-subtitle {
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   color: #cbd5e1;
   text-align: center;
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem;
   font-weight: 400;
 }
 
@@ -474,7 +474,7 @@ const crearAdmin = async () => {
 .login-form {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 1.1rem;
 }
 
 .form-group {
@@ -511,9 +511,9 @@ const crearAdmin = async () => {
   background: rgba(15, 23, 42, 0.6);
   border: 1.5px solid rgba(148, 163, 184, 0.25);
   border-radius: 12px;
-  padding: 0.85rem 1.2rem 0.85rem 2.8rem;
+  padding: 0.75rem 1.1rem 0.75rem 2.7rem;
   color: #e2e8f0;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   font-family: 'Inter', 'Segoe UI', sans-serif;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -598,13 +598,13 @@ const crearAdmin = async () => {
   color: white;
   border: none;
   border-radius: 12px;
-  padding: 1rem 1.5rem;
-  font-size: 0.95rem;
+  padding: 0.9rem 1.4rem;
+  font-size: 0.9rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   box-shadow: 0 4px 15px rgba(16, 185, 129, 0.35);
-  margin-top: 0.75rem;
+  margin-top: 0.5rem;
   font-family: 'Inter', 'Segoe UI', sans-serif;
   letter-spacing: 0.01em;
 }
@@ -628,7 +628,7 @@ const crearAdmin = async () => {
   position: relative;
   height: 1px;
   background: rgba(148, 163, 184, 0.2);
-  margin: 1.75rem 0;
+  margin: 1.2rem 0;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -649,8 +649,8 @@ const crearAdmin = async () => {
   color: #6ee7b7;
   border: 1.5px solid rgba(16, 185, 129, 0.3);
   border-radius: 12px;
-  padding: 0.9rem 1.5rem;
-  font-size: 0.95rem;
+  padding: 0.8rem 1.4rem;
+  font-size: 0.9rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -658,6 +658,7 @@ const crearAdmin = async () => {
   text-decoration: none;
   display: inline-block;
   text-align: center;
+  margin-top: 0.5rem;
 }
 
 .register-button:hover {
@@ -678,13 +679,13 @@ const crearAdmin = async () => {
   color: #60a5fa;
   border: 1.5px solid rgba(59, 130, 246, 0.3);
   border-radius: 12px;
-  padding: 0.8rem 1.5rem;
-  font-size: 0.85rem;
+  padding: 0.75rem 1.3rem;
+  font-size: 0.8rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   font-family: 'Inter', 'Segoe UI', sans-serif;
-  margin-top: 0.75rem;
+  margin-top: 0.5rem;
 }
 
 .admin-button:hover {
@@ -701,9 +702,9 @@ const crearAdmin = async () => {
 /* ========== FOOTER ========== */
 .login-footer {
   text-align: center;
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   color: #475569;
-  margin-top: 1.5rem;
+  margin-top: 1rem;
   font-weight: 500;
   letter-spacing: 0.01em;
 }
@@ -717,6 +718,16 @@ const crearAdmin = async () => {
 @media (max-width: 1024px) {
   .login-content {
     max-width: 420px;
+  }
+
+  .app-title {
+    font-size: 1.6rem;
+  }
+
+  .flowerpot-animation {
+    width: 80px;
+    height: 100px;
+    margin-bottom: 0.75rem;
   }
 }
 
@@ -736,7 +747,7 @@ const crearAdmin = async () => {
   }
 
   .app-title {
-    font-size: 1.75rem;
+    font-size: 1.5rem;
     margin-bottom: 0.5rem;
   }
 
@@ -745,9 +756,9 @@ const crearAdmin = async () => {
   }
 
   .flowerpot-animation {
-    width: 100px;
-    height: 120px;
-    margin-bottom: 1.25rem;
+    width: 90px;
+    height: 110px;
+    margin-bottom: 1rem;
   }
 
   .login-card {
@@ -825,7 +836,7 @@ const crearAdmin = async () => {
   }
 
   .app-title {
-    font-size: 1.5rem;
+    font-size: 1.35rem;
     margin-bottom: 0.4rem;
   }
 
@@ -834,9 +845,9 @@ const crearAdmin = async () => {
   }
 
   .flowerpot-animation {
-    width: 90px;
-    height: 110px;
-    margin-bottom: 1rem;
+    width: 80px;
+    height: 100px;
+    margin-bottom: 0.9rem;
   }
 
   .login-card {
@@ -950,7 +961,7 @@ const crearAdmin = async () => {
   }
 
   .app-title {
-    font-size: 1.35rem;
+    font-size: 1.25rem;
     margin-bottom: 0.3rem;
     line-height: 1.2;
   }
@@ -960,9 +971,9 @@ const crearAdmin = async () => {
   }
 
   .flowerpot-animation {
-    width: 80px;
-    height: 100px;
-    margin-bottom: 0.85rem;
+    width: 75px;
+    height: 95px;
+    margin-bottom: 0.75rem;
   }
 
   .login-card {
@@ -1089,7 +1100,7 @@ const crearAdmin = async () => {
   }
 
   .app-title {
-    font-size: 1.2rem;
+    font-size: 1.1rem;
     margin-bottom: 0.25rem;
     line-height: 1.1;
   }
@@ -1099,9 +1110,9 @@ const crearAdmin = async () => {
   }
 
   .flowerpot-animation {
-    width: 75px;
-    height: 95px;
-    margin-bottom: 0.75rem;
+    width: 70px;
+    height: 90px;
+    margin-bottom: 0.65rem;
   }
 
   .login-card {
@@ -1228,7 +1239,7 @@ const crearAdmin = async () => {
   }
 
   .app-title {
-    font-size: 1.05rem;
+    font-size: 1rem;
     margin-bottom: 0.2rem;
     line-height: 1.1;
   }
@@ -1238,9 +1249,9 @@ const crearAdmin = async () => {
   }
 
   .flowerpot-animation {
-    width: 65px;
-    height: 85px;
-    margin-bottom: 0.65rem;
+    width: 60px;
+    height: 80px;
+    margin-bottom: 0.6rem;
   }
 
   .login-card {
