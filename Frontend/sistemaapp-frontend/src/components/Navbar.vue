@@ -222,11 +222,12 @@ onBeforeUnmount(() => {
   align-items: center;
   background: rgba(15, 23, 42, 0.8);
   backdrop-filter: blur(12px);
-  padding: 1rem 1.5rem;
+  padding: 0.6rem 1rem;
   border-bottom: 1px solid rgba(148, 163, 184, 0.1);
   box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
-  gap: 2rem;
+  gap: 1rem;
   color: #e2e8f0;
+  min-height: 56px;
 }
 
 /* Logo y título */
@@ -590,18 +591,10 @@ onBeforeUnmount(() => {
 }
 
 /* Responsive */
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
   .navbar-container {
-    padding: 1rem;
-    gap: 1rem;
-  }
-
-  .navbar-links {
-    display: none;
-  }
-
-  .navbar-title {
-    font-size: 1rem;
+    padding: 0.5rem 0.8rem;
+    gap: 0.8rem;
   }
 
   .logo-icon-wrapper {
@@ -610,17 +603,47 @@ onBeforeUnmount(() => {
   }
 
   .logo-icon {
-    width: 20px;
-    height: 20px;
+    width: 18px;
+    height: 18px;
+  }
+
+  .navbar-title {
+    font-size: 1.1rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .navbar-container {
+    padding: 0.5rem 0.6rem;
+    gap: 0.6rem;
+  }
+
+  .navbar-links {
+    display: none;
+  }
+
+  .navbar-title {
+    font-size: 0.95rem;
+  }
+
+  .logo-icon-wrapper {
+    width: 32px;
+    height: 32px;
+  }
+
+  .logo-icon {
+    width: 16px;
+    height: 16px;
   }
 
   .notification-dropdown {
-    width: 300px;
+    width: 280px;
+    max-height: 350px;
   }
 
   .user-info {
-    gap: 0.5rem;
-    padding-left: 0.5rem;
+    gap: 0.4rem;
+    padding-left: 0.4rem;
     border-left: none;
   }
 
@@ -629,32 +652,121 @@ onBeforeUnmount(() => {
   }
 
   .logout-button {
-    padding: 0.4rem 0.8rem;
-    font-size: 0.8rem;
+    padding: 0.4rem 0.6rem;
+    font-size: 0.75rem;
   }
 
   .logout-button span {
     display: none;
   }
-}
 
-@media (max-width: 480px) {
   .notification-button {
-    width: 40px;
-    height: 40px;
+    width: 36px;
+    height: 36px;
   }
 
   .notification-icon {
-    width: 18px;
-    height: 18px;
+    width: 16px;
+    height: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .navbar-container {
+    padding: 0.4rem 0.5rem;
+    min-height: 48px;
+    gap: 0.4rem;
+  }
+
+  .navbar-brand {
+    gap: 0.4rem;
+  }
+
+  .logo-icon-wrapper {
+    width: 28px;
+    height: 28px;
+  }
+
+  .logo-icon {
+    width: 14px;
+    height: 14px;
+  }
+
+  .navbar-title {
+    font-size: 0.9rem;
+  }
+
+  .notification-button {
+    width: 32px;
+    height: 32px;
+  }
+
+  .notification-icon {
+    width: 14px;
+    height: 14px;
   }
 
   .logout-button {
-    padding: 0.4rem;
+    padding: 0.35rem 0.5rem;
+    font-size: 0.7rem;
   }
 
   .notification-dropdown {
-    width: 280px;
+    width: 240px;
+    max-height: 300px;
+    right: -20px;
+    margin-top: 0.5rem;
+  }
+
+  .notification-header {
+    padding: 0.75rem;
+  }
+
+  .notification-item {
+    padding: 0.6rem 0.75rem;
+    gap: 0.5rem;
+  }
+
+  .notification-type-icon {
+    width: 28px;
+    height: 28px;
+  }
+
+  .type-icon {
+    width: 14px;
+    height: 14px;
+  }
+
+  .notification-title {
+    font-size: 0.8rem;
+  }
+
+  .notification-message {
+    font-size: 0.75rem;
+  }
+
+  .notification-time {
+    font-size: 0.65rem;
+  }
+}
+
+@media (max-width: 320px) {
+  .navbar-container {
+    padding: 0.3rem 0.4rem;
+    min-height: 44px;
+  }
+
+  .navbar-title {
+    font-size: 0.8rem;
+  }
+
+  .notification-button {
+    width: 28px;
+    height: 28px;
+  }
+
+  .notification-dropdown {
+    width: 200px;
   }
 }
 </style>

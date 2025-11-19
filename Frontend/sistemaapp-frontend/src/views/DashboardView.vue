@@ -463,71 +463,76 @@ const logout = () => {
   backdrop-filter: blur(12px);
   background: rgba(15, 23, 42, 0.8);
   border-bottom: 1px solid rgba(148, 163, 184, 0.1);
-  padding: 1rem 0;
+  padding: 0.6rem 0;
   box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
 }
 
 .header-content {
   max-width: 1400px;
   margin: 0 auto;
-  padding: 0 1.5rem;
+  padding: 0 1rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 0.75rem;
 }
 
 .logo-section {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 0.6rem;
+  min-width: 0;
 }
 
 .logo-icon {
-  width: 48px;
-  height: 48px;
+  width: 40px;
+  height: 40px;
   background: linear-gradient(135deg, #10b981 0%, #059669 100%);
   border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
   box-shadow: 0 8px 16px rgba(16, 185, 129, 0.3);
+  flex-shrink: 0;
 }
 
 .logo-svg {
-  width: 28px;
-  height: 28px;
+  width: 24px;
+  height: 24px;
   color: white;
 }
 
 .logo-text h1 {
-  font-size: 1.25rem;
+  font-size: 1.1rem;
   font-weight: 700;
   background: linear-gradient(135deg, #10b981, #6ee7b7);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+  margin: 0;
 }
 
 .logo-text p {
-  font-size: 0.75rem;
+  font-size: 0.6rem;
   color: #94a3b8;
-  margin-top: 0.25rem;
+  margin: 0.1rem 0 0 0;
 }
 
 .logout-btn {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.4rem;
   background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
   color: white;
   border: none;
-  padding: 0.5rem 0.75rem;
+  padding: 0.4rem 0.6rem;
   border-radius: 8px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
   box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
-  font-size: 0.75rem;
+  font-size: 0.7rem;
+  flex-shrink: 0;
 }
 
 .logout-btn:hover {
@@ -540,12 +545,12 @@ const logout = () => {
 }
 
 .logout-icon {
-  width: 16px;
-  height: 16px;
+  width: 14px;
+  height: 14px;
 }
 
 .logout-text {
-  font-size: 0.75rem;
+  font-size: 0.7rem;
 }
 
 @media (max-width: 768px) {
@@ -573,7 +578,7 @@ const logout = () => {
   display: flex;
   align-items: flex-start;
   justify-content: center;
-  padding: 1.5rem 0.75rem;
+  padding: 1rem 0.5rem;
   overflow-y: auto;
 }
 
@@ -586,11 +591,11 @@ const logout = () => {
 .profile-card {
   background: linear-gradient(135deg, rgba(30, 41, 59, 0.8) 0%, rgba(15, 23, 42, 0.8) 100%);
   border: 1px solid rgba(148, 163, 184, 0.2);
-  border-radius: 24px;
-  padding: 1.25rem;
+  border-radius: 20px;
+  padding: 1rem 0.8rem;
   backdrop-filter: blur(10px);
   text-align: center;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
   transition: all 0.3s ease;
 }
@@ -602,9 +607,9 @@ const logout = () => {
 
 .avatar-wrapper {
   position: relative;
-  width: 110px;
-  height: 110px;
-  margin: 0 auto 1.25rem;
+  width: 90px;
+  height: 90px;
+  margin: 0 auto 0.8rem;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -626,34 +631,34 @@ const logout = () => {
 
 .avatar-image {
   position: relative;
-  width: 90px;
-  height: 90px;
+  width: 75px;
+  height: 75px;
   border-radius: 50%;
-  border: 4px solid #10b981;
+  border: 3px solid #10b981;
   object-fit: cover;
   box-shadow: 0 8px 24px rgba(16, 185, 129, 0.3);
 }
 
 .welcome-section {
-  margin-bottom: 1rem;
+  margin-bottom: 0.75rem;
 }
 
 .welcome-icon-wrapper {
-  width: 56px;
-  height: 56px;
+  width: 48px;
+  height: 48px;
   background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(34, 197, 94, 0.15));
   border: 1px solid rgba(16, 185, 129, 0.3);
   border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 0 auto 0.75rem;
+  margin: 0 auto 0.5rem;
   transition: all 0.3s ease;
 }
 
 .welcome-icon {
-  width: 28px;
-  height: 28px;
+  width: 24px;
+  height: 24px;
   color: #10b981;
   transition: transform 0.3s ease;
 }
@@ -669,41 +674,41 @@ const logout = () => {
 }
 
 .welcome-title {
-  font-size: 1.4rem;
+  font-size: 1.2rem;
   font-weight: 600;
   margin-bottom: 0.25rem;
   color: #e2e8f0;
 }
 
 .user-name {
-  font-size: 1.5rem;
+  font-size: 1.3rem;
   font-weight: 700;
   background: linear-gradient(135deg, #10b981, #6ee7b7);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  margin-bottom: 1rem;
+  margin-bottom: 0.75rem;
 }
 
 .info-box {
   background: rgba(15, 23, 42, 0.5);
   border: 1px solid rgba(148, 163, 184, 0.1);
-  border-radius: 16px;
-  padding: 0.875rem;
+  border-radius: 14px;
+  padding: 0.7rem;
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: 0.6rem;
 }
 
 .info-item {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 0.75rem;
 }
 
 .info-icon {
-  width: 20px;
-  height: 20px;
+  width: 18px;
+  height: 18px;
   color: #10b981;
   flex-shrink: 0;
 }
@@ -715,14 +720,14 @@ const logout = () => {
 }
 
 .info-label {
-  font-size: 0.65rem;
+  font-size: 0.6rem;
   color: #94a3b8;
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
 
 .info-value {
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   font-weight: 600;
   color: #e2e8f0;
   word-break: break-all;
@@ -735,48 +740,55 @@ const logout = () => {
 
 /* ========== ACTIONS SECTION ========== */
 .actions-section {
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
 }
 
 .section-title {
-  font-size: 1rem;
+  font-size: 0.95rem;
   font-weight: 600;
-  margin-bottom: 1rem;
+  margin-bottom: 0.8rem;
   color: #cbd5e1;
   text-align: center;
 }
 
 .actions-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-  gap: 0.75rem;
-  margin-bottom: 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
+  gap: 0.6rem;
+  margin-bottom: 1rem;
 }
 
 @media (max-width: 768px) {
   .actions-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .actions-grid {
     grid-template-columns: repeat(2, 1fr);
-    gap: 0.75rem;
+    gap: 0.5rem;
   }
 }
 
 .action-card {
   background: linear-gradient(135deg, rgba(30, 41, 59, 0.8) 0%, rgba(15, 23, 42, 0.8) 100%);
   border: 1px solid rgba(148, 163, 184, 0.2);
-  border-radius: 16px;
-  padding: 1rem;
+  border-radius: 14px;
+  padding: 0.75rem;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.4rem;
   text-decoration: none;
   color: inherit;
 }
 
 .action-card:hover {
-  transform: translateY(-8px);
+  transform: translateY(-6px);
   border-color: rgba(16, 185, 129, 0.5);
   background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(6, 182, 212, 0.05) 100%);
   box-shadow: 0 12px 24px rgba(16, 185, 129, 0.2);
@@ -787,10 +799,10 @@ const logout = () => {
 }
 
 .action-icon-wrapper {
-  width: 48px;
-  height: 48px;
+  width: 40px;
+  height: 40px;
   background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-  border-radius: 12px;
+  border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -804,13 +816,13 @@ const logout = () => {
 }
 
 .action-icon {
-  width: 24px;
-  height: 24px;
+  width: 20px;
+  height: 20px;
   color: white;
 }
 
 .action-title {
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   font-weight: 600;
   color: #cbd5e1;
   text-align: center;
@@ -823,19 +835,27 @@ const logout = () => {
 
 /* ========== SPECIALIZED MODULES SECTION ========== */
 .specialized-section {
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
 }
 
 .specialized-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 1rem;
-  margin-bottom: 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 0.75rem;
+  margin-bottom: 1rem;
 }
 
 @media (max-width: 768px) {
   .specialized-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.6rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .specialized-grid {
     grid-template-columns: 1fr;
+    gap: 0.5rem;
   }
 }
 
@@ -844,14 +864,14 @@ const logout = () => {
   background: linear-gradient(135deg, rgba(30, 41, 59, 0.7) 0%, rgba(15, 23, 42, 0.7) 100%);
   border: 1px solid rgba(148, 163, 184, 0.2);
   border-radius: 16px;
-  padding: 1.5rem;
+  padding: 1.2rem 1rem;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
-  gap: 0.75rem;
+  gap: 0.6rem;
   text-decoration: none;
   color: inherit;
   overflow: hidden;
@@ -1019,16 +1039,16 @@ const logout = () => {
 /* ========== STATS GRID ========== */
 .stats-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
-  gap: 0.75rem;
-  margin-bottom: 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+  gap: 0.6rem;
+  margin-bottom: 1rem;
 }
 
 .stat-card {
   background: rgba(30, 41, 59, 0.6);
   border: 1px solid rgba(148, 163, 184, 0.2);
   border-radius: 12px;
-  padding: 1rem;
+  padding: 0.8rem 0.6rem;
   text-align: center;
   transition: all 0.3s ease;
 }
@@ -1040,20 +1060,20 @@ const logout = () => {
 
 .stat-icon {
   font-size: 1.4rem;
-  margin-bottom: 0.25rem;
+  margin-bottom: 0.2rem;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
 .stat-lucide {
-  width: 24px;
-  height: 24px;
+  width: 20px;
+  height: 20px;
   color: inherit;
 }
 
 .stat-text {
-  font-size: 0.65rem;
+  font-size: 0.6rem;
   color: #94a3b8;
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -1076,9 +1096,9 @@ const logout = () => {
 .notifications-section {
   background: linear-gradient(135deg, rgba(30, 41, 59, 0.4), rgba(30, 41, 59, 0.2));
   border: 1px solid rgba(148, 163, 184, 0.1);
-  border-radius: 16px;
-  padding: 2rem;
-  margin-bottom: 2rem;
+  border-radius: 14px;
+  padding: 1.2rem 0.8rem;
+  margin-bottom: 1rem;
   backdrop-filter: blur(10px);
 }
 
@@ -1086,22 +1106,22 @@ const logout = () => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
 }
 
 .notifications-badge {
   background: linear-gradient(135deg, #ef4444, #dc2626);
   color: white;
   border-radius: 50%;
-  width: 32px;
-  height: 32px;
+  width: 28px;
+  height: 28px;
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: 700;
-  font-size: 0.875rem;
+  font-size: 0.8rem;
   box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
-  min-width: 32px;
+  min-width: 28px;
 }
 
 .notifications-empty {
@@ -1109,27 +1129,31 @@ const logout = () => {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 2rem 1rem;
+  padding: 1.5rem 1rem;
   color: #cbd5e1;
   text-align: center;
 }
 
 .empty-icon {
   color: #94a3b8;
-  margin-bottom: 1rem;
+  margin-bottom: 0.8rem;
   opacity: 0.6;
+  width: 28px;
+  height: 28px;
 }
 
 .notifications-list {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: 0.6rem;
+  max-height: 300px;
+  overflow-y: auto;
 }
 
 .notification-card {
   display: flex;
-  gap: 1rem;
-  padding: 1rem;
+  gap: 0.75rem;
+  padding: 0.8rem;
   background: rgba(30, 41, 59, 0.4);
   border-radius: 10px;
   border-left: 3px solid;
@@ -1146,8 +1170,8 @@ const logout = () => {
 }
 
 .notif-icon {
-  width: 40px;
-  height: 40px;
+  width: 36px;
+  height: 36px;
   border-radius: 8px;
   display: flex;
   align-items: center;
@@ -1164,33 +1188,33 @@ const logout = () => {
 .notif-title {
   color: #f1f5f9;
   font-weight: 600;
-  font-size: 0.95rem;
-  margin: 0 0 0.25rem 0;
+  font-size: 0.85rem;
+  margin: 0 0 0.2rem 0;
   word-break: break-word;
 }
 
 .notif-message {
   color: #cbd5e1;
-  font-size: 0.875rem;
-  margin: 0 0 0.5rem 0;
-  line-height: 1.4;
+  font-size: 0.8rem;
+  margin: 0 0 0.4rem 0;
+  line-height: 1.3;
   word-break: break-word;
 }
 
 .notif-time {
   color: #94a3b8;
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   margin: 0;
 }
 
 /* ========== FOOTER ========== */
 .dashboard-footer {
   text-align: center;
-  padding: 1rem;
+  padding: 0.8rem;
   border-top: 1px solid rgba(148, 163, 184, 0.1);
   background: rgba(15, 23, 42, 0.5);
   backdrop-filter: blur(10px);
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   color: #94a3b8;
 }
 
@@ -1200,88 +1224,561 @@ const logout = () => {
 }
 
 /* ========== RESPONSIVE ========== */
-@media (max-width: 640px) {
+@media (max-width: 1024px) {
   .dashboard-main {
-    padding: 1rem 0.75rem;
+    padding: 0.8rem 0.4rem;
   }
 
   .profile-card {
-    padding: 1.5rem 1rem;
-    margin-bottom: 1.5rem;
+    padding: 0.9rem 0.7rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .dashboard-main {
+    padding: 0.8rem 0.4rem;
+  }
+
+  .profile-card {
+    padding: 0.9rem 0.7rem;
+    margin-bottom: 0.8rem;
   }
 
   .avatar-wrapper {
-    width: 100px;
-    height: 100px;
-    margin-bottom: 1.5rem;
+    width: 80px;
+    height: 80px;
+    margin-bottom: 0.6rem;
   }
 
   .avatar-image {
-    width: 80px;
-    height: 80px;
+    width: 65px;
+    height: 65px;
   }
 
   .welcome-title {
-    font-size: 1.5rem;
+    font-size: 1.1rem;
   }
 
   .user-name {
-    font-size: 1.5rem;
+    font-size: 1.2rem;
   }
 
   .info-box {
-    padding: 1rem;
+    padding: 0.6rem;
+  }
+
+  .actions-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .specialized-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .dashboard-main {
+    padding: 0.6rem 0.3rem;
+  }
+
+  .profile-card {
+    padding: 0.8rem 0.6rem;
+    margin-bottom: 0.7rem;
+    border-radius: 16px;
+  }
+
+  .avatar-wrapper {
+    width: 75px;
+    height: 75px;
+    margin-bottom: 0.5rem;
+  }
+
+  .avatar-image {
+    width: 60px;
+    height: 60px;
+    border: 2px solid #10b981;
+  }
+
+  .welcome-title {
+    font-size: 1rem;
+  }
+
+  .user-name {
+    font-size: 1.1rem;
+  }
+
+  .info-box {
+    padding: 0.5rem;
+    gap: 0.5rem;
+  }
+
+  .info-item {
+    gap: 0.6rem;
   }
 
   .section-title {
-    font-size: 1rem;
+    font-size: 0.9rem;
+    margin-bottom: 0.7rem;
   }
 
   .actions-grid {
     grid-template-columns: repeat(2, 1fr);
+    gap: 0.5rem;
   }
 
   .action-card {
-    padding: 1rem;
+    padding: 0.6rem;
+    gap: 0.3rem;
   }
 
   .action-icon-wrapper {
-    width: 48px;
-    height: 48px;
+    width: 36px;
+    height: 36px;
   }
 
   .action-icon {
-    width: 24px;
-    height: 24px;
+    width: 18px;
+    height: 18px;
+  }
+
+  .action-title {
+    font-size: 0.65rem;
   }
 
   .specialized-grid {
     grid-template-columns: 1fr;
+    gap: 0.5rem;
   }
 
   .specialized-card {
-    padding: 1.25rem;
+    padding: 1rem 0.8rem;
+    gap: 0.5rem;
   }
 
   .specialized-icon-wrapper {
-    width: 56px;
-    height: 56px;
-  }
-
-  .specialized-icon {
-    font-size: 1.75rem;
+    width: 48px;
+    height: 48px;
   }
 
   .specialized-title {
-    font-size: 0.95rem;
+    font-size: 0.9rem;
   }
 
   .specialized-desc {
-    font-size: 0.7rem;
+    font-size: 0.65rem;
   }
 
   .card-arrow {
     font-size: 1rem;
+    bottom: 0.7rem;
+    right: 0.8rem;
+  }
+
+  .stats-grid {
+    gap: 0.5rem;
+  }
+
+  .stat-card {
+    padding: 0.7rem 0.5rem;
+  }
+
+  .stat-lucide {
+    width: 18px;
+    height: 18px;
+  }
+
+  .stat-text {
+    font-size: 0.55rem;
+  }
+
+  .notifications-section {
+    padding: 1rem 0.7rem;
+    margin-bottom: 0.8rem;
+  }
+
+  .notifications-header {
+    margin-bottom: 0.8rem;
+  }
+
+  .notifications-badge {
+    width: 26px;
+    height: 26px;
+    font-size: 0.75rem;
+  }
+
+  .notification-card {
+    padding: 0.7rem;
+    gap: 0.6rem;
+  }
+
+  .notif-icon {
+    width: 32px;
+    height: 32px;
+  }
+
+  .notif-title {
+    font-size: 0.8rem;
+  }
+
+  .notif-message {
+    font-size: 0.75rem;
+  }
+
+  .notif-time {
+    font-size: 0.65rem;
+  }
+
+  .dashboard-footer {
+    padding: 0.6rem;
+    font-size: 0.65rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .dashboard-container {
+    min-height: 100vh;
+  }
+
+  .dashboard-header {
+    padding: 0.5rem 0;
+  }
+
+  .header-content {
+    padding: 0 0.6rem;
+    gap: 0.5rem;
+  }
+
+  .logo-section {
+    gap: 0.4rem;
+  }
+
+  .logo-icon {
+    width: 32px;
+    height: 32px;
+  }
+
+  .logo-svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .logo-text h1 {
+    font-size: 0.95rem;
+  }
+
+  .logo-text p {
+    font-size: 0.55rem;
+  }
+
+  .logout-btn {
+    padding: 0.35rem 0.4rem;
+    font-size: 0.65rem;
+  }
+
+  .logout-icon {
+    width: 12px;
+    height: 12px;
+  }
+
+  .dashboard-main {
+    padding: 0.5rem 0.3rem;
+  }
+
+  .profile-card {
+    padding: 0.7rem 0.5rem;
+    margin-bottom: 0.6rem;
+  }
+
+  .avatar-wrapper {
+    width: 70px;
+    height: 70px;
+    margin-bottom: 0.4rem;
+  }
+
+  .avatar-image {
+    width: 55px;
+    height: 55px;
+    border: 2px solid #10b981;
+  }
+
+  .welcome-icon-wrapper {
+    width: 40px;
+    height: 40px;
+    margin-bottom: 0.3rem;
+  }
+
+  .welcome-icon {
+    width: 20px;
+    height: 20px;
+  }
+
+  .welcome-title {
+    font-size: 0.95rem;
+  }
+
+  .user-name {
+    font-size: 1rem;
+  }
+
+  .info-box {
+    padding: 0.4rem;
+    gap: 0.4rem;
+  }
+
+  .info-item {
+    gap: 0.5rem;
+  }
+
+  .info-icon {
+    width: 16px;
+    height: 16px;
+  }
+
+  .info-label {
+    font-size: 0.55rem;
+  }
+
+  .info-value {
+    font-size: 0.75rem;
+  }
+
+  .actions-section {
+    margin-bottom: 0.8rem;
+  }
+
+  .section-title {
+    font-size: 0.85rem;
+    margin-bottom: 0.6rem;
+  }
+
+  .actions-grid {
+    gap: 0.4rem;
+  }
+
+  .action-card {
+    padding: 0.5rem;
+    gap: 0.25rem;
+  }
+
+  .action-icon-wrapper {
+    width: 32px;
+    height: 32px;
+  }
+
+  .action-icon {
+    width: 16px;
+    height: 16px;
+  }
+
+  .action-title {
+    font-size: 0.6rem;
+  }
+
+  .specialized-grid {
+    gap: 0.4rem;
+  }
+
+  .specialized-card {
+    padding: 0.8rem 0.6rem;
+    gap: 0.4rem;
+  }
+
+  .specialized-icon-wrapper {
+    width: 44px;
+    height: 44px;
+  }
+
+  .specialized-icon-lucide {
+    width: 24px;
+    height: 24px;
+  }
+
+  .specialized-title {
+    font-size: 0.85rem;
+  }
+
+  .specialized-desc {
+    font-size: 0.6rem;
+  }
+
+  .card-arrow {
+    font-size: 0.95rem;
+  }
+
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.4rem;
+  }
+
+  .stat-card {
+    padding: 0.6rem 0.4rem;
+    border-radius: 10px;
+  }
+
+  .stat-icon {
+    margin-bottom: 0.15rem;
+  }
+
+  .stat-lucide {
+    width: 16px;
+    height: 16px;
+  }
+
+  .stat-text {
+    font-size: 0.5rem;
+  }
+
+  .notifications-section {
+    padding: 0.8rem 0.6rem;
+    border-radius: 12px;
+    margin-bottom: 0.6rem;
+  }
+
+  .notifications-header {
+    margin-bottom: 0.6rem;
+  }
+
+  .notifications-badge {
+    width: 24px;
+    height: 24px;
+    font-size: 0.7rem;
+  }
+
+  .empty-icon {
+    width: 24px;
+    height: 24px;
+    margin-bottom: 0.6rem;
+  }
+
+  .notifications-list {
+    max-height: 250px;
+    gap: 0.5rem;
+  }
+
+  .notification-card {
+    padding: 0.6rem;
+    border-radius: 8px;
+  }
+
+  .notif-icon {
+    width: 30px;
+    height: 30px;
+  }
+
+  .notif-title {
+    font-size: 0.75rem;
+  }
+
+  .notif-message {
+    font-size: 0.7rem;
+    margin-bottom: 0.3rem;
+  }
+
+  .notif-time {
+    font-size: 0.6rem;
+  }
+
+  .dashboard-footer {
+    padding: 0.5rem;
+    font-size: 0.6rem;
+  }
+}
+
+@media (max-width: 360px) {
+  .dashboard-header {
+    padding: 0.4rem 0;
+  }
+
+  .header-content {
+    padding: 0 0.5rem;
+    gap: 0.3rem;
+  }
+
+  .logo-icon {
+    width: 28px;
+    height: 28px;
+  }
+
+  .logo-text h1 {
+    font-size: 0.85rem;
+  }
+
+  .logout-btn {
+    padding: 0.3rem 0.3rem;
+  }
+
+  .profile-card {
+    padding: 0.6rem 0.4rem;
+  }
+
+  .avatar-wrapper {
+    width: 65px;
+    height: 65px;
+    margin-bottom: 0.3rem;
+  }
+
+  .avatar-image {
+    width: 50px;
+    height: 50px;
+  }
+
+  .welcome-title {
+    font-size: 0.9rem;
+  }
+
+  .user-name {
+    font-size: 0.95rem;
+  }
+
+  .action-card {
+    padding: 0.4rem;
+  }
+
+  .action-icon-wrapper {
+    width: 28px;
+    height: 28px;
+  }
+
+  .action-icon {
+    width: 14px;
+    height: 14px;
+  }
+
+  .action-title {
+    font-size: 0.55rem;
+  }
+
+  .specialized-card {
+    padding: 0.7rem 0.5rem;
+  }
+
+  .specialized-icon-wrapper {
+    width: 40px;
+    height: 40px;
+  }
+
+  .specialized-title {
+    font-size: 0.8rem;
+  }
+
+  .specialized-desc {
+    font-size: 0.55rem;
+  }
+
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .stat-card {
+    padding: 0.5rem 0.3rem;
+  }
+
+  .notifications-section {
+    padding: 0.7rem 0.5rem;
+  }
+
+  .notification-card {
+    gap: 0.5rem;
   }
 }
 

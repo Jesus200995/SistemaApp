@@ -275,7 +275,7 @@ const crearAdmin = async () => {
   overflow-x: hidden;
   font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   margin: 0;
-  padding: 3rem 0;
+  padding: 2rem 0;
 }
 
 /* ========== BACKGROUND BLOBS ========== */
@@ -332,8 +332,8 @@ const crearAdmin = async () => {
   position: relative;
   z-index: 10;
   width: 100%;
-  max-width: 300px;
-  padding: 0.8rem 0.6rem;
+  max-width: 290px;
+  padding: 0.6rem 0.4rem;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -344,16 +344,16 @@ const crearAdmin = async () => {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-bottom: 1rem;
+  margin-bottom: 0.8rem;
   text-align: center;
   width: 100%;
 }
 
 /* Animación de maceta con flor */
 .flowerpot-animation {
-  width: 85px;
-  height: 105px;
-  margin-bottom: 0.8rem;
+  width: 75px;
+  height: 95px;
+  margin-bottom: 0.6rem;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -424,19 +424,19 @@ const crearAdmin = async () => {
 }
 
 .app-title {
-  font-size: 1.3rem;
+  font-size: 1.15rem;
   font-weight: 700;
   background: linear-gradient(135deg, #10b981, #6ee7b7);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  margin-bottom: 0.25rem;
+  margin-bottom: 0.2rem;
   letter-spacing: -0.02em;
   line-height: 1.2;
 }
 
 .app-subtitle {
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   color: #cbd5e1;
   font-weight: 400;
   letter-spacing: 0.01em;
@@ -447,15 +447,15 @@ const crearAdmin = async () => {
   width: 100%;
   background: linear-gradient(135deg, rgba(30, 41, 59, 0.85) 0%, rgba(15, 23, 42, 0.85) 100%);
   border: 1px solid rgba(148, 163, 184, 0.25);
-  border-radius: 24px;
-  padding: 1rem 1rem;
+  border-radius: 20px;
+  padding: 0.9rem 0.7rem;
   backdrop-filter: blur(10px);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), 0 0 1px rgba(16, 185, 129, 0.1);
-  margin-bottom: 0.6rem;
+  margin-bottom: 0.5rem;
 }
 
 .login-title {
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   font-weight: 700;
   color: #f1f5f9;
   margin-bottom: 0.3rem;
@@ -464,10 +464,10 @@ const crearAdmin = async () => {
 }
 
 .login-subtitle {
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   color: #cbd5e1;
   text-align: center;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.2rem;
   font-weight: 400;
 }
 
@@ -475,17 +475,17 @@ const crearAdmin = async () => {
 .login-form {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: 0.65rem;
 }
 
 .form-group {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0.4rem;
 }
 
 .form-label {
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   font-weight: 600;
   color: #cbd5e1;
   text-transform: uppercase;
@@ -500,9 +500,9 @@ const crearAdmin = async () => {
 
 .input-icon {
   position: absolute;
-  left: 14px;
-  width: 20px;
-  height: 20px;
+  left: 12px;
+  width: 18px;
+  height: 18px;
   color: #10b981;
   pointer-events: none;
 }
@@ -511,10 +511,10 @@ const crearAdmin = async () => {
   width: 100%;
   background: rgba(15, 23, 42, 0.6);
   border: 1.5px solid rgba(148, 163, 184, 0.25);
-  border-radius: 12px;
-  padding: 0.6rem 0.9rem 0.6rem 2.4rem;
+  border-radius: 10px;
+  padding: 0.55rem 0.8rem 0.55rem 2.2rem;
   color: #e2e8f0;
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   font-family: 'Inter', 'Segoe UI', sans-serif;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -534,13 +534,13 @@ const crearAdmin = async () => {
 .remember-me {
   display: flex;
   align-items: center;
-  gap: 0.65rem;
-  font-size: 0.9rem;
+  gap: 0.55rem;
+  font-size: 0.8rem;
 }
 
 .checkbox-input {
-  width: 18px;
-  height: 18px;
+  width: 16px;
+  height: 16px;
   accent-color: #10b981;
   cursor: pointer;
   border-radius: 4px;
