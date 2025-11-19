@@ -4,7 +4,7 @@
   "description": "Sistema Territorial de Administración - Panel de control completo con notificaciones en tiempo real",
   "start_url": "/",
   "scope": "/",
-  "display": "standalone",
+  "display": "browser",
   "orientation": "portrait-primary",
   "theme_color": "#10b981",
   "background_color": "#0f172a",
