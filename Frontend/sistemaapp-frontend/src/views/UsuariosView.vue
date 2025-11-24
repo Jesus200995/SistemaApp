@@ -419,8 +419,9 @@ onMounted(fetchUsuarios)
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 2rem;
-  padding: 1.5rem;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+  padding: 1rem;
   background: rgba(30, 41, 59, 0.4);
   border: 1px solid rgba(148, 163, 184, 0.1);
   border-radius: 16px;
@@ -430,7 +431,7 @@ onMounted(fetchUsuarios)
 .header-title {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 0.75rem;
 }
 
 /* ========== BACK BUTTON ========== */
@@ -472,30 +473,36 @@ onMounted(fetchUsuarios)
 }
 
 .usuarios-header h1 {
-  font-size: 1.75rem;
+  font-size: 0.95rem;
   font-weight: 700;
-  color: #e2e8f0;
+  color: #84cc16;
+  margin: 0;
+  text-shadow: 0 0 8px rgba(132, 204, 22, 0.5);
 }
 
 .reload-button {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-  color: white;
-  border: none;
-  border-radius: 10px;
-  padding: 0.75rem 1.25rem;
-  font-size: 0.9rem;
+  gap: 0.4rem;
+  background: rgba(59, 130, 246, 0.15);
+  color: #3b82f6;
+  border: 1.5px solid rgba(59, 130, 246, 0.4);
+  border-radius: 20px;
+  padding: 0.6rem 1.2rem;
+  font-size: 0.8rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+  box-shadow: 0 4px 15px rgba(59, 130, 246, 0.2);
+  backdrop-filter: blur(10px);
+  margin-left: auto;
 }
 
 .reload-button:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 25px rgba(16, 185, 129, 0.4);
+  box-shadow: 0 8px 25px rgba(59, 130, 246, 0.35);
+  background: rgba(59, 130, 246, 0.25);
+  border-color: rgba(59, 130, 246, 0.6);
 }
 
 .reload-button:active {
@@ -512,10 +519,10 @@ onMounted(fetchUsuarios)
   background: linear-gradient(135deg, rgba(30, 41, 59, 0.8) 0%, rgba(15, 23, 42, 0.8) 100%);
   border: 1px solid rgba(148, 163, 184, 0.2);
   border-radius: 20px;
-  padding: 2rem;
+  padding: 1.5rem;
   backdrop-filter: blur(10px);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem;
 }
 
 /* ========== SEARCH SECTION ========== */
@@ -548,9 +555,9 @@ onMounted(fetchUsuarios)
   background: rgba(15, 23, 42, 0.5);
   border: 1px solid rgba(148, 163, 184, 0.2);
   border-radius: 10px;
-  padding: 0.75rem 1rem 0.75rem 2.5rem;
+  padding: 0.6rem 1rem 0.6rem 2.5rem;
   color: #e2e8f0;
-  font-size: 0.95rem;
+  font-size: 0.85rem;
   transition: all 0.3s ease;
 }
 
@@ -583,7 +590,7 @@ onMounted(fetchUsuarios)
 .users-table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 0.95rem;
+  font-size: 0.75rem;
 }
 
 .users-table thead {
@@ -592,13 +599,13 @@ onMounted(fetchUsuarios)
 }
 
 .users-table thead th {
-  padding: 1rem;
+  padding: 0.6rem 0.5rem;
   text-align: left;
   font-weight: 600;
   color: #10b981;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  font-size: 0.8rem;
+  font-size: 0.7rem;
 }
 
 .skeleton-row {
@@ -634,7 +641,7 @@ onMounted(fetchUsuarios)
 }
 
 .users-table td {
-  padding: 1rem;
+  padding: 0.6rem 0.5rem;
   color: #cbd5e1;
 }
 
@@ -755,7 +762,7 @@ onMounted(fetchUsuarios)
 }
 
 .user-card {
-  padding: 1.25rem;
+  padding: 1rem 0.9rem;
   background: rgba(15, 23, 42, 0.5);
   border: 1px solid rgba(148, 163, 184, 0.2);
   border-radius: 12px;
@@ -795,35 +802,37 @@ onMounted(fetchUsuarios)
 }
 
 .card-nombre h3 {
-  font-size: 1rem;
+  font-size: 0.85rem;
   font-weight: 600;
   color: #e2e8f0;
-  margin-bottom: 0.25rem;
+  margin-bottom: 0.1rem;
+  line-height: 1.2;
 }
 
 .card-email {
-  font-size: 0.85rem;
+  font-size: 0.7rem;
   color: #94a3b8;
+  line-height: 1.2;
 }
 
 .card-actions {
   display: flex;
-  gap: 0.75rem;
-  margin-top: 1rem;
-  padding-top: 1rem;
+  gap: 0.6rem;
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
   border-top: 1px solid rgba(148, 163, 184, 0.1);
 }
 
 .card-actions .action-btn {
   flex: 1;
-  padding: 0.5rem 1rem;
-  font-size: 0.9rem;
+  padding: 0.4rem 0.8rem;
+  font-size: 0.7rem;
   border-radius: 8px;
   transition: all 0.2s ease;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
+  gap: 0.3rem;
 }
 
 .card-actions .edit-btn {
@@ -944,15 +953,15 @@ onMounted(fetchUsuarios)
 /* ========== STATS SECTION ========== */
 .stats-section {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  gap: 0.75rem;
 }
 
 .stat-card {
   background: rgba(16, 185, 129, 0.05);
   border: 1px solid rgba(16, 185, 129, 0.2);
   border-radius: 12px;
-  padding: 1.25rem;
+  padding: 0.9rem 0.75rem;
   text-align: center;
   transition: all 0.3s ease;
 }
@@ -964,14 +973,14 @@ onMounted(fetchUsuarios)
 }
 
 .stat-number {
-  font-size: 2rem;
+  font-size: 1.5rem;
   font-weight: 700;
   color: #10b981;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.3rem;
 }
 
 .stat-label {
-  font-size: 0.875rem;
+  font-size: 0.7rem;
   color: #94a3b8;
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -980,14 +989,17 @@ onMounted(fetchUsuarios)
 /* ========== RESPONSIVE ========== */
 @media (max-width: 768px) {
   .usuarios-header {
-    flex-direction: column;
-    gap: 1rem;
-    text-align: center;
+    flex-direction: row;
+    gap: 0.5rem;
+    text-align: left;
+    padding: 0.8rem;
+    justify-content: flex-start;
   }
 
   .back-button {
     width: 40px;
     height: 40px;
+    flex-shrink: 0;
   }
 
   .back-icon {
@@ -996,41 +1008,46 @@ onMounted(fetchUsuarios)
   }
 
   .header-title {
-    width: 100%;
-    justify-content: center;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
   }
 
   .usuarios-header h1 {
-    font-size: 1.5rem;
+    font-size: 0.85rem;
   }
 
   .reload-button {
-    width: 100%;
-    justify-content: center;
+    padding: 0.5rem 0.8rem;
+    font-size: 0.7rem;
   }
 
   .usuarios-card {
-    padding: 1.5rem;
+    padding: 1rem;
   }
 
   .search-section {
     flex-direction: column;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
   }
 
   .results-info {
     order: -1;
     text-align: center;
     width: 100%;
+    font-size: 0.75rem;
   }
 
   .pagination-section {
     flex-wrap: wrap;
-    gap: 1rem;
+    gap: 0.75rem;
   }
 
   .pagination-btn {
     flex: 1;
-    min-width: 120px;
+    min-width: 100px;
+    font-size: 0.75rem;
   }
 
   .stats-section {
@@ -1058,7 +1075,7 @@ onMounted(fetchUsuarios)
   }
 
   .usuarios-header h1 {
-    font-size: 1.25rem;
+    font-size: 0.8rem;
   }
 
   .usuarios-card {
@@ -1117,7 +1134,7 @@ onMounted(fetchUsuarios)
   }
 
   .usuarios-header h1 {
-    font-size: 1.25rem;
+    font-size: 0.75rem;
   }
 }
 
