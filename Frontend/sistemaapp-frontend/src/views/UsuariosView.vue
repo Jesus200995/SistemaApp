@@ -6,28 +6,31 @@
       <div class="blob blob-2"></div>
     </div>
 
+    <!-- Header con botón de regreso -->
+    <header class="usuarios-header">
+        <div class="header-wrapper">
+          <div class="header-left">
+            <router-link to="/dashboard" class="back-button" title="Volver al Dashboard">
+              <ArrowLeft class="back-icon" />
+            </router-link>
+            <div class="header-icon-small">
+              <Users class="icon-stat" />
+            </div>
+            <div class="header-text">
+              <h1 class="header-title">Usuarios</h1>
+              <p class="header-subtitle">Gestión de usuarios</p>
+            </div>
+          </div>
+          <button @click="reload" class="reload-button" title="Recargar">
+            <svg class="reload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8M21 3v5h-5M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16M3 21v-5h5"></path>
+            </svg>
+          </button>
+        </div>
+      </header>
+
     <!-- Contenido principal -->
     <div class="usuarios-content">
-      <!-- Header con botón de regreso -->
-      <div
-        v-motion
-        :initial="{ opacity: 0, y: -50 }"
-        :enter="{ opacity: 1, y: 0, transition: { duration: 600 } }"
-        class="usuarios-header"
-      >
-        <div class="header-title">
-          <router-link to="/dashboard" class="back-button" title="Volver al Dashboard">
-            <ArrowLeft class="back-icon" />
-          </router-link>
-          <Users class="header-icon" />
-          <h1>Gestión de Usuarios</h1>
-        </div>
-        <button @click="reload" class="reload-button">
-          <RotateCw class="reload-icon" />
-          <span>Recargar</span>
-        </button>
-      </div>
-
       <!-- Tarjeta principal -->
       <div
         v-motion
@@ -406,31 +409,36 @@ onMounted(fetchUsuarios)
 /* ========== CONTENT ========== */
 .usuarios-content {
   position: relative;
-  z-index: 10;
-  width: 100%;
+  z-index: 5;
+  padding: 2rem 1rem;
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 1.5rem;
 }
 
 /* ========== HEADER ========== */
 .usuarios-header {
+  position: relative;
+  z-index: 10;
+  background: rgba(132, 204, 22, 0.12);
+  border-bottom: 1px solid rgba(132, 204, 22, 0.1);
+  backdrop-filter: blur(12px);
+  padding: 1rem 1.2rem;
+  box-shadow: 0 4px 20px rgba(132, 204, 22, 0.1);
+}
+
+.header-wrapper {
+  max-width: 1200px;
+  margin: 0 auto;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 0.75rem;
-  margin-bottom: 1.5rem;
-  padding: 1rem;
-  background: rgba(30, 41, 59, 0.4);
-  border: 1px solid rgba(148, 163, 184, 0.1);
-  border-radius: 16px;
-  backdrop-filter: blur(10px);
 }
 
-.header-title {
+.header-left {
   display: flex;
   align-items: center;
   gap: 0.75rem;
+  flex: 1;
 }
 
 /* ========== BACK BUTTON ========== */
@@ -468,52 +476,75 @@ onMounted(fetchUsuarios)
   stroke-width: 2.5;
 }
 
-.header-icon {
-  width: 24px;
-  height: 24px;
-  color: #84cc16;
+.header-icon-small {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  background: transparent;
+  flex-shrink: 0;
 }
 
-.usuarios-header h1 {
+.icon-stat {
+  width: 20px;
+  height: 20px;
+  color: #84cc16;
+  stroke-width: 2;
+}
+
+.header-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.header-title {
   font-size: 0.95rem;
   font-weight: 700;
   color: #84cc16;
   margin: 0;
-  text-shadow: 0 0 8px rgba(132, 204, 22, 0.5);
+  text-shadow: 0 0 8px rgba(132, 204, 22, 0.4);
+}
+
+.header-subtitle {
+  font-size: 0.75rem;
+  color: #cbd5e1;
+  margin: 0;
+  margin-top: 0.2rem;
 }
 
 .reload-button {
   display: flex;
   align-items: center;
-  gap: 0.4rem;
-  background: rgba(59, 130, 246, 0.15);
-  color: #3b82f6;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(59, 130, 246, 0.1);
   border: 1.5px solid rgba(59, 130, 246, 0.4);
-  border-radius: 20px;
-  padding: 0.6rem 1.2rem;
-  font-size: 0.8rem;
-  font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 4px 15px rgba(59, 130, 246, 0.2);
+  transition: all 0.3s ease;
+  color: #3b82f6;
   backdrop-filter: blur(10px);
-  margin-left: auto;
+  flex-shrink: 0;
+  padding: 0;
 }
 
 .reload-button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(59, 130, 246, 0.35);
-  background: rgba(59, 130, 246, 0.25);
+  background: rgba(59, 130, 246, 0.2);
+  box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
   border-color: rgba(59, 130, 246, 0.6);
 }
 
 .reload-button:active {
-  transform: translateY(0);
+  transform: scale(0.95);
 }
 
 .reload-icon {
-  width: 18px;
-  height: 18px;
+  width: 22px;
+  height: 22px;
+  stroke-width: 2.5;
 }
 
 /* ========== USUARIOS CARD ========== */
@@ -996,37 +1027,39 @@ onMounted(fetchUsuarios)
 /* ========== RESPONSIVE ========== */
 @media (max-width: 768px) {
   .usuarios-header {
-    flex-direction: row;
-    gap: 0.5rem;
-    text-align: left;
-    padding: 0.8rem;
-    justify-content: flex-start;
+    padding: 0.8rem 1rem;
   }
 
-  .back-button {
-    width: 40px;
-    height: 40px;
-    flex-shrink: 0;
+  .header-title {
+    font-size: 0.85rem;
   }
 
-  .back-icon {
+  .header-icon-small {
+    width: 28px;
+    height: 28px;
+  }
+
+  .icon-stat {
     width: 18px;
     height: 18px;
   }
 
-  .header-title {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
-
-  .usuarios-header h1 {
-    font-size: 0.85rem;
+  .header-subtitle {
+    font-size: 0.7rem;
   }
 
   .reload-button {
-    padding: 0.5rem 0.8rem;
-    font-size: 0.7rem;
+    width: 36px;
+    height: 36px;
+  }
+
+  .reload-icon {
+    width: 20px;
+    height: 20px;
+  }
+
+  .usuarios-content {
+    padding: 1.5rem 0.5rem;
   }
 
   .usuarios-card {
@@ -1063,26 +1096,16 @@ onMounted(fetchUsuarios)
 }
 
 @media (max-width: 640px) {
-  .usuarios-container {
-    padding: 1rem 0;
-  }
-
   .usuarios-content {
-    padding: 0 1rem;
+    padding: 1.5rem 0.5rem;
   }
 
-  .usuarios-header {
-    padding: 1rem;
-    gap: 0.75rem;
-  }
-
-  .header-icon {
-    width: 24px;
-    height: 24px;
-  }
-
-  .usuarios-header h1 {
+  .header-title {
     font-size: 0.8rem;
+  }
+
+  .header-subtitle {
+    font-size: 0.7rem;
   }
 
   .usuarios-card {
@@ -1121,27 +1144,50 @@ onMounted(fetchUsuarios)
 }
 
 @media (max-width: 480px) {
+  .usuarios-header {
+    padding: 0.6rem 0.8rem;
+  }
+
   .back-button {
     width: 36px;
     height: 36px;
   }
 
   .back-icon {
+    width: 18px;
+    height: 18px;
+  }
+
+  .header-icon-small {
+    width: 26px;
+    height: 26px;
+  }
+
+  .icon-stat {
     width: 16px;
     height: 16px;
   }
 
   .header-title {
-    gap: 0.5rem;
-  }
-
-  .header-icon {
-    width: 24px;
-    height: 24px;
-  }
-
-  .usuarios-header h1 {
     font-size: 0.75rem;
+  }
+
+  .header-subtitle {
+    font-size: 0.65rem;
+  }
+
+  .reload-button {
+    width: 34px;
+    height: 34px;
+  }
+
+  .reload-icon {
+    width: 18px;
+    height: 18px;
+  }
+
+  .usuarios-content {
+    padding: 1rem 0.5rem;
   }
 }
 
