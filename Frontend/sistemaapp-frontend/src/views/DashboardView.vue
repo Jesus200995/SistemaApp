@@ -242,26 +242,7 @@
           </div>
         </div>
 
-        <!-- Stats -->
-        <div
-          v-motion
-          :initial="{ opacity: 0 }"
-          :enter="{ opacity: 1, transition: { delay: 800, duration: 600 } }"
-          class="stats-grid"
-        >
-          <div class="stat-card stat-online">
-            <div class="stat-icon"><Check class="stat-lucide" /></div>
-            <p class="stat-text">Conectado</p>
-          </div>
-          <div class="stat-card stat-secure">
-            <div class="stat-icon"><Shield class="stat-lucide" /></div>
-            <p class="stat-text">Seguro</p>
-          </div>
-          <div class="stat-card stat-active">
-            <div class="stat-icon"><Zap class="stat-lucide" /></div>
-            <p class="stat-text">Activo</p>
-          </div>
-        </div>
+
       </div>
     </main>
 
