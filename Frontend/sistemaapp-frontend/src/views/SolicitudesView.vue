@@ -410,11 +410,11 @@ onMounted(getSolicitudes)
 .solicitudes-header {
   position: relative;
   z-index: 10;
-  background: linear-gradient(135deg, rgba(15, 23, 42, 0.95) 0%, rgba(30, 41, 59, 0.95) 100%);
-  border-bottom: 1px solid rgba(148, 163, 184, 0.1);
-  backdrop-filter: blur(10px);
-  padding: 1.5rem 2rem;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  background: rgba(132, 204, 22, 0.12);
+  border-bottom: 1px solid rgba(132, 204, 22, 0.1);
+  backdrop-filter: blur(12px);
+  padding: 1rem 1.2rem;
+  box-shadow: 0 4px 20px rgba(132, 204, 22, 0.1);
 }
 
 .header-wrapper {
@@ -425,7 +425,9 @@ onMounted(getSolicitudes)
 .header-left {
   display: flex;
   align-items: center;
-  gap: 1.5rem;
+  gap: 0.75rem;
+  justify-content: space-between;
+  width: 100%;
 }
 
 /* ========== BACK BUTTON ========== */
@@ -433,25 +435,24 @@ onMounted(getSolicitudes)
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 44px;
-  height: 44px;
-  border-radius: 10px;
-  background: rgba(16, 185, 129, 0.1);
-  border: 1px solid rgba(16, 185, 129, 0.3);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(132, 204, 22, 0.1);
+  border: 1.5px solid rgba(132, 204, 22, 0.4);
   cursor: pointer;
   text-decoration: none;
   transition: all 0.3s ease;
-  color: var(--color-primary);
+  color: #84cc16;
+  backdrop-filter: blur(10px);
+  flex-shrink: 0;
 }
 
 .back-button:hover {
-  background: rgba(16, 185, 129, 0.2);
+  background: rgba(132, 204, 22, 0.2);
   transform: translateX(-4px);
-  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25);
-}
-
-.back-button:active {
-  transform: translateX(-2px);
+  box-shadow: 0 4px 15px rgba(132, 204, 22, 0.3);
+  border-color: rgba(132, 204, 22, 0.6);
 }
 
 .back-icon {
@@ -461,37 +462,23 @@ onMounted(getSolicitudes)
 }
 
 .icon-box {
-  width: 60px;
-  height: 60px;
-  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
-  border-radius: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 8px 16px rgba(16, 185, 129, 0.2);
+  display: none;
 }
 
 .header-icon {
-  width: 32px;
-  height: 32px;
-  color: #ffffff;
-  stroke-width: 2;
+  display: none;
 }
 
 .header-text h1 {
-  font-size: 1.75rem;
+  font-size: 0.95rem;
   font-weight: 700;
-  background: linear-gradient(135deg, #10b981, #34d399);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: #84cc16;
   margin: 0;
+  text-shadow: 0 0 8px rgba(132, 204, 22, 0.4);
 }
 
 .header-text p {
-  font-size: 0.9rem;
-  color: #94a3b8;
-  margin: 0.25rem 0 0 0;
+  display: none;
 }
 
 /* ========== MAIN CONTENT ========== */
@@ -535,14 +522,15 @@ onMounted(getSolicitudes)
 }
 
 .form-title {
-  font-size: 1.3rem;
+  font-size: 1.15rem;
   font-weight: 700;
-  color: #f1f5f9;
-  margin: 0 0 0.5rem 0;
+  color: #84cc16;
+  margin: 0 0 0.3rem 0;
+  text-shadow: 0 0 8px rgba(132, 204, 22, 0.3);
 }
 
 .form-subtitle {
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   color: #cbd5e1;
   margin: 0;
 }
@@ -933,22 +921,12 @@ onMounted(getSolicitudes)
     padding: 1rem 0.5rem;
   }
 
-  .back-button {
-    width: 40px;
-    height: 40px;
-  }
-
-  .back-icon {
-    width: 18px;
-    height: 18px;
-  }
-
   .header-text h1 {
-    font-size: 1.5rem;
+    font-size: 0.85rem;
   }
 
-  .header-text p {
-    font-size: 0.8rem;
+  .form-title {
+    font-size: 1.1rem;
   }
 
   .form-card {
@@ -959,31 +937,32 @@ onMounted(getSolicitudes)
     grid-template-columns: 1fr;
   }
 
-  .section-header {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .section-stats {
-    flex-direction: row;
-    gap: 1rem;
-  }
-
   .solicitudes-table {
-    font-size: 0.8rem;
+    font-size: 0.75rem;
   }
 
   .solicitudes-table th,
   .solicitudes-table td {
-    padding: 0.75rem 0.5rem;
+    padding: 0.6rem 0.5rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .header-text h1 {
+    font-size: 0.8rem;
   }
 
-  .cell-descripcion {
-    max-width: 100px;
+  .form-title {
+    font-size: 1.05rem;
   }
 
-  .cell-acciones {
-    flex-direction: column;
+  .solicitudes-table {
+    font-size: 0.7rem;
+  }
+
+  .solicitudes-table th,
+  .solicitudes-table td {
+    padding: 0.5rem 0.4rem;
   }
 }
 
@@ -1002,39 +981,25 @@ onMounted(getSolicitudes)
     height: 16px;
   }
 
-  .header-left {
-    gap: 1rem;
-  }
-
-  .icon-box {
-    width: 50px;
-    height: 50px;
-  }
-
-  .header-icon {
-    width: 28px;
-    height: 28px;
-  }
-
   .header-text h1 {
-    font-size: 1.25rem;
+    font-size: 0.75rem;
   }
 
   .form-card {
     padding: 1rem;
   }
 
-  .section-stats {
-    gap: 0.5rem;
+  .form-title {
+    font-size: 1rem;
   }
 
-  .stat-value {
-    font-size: 1.2rem;
+  .solicitudes-table {
+    font-size: 0.65rem;
   }
 
-  .table-responsive {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
+  .solicitudes-table th,
+  .solicitudes-table td {
+    padding: 0.4rem 0.3rem;
   }
 }
 </style>

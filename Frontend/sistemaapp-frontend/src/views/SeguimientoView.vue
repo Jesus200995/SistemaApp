@@ -442,11 +442,11 @@ onMounted(() => {
 .header-seguimiento {
   position: relative;
   z-index: 10;
-  background: linear-gradient(135deg, rgba(15, 23, 42, 0.95) 0%, rgba(30, 41, 59, 0.95) 100%);
-  border-bottom: 1px solid rgba(148, 163, 184, 0.1);
-  backdrop-filter: blur(10px);
-  padding: 1.5rem 2rem;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  background: rgba(132, 204, 22, 0.12);
+  border-bottom: 1px solid rgba(132, 204, 22, 0.1);
+  backdrop-filter: blur(12px);
+  padding: 1rem 1.2rem;
+  box-shadow: 0 4px 20px rgba(132, 204, 22, 0.1);
 }
 
 .header-wrapper {
@@ -457,7 +457,9 @@ onMounted(() => {
 .header-left {
   display: flex;
   align-items: center;
-  gap: 1.5rem;
+  gap: 0.75rem;
+  justify-content: space-between;
+  width: 100%;
 }
 
 /* ========== BACK BUTTON ========== */
@@ -465,25 +467,24 @@ onMounted(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 44px;
-  height: 44px;
-  border-radius: 10px;
-  background: rgba(16, 185, 129, 0.1);
-  border: 1px solid rgba(16, 185, 129, 0.3);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(132, 204, 22, 0.1);
+  border: 1.5px solid rgba(132, 204, 22, 0.4);
   cursor: pointer;
   text-decoration: none;
   transition: all 0.3s ease;
-  color: var(--color-primary);
+  color: #84cc16;
+  backdrop-filter: blur(10px);
+  flex-shrink: 0;
 }
 
 .back-button:hover {
-  background: rgba(16, 185, 129, 0.2);
+  background: rgba(132, 204, 22, 0.2);
   transform: translateX(-4px);
-  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25);
-}
-
-.back-button:active {
-  transform: translateX(-2px);
+  box-shadow: 0 4px 15px rgba(132, 204, 22, 0.3);
+  border-color: rgba(132, 204, 22, 0.6);
 }
 
 .back-icon {
@@ -493,41 +494,27 @@ onMounted(() => {
 }
 
 .icon-box {
-  width: 60px;
-  height: 60px;
-  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
-  border-radius: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 8px 16px rgba(16, 185, 129, 0.2);
+  display: none;
 }
 
 .header-icon {
-  width: 32px;
-  height: 32px;
-  color: #ffffff;
-  stroke-width: 2;
+  display: none;
 }
 
 .icon-emoji {
-  font-size: 32px;
+  display: none;
 }
 
 .header-title {
-  font-size: 1.75rem;
+  font-size: 0.95rem;
   font-weight: 700;
-  background: linear-gradient(135deg, #10b981, #34d399);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: #84cc16;
   margin: 0;
+  text-shadow: 0 0 8px rgba(132, 204, 22, 0.4);
 }
 
 .header-subtitle {
-  color: #94a3b8;
-  margin: 0.5rem 0 0 0;
-  font-size: 0.95rem;
+  display: none;
 }
 
 /* Main */
@@ -596,15 +583,17 @@ onMounted(() => {
 }
 
 .form-title {
-  font-size: 1.5rem;
+  font-size: 1.2rem;
   font-weight: 700;
-  color: #f1f5f9;
-  margin: 0 0 0.5rem 0;
+  color: #84cc16;
+  margin: 0 0 0.3rem 0;
+  text-shadow: 0 0 8px rgba(132, 204, 22, 0.3);
 }
 
 .form-subtitle {
   color: #cbd5e1;
   margin: 0;
+  font-size: 0.8rem;
 }
 
 .seguimiento-form {
@@ -909,22 +898,12 @@ onMounted(() => {
     padding: 0;
   }
 
-  .back-button {
-    width: 40px;
-    height: 40px;
-  }
-
-  .back-icon {
-    width: 18px;
-    height: 18px;
-  }
-
-  .header-seguimiento {
-    padding: 1.5rem 1rem;
-  }
-
   .header-title {
-    font-size: 1.5rem;
+    font-size: 0.85rem;
+  }
+
+  .form-title {
+    font-size: 1.1rem;
   }
 
   .seguimiento-main {
@@ -951,16 +930,35 @@ onMounted(() => {
   }
 
   .seguimiento-table {
-    font-size: 0.8rem;
+    font-size: 0.75rem;
   }
 
   .seguimiento-table th,
   .seguimiento-table td {
-    padding: 0.75rem 0.5rem;
+    padding: 0.6rem 0.5rem;
   }
 
   .reportes-grid {
     grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .header-title {
+    font-size: 0.8rem;
+  }
+
+  .form-title {
+    font-size: 1.05rem;
+  }
+
+  .seguimiento-table {
+    font-size: 0.7rem;
+  }
+
+  .seguimiento-table th,
+  .seguimiento-table td {
+    padding: 0.5rem 0.4rem;
   }
 }
 
@@ -975,33 +973,29 @@ onMounted(() => {
     height: 16px;
   }
 
-  .header-left {
-    gap: 1rem;
-  }
-
-  .icon-box {
-    width: 48px;
-    height: 48px;
-  }
-
-  .icon-emoji {
-    font-size: 24px;
-  }
-
   .header-title {
-    font-size: 1.25rem;
+    font-size: 0.75rem;
   }
 
   .form-title {
-    font-size: 1.1rem;
+    font-size: 1rem;
   }
 
   .section-title {
-    font-size: 1.1rem;
+    font-size: 1rem;
   }
 
   .tabs-container {
     overflow-x: auto;
+  }
+
+  .seguimiento-table {
+    font-size: 0.65rem;
+  }
+
+  .seguimiento-table th,
+  .seguimiento-table td {
+    padding: 0.4rem 0.3rem;
   }
 }
 </style>

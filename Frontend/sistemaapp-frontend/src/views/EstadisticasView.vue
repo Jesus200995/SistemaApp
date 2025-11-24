@@ -14,14 +14,19 @@
           <router-link to="/dashboard" class="back-button" title="Volver al Dashboard">
             <ArrowLeft class="back-icon" />
           </router-link>
-          <div class="icon-box">
-            <BarChart3 class="header-icon" />
+          <div class="header-icon-small">
+            <BarChart3 class="icon-stat" />
           </div>
           <div class="header-text">
-            <h1 class="header-title">Reportes y Estadísticas</h1>
-            <p class="header-subtitle">Análisis en tiempo real del sistema</p>
+            <h1 class="header-title">Estadísticas</h1>
+            <p class="header-subtitle">Análisis del sistema</p>
           </div>
         </div>
+        <button @click="recargarEstadisticas" class="reload-button" title="Recargar">
+          <svg class="reload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8M21 3v5h-5M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16M3 21v-5h5"></path>
+          </svg>
+        </button>
       </div>
     </header>
 
@@ -278,6 +283,10 @@ const obtenerEstadisticas = async () => {
   }
 }
 
+const recargarEstadisticas = () => {
+  obtenerEstadisticas()
+}
+
 // Computed properties
 const cultivoData = computed(() => {
   return Object.entries(stats.value.cultivos || {}).sort((a, b) => b[1] - a[1])
@@ -435,22 +444,27 @@ onMounted(() => {
 .header-estadisticas {
   position: relative;
   z-index: 10;
-  background: linear-gradient(135deg, rgba(15, 23, 42, 0.95) 0%, rgba(30, 41, 59, 0.95) 100%);
-  border-bottom: 1px solid rgba(148, 163, 184, 0.1);
-  backdrop-filter: blur(10px);
-  padding: 1.5rem 2rem;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  background: rgba(132, 204, 22, 0.12);
+  border-bottom: 2px solid rgba(132, 204, 22, 0.3);
+  backdrop-filter: blur(12px);
+  padding: 1rem 1.2rem;
+  box-shadow: 0 4px 20px rgba(132, 204, 22, 0.1);
 }
 
 .header-wrapper {
   max-width: 1200px;
   margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  justify-content: space-between;
 }
 
 .header-left {
   display: flex;
   align-items: center;
-  gap: 1.5rem;
+  gap: 0.75rem;
+  flex: 1;
 }
 
 /* ========== BACK BUTTON ========== */
@@ -458,21 +472,24 @@ onMounted(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 44px;
-  height: 44px;
-  border-radius: 10px;
-  background: rgba(16, 185, 129, 0.1);
-  border: 1px solid rgba(16, 185, 129, 0.3);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(132, 204, 22, 0.1);
+  border: 1.5px solid rgba(132, 204, 22, 0.4);
   cursor: pointer;
   text-decoration: none;
   transition: all 0.3s ease;
-  color: var(--color-primary);
+  color: #84cc16;
+  backdrop-filter: blur(10px);
+  flex-shrink: 0;
 }
 
 .back-button:hover {
-  background: rgba(16, 185, 129, 0.2);
+  background: rgba(132, 204, 22, 0.2);
   transform: translateX(-4px);
-  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25);
+  box-shadow: 0 4px 15px rgba(132, 204, 22, 0.3);
+  border-color: rgba(132, 204, 22, 0.6);
 }
 
 .back-button:active {
@@ -486,14 +503,25 @@ onMounted(() => {
 }
 
 .icon-box {
-  width: 60px;
-  height: 60px;
-  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
-  border-radius: 12px;
+  display: none;
+}
+
+.header-icon-small {
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 8px 16px rgba(16, 185, 129, 0.2);
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  background: transparent;
+  flex-shrink: 0;
+}
+
+.icon-stat {
+  width: 20px;
+  height: 20px;
+  color: #84cc16;
+  stroke-width: 2;
 }
 
 .header-icon {
@@ -508,19 +536,52 @@ onMounted(() => {
 }
 
 .header-title {
-  font-size: 1.75rem;
+  font-size: 0.95rem;
   font-weight: 700;
-  background: linear-gradient(135deg, #10b981, #34d399);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: #84cc16;
   margin: 0;
+  text-shadow: 0 0 8px rgba(132, 204, 22, 0.4);
+}
+
+/* ========== RELOAD BUTTON ========== */
+.reload-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(59, 130, 246, 0.1);
+  border: 1.5px solid rgba(59, 130, 246, 0.4);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  color: #3b82f6;
+  backdrop-filter: blur(10px);
+  flex-shrink: 0;
+  padding: 0;
+}
+
+.reload-button:hover {
+  background: rgba(59, 130, 246, 0.2);
+  box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+  border-color: rgba(59, 130, 246, 0.6);
+}
+
+.reload-button:active {
+  transform: scale(0.95);
+}
+
+.reload-icon {
+  width: 22px;
+  height: 22px;
+  stroke-width: 2.5;
 }
 
 .header-subtitle {
-  color: #94a3b8;
-  margin: 0.5rem 0 0 0;
-  font-size: 0.95rem;
+  font-size: 0.75rem;
+  color: #cbd5e1;
+  margin: 0;
+  margin-top: 0.2rem;
 }
 
 /* ========== MAIN ========== */
@@ -544,19 +605,20 @@ onMounted(() => {
 
 .stats-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  gap: 1rem;
 }
 
 .stat-card {
   background: rgba(30, 41, 59, 0.5);
   border: 1px solid rgba(148, 163, 184, 0.1);
   border-radius: 16px;
-  padding: 1.5rem;
+  padding: 1rem 0.9rem;
   backdrop-filter: blur(10px);
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 1.5rem;
+  gap: 0.6rem;
   transition: all 0.3s ease;
 }
 
@@ -568,8 +630,8 @@ onMounted(() => {
 }
 
 .stat-icon-wrapper {
-  width: 64px;
-  height: 64px;
+  width: 36px;
+  height: 36px;
   border-radius: 12px;
   display: flex;
   align-items: center;
@@ -578,8 +640,8 @@ onMounted(() => {
 }
 
 .stat-icon {
-  width: 32px;
-  height: 32px;
+  width: 24px;
+  height: 24px;
   color: #10b981;
   stroke-width: 2;
 }
@@ -604,41 +666,43 @@ onMounted(() => {
 }
 
 .stat-label {
-  font-size: 0.85rem;
+  font-size: 0.7rem;
   color: #cbd5e1;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  margin: 0 0 0.5rem 0;
+  margin: 0;
 }
 
 .stat-value {
-  font-size: 2.2rem;
+  font-size: 1.5rem;
   font-weight: 700;
   color: #f1f5f9;
-  margin: 0 0 0.5rem 0;
+  margin: 0;
 }
 
 .stat-change {
-  font-size: 0.8rem;
+  font-size: 0.65rem;
   margin: 0;
 }
 
 .badge-success {
   display: inline-block;
-  padding: 0.3rem 0.75rem;
+  padding: 0.2rem 0.5rem;
   background: rgba(16, 185, 129, 0.2);
   color: #10b981;
   border-radius: 20px;
   font-weight: 600;
+  font-size: 0.65rem;
 }
 
 .badge-info {
   display: inline-block;
-  padding: 0.3rem 0.75rem;
+  padding: 0.2rem 0.5rem;
   background: rgba(59, 130, 246, 0.2);
   color: #3b82f6;
   border-radius: 20px;
   font-weight: 600;
+  font-size: 0.65rem;
 }
 
 .progress-mini {
@@ -958,67 +1022,109 @@ onMounted(() => {
 
 /* ========== RESPONSIVE ========== */
 @media (max-width: 768px) {
-  .estadisticas-main {
-    padding: 1rem 0.5rem;
+  .header-estadisticas {
+    padding: 0.8rem 1rem;
   }
 
-  .back-button {
-    width: 40px;
-    height: 40px;
+  .header-title {
+    font-size: 0.85rem;
   }
 
-  .back-icon {
+  .header-subtitle {
+    font-size: 0.6rem;
+  }
+
+  .header-icon-small {
+    width: 28px;
+    height: 28px;
+  }
+
+  .icon-stat {
     width: 18px;
     height: 18px;
   }
 
-  .header-title {
-    font-size: 1.5rem;
+  .header-subtitle {
+    font-size: 0.7rem;
+  }
+
+  .reload-button {
+    width: 36px;
+    height: 36px;
+  }
+
+  .reload-icon {
+    width: 20px;
+    height: 20px;
+  }
+
+  .estadisticas-main {
+    padding: 1.5rem 0.5rem;
   }
 
   .stats-grid {
-    grid-template-columns: 1fr;
+    gap: 0.8rem;
   }
 
-  .stat-card {
-    flex-direction: column;
-    text-align: center;
+  .stat-label {
+    font-size: 0.65rem;
   }
 
-  .stat-icon-wrapper {
-    width: 56px;
-    height: 56px;
+  .stat-value {
+    font-size: 1.3rem;
   }
 
-  .icon-emoji {
-    font-size: 28px;
+  .stat-change {
+    font-size: 0.6rem;
   }
 
-  .stat-icon {
-    font-size: 2rem;
-  }
-
-  .chart-container {
-    height: 300px;
+  .chart-section {
+    padding: 1.5rem;
   }
 
   .cultivos-table {
-    font-size: 0.85rem;
+    font-size: 0.7rem;
   }
 
   .cultivos-table th,
   .cultivos-table td {
-    padding: 0.75rem 0.5rem;
+    padding: 0.5rem 0.4rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .header-title {
+    font-size: 0.8rem;
   }
 
-  .summary-content {
-    grid-template-columns: 1fr;
+  .header-subtitle {
+    font-size: 0.7rem;
+  }
+
+  .stat-label {
+    font-size: 0.6rem;
+  }
+
+  .stat-value {
+    font-size: 1.2rem;
+  }
+
+  .stat-change {
+    font-size: 0.55rem;
+  }
+
+  .stats-grid {
+    gap: 0.7rem;
   }
 }
 
 @media (max-width: 480px) {
-  .estadisticas-container {
-    padding: 0;
+  .header-estadisticas {
+    padding: 0.6rem 0.8rem;
+  }
+
+  .header-wrapper {
+    gap: 0.5rem;
   }
 
   .back-button {
@@ -1027,49 +1133,83 @@ onMounted(() => {
   }
 
   .back-icon {
+    width: 18px;
+    height: 18px;
+  }
+
+  .header-icon-small {
+    width: 26px;
+    height: 26px;
+  }
+
+  .icon-stat {
     width: 16px;
     height: 16px;
   }
 
-  .header-estadisticas {
-    padding: 1rem;
-  }
-
-  .header-left {
-    gap: 1rem;
-  }
-
-  .icon-box {
-    width: 48px;
-    height: 48px;
-  }
-
-  .icon-emoji {
-    font-size: 24px;
-  }
-
   .header-title {
-    font-size: 1.25rem;
+    font-size: 0.75rem;
+  }
+
+  .header-subtitle {
+    font-size: 0.65rem;
+  }
+
+  .reload-button {
+    width: 34px;
+    height: 34px;
+  }
+
+  .reload-icon {
+    width: 18px;
+    height: 18px;
+  }
+
+  .estadisticas-container {
+    padding: 0;
+  }
+
+  .stat-label {
+    font-size: 0.55rem;
   }
 
   .stat-value {
-    font-size: 1.8rem;
-  }
-
-  .chart-section,
-  .table-section,
-  .summary-card {
-    padding: 1.25rem 1rem;
-  }
-
-  .chart-title,
-  .table-title,
-  .summary-title {
     font-size: 1.1rem;
   }
 
-  .chart-container {
-    height: 250px;
+  .stat-change {
+    font-size: 0.5rem;
+  }
+
+  .stats-grid {
+    gap: 0.6rem;
+  }
+
+  .stat-card {
+    padding: 0.8rem 0.7rem;
+  }
+
+  .stat-icon-wrapper {
+    width: 30px;
+    height: 30px;
+  }
+
+  .stat-icon {
+    width: 18px;
+    height: 18px;
+  }
+
+  .chart-section {
+    padding: 1rem;
+  }
+
+  .cultivos-table {
+    font-size: 0.65rem;
+  }
+
+  .cultivos-table th,
+  .cultivos-table td {
+    padding: 0.4rem 0.3rem;
   }
 }
 </style>
