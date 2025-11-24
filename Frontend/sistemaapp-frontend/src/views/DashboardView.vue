@@ -827,8 +827,43 @@ const formatRole = (role: string): string => {
   font-size: 0.95rem;
   font-weight: 600;
   margin-bottom: 0.8rem;
-  color: #cbd5e1;
+  color: #ffffff;
   text-align: center;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding: 0.5rem 0;
+}
+
+.section-title::before,
+.section-title::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(to right, transparent, rgba(132, 204, 22, 0.5), transparent);
+  animation: greenLightPass 3s ease-in-out infinite;
+}
+
+.section-title::before {
+  animation-delay: 0s;
+}
+
+.section-title::after {
+  animation-delay: 0s;
+}
+
+@keyframes greenLightPass {
+  0% {
+    box-shadow: inset 0 0 0px rgba(132, 204, 22, 0.3);
+  }
+  50% {
+    box-shadow: inset 0 0 15px rgba(132, 204, 22, 0.8);
+  }
+  100% {
+    box-shadow: inset 0 0 0px rgba(132, 204, 22, 0.3);
+  }
 }
 
 .actions-grid {
