@@ -1263,12 +1263,13 @@ const formatRole = (role: string): string => {
 
 /* ========== NOTIFICATIONS SECTION ========== */
 .notifications-section {
-  background: linear-gradient(135deg, rgba(30, 41, 59, 0.4), rgba(30, 41, 59, 0.2));
-  border: 1px solid rgba(148, 163, 184, 0.1);
+  background: rgba(132, 204, 22, 0.08);
+  border: 1.5px solid rgba(132, 204, 22, 0.3);
   border-radius: 14px;
   padding: 1.2rem 0.8rem;
   margin-bottom: 1rem;
   backdrop-filter: blur(10px);
+  box-shadow: 0 8px 32px rgba(132, 204, 22, 0.1);
 }
 
 .notifications-header {
