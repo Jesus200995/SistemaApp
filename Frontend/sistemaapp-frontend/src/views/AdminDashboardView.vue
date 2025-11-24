@@ -1114,9 +1114,6 @@ onMounted(async () => {
     width: 18px;
     height: 18px;
   }
-    width: 36px;
-    height: 36px;
-  }
 
   .back-icon {
     width: 16px;
