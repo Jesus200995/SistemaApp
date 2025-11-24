@@ -82,7 +82,6 @@
                 </td>
                 <td class="cell-nombre">
                   <div class="nombre-content">
-                    <div class="nombre-avatar">{{ u.nombre.charAt(0).toUpperCase() }}</div>
                     <span>{{ u.nombre }}</span>
                   </div>
                 </td>
@@ -439,21 +438,24 @@ onMounted(fetchUsuarios)
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 44px;
-  height: 44px;
-  border-radius: 10px;
-  background: rgba(16, 185, 129, 0.1);
-  border: 1px solid rgba(16, 185, 129, 0.3);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(132, 204, 22, 0.1);
+  border: 1.5px solid rgba(132, 204, 22, 0.4);
   cursor: pointer;
   text-decoration: none;
   transition: all 0.3s ease;
-  color: #10b981;
+  color: #84cc16;
+  backdrop-filter: blur(10px);
+  flex-shrink: 0;
 }
 
 .back-button:hover {
-  background: rgba(16, 185, 129, 0.2);
+  background: rgba(132, 204, 22, 0.2);
   transform: translateX(-4px);
-  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25);
+  box-shadow: 0 4px 15px rgba(132, 204, 22, 0.3);
+  border-color: rgba(132, 204, 22, 0.6);
 }
 
 .back-button:active {
@@ -467,9 +469,9 @@ onMounted(fetchUsuarios)
 }
 
 .header-icon {
-  width: 32px;
-  height: 32px;
-  color: #10b981;
+  width: 24px;
+  height: 24px;
+  color: #84cc16;
 }
 
 .usuarios-header h1 {
@@ -671,16 +673,18 @@ onMounted(fetchUsuarios)
 }
 
 .nombre-avatar {
-  width: 36px;
-  height: 36px;
-  background: linear-gradient(135deg, #10b981, #059669);
-  border-radius: 8px;
+  width: 32px;
+  height: 32px;
+  background: transparent;
+  border: 2px solid #84cc16;
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: white;
+  color: #84cc16;
   font-weight: 600;
-  font-size: 0.9rem;
+  font-size: 0.75rem;
+  text-shadow: 0 0 8px rgba(132, 204, 22, 0.5);
 }
 
 .cell-email {
@@ -789,16 +793,19 @@ onMounted(fetchUsuarios)
 }
 
 .card-avatar {
-  width: 40px;
-  height: 40px;
-  background: linear-gradient(135deg, #10b981, #059669);
-  border-radius: 8px;
+  width: 36px;
+  height: 36px;
+  background: transparent;
+  border: 2px solid #84cc16;
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: white;
+  color: #84cc16;
   font-weight: 600;
   flex-shrink: 0;
+  font-size: 0.75rem;
+  text-shadow: 0 0 8px rgba(132, 204, 22, 0.5);
 }
 
 .card-nombre h3 {
