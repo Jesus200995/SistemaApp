@@ -659,7 +659,7 @@ const formatRole = (role: string): string => {
 .dashboard-content {
   width: 100%;
   max-width: 900px;
-  padding: 1.5rem 0.5rem 3rem 0.5rem;
+  padding: 1.5rem 1.2rem 3rem 1.2rem;
   box-sizing: border-box;
   position: relative;
   z-index: 1;
