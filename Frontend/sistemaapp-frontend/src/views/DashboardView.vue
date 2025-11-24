@@ -872,64 +872,68 @@ const formatRole = (role: string): string => {
 }
 
 .action-card {
-  background: linear-gradient(135deg, rgba(30, 41, 59, 0.8) 0%, rgba(15, 23, 42, 0.8) 100%);
-  border: 1px solid rgba(148, 163, 184, 0.2);
-  border-radius: 14px;
-  padding: 0.75rem;
+  background: transparent;
+  border: 2px solid rgba(132, 204, 22, 0.3);
+  border-radius: 20px;
+  padding: 1rem;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.4rem;
+  gap: 0.6rem;
   text-decoration: none;
   color: inherit;
 }
 
 .action-card:hover {
-  transform: translateY(-6px);
-  border-color: rgba(16, 185, 129, 0.5);
-  background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(6, 182, 212, 0.05) 100%);
-  box-shadow: 0 12px 24px rgba(16, 185, 129, 0.2);
+  transform: translateY(-8px);
+  border-color: #84cc16;
+  background: rgba(132, 204, 22, 0.08);
+  box-shadow: 0 12px 32px rgba(132, 204, 22, 0.25), inset 0 0 20px rgba(132, 204, 22, 0.1);
 }
 
 .action-card:active {
-  transform: translateY(-2px);
+  transform: translateY(-4px);
 }
 
 .action-icon-wrapper {
-  width: 40px;
-  height: 40px;
-  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-  border-radius: 10px;
+  width: 48px;
+  height: 48px;
+  background: transparent;
+  border: 2.5px solid #84cc16;
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+  box-shadow: 0 0 15px rgba(132, 204, 22, 0.4);
   transition: all 0.3s ease;
 }
 
 .action-card:hover .action-icon-wrapper {
-  transform: scale(1.1);
-  box-shadow: 0 8px 20px rgba(16, 185, 129, 0.4);
+  transform: scale(1.15) rotate(5deg);
+  box-shadow: 0 0 25px rgba(132, 204, 22, 0.6);
+  background: rgba(132, 204, 22, 0.1);
 }
 
 .action-icon {
-  width: 20px;
-  height: 20px;
-  color: white;
+  width: 24px;
+  height: 24px;
+  color: #84cc16;
+  text-shadow: 0 0 10px rgba(132, 204, 22, 0.6);
 }
 
 .action-title {
-  font-size: 0.7rem;
+  font-size: 0.75rem;
   font-weight: 600;
-  color: #cbd5e1;
+  color: #e2e8f0;
   text-align: center;
   transition: color 0.3s ease;
+  letter-spacing: 0.5px;
 }
 
 .action-card:hover .action-title {
-  color: #10b981;
+  color: #84cc16;
 }
 
 /* ========== SPECIALIZED MODULES SECTION ========== */
@@ -960,9 +964,9 @@ const formatRole = (role: string): string => {
 
 .specialized-card {
   position: relative;
-  background: linear-gradient(135deg, rgba(30, 41, 59, 0.7) 0%, rgba(15, 23, 42, 0.7) 100%);
-  border: 1px solid rgba(148, 163, 184, 0.2);
-  border-radius: 16px;
+  background: rgba(132, 204, 22, 0.08);
+  border: 2px solid rgba(132, 204, 22, 0.3);
+  border-radius: 20px;
   padding: 1.2rem 1rem;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -974,6 +978,7 @@ const formatRole = (role: string): string => {
   text-decoration: none;
   color: inherit;
   overflow: hidden;
+  backdrop-filter: blur(10px);
 }
 
 .specialized-card::before {
@@ -983,7 +988,7 @@ const formatRole = (role: string): string => {
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+  background: linear-gradient(90deg, transparent, rgba(132, 204, 22, 0.1), transparent);
   transition: left 0.5s ease;
   z-index: 0;
 }
@@ -994,101 +999,150 @@ const formatRole = (role: string): string => {
 
 .specialized-card:hover {
   transform: translateY(-8px);
-  border-color: rgba(16, 185, 129, 0.4);
-  box-shadow: 0 16px 32px rgba(16, 185, 129, 0.15);
+  border-color: #84cc16;
+  background: rgba(132, 204, 22, 0.15);
+  box-shadow: 0 16px 40px rgba(132, 204, 22, 0.25), inset 0 0 20px rgba(132, 204, 22, 0.1);
 }
 
 .specialized-card:active {
-  transform: translateY(-2px);
+  transform: translateY(-4px);
 }
 
 .specialized-icon-wrapper {
   position: relative;
   z-index: 1;
-  width: 60px;
-  height: 60px;
-  border-radius: 12px;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: all 0.3s ease;
+  background: transparent;
+  border: 2.5px solid #84cc16;
+  box-shadow: 0 0 15px rgba(132, 204, 22, 0.4);
 }
 
 .specialized-icon {
   font-size: 2rem;
   transition: transform 0.3s ease;
+  color: #84cc16;
+  text-shadow: 0 0 10px rgba(132, 204, 22, 0.6);
 }
 
 .specialized-icon-lucide {
-  width: 32px;
-  height: 32px;
-  color: white;
+  width: 28px;
+  height: 28px;
+  color: #84cc16;
+  text-shadow: 0 0 10px rgba(132, 204, 22, 0.6);
   transition: transform 0.3s ease;
+}
+
+.specialized-card:hover .specialized-icon-wrapper {
+  transform: scale(1.15) rotate(5deg);
+  box-shadow: 0 0 25px rgba(132, 204, 22, 0.6);
+  background: rgba(132, 204, 22, 0.1);
 }
 
 .specialized-card:hover .specialized-icon-lucide {
   transform: scale(1.2);
 }
 
-/* Variantes de color por tarjeta */
+/* Variantes de color por tarjeta - todas usan verde neon ahora */
 .specialized-seguimiento .specialized-icon-wrapper {
-  background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(34, 197, 94, 0.15));
-  border: 1px solid rgba(16, 185, 129, 0.3);
+  border-color: #84cc16;
+  box-shadow: 0 0 15px rgba(132, 204, 22, 0.4);
+}
+
+.specialized-seguimiento .specialized-icon,
+.specialized-seguimiento .specialized-icon-lucide {
+  color: #84cc16;
+  text-shadow: 0 0 10px rgba(132, 204, 22, 0.6);
 }
 
 .specialized-seguimiento:hover .specialized-icon-wrapper {
-  background: linear-gradient(135deg, rgba(16, 185, 129, 0.3), rgba(34, 197, 94, 0.25));
-  box-shadow: 0 8px 16px rgba(16, 185, 129, 0.3);
+  box-shadow: 0 0 25px rgba(132, 204, 22, 0.6);
+  background: rgba(132, 204, 22, 0.1);
 }
 
 .specialized-sembradores .specialized-icon-wrapper {
-  background: linear-gradient(135deg, rgba(34, 197, 94, 0.2), rgba(16, 185, 129, 0.15));
-  border: 1px solid rgba(34, 197, 94, 0.3);
+  border-color: #84cc16;
+  box-shadow: 0 0 15px rgba(132, 204, 22, 0.4);
+}
+
+.specialized-sembradores .specialized-icon,
+.specialized-sembradores .specialized-icon-lucide {
+  color: #84cc16;
+  text-shadow: 0 0 10px rgba(132, 204, 22, 0.6);
 }
 
 .specialized-sembradores:hover .specialized-icon-wrapper {
-  background: linear-gradient(135deg, rgba(34, 197, 94, 0.3), rgba(16, 185, 129, 0.25));
-  box-shadow: 0 8px 16px rgba(34, 197, 94, 0.3);
+  box-shadow: 0 0 25px rgba(132, 204, 22, 0.6);
+  background: rgba(132, 204, 22, 0.1);
 }
 
 .specialized-reportes .specialized-icon-wrapper {
-  background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(37, 99, 235, 0.15));
-  border: 1px solid rgba(59, 130, 246, 0.3);
+  border-color: #84cc16;
+  box-shadow: 0 0 15px rgba(132, 204, 22, 0.4);
+}
+
+.specialized-reportes .specialized-icon,
+.specialized-reportes .specialized-icon-lucide {
+  color: #84cc16;
+  text-shadow: 0 0 10px rgba(132, 204, 22, 0.6);
 }
 
 .specialized-reportes:hover .specialized-icon-wrapper {
-  background: linear-gradient(135deg, rgba(59, 130, 246, 0.3), rgba(37, 99, 235, 0.25));
-  box-shadow: 0 8px 16px rgba(59, 130, 246, 0.3);
+  box-shadow: 0 0 25px rgba(132, 204, 22, 0.6);
+  background: rgba(132, 204, 22, 0.1);
 }
 
 .specialized-usuarios .specialized-icon-wrapper {
-  background: linear-gradient(135deg, rgba(168, 85, 247, 0.2), rgba(139, 92, 246, 0.15));
-  border: 1px solid rgba(168, 85, 247, 0.3);
+  border-color: #84cc16;
+  box-shadow: 0 0 15px rgba(132, 204, 22, 0.4);
+}
+
+.specialized-usuarios .specialized-icon,
+.specialized-usuarios .specialized-icon-lucide {
+  color: #84cc16;
+  text-shadow: 0 0 10px rgba(132, 204, 22, 0.6);
 }
 
 .specialized-usuarios:hover .specialized-icon-wrapper {
-  background: linear-gradient(135deg, rgba(168, 85, 247, 0.3), rgba(139, 92, 246, 0.25));
-  box-shadow: 0 8px 16px rgba(168, 85, 247, 0.3);
+  box-shadow: 0 0 25px rgba(132, 204, 22, 0.6);
+  background: rgba(132, 204, 22, 0.1);
 }
 
 .specialized-admin .specialized-icon-wrapper {
-  background: linear-gradient(135deg, rgba(239, 68, 68, 0.2), rgba(220, 38, 38, 0.15));
-  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-color: #84cc16;
+  box-shadow: 0 0 15px rgba(132, 204, 22, 0.4);
+}
+
+.specialized-admin .specialized-icon,
+.specialized-admin .specialized-icon-lucide {
+  color: #84cc16;
+  text-shadow: 0 0 10px rgba(132, 204, 22, 0.6);
 }
 
 .specialized-admin:hover .specialized-icon-wrapper {
-  background: linear-gradient(135deg, rgba(239, 68, 68, 0.3), rgba(220, 38, 38, 0.25));
-  box-shadow: 0 8px 16px rgba(239, 68, 68, 0.3);
+  box-shadow: 0 0 25px rgba(132, 204, 22, 0.6);
+  background: rgba(132, 204, 22, 0.1);
 }
 
 .specialized-solicitudes .specialized-icon-wrapper {
-  background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(5, 150, 105, 0.15));
-  border: 1px solid rgba(16, 185, 129, 0.3);
+  border-color: #84cc16;
+  box-shadow: 0 0 15px rgba(132, 204, 22, 0.4);
+}
+
+.specialized-solicitudes .specialized-icon,
+.specialized-solicitudes .specialized-icon-lucide {
+  color: #84cc16;
+  text-shadow: 0 0 10px rgba(132, 204, 22, 0.6);
 }
 
 .specialized-solicitudes:hover .specialized-icon-wrapper {
-  background: linear-gradient(135deg, rgba(16, 185, 129, 0.3), rgba(5, 150, 105, 0.25));
-  box-shadow: 0 8px 16px rgba(16, 185, 129, 0.3);
+  box-shadow: 0 0 25px rgba(132, 204, 22, 0.6);
+  background: rgba(132, 204, 22, 0.1);
 }
 
 .specialized-title {
@@ -1371,6 +1425,25 @@ const formatRole = (role: string): string => {
     font-size: 0.8rem;
   }
 
+  .action-card {
+    padding: 0.9rem;
+  }
+
+  .action-icon-wrapper {
+    width: 44px;
+    height: 44px;
+    border-width: 2px;
+  }
+
+  .action-icon {
+    width: 22px;
+    height: 22px;
+  }
+
+  .action-title {
+    font-size: 0.7rem;
+  }
+
   .actions-grid {
     grid-template-columns: repeat(3, 1fr);
   }
@@ -1431,22 +1504,23 @@ const formatRole = (role: string): string => {
   }
 
   .action-card {
-    padding: 0.6rem;
-    gap: 0.3rem;
+    padding: 0.8rem;
+    gap: 0.4rem;
   }
 
   .action-icon-wrapper {
-    width: 36px;
-    height: 36px;
+    width: 42px;
+    height: 42px;
+    border-width: 2px;
   }
 
   .action-icon {
-    width: 18px;
-    height: 18px;
+    width: 20px;
+    height: 20px;
   }
 
   .action-title {
-    font-size: 0.65rem;
+    font-size: 0.68rem;
   }
 
   .specialized-grid {
@@ -1639,18 +1713,19 @@ const formatRole = (role: string): string => {
   }
 
   .action-card {
-    padding: 0.5rem;
-    gap: 0.25rem;
+    padding: 0.7rem;
+    gap: 0.3rem;
   }
 
   .action-icon-wrapper {
-    width: 32px;
-    height: 32px;
+    width: 38px;
+    height: 38px;
+    border-width: 2px;
   }
 
   .action-icon {
-    width: 16px;
-    height: 16px;
+    width: 18px;
+    height: 18px;
   }
 
   .action-title {
@@ -1845,17 +1920,19 @@ const formatRole = (role: string): string => {
   }
 
   .action-card {
-    padding: 0.4rem;
+    padding: 0.6rem;
+    gap: 0.25rem;
   }
 
   .action-icon-wrapper {
-    width: 28px;
-    height: 28px;
+    width: 36px;
+    height: 36px;
+    border-width: 2px;
   }
 
   .action-icon {
-    width: 14px;
-    height: 14px;
+    width: 17px;
+    height: 17px;
   }
 
   .action-title {
