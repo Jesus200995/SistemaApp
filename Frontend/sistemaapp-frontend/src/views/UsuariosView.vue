@@ -359,7 +359,7 @@ onMounted(fetchUsuarios)
   width: 100vw;
   background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
   position: relative;
-  overflow: auto;
+  overflow: hidden;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   margin: 0;
   padding: 0;
@@ -413,11 +413,19 @@ onMounted(fetchUsuarios)
   padding: 2rem 1rem;
   max-width: 1200px;
   margin: 0 auto;
+  margin-top: 70px;
+  overflow-y: auto;
+  height: calc(100vh - 70px);
+  width: 100%;
+  box-sizing: border-box;
 }
 
 /* ========== HEADER ========== */
 .usuarios-header {
-  position: relative;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
   z-index: 10;
   background: rgba(132, 204, 22, 0.12);
   border-bottom: 1px solid rgba(132, 204, 22, 0.1);
@@ -425,6 +433,7 @@ onMounted(fetchUsuarios)
   padding: 1rem 1.2rem;
   box-shadow: 0 4px 20px rgba(132, 204, 22, 0.1);
   width: 100%;
+  box-sizing: border-box;
 }
 
 .header-wrapper {
@@ -1193,21 +1202,4 @@ onMounted(fetchUsuarios)
 }
 
 /* ========== SCROLLBAR ========== */
-::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-}
-
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-::-webkit-scrollbar-thumb {
-  background: rgba(148, 163, 184, 0.3);
-  border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: rgba(148, 163, 184, 0.5);
-}
 </style>
