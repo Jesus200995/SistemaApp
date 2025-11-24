@@ -460,7 +460,7 @@ const formatRole = (role: string): string => {
   overflow-y: auto;
   overflow-x: hidden;
   -webkit-overflow-scrolling: touch;
-  padding-top: 56px;
+  padding-top: 62px;
   box-sizing: border-box;
   position: relative;
   height: 100vh;
@@ -475,12 +475,12 @@ const formatRole = (role: string): string => {
   right: 0;
   z-index: 9999;
   backdrop-filter: blur(12px);
-  background: linear-gradient(90deg, rgba(15, 23, 42, 0.95) 0%, rgba(15, 23, 42, 0.92) 100%);
-  border-bottom: 2px solid rgba(16, 185, 129, 0.2);
+  background: rgba(132, 204, 22, 0.18);
+  border-bottom: 2px solid rgba(132, 204, 22, 0.3);
   padding: 0;
-  box-shadow: 0 8px 40px rgba(16, 185, 129, 0.15);
+  box-shadow: 0 8px 40px rgba(132, 204, 22, 0.15);
   width: 100%;
-  height: 56px;
+  height: 62px;
   animation: header-slide-down 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
   box-sizing: border-box;
 }
@@ -505,7 +505,7 @@ const formatRole = (role: string): string => {
   align-items: center;
   gap: 0.75rem;
   width: 100%;
-  height: 56px;
+  height: 62px;
   box-sizing: border-box;
 }
 
@@ -526,6 +526,7 @@ const formatRole = (role: string): string => {
   flex-shrink: 0;
   position: relative;
   padding: 4px;
+  margin: 0;
 }
 
 .custom-logo-svg {
@@ -536,14 +537,10 @@ const formatRole = (role: string): string => {
   font-size: 1.3rem;
   font-weight: 600;
   letter-spacing: -0.5px;
-  background: linear-gradient(90deg, #ffffff 0%, #10b981 25%, #ffffff 50%, #10b981 75%, #ffffff 100%);
-  background-size: 200% 100%;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: #ffffff;
   margin: 0;
   font-family: 'Segoe UI', 'Trebuchet MS', sans-serif;
-  animation: gradient-flow 4s ease-in-out infinite;
+  text-shadow: 0 0 10px rgba(132, 204, 22, 0.4);
 }
 
 @keyframes gradient-flow {
@@ -560,14 +557,16 @@ const formatRole = (role: string): string => {
 
 .logo-text p {
   font-size: 0.7rem;
-  color: #6ee7b7;
-  margin: 0.05rem 0 0 0;
+  color: #84cc16;
+  margin: 0.02rem 0 0 0;
   font-weight: 600;
   letter-spacing: 0.05em;
   text-transform: uppercase;
   font-family: 'Segoe UI', sans-serif;
   animation: subtitle-fade-in 1s ease-out 0.2s forwards;
-  opacity: 0;
+  opacity: 1;
+  text-shadow: 0 0 8px rgba(132, 204, 22, 0.5);
+  line-height: 1;
 }
 
 @keyframes subtitle-fade-in {
@@ -684,21 +683,21 @@ const formatRole = (role: string): string => {
 
 /* ========== PROFILE CARD ========== */
 .profile-card {
-  background: linear-gradient(135deg, rgba(30, 41, 59, 0.8) 0%, rgba(15, 23, 42, 0.8) 100%);
-  border: 1px solid rgba(148, 163, 184, 0.2);
+  background: rgba(132, 204, 22, 0.08);
+  border: 1.5px solid rgba(132, 204, 22, 0.3);
   border-radius: 20px;
   padding: 1rem 0.8rem;
   backdrop-filter: blur(10px);
   text-align: left;
   margin-bottom: 1rem;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 8px 32px rgba(132, 204, 22, 0.1);
   transition: all 0.3s ease;
   margin-top: -2px;
 }
 
 .profile-card:hover {
-  border-color: rgba(16, 185, 129, 0.3);
-  box-shadow: 0 12px 48px rgba(16, 185, 129, 0.1);
+  border-color: rgba(132, 204, 22, 0.5);
+  box-shadow: 0 12px 48px rgba(132, 204, 22, 0.2);
 }
 
 /* ===== NEW PROFILE HEADER LAYOUT ===== */
@@ -735,7 +734,7 @@ const formatRole = (role: string): string => {
 .user-full-name {
   font-size: 1.2rem;
   font-weight: 700;
-  color: #e2e8f0;
+  color: #ffffff;
   margin-bottom: 0.3rem;
 }
 
