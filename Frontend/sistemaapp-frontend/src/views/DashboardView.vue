@@ -981,7 +981,7 @@ const formatRole = (role: string): string => {
   position: relative;
   background: rgba(132, 204, 22, 0.08);
   border: 2px solid rgba(132, 204, 22, 0.3);
-  border-radius: 20px;
+  border-radius: 28px;
   padding: 1.2rem 1rem;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
