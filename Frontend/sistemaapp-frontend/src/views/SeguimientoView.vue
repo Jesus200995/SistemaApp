@@ -14,14 +14,19 @@
           <router-link to="/dashboard" class="back-button" title="Volver al Dashboard">
             <ArrowLeft class="back-icon" />
           </router-link>
-          <div class="icon-box">
-            <Microscope class="header-icon" />
+          <div class="header-icon-small">
+            <Microscope class="icon-stat" />
           </div>
           <div class="header-text">
-            <h1 class="header-title">Seguimiento de Campo</h1>
-            <p class="header-subtitle">Registra visitas y progreso de tus sembradores</p>
+            <h1 class="header-title">Seguimiento</h1>
+            <p class="header-subtitle">Seguimiento de campo</p>
           </div>
         </div>
+        <button @click="recargarSeguimientos" class="reload-button" title="Recargar">
+          <svg class="reload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8M21 3v5h-5M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16M3 21v-5h5"></path>
+          </svg>
+        </button>
       </div>
     </header>
 
@@ -358,6 +363,15 @@ const formatearFecha = (fecha: string): string => {
   })
 }
 
+const recargarSeguimientos = async () => {
+  try {
+    await obtenerSeguimientos()
+    await Swal.fire('✅ Recargado', 'Los seguimientos se han actualizado', 'success')
+  } catch (err) {
+    await Swal.fire('❌ Error', 'No se pudo recargar los seguimientos', 'error')
+  }
+}
+
 onMounted(() => {
   obtenerSembradores()
   obtenerSeguimientos()
@@ -447,19 +461,22 @@ onMounted(() => {
   backdrop-filter: blur(12px);
   padding: 1rem 1.2rem;
   box-shadow: 0 4px 20px rgba(132, 204, 22, 0.1);
+  width: 100%;
 }
 
 .header-wrapper {
   max-width: 1200px;
   margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .header-left {
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  justify-content: space-between;
-  width: 100%;
+  flex: 1;
 }
 
 /* ========== BACK BUTTON ========== */
@@ -493,16 +510,27 @@ onMounted(() => {
   stroke-width: 2.5;
 }
 
-.icon-box {
-  display: none;
+.header-icon-small {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  background: transparent;
+  flex-shrink: 0;
 }
 
-.header-icon {
-  display: none;
+.icon-stat {
+  width: 20px;
+  height: 20px;
+  color: #84cc16;
+  stroke-width: 2;
 }
 
-.icon-emoji {
-  display: none;
+.header-text {
+  display: flex;
+  flex-direction: column;
 }
 
 .header-title {
@@ -514,7 +542,44 @@ onMounted(() => {
 }
 
 .header-subtitle {
-  display: none;
+  font-size: 0.75rem;
+  color: #cbd5e1;
+  margin: 0;
+  margin-top: 0.2rem;
+}
+
+/* ========== RELOAD BUTTON ========== */
+.reload-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(59, 130, 246, 0.1);
+  border: 1.5px solid rgba(59, 130, 246, 0.4);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  color: #3b82f6;
+  backdrop-filter: blur(10px);
+  flex-shrink: 0;
+  padding: 0;
+}
+
+.reload-button:hover {
+  background: rgba(59, 130, 246, 0.2);
+  box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+  border-color: rgba(59, 130, 246, 0.6);
+}
+
+.reload-button:active {
+  transform: scale(0.95);
+}
+
+.reload-icon {
+  width: 22px;
+  height: 22px;
+  stroke-width: 2.5;
 }
 
 /* Main */
@@ -894,12 +959,40 @@ onMounted(() => {
 }
 
 @media (max-width: 768px) {
-  .seguimiento-container {
-    padding: 0;
+  .header-seguimiento {
+    padding: 0.8rem 1rem;
+  }
+
+  .header-icon-small {
+    width: 28px;
+    height: 28px;
+  }
+
+  .icon-stat {
+    width: 18px;
+    height: 18px;
   }
 
   .header-title {
     font-size: 0.85rem;
+  }
+
+  .header-subtitle {
+    font-size: 0.7rem;
+  }
+
+  .reload-button {
+    width: 36px;
+    height: 36px;
+  }
+
+  .reload-icon {
+    width: 20px;
+    height: 20px;
+  }
+
+  .seguimiento-container {
+    padding: 0;
   }
 
   .form-title {
@@ -944,8 +1037,36 @@ onMounted(() => {
 }
 
 @media (max-width: 640px) {
+  .header-seguimiento {
+    padding: 0.75rem 0.9rem;
+  }
+
+  .header-icon-small {
+    width: 28px;
+    height: 28px;
+  }
+
+  .icon-stat {
+    width: 18px;
+    height: 18px;
+  }
+
   .header-title {
     font-size: 0.8rem;
+  }
+
+  .header-subtitle {
+    font-size: 0.7rem;
+  }
+
+  .reload-button {
+    width: 36px;
+    height: 36px;
+  }
+
+  .reload-icon {
+    width: 20px;
+    height: 20px;
   }
 
   .form-title {
@@ -963,9 +1084,31 @@ onMounted(() => {
 }
 
 @media (max-width: 480px) {
+  .header-seguimiento {
+    padding: 0.7rem 0.8rem;
+  }
+
+  .header-icon-small {
+    width: 26px;
+    height: 26px;
+  }
+
+  .icon-stat {
+    width: 16px;
+    height: 16px;
+  }
+
+  .header-title {
+    font-size: 0.75rem;
+  }
+
+  .header-subtitle {
+    font-size: 0.65rem;
+  }
+
   .back-button {
-    width: 36px;
-    height: 36px;
+    width: 34px;
+    height: 34px;
   }
 
   .back-icon {
@@ -973,8 +1116,14 @@ onMounted(() => {
     height: 16px;
   }
 
-  .header-title {
-    font-size: 0.75rem;
+  .reload-button {
+    width: 34px;
+    height: 34px;
+  }
+
+  .reload-icon {
+    width: 18px;
+    height: 18px;
   }
 
   .form-title {

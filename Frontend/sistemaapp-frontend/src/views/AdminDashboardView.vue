@@ -14,14 +14,19 @@
           <router-link to="/dashboard" class="back-button" title="Volver al Dashboard">
             <ArrowLeft class="back-icon" />
           </router-link>
-          <div class="icon-box">
-            <Settings class="icon-header" />
+          <div class="header-icon-small">
+            <Settings class="icon-stat" />
           </div>
           <div class="header-text">
-            <h1 class="header-title">Panel de Administración Global</h1>
-            <p class="header-subtitle">Control centralizado del sistema</p>
+            <h1 class="header-title">Administración</h1>
+            <p class="header-subtitle">Panel de control</p>
           </div>
         </div>
+        <button @click="recargarAdmin" class="reload-button" title="Recargar">
+          <svg class="reload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8M21 3v5h-5M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16M3 21v-5h5"></path>
+          </svg>
+        </button>
       </div>
     </header>
 
@@ -347,6 +352,17 @@ const getNotificationIcon = (tipo: string) => {
   }
 }
 
+const recargarAdmin = async () => {
+  try {
+    await cargarEstadisticas()
+    await obtenerSolicitudes()
+    await obtenerNotificaciones()
+    await Swal.fire('✅ Recargado', 'El panel se ha actualizado', 'success')
+  } catch (err) {
+    await Swal.fire('❌ Error', 'No se pudo recargar el panel', 'error')
+  }
+}
+
 // ✅ Ciclo de vida
 onMounted(async () => {
   // Verificar si el usuario es admin
@@ -478,19 +494,22 @@ onMounted(async () => {
   backdrop-filter: blur(12px);
   border-bottom: 1px solid rgba(132, 204, 22, 0.1);
   box-shadow: 0 4px 20px rgba(132, 204, 22, 0.1);
+  width: 100%;
 }
 
 .header-wrapper {
   max-width: 1400px;
   margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .header-left {
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  justify-content: space-between;
-  width: 100%;
+  flex: 1;
 }
 
 .back-button {
@@ -523,20 +542,31 @@ onMounted(async () => {
   height: 20px;
 }
 
-.icon-box {
-  display: none;
+.header-icon-small {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  background: transparent;
+  flex-shrink: 0;
 }
 
-.icon-header {
-  display: none;
+.icon-stat {
+  width: 20px;
+  height: 20px;
+  color: #84cc16;
+  stroke-width: 2;
 }
 
 .header-text {
-  flex: 1;
+  display: flex;
+  flex-direction: column;
 }
 
 .header-title {
-  font-size: 1rem;
+  font-size: 0.95rem;
   font-weight: 700;
   color: #84cc16;
   margin: 0;
@@ -544,7 +574,44 @@ onMounted(async () => {
 }
 
 .header-subtitle {
-  display: none;
+  font-size: 0.75rem;
+  color: #cbd5e1;
+  margin: 0;
+  margin-top: 0.2rem;
+}
+
+/* ========== RELOAD BUTTON ========== */
+.reload-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(59, 130, 246, 0.1);
+  border: 1.5px solid rgba(59, 130, 246, 0.4);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  color: #3b82f6;
+  backdrop-filter: blur(10px);
+  flex-shrink: 0;
+  padding: 0;
+}
+
+.reload-button:hover {
+  background: rgba(59, 130, 246, 0.2);
+  box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+  border-color: rgba(59, 130, 246, 0.6);
+}
+
+.reload-button:active {
+  transform: scale(0.95);
+}
+
+.reload-icon {
+  width: 22px;
+  height: 22px;
+  stroke-width: 2.5;
 }
 
 /* ========== MAIN ========== */
@@ -879,6 +946,38 @@ onMounted(async () => {
 
 /* ========== RESPONSIVE ========== */
 @media (max-width: 768px) {
+  .header-admin {
+    padding: 0.8rem 1rem;
+  }
+
+  .header-icon-small {
+    width: 28px;
+    height: 28px;
+  }
+
+  .icon-stat {
+    width: 18px;
+    height: 18px;
+  }
+
+  .header-title {
+    font-size: 0.85rem;
+  }
+
+  .header-subtitle {
+    font-size: 0.7rem;
+  }
+
+  .reload-button {
+    width: 36px;
+    height: 36px;
+  }
+
+  .reload-icon {
+    width: 20px;
+    height: 20px;
+  }
+
   .admin-main {
     padding: 1rem;
   }
@@ -887,10 +986,6 @@ onMounted(async () => {
   .solicitudes-section,
   .notifications-section {
     padding: 1.5rem;
-  }
-
-  .header-title {
-    font-size: 0.85rem;
   }
 
   .section-title {
@@ -922,8 +1017,36 @@ onMounted(async () => {
 }
 
 @media (max-width: 640px) {
+  .header-admin {
+    padding: 0.75rem 0.9rem;
+  }
+
+  .header-icon-small {
+    width: 28px;
+    height: 28px;
+  }
+
+  .icon-stat {
+    width: 18px;
+    height: 18px;
+  }
+
   .header-title {
     font-size: 0.8rem;
+  }
+
+  .header-subtitle {
+    font-size: 0.7rem;
+  }
+
+  .reload-button {
+    width: 36px;
+    height: 36px;
+  }
+
+  .reload-icon {
+    width: 20px;
+    height: 20px;
   }
 
   .section-title {
@@ -950,8 +1073,18 @@ onMounted(async () => {
     min-height: 100vh;
   }
 
-  .header-left {
-    width: 100%;
+  .header-admin {
+    padding: 0.7rem 0.8rem;
+  }
+
+  .header-icon-small {
+    width: 26px;
+    height: 26px;
+  }
+
+  .icon-stat {
+    width: 16px;
+    height: 16px;
   }
 
   .header-title {
@@ -959,10 +1092,28 @@ onMounted(async () => {
   }
 
   .header-subtitle {
-    display: none;
+    font-size: 0.65rem;
   }
 
   .back-button {
+    width: 34px;
+    height: 34px;
+  }
+
+  .back-icon {
+    width: 16px;
+    height: 16px;
+  }
+
+  .reload-button {
+    width: 34px;
+    height: 34px;
+  }
+
+  .reload-icon {
+    width: 18px;
+    height: 18px;
+  }
     width: 36px;
     height: 36px;
   }

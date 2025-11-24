@@ -449,6 +449,7 @@ onMounted(() => {
   backdrop-filter: blur(12px);
   padding: 1rem 1.2rem;
   box-shadow: 0 4px 20px rgba(132, 204, 22, 0.1);
+  width: 100%;
 }
 
 .header-wrapper {
