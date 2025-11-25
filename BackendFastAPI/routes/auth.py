@@ -151,7 +151,10 @@ def create_user_hierarchical(
         token = credentials.credentials
         payload = jwt.decode(token, SECRET, algorithms=["HS256"])
         current_user_id = payload.get("id")
-        current_rol = payload.get("rol")
+        current_rol_raw = payload.get("rol")
+        # ✅ Normalizar rol a minúsculas para evitar problemas de case-sensitivity
+        current_rol = current_rol_raw.lower().strip() if current_rol_raw else ""
+        print(f"🔍 [CREATE-USER] Rol del token (original): '{current_rol_raw}' → (normalizado): '{current_rol}'")
     except jwt.InvalidTokenError:
         raise HTTPException(status_code=401, detail="Token inválido")
     
@@ -253,6 +256,9 @@ def get_roles_permitidos(
         token = credentials.credentials
         payload = jwt.decode(token, SECRET, algorithms=["HS256"])
         current_rol = payload.get("rol")
+        # Normalizar el rol a minúsculas para comparación
+        current_rol_normalized = current_rol.lower().strip() if current_rol else ""
+        print(f"🔍 DEBUG - Rol actual (original): {current_rol}, (normalizado): {current_rol_normalized}")
     except jwt.InvalidTokenError:
         raise HTTPException(status_code=401, detail="Token inválido")
     
@@ -269,12 +275,16 @@ def get_roles_permitidos(
         ]
     }
     
-    roles = roles_permitidos_por_creador.get(current_rol, [])
+    # Usar el rol normalizado para la búsqueda
+    roles = roles_permitidos_por_creador.get(current_rol_normalized, [])
     puede_crear = len(roles) > 0
+    
+    print(f"🔍 DEBUG - Puede crear: {puede_crear}, Roles disponibles: {roles}")
     
     return {
         "puede_crear": puede_crear,
         "rol_actual": current_rol,
+        "rol_normalizado": current_rol_normalized,
         "roles_permitidos": roles
     }
 
@@ -287,12 +297,16 @@ def login(request: LoginRequest, db: Session = Depends(get_db)):
     if not bcrypt.checkpw(request.password.encode("utf-8"), user.password.encode("utf-8")):
         raise HTTPException(status_code=400, detail="Contraseña incorrecta")
     
+    # ✅ Normalizar rol a minúsculas para evitar problemas de case-sensitivity
+    rol_normalizado = user.rol.lower().strip() if user.rol else "tecnico_productivo"
+    print(f"🔐 [LOGIN] Usuario: {user.email} | Rol DB: '{user.rol}' → Rol normalizado: '{rol_normalizado}'")
+    
     token = jwt.encode(
-        {"id": user.id, "email": user.email, "rol": user.rol},
+        {"id": user.id, "email": user.email, "rol": rol_normalizado},
         SECRET,
         algorithm="HS256"
     )
-    return {"token": token, "user": {"id": user.id, "nombre": user.nombre, "rol": user.rol}}
+    return {"token": token, "user": {"id": user.id, "nombre": user.nombre, "rol": rol_normalizado}}
 
 @router.get("/me")
 def get_current_user(
@@ -305,11 +319,15 @@ def get_current_user(
         user = db.query(User).filter(User.id == payload["id"]).first()
         if not user:
             raise HTTPException(status_code=404, detail="Usuario no encontrado")
+        
+        # ✅ Normalizar rol a minúsculas
+        rol_normalizado = user.rol.lower().strip() if user.rol else "tecnico_productivo"
+        
         return {
             "id": user.id,
             "nombre": user.nombre,
             "email": user.email,
-            "rol": user.rol,
+            "rol": rol_normalizado,
         }
     except jwt.ExpiredSignatureError:
         raise HTTPException(status_code=401, detail="Token expirado")
@@ -328,7 +346,9 @@ def list_users(
         token = credentials.credentials
         payload = jwt.decode(token, SECRET, algorithms=["HS256"])
         current_user_id = payload.get("id")
-        current_rol = payload.get("rol")
+        current_rol_raw = payload.get("rol")
+        # ✅ Normalizar rol para comparaciones
+        current_rol = current_rol_raw.lower().strip() if current_rol_raw else ""
         
         query = db.query(User)
         
@@ -353,7 +373,7 @@ def list_users(
         
         # Filtro adicional por rol si se especifica
         if rol:
-            query = query.filter(User.rol == rol)
+            query = query.filter(User.rol.ilike(rol))  # Case-insensitive
 
         total = query.count()
         users = query.offset((page - 1) * limit).limit(limit).all()
@@ -367,7 +387,7 @@ def list_users(
                     "id": u.id,
                     "nombre": u.nombre,
                     "email": u.email,
-                    "rol": u.rol,
+                    "rol": u.rol.lower().strip() if u.rol else "tecnico_productivo",  # ✅ Normalizar
                     "lat": None,
                     "lng": None,
                 }

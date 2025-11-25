@@ -409,13 +409,52 @@ const tecnicoSocialCount = computed(() => usuarios.value.filter(u => u.rol === '
 
 // Verificar si el usuario puede crear otros usuarios
 const verificarPermisosCreacion = async () => {
+  // Primero asegurarse de que el perfil del usuario esté cargado
+  if (!auth.user) {
+    await auth.fetchProfile()
+  }
+  
+  const rolActual = auth.user?.rol?.toLowerCase()?.trim()
+  console.log('🔍 DEBUG - Rol actual del usuario (original):', auth.user?.rol)
+  console.log('🔍 DEBUG - Rol actual del usuario (normalizado):', rolActual)
+  
+  // Definir roles permitidos localmente como fallback
+  const rolesPermitidosPorCreador = {
+    admin: [
+      { value: 'territorial', label: 'Territorial' }
+    ],
+    territorial: [
+      { value: 'facilitador', label: 'Facilitador' }
+    ],
+    facilitador: [
+      { value: 'tecnico_productivo', label: 'Técnico Productivo' },
+      { value: 'tecnico_social', label: 'Técnico Social' }
+    ]
+  }
+  
+  // Verificar si el rol actual puede crear usuarios (comparación case-insensitive)
+  if (rolesPermitidosPorCreador[rolActual]) {
+    puedeCrearUsuarios.value = true
+    rolesDisponibles.value = rolesPermitidosPorCreador[rolActual]
+    console.log('✅ Usuario puede crear:', rolesDisponibles.value)
+  } else {
+    puedeCrearUsuarios.value = false
+    rolesDisponibles.value = []
+    console.log('❌ Usuario NO puede crear usuarios. Rol:', rolActual)
+  }
+  
+  // Intentar también obtener desde el backend (opcional, como verificación adicional)
   try {
     const data = await auth.getRolesPermitidos()
-    puedeCrearUsuarios.value = data.puede_crear
-    rolesDisponibles.value = data.roles_permitidos || []
+    console.log('🔍 DEBUG - Respuesta del backend getRolesPermitidos:', data)
+    if (data && data.puede_crear !== undefined) {
+      puedeCrearUsuarios.value = data.puede_crear
+      if (data.roles_permitidos && data.roles_permitidos.length > 0) {
+        rolesDisponibles.value = data.roles_permitidos
+      }
+    }
   } catch (err) {
-    console.error('Error verificando permisos:', err)
-    puedeCrearUsuarios.value = false
+    console.warn('⚠️ No se pudo verificar permisos desde el backend, usando fallback local:', err)
   }
 }
 
@@ -579,9 +618,14 @@ const deleteUser = async (id) => {
   }
 }
 
-onMounted(() => {
+onMounted(async () => {
+  // Primero cargar el perfil del usuario si no está cargado
+  if (!auth.user) {
+    await auth.fetchProfile()
+  }
+  // Luego verificar permisos y cargar usuarios
+  await verificarPermisosCreacion()
   fetchUsuarios()
-  verificarPermisosCreacion()
 })
 </script>
 
