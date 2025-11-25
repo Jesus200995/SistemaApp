@@ -224,6 +224,7 @@
 import { ref, onMounted, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import axios from 'axios'
+import Swal from 'sweetalert2'
 // @ts-ignore
 import { useAuthStore } from '../stores/auth'
 import {
@@ -354,9 +355,9 @@ const getNotificationIcon = (tipo: string) => {
 
 const recargarAdmin = async () => {
   try {
-    await cargarEstadisticas()
-    await obtenerSolicitudes()
-    await obtenerNotificaciones()
+    await getAdminOverview()
+    await getSolicitudesPendientes()
+    await getNotificacionesRecientes()
     await Swal.fire('✅ Recargado', 'El panel se ha actualizado', 'success')
   } catch (err) {
     await Swal.fire('❌ Error', 'No se pudo recargar el panel', 'error')

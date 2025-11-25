@@ -203,6 +203,7 @@ import { ref, onMounted } from 'vue'
 import type { Ref } from 'vue'
 import { useAuthStore } from '../stores/auth'
 import axios from 'axios'
+import Swal from 'sweetalert2'
 import { ArrowLeft, Microscope, Plus, Trash2, Calendar, MapPin, AlertCircle } from 'lucide-vue-next'
 
 const auth = useAuthStore()
