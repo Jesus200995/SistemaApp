@@ -499,6 +499,8 @@ const crearUsuario = async () => {
   creando.value = true
 
   try {
+    console.log('🚀 Iniciando creación de usuario:', nuevoUsuario.value)
+    
     const result = await auth.createUserHierarchical(
       nuevoUsuario.value.nombre,
       nuevoUsuario.value.email,
@@ -506,28 +508,36 @@ const crearUsuario = async () => {
       nuevoUsuario.value.rol
     )
 
-    if (result.success) {
-      await Swal.fire({
+    console.log('📦 Resultado de createUserHierarchical:', result)
+
+    // Cerrar modal primero
+    creando.value = false
+    cerrarModalCrearUsuario()
+
+    if (result && result.success) {
+      // Mostrar mensaje de éxito
+      Swal.fire({
         icon: 'success',
         title: '✅ Usuario Creado',
         html: `
           <div style="text-align: left; padding: 10px;">
-            <p><strong>Nombre:</strong> ${result.data.nombre}</p>
-            <p><strong>Email:</strong> ${result.data.email}</p>
-            <p><strong>Rol:</strong> ${result.data.rol.toUpperCase().replace('_', ' ')}</p>
+            <p><strong>Nombre:</strong> ${result.data?.nombre || nuevoUsuario.value.nombre}</p>
+            <p><strong>Email:</strong> ${result.data?.email || nuevoUsuario.value.email}</p>
+            <p><strong>Rol:</strong> ${(result.data?.rol || nuevoUsuario.value.rol).toUpperCase().replace('_', ' ')}</p>
           </div>
         `,
         confirmButtonColor: '#10b981'
       })
-      cerrarModalCrearUsuario()
+      // Recargar lista de usuarios
       fetchUsuarios()
     } else {
-      Swal.fire('❌ Error', result.error || 'No se pudo crear el usuario', 'error')
+      Swal.fire('❌ Error', result?.error || 'No se pudo crear el usuario', 'error')
     }
   } catch (err) {
-    Swal.fire('❌ Error', 'Ocurrió un error al crear el usuario', 'error')
-  } finally {
+    console.error('❌ Error al crear usuario:', err)
     creando.value = false
+    cerrarModalCrearUsuario()
+    Swal.fire('❌ Error', 'Ocurrió un error al crear el usuario', 'error')
   }
 }
 
