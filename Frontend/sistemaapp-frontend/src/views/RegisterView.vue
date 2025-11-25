@@ -105,7 +105,7 @@
 
           <!-- Campo Rol -->
           <div class="form-group">
-            <label for="rol" class="form-label">¿Qué tipo de usuario eres?</label>
+            <label for="rol" class="form-label">¿Qué tipo de técnico eres?</label>
             <div class="select-wrapper">
               <Briefcase class="select-icon" />
               <select
@@ -114,12 +114,14 @@
                 class="form-select"
                 required
               >
-                <option value="">-- Selecciona un rol --</option>
+                <option value="">-- Selecciona tu rol --</option>
                 <option value="tecnico_productivo">Técnico Productivo</option>
                 <option value="tecnico_social">Técnico Social</option>
-                <option value="facilitador">Facilitador</option>
               </select>
             </div>
+            <p class="rol-hint">
+              ¿Eres Facilitador, Territorial o Admin? Contacta a tu superior jerárquico.
+            </p>
           </div>
 
           <!-- Checkbox Términos -->
@@ -645,6 +647,14 @@ const showTerms = () => {
 .form-select option {
   background-color: #1e293b;
   color: #e2e8f0;
+}
+
+.rol-hint {
+  font-size: 0.65rem;
+  color: #94a3b8;
+  margin-top: 0.4rem;
+  font-style: italic;
+  line-height: 1.3;
 }
 
 /* ========== TERMS ========== */

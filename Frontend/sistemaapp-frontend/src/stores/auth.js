@@ -42,6 +42,48 @@ export const useAuthStore = defineStore('auth', {
       }
     },
 
+    /**
+     * Crear usuario jerárquicamente (solo para admin, territorial, facilitador)
+     */
+    async createUserHierarchical(nombre, email, password, rol) {
+      try {
+        const { data } = await axios.post(
+          `${import.meta.env.VITE_API_URL}/auth/create-user`,
+          { nombre, email, password, rol },
+          {
+            headers: {
+              Authorization: `Bearer ${this.token}`,
+            },
+          }
+        )
+        this.error = null
+        return { success: true, data }
+      } catch (err) {
+        this.error = err.response?.data?.detail || 'Error al crear usuario'
+        return { success: false, error: this.error }
+      }
+    },
+
+    /**
+     * Obtener roles permitidos para crear según el rol actual
+     */
+    async getRolesPermitidos() {
+      try {
+        const { data } = await axios.get(
+          `${import.meta.env.VITE_API_URL}/auth/roles-permitidos`,
+          {
+            headers: {
+              Authorization: `Bearer ${this.token}`,
+            },
+          }
+        )
+        return data
+      } catch (err) {
+        console.error('Error al obtener roles permitidos:', err)
+        return { puede_crear: false, roles_permitidos: [] }
+      }
+    },
+
     async fetchProfile() {
       if (!this.token) return
       try {

@@ -29,6 +29,12 @@ class UpdateUserRequest(BaseModel):
     email: str | None = None
     rol: str | None = None
 
+class CreateUserByHierarchyRequest(BaseModel):
+    nombre: str
+    email: str
+    password: str
+    rol: str
+
 def get_db():
     db = SessionLocal()
     try:
@@ -39,13 +45,13 @@ def get_db():
 @router.post("/register")
 def register(request: RegisterRequest, db: Session = Depends(get_db)):
     """
-    Registrar un nuevo usuario.
+    Registrar un nuevo usuario desde el formulario público.
     
     🔐 Seguridad:
     - Valida que no exista un usuario con el mismo email
     - Hash la contraseña con bcrypt
-    - Por defecto se registra como "tecnico"
-    - Asigna automáticamente el primer territorial como superior
+    - Solo permite registro autónomo para técnicos (tecnico_productivo, tecnico_social)
+    - Roles superiores (facilitador, territorial, admin) solo pueden ser creados jerárquicamente
     
     📧 Notificaciones:
     - Notifica al admin cuando se registra un nuevo usuario
@@ -66,11 +72,16 @@ def register(request: RegisterRequest, db: Session = Depends(get_db)):
     if len(request.password) < 6:
         raise HTTPException(status_code=400, detail="La contraseña debe tener al menos 6 caracteres")
     
-    # ✅ Validar rol permitido
-    roles_permitidos = ["tecnico_productivo", "tecnico_social", "facilitador", "territorial", "admin"]
+    # ✅ Roles permitidos para registro público (solo técnicos)
+    roles_publicos_permitidos = ["tecnico_productivo", "tecnico_social"]
     rol = request.rol.lower() if request.rol else "tecnico_productivo"
-    if rol not in roles_permitidos:
-        raise HTTPException(status_code=400, detail=f"Rol inválido. Permite: {', '.join(roles_permitidos)}")
+    
+    # ✅ Verificar que solo técnicos puedan registrarse públicamente
+    if rol not in roles_publicos_permitidos:
+        raise HTTPException(
+            status_code=403, 
+            detail=f"Solo los técnicos pueden registrarse públicamente. Para roles superiores, contacta a tu superior jerárquico."
+        )
     
     # ✅ Verificar si el email ya existe
     existente = db.query(User).filter(User.email == request.email).first()
@@ -86,7 +97,7 @@ def register(request: RegisterRequest, db: Session = Depends(get_db)):
         email=request.email.strip().lower(),
         password=hashed,
         rol=rol,
-        superior_id=None  # Será asignado por admin después
+        superior_id=None  # Será asignado por facilitador después
     )
     
     db.add(nuevo)
@@ -114,6 +125,157 @@ def register(request: RegisterRequest, db: Session = Depends(get_db)):
         "email": nuevo.email,
         "rol": nuevo.rol,
         "message": "Usuario registrado exitosamente. Un administrador revisará tu solicitud."
+    }
+
+@router.post("/create-user")
+def create_user_hierarchical(
+    request: CreateUserByHierarchyRequest,
+    credentials: HTTPAuthorizationCredentials = Security(bearer_scheme),
+    db: Session = Depends(get_db)
+):
+    """
+    Crear un usuario de forma jerárquica.
+    
+    🔐 Jerarquía del Sistema de Administración:
+    - Admin (Coordinador Territorial) → puede crear Territoriales
+    - Territorial → puede crear Facilitadores
+    - Facilitador → puede crear Técnico Productivo o Técnico Social
+    
+    📧 Notificaciones:
+    - Notifica al usuario superior cuando se crea un nuevo usuario
+    """
+    from models import Notificacion
+    import re
+    
+    try:
+        token = credentials.credentials
+        payload = jwt.decode(token, SECRET, algorithms=["HS256"])
+        current_user_id = payload.get("id")
+        current_rol = payload.get("rol")
+    except jwt.InvalidTokenError:
+        raise HTTPException(status_code=401, detail="Token inválido")
+    
+    # ✅ Validar que el usuario actual existe
+    current_user = db.query(User).filter(User.id == current_user_id).first()
+    if not current_user:
+        raise HTTPException(status_code=404, detail="Usuario actual no encontrado")
+    
+    # ✅ Definir roles permitidos según la jerarquía
+    roles_permitidos_por_creador = {
+        "admin": ["territorial"],
+        "territorial": ["facilitador"],
+        "facilitador": ["tecnico_productivo", "tecnico_social"]
+    }
+    
+    # ✅ Verificar permisos de creación
+    if current_rol not in roles_permitidos_por_creador:
+        raise HTTPException(
+            status_code=403, 
+            detail=f"El rol '{current_rol}' no tiene permisos para crear usuarios"
+        )
+    
+    roles_permitidos = roles_permitidos_por_creador[current_rol]
+    rol_nuevo = request.rol.lower()
+    
+    if rol_nuevo not in roles_permitidos:
+        raise HTTPException(
+            status_code=403,
+            detail=f"No tienes permiso para crear usuarios con rol '{rol_nuevo}'. Roles permitidos: {', '.join(roles_permitidos)}"
+        )
+    
+    # ✅ Validar email
+    email_regex = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+    if not re.match(email_regex, request.email):
+        raise HTTPException(status_code=400, detail="Email inválido")
+    
+    # ✅ Validar nombre (mínimo 2 caracteres)
+    if len(request.nombre.strip()) < 2:
+        raise HTTPException(status_code=400, detail="El nombre debe tener al menos 2 caracteres")
+    
+    # ✅ Validar contraseña (mínimo 6 caracteres)
+    if len(request.password) < 6:
+        raise HTTPException(status_code=400, detail="La contraseña debe tener al menos 6 caracteres")
+    
+    # ✅ Verificar si el email ya existe
+    existente = db.query(User).filter(User.email == request.email).first()
+    if existente:
+        raise HTTPException(status_code=400, detail="El correo ya está registrado")
+    
+    # ✅ Hashear contraseña
+    hashed = bcrypt.hashpw(request.password.encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
+    
+    # ✅ Crear nuevo usuario con superior_id
+    nuevo = User(
+        nombre=request.nombre.strip(),
+        email=request.email.strip().lower(),
+        password=hashed,
+        rol=rol_nuevo,
+        superior_id=current_user_id  # Asignar usuario creador como superior
+    )
+    
+    db.add(nuevo)
+    db.commit()
+    db.refresh(nuevo)
+    
+    # 📧 Crear notificación para el usuario que creó
+    try:
+        notificacion = Notificacion(
+            titulo=f"Usuario creado exitosamente",
+            mensaje=f"Has creado al usuario {nuevo.nombre} ({nuevo.email}) como {rol_nuevo.upper().replace('_', ' ')}",
+            tipo="success",
+            user_destino=current_user_id
+        )
+        db.add(notificacion)
+        db.commit()
+    except Exception as e:
+        print(f"⚠️ Error al crear notificación: {str(e)}")
+        db.rollback()
+    
+    return {
+        "success": True,
+        "id": nuevo.id,
+        "nombre": nuevo.nombre,
+        "email": nuevo.email,
+        "rol": nuevo.rol,
+        "superior_id": nuevo.superior_id,
+        "message": f"Usuario {nuevo.nombre} creado exitosamente como {rol_nuevo.upper().replace('_', ' ')}"
+    }
+
+@router.get("/roles-permitidos")
+def get_roles_permitidos(
+    credentials: HTTPAuthorizationCredentials = Security(bearer_scheme),
+    db: Session = Depends(get_db)
+):
+    """
+    Obtener los roles que el usuario actual puede crear según la jerarquía.
+    """
+    try:
+        token = credentials.credentials
+        payload = jwt.decode(token, SECRET, algorithms=["HS256"])
+        current_rol = payload.get("rol")
+    except jwt.InvalidTokenError:
+        raise HTTPException(status_code=401, detail="Token inválido")
+    
+    roles_permitidos_por_creador = {
+        "admin": [
+            {"value": "territorial", "label": "Territorial"}
+        ],
+        "territorial": [
+            {"value": "facilitador", "label": "Facilitador"}
+        ],
+        "facilitador": [
+            {"value": "tecnico_productivo", "label": "Técnico Productivo"},
+            {"value": "tecnico_social", "label": "Técnico Social"}
+        ]
+    }
+    
+    roles = roles_permitidos_por_creador.get(current_rol, [])
+    puede_crear = len(roles) > 0
+    
+    return {
+        "puede_crear": puede_crear,
+        "rol_actual": current_rol,
+        "roles_permitidos": roles
     }
 
 @router.post("/login")

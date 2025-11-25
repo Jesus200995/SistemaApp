@@ -21,13 +21,135 @@
               <p class="header-subtitle">Gestión de usuarios</p>
             </div>
           </div>
-          <button @click="reload" class="reload-button" title="Recargar">
-            <svg class="reload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8M21 3v5h-5M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16M3 21v-5h5"></path>
-            </svg>
-          </button>
+          <div class="header-actions">
+            <!-- Botón Crear Usuario (solo visible para admin, territorial, facilitador) -->
+            <button 
+              v-if="puedeCrearUsuarios" 
+              @click="abrirModalCrearUsuario" 
+              class="create-button" 
+              title="Crear Usuario"
+            >
+              <UserPlus class="create-icon" />
+              <span class="create-text">Crear Usuario</span>
+            </button>
+            <button @click="reload" class="reload-button" title="Recargar">
+              <svg class="reload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8M21 3v5h-5M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16M3 21v-5h5"></path>
+              </svg>
+            </button>
+          </div>
         </div>
       </header>
+
+    <!-- Modal Crear Usuario -->
+    <Teleport to="body">
+      <div v-if="showModalCrear" class="modal-overlay" @click.self="cerrarModalCrearUsuario">
+        <div 
+          class="modal-crear-usuario"
+          v-motion
+          :initial="{ opacity: 0, scale: 0.9, y: -20 }"
+          :enter="{ opacity: 1, scale: 1, y: 0, transition: { duration: 300 } }"
+        >
+          <div class="modal-header">
+            <div class="modal-icon">
+              <UserPlus class="modal-icon-svg" />
+            </div>
+            <h2 class="modal-title">Crear Nuevo Usuario</h2>
+            <p class="modal-subtitle">{{ getDescripcionRol() }}</p>
+            <button @click="cerrarModalCrearUsuario" class="modal-close">
+              <X class="close-icon" />
+            </button>
+          </div>
+
+          <form @submit.prevent="crearUsuario" class="modal-form">
+            <div class="form-group">
+              <label for="nombre" class="form-label">
+                <User class="label-icon" />
+                Nombre completo
+              </label>
+              <input
+                id="nombre"
+                v-model="nuevoUsuario.nombre"
+                type="text"
+                class="form-input"
+                placeholder="Ingresa el nombre completo"
+                required
+                minlength="2"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="email" class="form-label">
+                <Mail class="label-icon" />
+                Correo electrónico
+              </label>
+              <input
+                id="email"
+                v-model="nuevoUsuario.email"
+                type="email"
+                class="form-input"
+                placeholder="correo@ejemplo.com"
+                required
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="password" class="form-label">
+                <Lock class="label-icon" />
+                Contraseña
+              </label>
+              <div class="password-wrapper">
+                <input
+                  id="password"
+                  v-model="nuevoUsuario.password"
+                  :type="showPassword ? 'text' : 'password'"
+                  class="form-input"
+                  placeholder="Mínimo 6 caracteres"
+                  required
+                  minlength="6"
+                />
+                <button type="button" @click="showPassword = !showPassword" class="toggle-password">
+                  <Eye v-if="!showPassword" class="eye-icon" />
+                  <EyeOff v-else class="eye-icon" />
+                </button>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="rol" class="form-label">
+                <Shield class="label-icon" />
+                Rol del usuario
+              </label>
+              <select
+                id="rol"
+                v-model="nuevoUsuario.rol"
+                class="form-select"
+                required
+              >
+                <option value="" disabled>Selecciona un rol</option>
+                <option 
+                  v-for="rol in rolesDisponibles" 
+                  :key="rol.value" 
+                  :value="rol.value"
+                >
+                  {{ rol.label }}
+                </option>
+              </select>
+            </div>
+
+            <div class="form-actions">
+              <button type="button" @click="cerrarModalCrearUsuario" class="btn-cancelar">
+                Cancelar
+              </button>
+              <button type="submit" class="btn-crear" :disabled="creando">
+                <Loader2 v-if="creando" class="spinner" />
+                <span v-else>Crear Usuario</span>
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </Teleport>
 
     <!-- Contenido principal -->
     <div class="usuarios-content">
@@ -211,13 +333,25 @@
         :enter="{ opacity: 1, transition: { delay: 600, duration: 600 } }"
         class="stats-section"
       >
-        <div class="stat-card">
+        <div class="stat-card" v-if="adminCount > 0">
           <div class="stat-number">{{ adminCount }}</div>
-          <div class="stat-label">Administradores</div>
+          <div class="stat-label">Admins</div>
         </div>
-        <div class="stat-card">
-          <div class="stat-number">{{ usuarioCount }}</div>
-          <div class="stat-label">Usuarios</div>
+        <div class="stat-card" v-if="territorialCount > 0">
+          <div class="stat-number">{{ territorialCount }}</div>
+          <div class="stat-label">Territoriales</div>
+        </div>
+        <div class="stat-card" v-if="facilitadorCount > 0">
+          <div class="stat-number">{{ facilitadorCount }}</div>
+          <div class="stat-label">Facilitadores</div>
+        </div>
+        <div class="stat-card" v-if="tecnicoProductivoCount > 0">
+          <div class="stat-number">{{ tecnicoProductivoCount }}</div>
+          <div class="stat-label">Téc. Productivos</div>
+        </div>
+        <div class="stat-card" v-if="tecnicoSocialCount > 0">
+          <div class="stat-number">{{ tecnicoSocialCount }}</div>
+          <div class="stat-label">Téc. Sociales</div>
         </div>
         <div class="stat-card">
           <div class="stat-number">{{ total }}</div>
@@ -231,7 +365,7 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import axios from 'axios'
-import { Users, RotateCw, Search, ChevronLeft, ChevronRight, ArrowLeft, Edit, Trash2 } from 'lucide-vue-next'
+import { Users, RotateCw, Search, ChevronLeft, ChevronRight, ArrowLeft, Edit, Trash2, UserPlus, X, User, Mail, Lock, Shield, Eye, EyeOff, Loader2 } from 'lucide-vue-next'
 import { useAuthStore } from '../stores/auth'
 import Swal from 'sweetalert2'
 import 'sweetalert2/dist/sweetalert2.min.css'
@@ -244,6 +378,20 @@ const page = ref(1)
 const limit = 6
 const total = ref(0)
 
+// Estados para el modal de crear usuario
+const showModalCrear = ref(false)
+const creando = ref(false)
+const showPassword = ref(false)
+const puedeCrearUsuarios = ref(false)
+const rolesDisponibles = ref([])
+
+const nuevoUsuario = ref({
+  nombre: '',
+  email: '',
+  password: '',
+  rol: ''
+})
+
 const totalPages = computed(() => Math.ceil(total.value / limit))
 
 const filteredUsuarios = computed(() =>
@@ -254,7 +402,95 @@ const filteredUsuarios = computed(() =>
 )
 
 const adminCount = computed(() => usuarios.value.filter(u => u.rol === 'admin').length)
-const usuarioCount = computed(() => usuarios.value.filter(u => u.rol === 'usuario').length)
+const territorialCount = computed(() => usuarios.value.filter(u => u.rol === 'territorial').length)
+const facilitadorCount = computed(() => usuarios.value.filter(u => u.rol === 'facilitador').length)
+const tecnicoProductivoCount = computed(() => usuarios.value.filter(u => u.rol === 'tecnico_productivo').length)
+const tecnicoSocialCount = computed(() => usuarios.value.filter(u => u.rol === 'tecnico_social').length)
+
+// Verificar si el usuario puede crear otros usuarios
+const verificarPermisosCreacion = async () => {
+  try {
+    const data = await auth.getRolesPermitidos()
+    puedeCrearUsuarios.value = data.puede_crear
+    rolesDisponibles.value = data.roles_permitidos || []
+  } catch (err) {
+    console.error('Error verificando permisos:', err)
+    puedeCrearUsuarios.value = false
+  }
+}
+
+// Obtener descripción del rol según el usuario actual
+const getDescripcionRol = () => {
+  const rol = auth.user?.rol
+  if (rol === 'admin') {
+    return 'Como Coordinador Territorial (Admin), puedes crear usuarios Territoriales'
+  } else if (rol === 'territorial') {
+    return 'Como Territorial, puedes crear usuarios Facilitadores'
+  } else if (rol === 'facilitador') {
+    return 'Como Facilitador, puedes crear Técnicos Productivos o Técnicos Sociales'
+  }
+  return ''
+}
+
+// Abrir modal de crear usuario
+const abrirModalCrearUsuario = () => {
+  nuevoUsuario.value = {
+    nombre: '',
+    email: '',
+    password: '',
+    rol: rolesDisponibles.value.length === 1 ? rolesDisponibles.value[0].value : ''
+  }
+  showPassword.value = false
+  showModalCrear.value = true
+}
+
+// Cerrar modal de crear usuario
+const cerrarModalCrearUsuario = () => {
+  showModalCrear.value = false
+  nuevoUsuario.value = { nombre: '', email: '', password: '', rol: '' }
+}
+
+// Crear usuario
+const crearUsuario = async () => {
+  if (!nuevoUsuario.value.nombre || !nuevoUsuario.value.email || !nuevoUsuario.value.password || !nuevoUsuario.value.rol) {
+    Swal.fire('⚠️ Campos incompletos', 'Por favor completa todos los campos', 'warning')
+    return
+  }
+
+  creando.value = true
+
+  try {
+    const result = await auth.createUserHierarchical(
+      nuevoUsuario.value.nombre,
+      nuevoUsuario.value.email,
+      nuevoUsuario.value.password,
+      nuevoUsuario.value.rol
+    )
+
+    if (result.success) {
+      await Swal.fire({
+        icon: 'success',
+        title: '✅ Usuario Creado',
+        html: `
+          <div style="text-align: left; padding: 10px;">
+            <p><strong>Nombre:</strong> ${result.data.nombre}</p>
+            <p><strong>Email:</strong> ${result.data.email}</p>
+            <p><strong>Rol:</strong> ${result.data.rol.toUpperCase().replace('_', ' ')}</p>
+          </div>
+        `,
+        confirmButtonColor: '#10b981'
+      })
+      cerrarModalCrearUsuario()
+      fetchUsuarios()
+    } else {
+      Swal.fire('❌ Error', result.error || 'No se pudo crear el usuario', 'error')
+    }
+  } catch (err) {
+    Swal.fire('❌ Error', 'Ocurrió un error al crear el usuario', 'error')
+  } finally {
+    creando.value = false
+  }
+}
 
 const fetchUsuarios = async () => {
   try {
@@ -343,7 +579,10 @@ const deleteUser = async (id) => {
   }
 }
 
-onMounted(fetchUsuarios)
+onMounted(() => {
+  fetchUsuarios()
+  verificarPermisosCreacion()
+})
 </script>
 
 <style scoped>
@@ -784,6 +1023,31 @@ onMounted(fetchUsuarios)
 .rol-admin {
   background: rgba(239, 68, 68, 0.2);
   color: #fca5a5;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.rol-territorial {
+  background: rgba(139, 92, 246, 0.2);
+  color: #c4b5fd;
+  border: 1px solid rgba(139, 92, 246, 0.3);
+}
+
+.rol-facilitador {
+  background: rgba(59, 130, 246, 0.2);
+  color: #93c5fd;
+  border: 1px solid rgba(59, 130, 246, 0.3);
+}
+
+.rol-tecnico_productivo {
+  background: rgba(16, 185, 129, 0.2);
+  color: #86efac;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.rol-tecnico_social {
+  background: rgba(245, 158, 11, 0.2);
+  color: #fcd34d;
+  border: 1px solid rgba(245, 158, 11, 0.3);
 }
 
 .rol-usuario {
@@ -1198,6 +1462,345 @@ onMounted(fetchUsuarios)
 
   .usuarios-content {
     padding: 1rem 0.5rem;
+  }
+}
+
+/* ========== HEADER ACTIONS ========== */
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+/* ========== CREATE BUTTON ========== */
+.create-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  border: none;
+  border-radius: 10px;
+  padding: 0.5rem 1rem;
+  color: white;
+  font-weight: 600;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+}
+
+.create-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+  background: linear-gradient(135deg, #059669 0%, #047857 100%);
+}
+
+.create-button:active {
+  transform: translateY(0);
+}
+
+.create-icon {
+  width: 18px;
+  height: 18px;
+}
+
+.create-text {
+  display: inline;
+}
+
+@media (max-width: 640px) {
+  .create-text {
+    display: none;
+  }
+  
+  .create-button {
+    padding: 0.5rem;
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+  }
+}
+
+/* ========== MODAL OVERLAY ========== */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  padding: 1rem;
+}
+
+/* ========== MODAL CREAR USUARIO ========== */
+.modal-crear-usuario {
+  background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  border-radius: 20px;
+  padding: 0;
+  max-width: 450px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+.modal-header {
+  position: relative;
+  padding: 1.5rem 1.5rem 1rem;
+  text-align: center;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+}
+
+.modal-icon {
+  width: 60px;
+  height: 60px;
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.2) 0%, rgba(16, 185, 129, 0.1) 100%);
+  border: 2px solid #10b981;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1rem;
+}
+
+.modal-icon-svg {
+  width: 28px;
+  height: 28px;
+  color: #10b981;
+}
+
+.modal-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #f1f5f9;
+  margin: 0 0 0.5rem;
+}
+
+.modal-subtitle {
+  font-size: 0.85rem;
+  color: #94a3b8;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.modal-close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: 8px;
+  padding: 0.5rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  color: #ef4444;
+}
+
+.modal-close:hover {
+  background: rgba(239, 68, 68, 0.2);
+  border-color: rgba(239, 68, 68, 0.5);
+}
+
+.close-icon {
+  width: 18px;
+  height: 18px;
+}
+
+/* ========== MODAL FORM ========== */
+.modal-form {
+  padding: 1.5rem;
+}
+
+.form-group {
+  margin-bottom: 1.25rem;
+}
+
+.form-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #e2e8f0;
+  margin-bottom: 0.5rem;
+}
+
+.label-icon {
+  width: 16px;
+  height: 16px;
+  color: #10b981;
+}
+
+.form-input,
+.form-select {
+  width: 100%;
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 10px;
+  padding: 0.75rem 1rem;
+  color: #e2e8f0;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+}
+
+.form-input::placeholder {
+  color: #64748b;
+}
+
+.form-input:focus,
+.form-select:focus {
+  outline: none;
+  border-color: #10b981;
+  background: rgba(15, 23, 42, 0.8);
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+}
+
+.form-select {
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2394a3b8'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  background-size: 1rem;
+  padding-right: 2.5rem;
+}
+
+.form-select option {
+  background: #1e293b;
+  color: #e2e8f0;
+}
+
+.password-wrapper {
+  position: relative;
+}
+
+.toggle-password {
+  position: absolute;
+  right: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #94a3b8;
+  padding: 0.25rem;
+  transition: color 0.3s ease;
+}
+
+.toggle-password:hover {
+  color: #10b981;
+}
+
+.eye-icon {
+  width: 18px;
+  height: 18px;
+}
+
+/* ========== FORM ACTIONS ========== */
+.form-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.btn-cancelar,
+.btn-crear {
+  flex: 1;
+  padding: 0.75rem 1.5rem;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.btn-cancelar {
+  background: rgba(148, 163, 184, 0.1);
+  border: 1px solid rgba(148, 163, 184, 0.3);
+  color: #94a3b8;
+}
+
+.btn-cancelar:hover {
+  background: rgba(148, 163, 184, 0.2);
+  border-color: rgba(148, 163, 184, 0.5);
+}
+
+.btn-crear {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  border: none;
+  color: white;
+  box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+}
+
+.btn-crear:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+}
+
+.btn-crear:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.spinner {
+  width: 18px;
+  height: 18px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* ========== RESPONSIVE MODAL ========== */
+@media (max-width: 480px) {
+  .modal-crear-usuario {
+    max-height: 95vh;
+    border-radius: 16px;
+  }
+
+  .modal-header {
+    padding: 1.25rem 1.25rem 0.75rem;
+  }
+
+  .modal-icon {
+    width: 50px;
+    height: 50px;
+  }
+
+  .modal-icon-svg {
+    width: 24px;
+    height: 24px;
+  }
+
+  .modal-title {
+    font-size: 1.1rem;
+  }
+
+  .modal-subtitle {
+    font-size: 0.8rem;
+  }
+
+  .modal-form {
+    padding: 1.25rem;
+  }
+
+  .form-actions {
+    flex-direction: column;
   }
 }
 

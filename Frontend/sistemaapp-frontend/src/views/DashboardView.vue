@@ -206,9 +206,9 @@
               <div class="card-arrow">→</div>
             </router-link>
 
-            <!-- Gestión de Usuarios - Solo admins -->
+            <!-- Gestión de Usuarios - Admin, Territorial, Facilitador -->
             <router-link
-              v-if="auth.user?.rol === 'admin'"
+              v-if="auth.user?.rol && ['admin', 'territorial', 'facilitador'].includes(auth.user.rol)"
               to="/usuarios"
               v-motion
               :initial="{ opacity: 0, y: 30 }"
@@ -219,7 +219,7 @@
                 <Users class="specialized-icon-lucide" />
               </div>
               <h4 class="specialized-title">Gestión de Usuarios</h4>
-              <p class="specialized-desc">Administrar usuarios</p>
+              <p class="specialized-desc">{{ getUsuariosDesc() }}</p>
               <div class="card-arrow">→</div>
             </router-link>
 
@@ -433,10 +433,26 @@ const formatRole = (role: string): string => {
     admin: 'Administrador',
     territorial: 'Territorial',
     coordinador: 'Coordinador',
+    facilitador: 'Facilitador',
+    tecnico_productivo: 'Técnico Productivo',
+    tecnico_social: 'Técnico Social',
     sembrador: 'Sembrador',
     usuario: 'Usuario',
   }
   return roleMap[role?.toLowerCase()] || role
+}
+
+// Obtener descripción de gestión de usuarios según el rol
+const getUsuariosDesc = (): string => {
+  const rol = auth.user?.rol
+  if (rol === 'admin') {
+    return 'Administrar todos los usuarios'
+  } else if (rol === 'territorial') {
+    return 'Gestionar facilitadores'
+  } else if (rol === 'facilitador') {
+    return 'Gestionar técnicos'
+  }
+  return 'Ver usuarios'
 }
 </script>
 
