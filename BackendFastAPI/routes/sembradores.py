@@ -85,6 +85,95 @@ def crear_sembrador(
         raise HTTPException(status_code=400, detail=f"Error al crear sembrador: {str(e)}")
 
 
+# ========== GET: Obtener sembradores para mapa (DEBE IR ANTES DE /{id}) ==========
+@router.get("/map")
+def obtener_sembradores_mapa(
+    current_user: dict = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """
+    Obtener sembradores visibles en el mapa según rol y jerarquía.
+    
+    Filtrado jerárquico:
+    - Admin: Ve todos los sembradores
+    - Territorial: Ve sembradores de subordinados directos
+    - Facilitador: Ve sembradores de técnicos bajo su supervisión
+    - Técnico: Solo ve sus propios sembradores
+    
+    Response: Lista de sembradores con datos para visualizar en mapa
+    """
+    try:
+        user_id = current_user["user_id"]
+        rol = current_user["rol"]
+        
+        query = db.query(Sembrador)
+        
+        # 🔒 Filtrado jerárquico según rol
+        if rol == "admin":
+            # Admin ve todos
+            pass
+        elif rol == "territorial":
+            # Territorial ve subordinados directos
+            subordinado_ids = [
+                u.id for u in db.query(User).filter(User.superior_id == user_id).all()
+            ]
+            if subordinado_ids:
+                query = query.filter(Sembrador.user_id.in_(subordinado_ids))
+            else:
+                query = query.filter(Sembrador.user_id == user_id)
+        elif rol in ["facilitador", "gestor_facilitador"]:
+            # Facilitador ve técnicos productivos y sociales bajo su supervisión
+            tecnico_ids = [
+                u.id for u in db.query(User).filter(
+                    User.superior_id == user_id,
+                    User.rol.like("tecnico%")
+                ).all()
+            ]
+            if tecnico_ids:
+                query = query.filter(Sembrador.user_id.in_(tecnico_ids))
+            else:
+                query = query.filter(Sembrador.user_id == user_id)
+        else:
+            # Técnico (productivo o social) ve solo los suyos
+            query = query.filter(Sembrador.user_id == user_id)
+        
+        sembradores = query.all()
+        
+        # Obtener rol del técnico para diferenciación
+        usuarios_cache = {}
+        
+        resultado = []
+        for s in sembradores:
+            if s.user_id not in usuarios_cache:
+                usuario = db.query(User).filter(User.id == s.user_id).first()
+                usuarios_cache[s.user_id] = usuario
+            
+            usuario = usuarios_cache[s.user_id]
+            
+            resultado.append({
+                "id": s.id,
+                "nombre": s.nombre,
+                "comunidad": s.comunidad,
+                "cultivo": s.cultivo_principal,
+                "lat": float(s.lat) if s.lat else None,
+                "lng": float(s.lng) if s.lng else None,
+                "user_id": s.user_id,
+                "tecnico_nombre": usuario.nombre if usuario else "Desconocido",
+                "tecnico_rol": usuario.rol if usuario else "desconocido",
+                "creado_en": s.creado_en.isoformat() if s.creado_en else None
+            })
+        
+        return {
+            "success": True,
+            "total": len(resultado),
+            "items": resultado
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Error al obtener sembradores para mapa: {str(e)}")
+
+
 # ========== GET: Listar sembradores según jerarquía ==========
 @router.get("/")
 def listar_sembradores(
@@ -293,92 +382,3 @@ def eliminar_sembrador(
     except Exception as e:
         db.rollback()
         raise HTTPException(status_code=400, detail=f"Error al eliminar sembrador: {str(e)}")
-
-
-# ========== GET: Obtener sembradores para mapa ==========
-@router.get("/map")
-def obtener_sembradores_mapa(
-    current_user: dict = Depends(get_current_user),
-    db: Session = Depends(get_db)
-):
-    """
-    Obtener sembradores visibles en el mapa según rol y jerarquía.
-    
-    Filtrado jerárquico:
-    - Admin: Ve todos los sembradores
-    - Territorial: Ve sembradores de subordinados directos
-    - Facilitador: Ve sembradores de técnicos bajo su supervisión
-    - Técnico: Solo ve sus propios sembradores
-    
-    Response: Lista de sembradores con datos para visualizar en mapa
-    """
-    try:
-        user_id = current_user["user_id"]
-        rol = current_user["rol"]
-        
-        query = db.query(Sembrador)
-        
-        # 🔒 Filtrado jerárquico según rol
-        if rol == "admin":
-            # Admin ve todos
-            pass
-        elif rol == "territorial":
-            # Territorial ve subordinados directos
-            subordinado_ids = [
-                u.id for u in db.query(User).filter(User.superior_id == user_id).all()
-            ]
-            if subordinado_ids:
-                query = query.filter(Sembrador.user_id.in_(subordinado_ids))
-            else:
-                query = query.filter(Sembrador.user_id == user_id)
-        elif rol in ["facilitador", "gestor_facilitador"]:
-            # Facilitador ve técnicos productivos y sociales bajo su supervisión
-            tecnico_ids = [
-                u.id for u in db.query(User).filter(
-                    User.superior_id == user_id,
-                    User.rol.like("tecnico%")
-                ).all()
-            ]
-            if tecnico_ids:
-                query = query.filter(Sembrador.user_id.in_(tecnico_ids))
-            else:
-                query = query.filter(Sembrador.user_id == user_id)
-        else:
-            # Técnico (productivo o social) ve solo los suyos
-            query = query.filter(Sembrador.user_id == user_id)
-        
-        sembradores = query.all()
-        
-        # Obtener rol del técnico para diferenciación
-        usuarios_cache = {}
-        
-        resultado = []
-        for s in sembradores:
-            if s.user_id not in usuarios_cache:
-                usuario = db.query(User).filter(User.id == s.user_id).first()
-                usuarios_cache[s.user_id] = usuario
-            
-            usuario = usuarios_cache[s.user_id]
-            
-            resultado.append({
-                "id": s.id,
-                "nombre": s.nombre,
-                "comunidad": s.comunidad,
-                "cultivo": s.cultivo_principal,
-                "lat": float(s.lat) if s.lat else None,
-                "lng": float(s.lng) if s.lng else None,
-                "user_id": s.user_id,
-                "tecnico_nombre": usuario.nombre if usuario else "Desconocido",
-                "tecnico_rol": usuario.rol if usuario else "desconocido",
-                "creado_en": s.creado_en.isoformat() if s.creado_en else None
-            })
-        
-        return {
-            "success": True,
-            "total": len(resultado),
-            "items": resultado
-        }
-    except HTTPException:
-        raise
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=f"Error al obtener sembradores para mapa: {str(e)}")
