@@ -4,10 +4,11 @@ from sqlalchemy.orm import Session
 from database import get_db
 from models import Sembrador, User
 import jwt, os
+import traceback
 from dotenv import load_dotenv
 
 load_dotenv()
-SECRET = os.getenv("SECRET_KEY")
+SECRET = os.getenv("JWT_SECRET", "clave_super_segura")
 
 router = APIRouter(prefix="/sembradores", tags=["Sembradores"])
 bearer_scheme = HTTPBearer()
@@ -19,18 +20,20 @@ def get_current_user(credentials: HTTPAuthorizationCredentials = Security(bearer
         token = credentials.credentials
         payload = jwt.decode(token, SECRET, algorithms=["HS256"])
         user_id = payload.get("id")
-        rol = payload.get("rol")
+        rol = payload.get("rol", "").lower().strip() if payload.get("rol") else ""
         
         if not user_id:
-            raise HTTPException(status_code=401, detail="Token inválido")
+            raise HTTPException(status_code=401, detail="Token inválido: falta user_id")
         
         user = db.query(User).filter(User.id == user_id).first()
         if not user:
             raise HTTPException(status_code=401, detail="Usuario no encontrado")
         
         return {"user_id": user_id, "rol": rol, "user": user}
-    except jwt.InvalidTokenError:
-        raise HTTPException(status_code=401, detail="Token inválido")
+    except jwt.ExpiredSignatureError:
+        raise HTTPException(status_code=401, detail="Token expirado")
+    except jwt.InvalidTokenError as e:
+        raise HTTPException(status_code=401, detail=f"Token inválido: {str(e)}")
 
 
 # ========== POST: Crear nuevo sembrador ==========
@@ -43,18 +46,11 @@ def crear_sembrador(
     """
     Crear un nuevo sembrador.
     El sembrador se asocia automáticamente al usuario actual.
-    
-    Body esperado:
-    {
-        "nombre": "Nombre del sembrador",
-        "comunidad": "Comunidad",
-        "cultivo_principal": "Maíz",
-        "telefono": "+56912345678",
-        "lat": -33.8688,
-        "lng": -51.2093
-    }
     """
     try:
+        print(f"📝 Creando sembrador - Usuario: {current_user['user_id']}, Rol: {current_user['rol']}")
+        print(f"📝 Datos recibidos: {data}")
+        
         if not data.get("nombre"):
             raise HTTPException(status_code=400, detail="El nombre es obligatorio")
         
@@ -65,8 +61,8 @@ def crear_sembrador(
             comunidad=data.get("comunidad"),
             cultivo_principal=data.get("cultivo_principal"),
             telefono=data.get("telefono"),
-            lat=data.get("lat"),
-            lng=data.get("lng"),
+            lat=float(data.get("lat")) if data.get("lat") else None,
+            lng=float(data.get("lng")) if data.get("lng") else None,
             user_id=user_id
         )
         
@@ -74,14 +70,20 @@ def crear_sembrador(
         db.commit()
         db.refresh(nuevo)
         
+        print(f"✅ Sembrador creado con ID: {nuevo.id}")
+        
         return {
             "success": True,
             "id": nuevo.id,
             "nombre": nuevo.nombre,
             "message": "Sembrador creado exitosamente"
         }
+    except HTTPException:
+        raise
     except Exception as e:
         db.rollback()
+        print(f"❌ Error creando sembrador: {str(e)}")
+        traceback.print_exc()
         raise HTTPException(status_code=400, detail=f"Error al crear sembrador: {str(e)}")
 
 
@@ -182,40 +184,42 @@ def listar_sembradores(
 ):
     """
     Obtener lista de sembradores según el rol del usuario.
-    Aplica filtros jerárquicos:
-    - admin: Ve todos los sembradores
-    - territorial: Ve sembradores de subordinados
-    - facilitador: Ve sembradores de técnicos subordinados
-    - técnico/otro: Ve solo sus propios sembradores
     """
     try:
         user_id = current_user["user_id"]
-        rol = current_user["rol"]
+        rol = current_user["rol"].lower().strip() if current_user.get("rol") else ""
+        
+        print(f"📋 Listando sembradores - Usuario: {user_id}, Rol: '{rol}'")
         
         query = db.query(Sembrador)
         
-        # 🔒 Filtros según jerarquía
+        # 🔒 Filtros según jerarquía (todos los roles pueden ver)
         if rol == "admin":
             # Admin ve todo
+            print("👑 Rol admin - viendo todos los sembradores")
             pass
         elif rol == "territorial":
             # Territorial ve sembradores de subordinados
             sub_ids = [u.id for u in db.query(User).filter(User.superior_id == user_id).all()]
             sub_ids.append(user_id)
             query = query.filter(Sembrador.user_id.in_(sub_ids))
-        elif rol == "facilitador":
+            print(f"🌍 Rol territorial - viendo {len(sub_ids)} usuarios")
+        elif rol in ["facilitador", "gestor_facilitador"]:
             # Facilitador ve sembradores de técnicos subordinados
             sub_ids = [u.id for u in db.query(User).filter(
                 User.superior_id == user_id,
-                User.rol.like("tecnico%")
+                User.rol.ilike("tecnico%")  # Case-insensitive
             ).all()]
             sub_ids.append(user_id)
             query = query.filter(Sembrador.user_id.in_(sub_ids))
+            print(f"👥 Rol facilitador - viendo {len(sub_ids)} usuarios")
         else:
-            # Técnico/otro ve solo sus propios sembradores
+            # Técnico o cualquier otro rol ve solo sus propios sembradores
             query = query.filter(Sembrador.user_id == user_id)
+            print(f"👤 Rol '{rol}' - viendo solo sus sembradores")
         
         sembradores = query.all()
+        print(f"✅ Encontrados {len(sembradores)} sembradores")
         
         return {
             "total": len(sembradores),
@@ -226,15 +230,19 @@ def listar_sembradores(
                     "comunidad": s.comunidad,
                     "cultivo_principal": s.cultivo_principal,
                     "telefono": s.telefono,
-                    "lat": s.lat,
-                    "lng": s.lng,
+                    "lat": float(s.lat) if s.lat else None,
+                    "lng": float(s.lng) if s.lng else None,
                     "user_id": s.user_id,
-                    "creado_en": s.creado_en
+                    "creado_en": s.creado_en.isoformat() if s.creado_en else None
                 }
                 for s in sembradores
             ]
         }
+    except HTTPException:
+        raise
     except Exception as e:
+        print(f"❌ Error listando sembradores: {str(e)}")
+        traceback.print_exc()
         raise HTTPException(status_code=400, detail=f"Error al listar sembradores: {str(e)}")
 
 

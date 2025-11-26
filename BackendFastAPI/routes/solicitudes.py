@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 import asyncio
 
 load_dotenv()
-SECRET = os.getenv("SECRET_KEY")
+SECRET = os.getenv("JWT_SECRET", "clave_super_segura")
 
 # Importar broadcast_notification desde notificaciones
 async def broadcast_notification(data: dict):

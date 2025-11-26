@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 import os
 
 load_dotenv()
-SECRET = os.getenv("SECRET_KEY")
+SECRET = os.getenv("JWT_SECRET", "clave_super_segura")
 
 router = APIRouter(prefix="/layers", tags=["Capas"])
 bearer_scheme = HTTPBearer()
