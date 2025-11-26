@@ -25,8 +25,8 @@
     <link rel="icon" type="image/png" sizes="192x192" href="/pwa-192x192.png?v=2.0">
     <link rel="icon" type="image/png" sizes="512x512" href="/pwa-512x512.png?v=2.0">
     
-    <!-- Manifest - generado por VitePWA -->
-    <link rel="manifest" href="/manifest.webmanifest">
+    <!-- Manifest -->
+    <link rel="manifest" href="/manifest.json">
     
     <!-- Google Fonts - Modern Typography -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
@@ -64,6 +64,14 @@
   <body>
     <div id="app"></div>
     <script type="module" src="/src/main.ts"></script>
-    <!-- SW registrado por registerSW.js via VitePWA -->
+    
+    <!-- Script de actualización de SW -->
+    <script>
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/sw.js').catch(() => {
+          console.log('Service Worker registration failed')
+        })
+      }
+    </script>
   </body>
 </html>
