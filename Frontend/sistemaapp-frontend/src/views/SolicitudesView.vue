@@ -715,15 +715,15 @@ onMounted(getSolicitudes)
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1.5rem;
-  padding-bottom: 1rem;
-  border-bottom: 1px solid var(--color-border);
+  margin-bottom: 1rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.15);
   flex-wrap: wrap;
-  gap: 1rem;
+  gap: 0.75rem;
 }
 
 .section-title {
-  font-size: 1.3rem;
+  font-size: 1rem;
   font-weight: 700;
   color: #f1f5f9;
   margin: 0;
@@ -731,7 +731,7 @@ onMounted(getSolicitudes)
 
 .section-stats {
   display: flex;
-  gap: 2rem;
+  gap: 1.25rem;
 }
 
 .stat-item {
@@ -741,30 +741,30 @@ onMounted(getSolicitudes)
 }
 
 .stat-label {
-  font-size: 0.75rem;
+  font-size: 0.65rem;
   color: #cbd5e1;
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
 
 .stat-value {
-  font-size: 1.5rem;
+  font-size: 1.1rem;
   font-weight: 700;
   color: #f1f5f9;
 }
 
 .stat-value.pending {
-  color: var(--color-yellow);
+  color: #f59e0b;
 }
 
 .stat-value.approved {
-  color: var(--color-primary);
+  color: #10b981;
 }
 
 /* ========== TABLE ========== */
 .solicitudes-table-wrapper {
   background: rgba(30, 41, 59, 0.5);
-  border: 1px solid var(--color-border);
+  border: 1px solid rgba(148, 163, 184, 0.15);
   border-radius: 12px;
   backdrop-filter: blur(10px);
   overflow: hidden;
@@ -777,26 +777,26 @@ onMounted(getSolicitudes)
 .solicitudes-table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
 }
 
 .solicitudes-table thead {
-  background: rgba(16, 185, 129, 0.1);
-  border-bottom: 2px solid var(--color-border);
+  background: rgba(16, 185, 129, 0.12);
+  border-bottom: 2px solid rgba(16, 185, 129, 0.2);
 }
 
 .solicitudes-table th {
-  padding: 1rem;
+  padding: 0.85rem;
   text-align: left;
   font-weight: 600;
-  color: var(--color-primary);
+  color: #10b981;
   text-transform: uppercase;
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   letter-spacing: 0.05em;
 }
 
 .solicitud-row {
-  border-bottom: 1px solid var(--color-border);
+  border-bottom: 1px solid rgba(148, 163, 184, 0.1);
   transition: all 0.3s ease;
 }
 
@@ -805,8 +805,8 @@ onMounted(getSolicitudes)
 }
 
 .solicitudes-table td {
-  padding: 1rem;
-  color: var(--color-text-secondary);
+  padding: 0.85rem;
+  color: #e2e8f0;
 }
 
 .cell-tipo {
@@ -941,31 +941,31 @@ onMounted(getSolicitudes)
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 3rem 2rem;
+  padding: 2rem 1.5rem;
   background: rgba(30, 41, 59, 0.5);
-  border: 1px dashed var(--color-border);
+  border: 1px dashed rgba(148, 163, 184, 0.2);
   border-radius: 12px;
   text-align: center;
 }
 
 .empty-icon {
-  width: 48px;
-  height: 48px;
-  color: var(--color-text-dim);
-  margin-bottom: 1rem;
-  opacity: 0.5;
+  width: 36px;
+  height: 36px;
+  color: #10b981;
+  margin-bottom: 0.75rem;
+  opacity: 0.8;
 }
 
 .empty-title {
-  font-size: 1.1rem;
+  font-size: 0.9rem;
   font-weight: 600;
-  color: var(--color-text-secondary);
-  margin: 0 0 0.5rem 0;
+  color: #f1f5f9;
+  margin: 0 0 0.35rem 0;
 }
 
 .empty-text {
-  font-size: 0.9rem;
-  color: var(--color-text-dim);
+  font-size: 0.8rem;
+  color: #cbd5e1;
   margin: 0;
 }
 
@@ -974,17 +974,17 @@ onMounted(getSolicitudes)
   position: relative;
   z-index: 5;
   text-align: center;
-  padding: 1.5rem;
-  border-top: 1px solid var(--color-border);
-  background: rgba(15, 23, 42, 0.5);
+  padding: 1.25rem;
+  border-top: 1px solid rgba(148, 163, 184, 0.15);
+  background: rgba(15, 23, 42, 0.6);
   backdrop-filter: blur(10px);
-  font-size: 0.85rem;
-  color: var(--color-text-dim);
+  font-size: 0.8rem;
+  color: #cbd5e1;
 }
 
 .footer-highlight {
-  color: var(--color-primary);
-  font-weight: 600;
+  color: #10b981;
+  font-weight: 700;
 }
 
 /* ========== RESPONSIVE ========== */
