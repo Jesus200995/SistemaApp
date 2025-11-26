@@ -594,7 +594,7 @@ onMounted(getSembradores)
   position: relative;
   z-index: 5;
   min-height: calc(100vh - 100px);
-  padding: 2rem;
+  padding: 1.25rem;
 }
 
 .sembradores-content {
@@ -602,58 +602,58 @@ onMounted(getSembradores)
   margin: 0 auto;
   display: flex;
   flex-direction: column;
-  gap: 2rem;
+  gap: 1.25rem;
 }
 
 /* ========== FORM SECTION ========== */
 .form-section {
   background: linear-gradient(135deg, rgba(30, 41, 59, 0.8) 0%, rgba(15, 23, 42, 0.8) 100%);
   border: 1px solid rgba(148, 163, 184, 0.2);
-  border-radius: 20px;
-  padding: 2rem;
+  border-radius: 16px;
+  padding: 1.25rem;
   backdrop-filter: blur(10px);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
 }
 
 .form-header {
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
 }
 
 .form-title {
-  font-size: 1.2rem;
+  font-size: 0.95rem;
   font-weight: 700;
   color: #84cc16;
-  margin-bottom: 0.3rem;
+  margin-bottom: 0.2rem;
   text-shadow: 0 0 8px rgba(132, 204, 22, 0.3);
 }
 
 .form-subtitle {
-  font-size: 0.8rem;
-  color: #94a3b8;
+  font-size: 0.7rem;
+  color: #cbd5e1;
 }
 
 .sembrador-form {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 0.85rem;
 }
 
 .form-row {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 0.85rem;
 }
 
 .form-group {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0.3rem;
 }
 
 .form-label {
-  font-size: 0.75rem;
+  font-size: 0.65rem;
   font-weight: 600;
-  color: #cbd5e1;
+  color: #e2e8f0;
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
@@ -666,9 +666,9 @@ onMounted(getSembradores)
 
 .input-icon {
   position: absolute;
-  left: 12px;
-  width: 20px;
-  height: 20px;
+  left: 10px;
+  width: 14px;
+  height: 14px;
   color: #10b981;
   pointer-events: none;
 }
@@ -677,22 +677,23 @@ onMounted(getSembradores)
   width: 100%;
   background: rgba(15, 23, 42, 0.5);
   border: 1px solid rgba(148, 163, 184, 0.2);
-  border-radius: 10px;
-  padding: 0.75rem 1rem 0.75rem 2.5rem;
+  border-radius: 8px;
+  padding: 0.5rem 0.75rem 0.5rem 2rem;
   color: #e2e8f0;
-  font-size: 0.95rem;
+  font-size: 0.8rem;
   transition: all 0.3s ease;
 }
 
 .form-input::placeholder {
   color: #64748b;
+  font-size: 0.75rem;
 }
 
 .form-input:focus {
   outline: none;
   border-color: #10b981;
   background: rgba(15, 23, 42, 0.7);
-  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+  box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.1);
 }
 
 /* ========== SUBMIT BUTTON ========== */
@@ -700,23 +701,23 @@ onMounted(getSembradores)
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
+  gap: 0.4rem;
   background: linear-gradient(135deg, #10b981 0%, #059669 100%);
   color: white;
   border: none;
-  border-radius: 10px;
-  padding: 0.875rem 1.5rem;
-  font-size: 0.95rem;
+  border-radius: 8px;
+  padding: 0.6rem 1rem;
+  font-size: 0.8rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
-  margin-top: 1rem;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+  margin-top: 0.5rem;
 }
 
 .submit-btn:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 6px 25px rgba(16, 185, 129, 0.4);
+  box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
 }
 
 .submit-btn:active:not(:disabled) {
@@ -729,8 +730,8 @@ onMounted(getSembradores)
 }
 
 .btn-icon {
-  width: 18px;
-  height: 18px;
+  width: 14px;
+  height: 14px;
 }
 
 .btn-text {
@@ -741,42 +742,42 @@ onMounted(getSembradores)
 .list-section {
   background: linear-gradient(135deg, rgba(30, 41, 59, 0.8) 0%, rgba(15, 23, 42, 0.8) 100%);
   border: 1px solid rgba(148, 163, 184, 0.2);
-  border-radius: 20px;
-  padding: 2rem;
+  border-radius: 16px;
+  padding: 1.25rem;
   backdrop-filter: blur(10px);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
 }
 
 .list-header {
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
 }
 
 .list-title {
-  font-size: 1.5rem;
+  font-size: 0.95rem;
   font-weight: 700;
-  color: #e2e8f0;
+  color: #f1f5f9;
   display: flex;
   align-items: center;
-  gap: 1rem;
-  margin-bottom: 0.5rem;
+  gap: 0.6rem;
+  margin-bottom: 0.3rem;
 }
 
 .count-badge {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
-  height: 32px;
+  width: 24px;
+  height: 24px;
   background: linear-gradient(135deg, #10b981 0%, #059669 100%);
   color: white;
-  border-radius: 8px;
+  border-radius: 6px;
   font-weight: 700;
-  font-size: 0.875rem;
+  font-size: 0.75rem;
 }
 
 .list-subtitle {
-  font-size: 0.95rem;
-  color: #94a3b8;
+  font-size: 0.75rem;
+  color: #cbd5e1;
 }
 
 /* ========== EMPTY STATE ========== */
@@ -785,37 +786,37 @@ onMounted(getSembradores)
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 3rem 2rem;
+  padding: 1.5rem 1rem;
   text-align: center;
 }
 
 .empty-icon {
-  width: 80px;
-  height: 80px;
-  background: rgba(16, 185, 129, 0.1);
-  border-radius: 16px;
+  width: 50px;
+  height: 50px;
+  background: rgba(16, 185, 129, 0.15);
+  border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 1rem;
+  margin-bottom: 0.6rem;
   color: #10b981;
 }
 
 .empty-icon svg {
-  width: 40px;
-  height: 40px;
+  width: 24px;
+  height: 24px;
 }
 
 .empty-title {
-  font-size: 1.25rem;
+  font-size: 0.9rem;
   font-weight: 600;
-  color: #e2e8f0;
-  margin-bottom: 0.5rem;
+  color: #f1f5f9;
+  margin-bottom: 0.3rem;
 }
 
 .empty-text {
-  font-size: 0.95rem;
-  color: #94a3b8;
+  font-size: 0.75rem;
+  color: #cbd5e1;
 }
 
 /* ========== TABLE ========== */
