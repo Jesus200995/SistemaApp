@@ -10,7 +10,7 @@ import os
 from dotenv import load_dotenv
 
 load_dotenv()
-SECRET = os.getenv("JWT_SECRET", "clave_super_segura")
+SECRET = os.getenv("SECRET_KEY")
 
 router = APIRouter(prefix="/seguimientos", tags=["Seguimiento de Campo"])
 bearer_scheme = HTTPBearer()
