@@ -719,7 +719,7 @@ onMounted(() => {
 
 .progress-fill-mini {
   height: 100%;
-  background: linear-gradient(90deg, var(--color-primary), var(--color-primary-dark));
+  background: linear-gradient(90deg, #10b981, #059669);
   transition: width 0.3s ease;
 }
 
@@ -753,14 +753,14 @@ onMounted(() => {
 }
 
 .chart-title {
-  font-size: 1.3rem;
+  font-size: 1.1rem;
   font-weight: 700;
   color: #f1f5f9;
   margin: 0 0 0.25rem 0;
 }
 
 .chart-subtitle {
-  font-size: 0.85rem;
+  font-size: 0.75rem;
   color: #cbd5e1;
   margin: 0;
 }
@@ -782,20 +782,21 @@ onMounted(() => {
 }
 
 .empty-icon {
-  width: 48px;
-  height: 48px;
+  width: 40px;
+  height: 40px;
   color: #10b981;
   stroke-width: 2;
-  margin: 0 auto 1rem;
+  margin: 0 auto 0.75rem;
 }
 
 .empty-text {
-  font-size: 1.1rem;
+  font-size: 0.9rem;
   color: #f1f5f9;
-  margin: 0 0 0.5rem 0;
+  margin: 0 0 0.35rem 0;
 }
 
 .empty-subtext {
+  font-size: 0.8rem;
   color: #cbd5e1;
   margin: 0;
 }
@@ -830,9 +831,9 @@ onMounted(() => {
 }
 
 .table-title {
-  font-size: 1.3rem;
+  font-size: 1.1rem;
   font-weight: 700;
-  color: var(--color-text);
+  color: #f1f5f9;
   margin: 0;
 }
 
@@ -848,16 +849,18 @@ onMounted(() => {
 }
 
 .cultivos-table thead {
-  background: rgba(16, 185, 129, 0.1);
-  border-bottom: 2px solid rgba(16, 185, 129, 0.2);
+  background: rgba(16, 185, 129, 0.15);
+  border-bottom: 2px solid rgba(16, 185, 129, 0.3);
 }
 
 .cultivos-table th {
   padding: 1rem;
   text-align: left;
-  color: var(--color-text-sec);
+  color: #10b981;
   font-weight: 600;
   font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
 .cultivos-table tbody tr {
@@ -871,7 +874,7 @@ onMounted(() => {
 
 .table-row td {
   padding: 1rem;
-  color: var(--color-text-dim);
+  color: #e2e8f0;
 }
 
 .cultivo-name {
@@ -881,10 +884,10 @@ onMounted(() => {
 .cultivo-badge {
   display: inline-block;
   padding: 0.4rem 0.75rem;
-  background: rgba(16, 185, 129, 0.1);
-  border-left: 3px solid var(--color-primary);
+  background: rgba(16, 185, 129, 0.15);
+  border-left: 3px solid #10b981;
   border-radius: 4px;
-  color: var(--color-text);
+  color: #f1f5f9;
   font-weight: 500;
 }
 
@@ -903,8 +906,8 @@ onMounted(() => {
 
 .cultivo-porcentaje {
   min-width: 100px;
-  color: var(--color-text);
-  font-weight: 500;
+  color: #f1f5f9;
+  font-weight: 600;
 }
 
 .cultivo-bar {
@@ -927,8 +930,10 @@ onMounted(() => {
 
 .empty-table {
   text-align: center;
-  padding: 2rem;
-  color: var(--color-text-dim);
+  padding: 1.5rem;
+  color: #cbd5e1;
+  font-size: 0.85rem;
+  font-weight: 500;
 }
 
 /* ========== SUMMARY SECTION ========== */
@@ -940,13 +945,13 @@ onMounted(() => {
   background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(6, 182, 212, 0.05));
   border: 1px solid rgba(16, 185, 129, 0.2);
   border-radius: 16px;
-  padding: 2rem;
+  padding: 1.25rem;
   backdrop-filter: blur(10px);
 }
 
 .summary-header {
-  margin-bottom: 1.5rem;
-  padding-bottom: 1rem;
+  margin-bottom: 1rem;
+  padding-bottom: 0.75rem;
   border-bottom: 1px solid rgba(16, 185, 129, 0.2);
 }
 
@@ -965,27 +970,27 @@ onMounted(() => {
 }
 
 .summary-title {
-  font-size: 1.25rem;
+  font-size: 1rem;
   font-weight: 700;
-  color: var(--color-text);
+  color: #f1f5f9;
   margin: 0;
 }
 
 .summary-content {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 0.75rem;
 }
 
 .summary-item {
   display: flex;
   align-items: flex-start;
-  gap: 1rem;
+  gap: 0.6rem;
 }
 
 .summary-item-icon {
-  width: 24px;
-  height: 24px;
+  width: 18px;
+  height: 18px;
   color: #10b981;
   stroke-width: 2;
   flex-shrink: 0;
@@ -993,14 +998,14 @@ onMounted(() => {
 }
 
 .summary-text {
-  color: var(--color-text-dim);
-  line-height: 1.6;
-  font-size: 0.95rem;
+  color: #e2e8f0;
+  line-height: 1.5;
+  font-size: 0.8rem;
 }
 
 .summary-text strong {
-  color: var(--color-primary);
-  font-weight: 600;
+  color: #10b981;
+  font-weight: 700;
 }
 
 /* ========== FOOTER ========== */
@@ -1009,16 +1014,16 @@ onMounted(() => {
   z-index: 5;
   text-align: center;
   padding: 1.5rem;
-  border-top: 1px solid rgba(148, 163, 184, 0.1);
-  background: rgba(15, 23, 42, 0.5);
+  border-top: 1px solid rgba(148, 163, 184, 0.2);
+  background: rgba(15, 23, 42, 0.6);
   backdrop-filter: blur(10px);
-  font-size: 0.85rem;
-  color: var(--color-text-dim);
+  font-size: 0.9rem;
+  color: #cbd5e1;
 }
 
 .footer-highlight {
-  color: var(--color-primary);
-  font-weight: 600;
+  color: #10b981;
+  font-weight: 700;
 }
 
 /* ========== RESPONSIVE ========== */
