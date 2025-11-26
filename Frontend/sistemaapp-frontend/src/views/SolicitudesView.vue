@@ -1045,6 +1045,22 @@ onMounted(getSolicitudes)
   .solicitudes-table td {
     padding: 0.6rem 0.5rem;
   }
+
+  /* Centrar sección de historial en móviles */
+  .section-header {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .section-title {
+    margin-bottom: 0.5rem;
+  }
+
+  .section-stats {
+    justify-content: center;
+    width: 100%;
+  }
 }
 
 @media (max-width: 640px) {
