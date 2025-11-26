@@ -12,9 +12,12 @@ export default defineConfig({
     vueDevTools(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['favicon.ico', 'robots.txt', 'apple-touch-icon.png'],
+      injectRegister: 'auto',
+      includeAssets: ['favicon.ico', 'robots.txt', 'pwa-192x192.png', 'pwa-512x512.png'],
       workbox: {
         globPatterns: ['**/*.{js,css,html,ico,png,jpg,jpeg,gif,svg,woff,woff2,ttf,eot}'],
+        cleanupOutdatedCaches: true,
+        sourcemap: false,
         runtimeCaching: [
           {
             urlPattern: ({ request }) => request.destination === 'document',
@@ -41,17 +44,22 @@ export default defineConfig({
             },
           },
           {
-            urlPattern: ({ url }) => url.pathname.startsWith('/api'),
+            urlPattern: /^https:\/\/sistemaapi\.sembrandodatos\.com\/.*/i,
             handler: 'NetworkFirst',
             options: {
               cacheName: 'api-cache',
-              networkTimeoutSeconds: 5,
+              networkTimeoutSeconds: 10,
               expiration: { maxEntries: 50, maxAgeSeconds: 24 * 60 * 60 },
+              cacheableResponse: {
+                statuses: [0, 200],
+              },
             },
           },
         ],
         skipWaiting: true,
         clientsClaim: true,
+        navigateFallback: 'index.html',
+        navigateFallbackDenylist: [/^\/api/],
       },
       manifest: {
         name: 'SistemaApp - Panel de Control',
