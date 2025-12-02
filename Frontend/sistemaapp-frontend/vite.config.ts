@@ -11,42 +11,45 @@ export default defineConfig({
     vue(),
     vueDevTools(),
     VitePWA({
-      registerType: 'autoUpdate',
-      includeAssets: ['favicon.ico', 'robots.txt', 'apple-touch-icon.png'],
+      registerType: 'prompt',
+      injectRegister: 'auto',
+      includeAssets: ['favicon.ico', 'robots.txt', 'pwa-192x192.png', 'pwa-512x512.png'],
       workbox: {
         globPatterns: ['**/*.{js,css,html,ico,png,jpg,jpeg,gif,svg,woff,woff2,ttf,eot}'],
+        cleanupOutdatedCaches: true,
+        sourcemap: false,
         runtimeCaching: [
           {
-            urlPattern: ({ request }) => request.destination === 'document',
-            handler: 'NetworkFirst',
-            options: {
-              cacheName: 'pages-cache',
-              networkTimeoutSeconds: 3,
-            },
-          },
-          {
-            urlPattern: ({ request }) =>
-              ['style', 'script', 'worker'].includes(request.destination),
-            handler: 'StaleWhileRevalidate',
-            options: {
-              cacheName: 'static-resources',
-            },
-          },
-          {
-            urlPattern: ({ request }) => request.destination === 'image',
-            handler: 'CacheFirst',
-            options: {
-              cacheName: 'images-cache',
-              expiration: { maxEntries: 100, maxAgeSeconds: 7 * 24 * 60 * 60 },
-            },
-          },
-          {
-            urlPattern: ({ url }) => url.pathname.startsWith('/api'),
+            urlPattern: /^https:\/\/sistemaapi\.sembrandodatos\.com\/.*/i,
             handler: 'NetworkFirst',
             options: {
               cacheName: 'api-cache',
-              networkTimeoutSeconds: 5,
-              expiration: { maxEntries: 50, maxAgeSeconds: 24 * 60 * 60 },
+              networkTimeoutSeconds: 10,
+              expiration: {
+                maxEntries: 50,
+                maxAgeSeconds: 60 * 60 * 24, // 1 día
+              },
+              cacheableResponse: {
+                statuses: [0, 200],
+              },
+            },
+          },
+          {
+            urlPattern: /\.(?:png|jpg|jpeg|svg|gif|webp|ico)$/i,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'images-cache',
+              expiration: {
+                maxEntries: 100,
+                maxAgeSeconds: 60 * 60 * 24 * 7, // 7 días
+              },
+            },
+          },
+          {
+            urlPattern: /\.(?:js|css)$/i,
+            handler: 'StaleWhileRevalidate',
+            options: {
+              cacheName: 'static-resources',
             },
           },
         ],
@@ -56,14 +59,13 @@ export default defineConfig({
       manifest: {
         name: 'SistemaApp - Panel de Control',
         short_name: 'SistemaApp',
-        description: 'Sistema Territorial de Administración - Panel de control completo con notificaciones en tiempo real',
+        description: 'Sistema Territorial de Administración',
         theme_color: '#10b981',
         background_color: '#0f172a',
         display: 'standalone',
         scope: '/',
         start_url: '/',
         orientation: 'portrait-primary',
-        categories: ['business', 'productivity'],
         icons: [
           {
             src: '/pwa-192x192.png',
@@ -90,67 +92,9 @@ export default defineConfig({
             purpose: 'maskable',
           },
         ],
-        screenshots: [
-          {
-            src: '/pwa-192x192.png',
-            sizes: '192x192',
-            type: 'image/png',
-            form_factor: 'narrow',
-          },
-          {
-            src: '/pwa-512x512.png',
-            sizes: '512x512',
-            type: 'image/png',
-            form_factor: 'wide',
-          },
-        ],
-        shortcuts: [
-          {
-            name: 'Dashboard',
-            short_name: 'Dashboard',
-            description: 'Ir al panel de control',
-            url: '/dashboard',
-            icons: [
-              {
-                src: '/pwa-192x192.png',
-                sizes: '192x192',
-                type: 'image/png',
-              },
-            ],
-          },
-          {
-            name: 'Chat',
-            short_name: 'Chat',
-            description: 'Abrir chat',
-            url: '/chat',
-            icons: [
-              {
-                src: '/pwa-192x192.png',
-                sizes: '192x192',
-                type: 'image/png',
-              },
-            ],
-          },
-          {
-            name: 'Mapa',
-            short_name: 'Mapa',
-            description: 'Ver mapa',
-            url: '/mapa',
-            icons: [
-              {
-                src: '/pwa-192x192.png',
-                sizes: '192x192',
-                type: 'image/png',
-              },
-            ],
-          },
-        ],
       },
       devOptions: {
-        enabled: true,
-        navigateFallback: 'index.html',
-        suppressWarnings: true,
-        type: 'module',
+        enabled: false,
       },
     }),
   ],
