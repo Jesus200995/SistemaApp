@@ -1,8 +1,9 @@
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import RedirectResponse
+from fastapi.responses import JSONResponse
 from routes import auth, layers, chat, notificaciones, sembradores, seguimientos, solicitudes
 from database import Base, engine
+import traceback
 
 Base.metadata.create_all(bind=engine)
 
@@ -27,16 +28,32 @@ origins = [
     "http://sistemaapp.sembrandodatos.com",
     "https://sistema.sembrandodatos.com",
     "http://sistema.sembrandodatos.com",
+    "*",  # Permitir todos los orígenes temporalmente para debugging
 ]
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=["*"],  # Permitir todos los orígenes
     allow_credentials=True,
-    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
+    allow_methods=["*"],
     allow_headers=["*"],
     expose_headers=["*"],
 )
+
+# ✅ Manejador de excepciones global para mantener CORS en errores
+@app.exception_handler(Exception)
+async def global_exception_handler(request: Request, exc: Exception):
+    print(f"❌ Error global: {exc}")
+    print(traceback.format_exc())
+    return JSONResponse(
+        status_code=500,
+        content={"detail": str(exc), "error": "Internal Server Error"},
+        headers={
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "*",
+            "Access-Control-Allow-Headers": "*",
+        }
+    )
 
 # 👇 Rutas
 app.include_router(auth.router)
