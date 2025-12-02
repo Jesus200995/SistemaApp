@@ -64,14 +64,5 @@
   <body>
     <div id="app"></div>
     <script type="module" src="/src/main.ts"></script>
-    
-    <!-- Script de actualización de SW -->
-    <script>
-      if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('/sw.js').catch(() => {
-          console.log('Service Worker registration failed')
-        })
-      }
-    </script>
   </body>
 </html>

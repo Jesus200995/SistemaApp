@@ -1,17 +1,23 @@
 import { ref, onMounted, onUnmounted } from 'vue'
 
+// Solo habilitar en producción
+const isProd = import.meta.env.PROD
+
 const isUpdateAvailable = ref(false)
 const registrations = ref<ServiceWorkerRegistration[]>([])
 
 export function usePWAUpdate() {
   const checkForUpdates = () => {
+    // No ejecutar en desarrollo
+    if (!isProd) return
+    
     if (!('serviceWorker' in navigator)) {
       console.warn('[PWA] Service Workers no soportados')
       return
     }
 
     navigator.serviceWorker.getRegistrations().then((regs) => {
-      console.log('[PWA] Registraciones encontradas:', regs.length)
+      if (isProd) console.log('[PWA] Registraciones encontradas:', regs.length)
       registrations.value = [...regs] as ServiceWorkerRegistration[]
 
       regs.forEach((registration) => {
@@ -125,22 +131,32 @@ export function usePWAUpdate() {
   }
 
   onMounted(() => {
+    // No ejecutar en desarrollo
+    if (!isProd) {
+      console.log('📱 PWA Update deshabilitado en desarrollo')
+      return
+    }
+
     // Verificar actualizaciones al montar
     checkForUpdates()
 
     // Escuchar mensajes del Service Worker
-    navigator.serviceWorker.addEventListener('message', handleServiceWorkerMessage)
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.addEventListener('message', handleServiceWorkerMessage)
+    }
 
     // Verificar actualizaciones cada minuto
     const updateInterval = setInterval(() => {
-      console.log('[PWA] Verificando actualizaciones automáticas...')
+      if (isProd) console.log('[PWA] Verificando actualizaciones automáticas...')
       checkForUpdates()
     }, 60000) // Cada minuto
 
     // Cleanup
     onUnmounted(() => {
       clearInterval(updateInterval)
-      navigator.serviceWorker.removeEventListener('message', handleServiceWorkerMessage)
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.removeEventListener('message', handleServiceWorkerMessage)
+      }
     })
   })
 
