@@ -285,65 +285,57 @@ onUnmounted(() => {
 
 const connectWebSocket = () => {
   try {
-    const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:'
-    const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000'
-    const host = apiUrl.replace(/^(https?:\/\/)/, '').replace(/\/$/, '')
+    // WebSocket deshabilitado temporalmente - el servidor no soporta este endpoint actualmente
+    // Se usará polling de notificaciones en su lugar
+    console.log('ℹ️ WebSocket deshabilitado - usando polling para notificaciones')
     
-    const wsUrl = `${protocol}//${host}/notificaciones/ws`
-    console.log('🔌 Conectando WebSocket:', wsUrl)
-    
-    ws.value = new WebSocket(wsUrl)
-
-    ws.value.onopen = () => {
-      console.log('✅ WebSocket conectado en Dashboard')
-      setInterval(() => {
-        if (ws.value?.readyState === WebSocket.OPEN) {
-          ws.value?.send('ping')
-        }
-      }, 30000)
-    }
-
-    ws.value.onmessage = (event) => {
-      try {
-        const data = JSON.parse(event.data)
-        
-        if (data.user_destino === auth.user?.id || !data.user_destino) {
-          const notif = {
-            ...data,
-            leido: false,
-            timestamp: data.timestamp || new Date().toISOString()
-          }
-          notificaciones.value.unshift(notif)
-          console.log('🔔 Nueva notificación en Dashboard:', notif)
-        }
-      } catch (error) {
-        console.error('Error procesando WebSocket:', error)
+    // Configurar polling cada 30 segundos como alternativa
+    const pollNotifications = setInterval(() => {
+      if (auth.token) {
+        getNotificaciones()
       }
-    }
-
-    ws.value.onerror = (error) => {
-      console.error('❌ Error WebSocket:', error)
-    }
-
-    ws.value.onclose = () => {
-      console.log('🔌 Desconectado de WebSocket')
-    }
+    }, 30000)
+    
+    // Guardar referencia para limpiar en onUnmounted
+    ws.value = { close: () => clearInterval(pollNotifications) } as any
   } catch (error) {
-    console.error('Error conectando WebSocket:', error)
+    console.error('Error configurando notificaciones:', error)
   }
 }
 
 const getNotificaciones = async () => {
   try {
     const token = localStorage.getItem('token') || auth.token
+    if (!token) return
+    
+    const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000'
     const response = await axios.get(
-      `${import.meta.env.VITE_API_URL}/notificaciones`,
-      { headers: { Authorization: `Bearer ${token}` } }
+      `${apiUrl}/notificaciones/`,
+      { 
+        headers: { Authorization: `Bearer ${token}` },
+        timeout: 10000 // 10 segundos de timeout
+      }
     )
-    notificaciones.value = (response.data || []).reverse()
-    console.log('✅ Notificaciones cargadas en Dashboard:', notificaciones.value.length)
-  } catch (error) {
-    console.error('❌ Error cargando notificaciones:', error)
+    
+    // Manejar diferentes formatos de respuesta
+    let data = response.data
+    if (data && data.notificaciones) {
+      // Si viene como objeto con propiedad notificaciones
+      notificaciones.value = data.notificaciones.reverse()
+    } else if (Array.isArray(data)) {
+      // Si viene como array directo
+      notificaciones.value = data.reverse()
+    } else {
+      notificaciones.value = []
+    }
+    console.log('✅ Notificaciones cargadas:', notificaciones.value.length)
+  } catch (error: any) {
+    // Solo mostrar error si no es un problema de red/CORS esperado
+    if (error.code !== 'ERR_NETWORK') {
+      console.warn('⚠️ No se pudieron cargar notificaciones:', error.message)
+    }
+    // Mantener notificaciones vacías sin mostrar error visible al usuario
+    notificaciones.value = []
   }
 }
 

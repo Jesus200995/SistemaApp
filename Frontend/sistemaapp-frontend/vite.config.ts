@@ -14,6 +14,23 @@ export default defineConfig({
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, ''),
         secure: true,
+        ws: true,
+        headers: {
+          'X-Forwarded-Proto': 'https',
+        },
+        configure: (proxy, _options) => {
+          proxy.on('error', (err, _req, _res) => {
+            console.log('proxy error', err);
+          });
+          proxy.on('proxyReq', (proxyReq, req, _res) => {
+            // Forzar protocolo HTTPS en las cabeceras
+            proxyReq.setHeader('X-Forwarded-Proto', 'https');
+            console.log('Sending Request:', req.method, req.url);
+          });
+          proxy.on('proxyRes', (proxyRes, req, _res) => {
+            console.log('Received Response:', proxyRes.statusCode, req.url);
+          });
+        },
       },
     },
   },

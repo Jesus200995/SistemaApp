@@ -7,7 +7,7 @@ import jwt, os
 from dotenv import load_dotenv
 
 load_dotenv()
-SECRET = os.getenv("SECRET_KEY")
+SECRET = os.getenv("JWT_SECRET", "mi_clave_jwt_2025")
 
 router = APIRouter(prefix="/sembradores", tags=["Sembradores"])
 bearer_scheme = HTTPBearer()

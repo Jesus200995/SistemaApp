@@ -10,7 +10,7 @@ import os
 from dotenv import load_dotenv
 
 load_dotenv()
-SECRET = os.getenv("SECRET_KEY")
+SECRET = os.getenv("JWT_SECRET", "mi_clave_jwt_2025")
 
 router = APIRouter(prefix="/seguimientos", tags=["Seguimiento de Campo"])
 bearer_scheme = HTTPBearer()
@@ -486,33 +486,54 @@ def obtener_estadisticas(
             pass  # Ver todos los datos
         elif rol == "territorial":
             subordinado_ids = [u.id for u in db.query(User).filter(User.superior_id == user_id).all()]
-            query_seg = query_seg.filter(Seguimiento.user_id.in_(subordinado_ids))
-            query_sem = query_sem.filter(Sembrador.user_id.in_(subordinado_ids))
+            if subordinado_ids:
+                query_seg = query_seg.filter(Seguimiento.user_id.in_(subordinado_ids))
+                query_sem = query_sem.filter(Sembrador.user_id.in_(subordinado_ids))
+            else:
+                # Si no tiene subordinados, mostrar datos vacíos
+                return {
+                    "total_sembradores": 0,
+                    "total_seguimientos": 0,
+                    "promedio_avance": 0,
+                    "cultivos": {}
+                }
         elif rol in ["facilitador", "gestor_facilitador"]:
             tecnico_ids = [u.id for u in db.query(User).filter(
                 User.superior_id == user_id,
                 User.rol.like("tecnico%")
             ).all()]
-            query_seg = query_seg.filter(Seguimiento.user_id.in_(tecnico_ids))
-            query_sem = query_sem.filter(Sembrador.user_id.in_(tecnico_ids))
+            if tecnico_ids:
+                query_seg = query_seg.filter(Seguimiento.user_id.in_(tecnico_ids))
+                query_sem = query_sem.filter(Sembrador.user_id.in_(tecnico_ids))
+            else:
+                # Si no tiene técnicos asignados, mostrar datos vacíos
+                return {
+                    "total_sembradores": 0,
+                    "total_seguimientos": 0,
+                    "promedio_avance": 0,
+                    "cultivos": {}
+                }
         else:
+            # Para técnicos u otros roles, filtrar por su propio user_id
             query_seg = query_seg.filter(Seguimiento.user_id == user_id)
             query_sem = query_sem.filter(Sembrador.user_id == user_id)
 
         # Calcular métricas
         total_sembradores = query_sem.count()
-        total_seguimientos = query_seg.count()
+        seguimientos_list = query_seg.all()
+        total_seguimientos = len(seguimientos_list)
         
         # Promedio de avance
         if total_seguimientos > 0:
-            suma_avance = sum([s.avance_porcentaje or 0 for s in query_seg.all()])
+            suma_avance = sum([s.avance_porcentaje or 0 for s in seguimientos_list])
             promedio_avance = round((suma_avance / total_seguimientos), 2)
         else:
             promedio_avance = 0
 
         # Contar cultivos más comunes
         cultivos = {}
-        for sembrador in query_sem.all():
+        sembradores_list = query_sem.all()
+        for sembrador in sembradores_list:
             if sembrador.cultivo_principal:
                 cultivos[sembrador.cultivo_principal] = cultivos.get(sembrador.cultivo_principal, 0) + 1
 
@@ -529,4 +550,7 @@ def obtener_estadisticas(
     except jwt.InvalidTokenError:
         raise HTTPException(status_code=401, detail="Token inválido")
     except Exception as e:
+        import traceback
+        print(f"Error en estadísticas: {str(e)}")
+        print(traceback.format_exc())
         raise HTTPException(status_code=500, detail=f"Error en estadísticas: {str(e)}")
