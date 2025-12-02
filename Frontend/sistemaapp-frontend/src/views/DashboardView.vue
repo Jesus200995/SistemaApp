@@ -285,8 +285,10 @@ onUnmounted(() => {
 
 const connectWebSocket = () => {
   try {
-    const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:'
     const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000'
+    // Determinar protocolo basado en la URL del API, no en window.location
+    const isSecure = apiUrl.startsWith('https')
+    const protocol = isSecure ? 'wss:' : 'ws:'
     const host = apiUrl.replace(/^(https?:\/\/)/, '').replace(/\/$/, '')
     
     const wsUrl = `${protocol}//${host}/notificaciones/ws`
@@ -336,8 +338,9 @@ const connectWebSocket = () => {
 const getNotificaciones = async () => {
   try {
     const token = localStorage.getItem('token') || auth.token
+    const apiUrl = import.meta.env.VITE_API_URL?.replace(/\/$/, '') || 'http://localhost:8000'
     const response = await axios.get(
-      `${import.meta.env.VITE_API_URL}/notificaciones`,
+      `${apiUrl}/notificaciones/`,
       { headers: { Authorization: `Bearer ${token}` } }
     )
     notificaciones.value = (response.data || []).reverse()

@@ -292,8 +292,9 @@ const getSolicitudesPendientes = async () => {
 const getNotificacionesRecientes = async () => {
   try {
     const token = localStorage.getItem('token') || auth.token
+    const apiUrl = import.meta.env.VITE_API_URL?.replace(/\/$/, '') || 'http://localhost:8000'
     const response = await axios.get(
-      `${import.meta.env.VITE_API_URL}/notificaciones`,
+      `${apiUrl}/notificaciones/`,
       { headers: { Authorization: `Bearer ${token}` } }
     )
     notificacionesRecientes.value = (response.data || []).reverse().slice(0, 10)
