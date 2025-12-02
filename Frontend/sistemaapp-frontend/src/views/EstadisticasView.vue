@@ -242,6 +242,7 @@ import { BarChart3, Users, CheckCircle2, TrendingUp, List, BarChart2, Leaf, Arro
 ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale)
 
 const auth = useAuthStore()
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000'
 
 // Estado
 const stats = ref({
@@ -271,23 +272,12 @@ const coloresFormatos: Record<string, string> = {
 const obtenerEstadisticas = async () => {
   try {
     loading.value = true
-    const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000'
-    const res = await axios.get(`${apiUrl}/seguimientos/stats`, {
+    const res = await axios.get(`${API_URL}/seguimientos/stats`, {
       headers: { Authorization: `Bearer ${auth.token}` }
     })
     stats.value = res.data
-  } catch (error: any) {
+  } catch (error) {
     console.error('Error obteniendo estadísticas:', error)
-    // Mostrar datos vacíos en caso de error
-    if (error.response?.status === 500) {
-      console.warn('El servidor devolvió un error, mostrando datos vacíos')
-      stats.value = {
-        total_sembradores: 0,
-        total_seguimientos: 0,
-        promedio_avance: 0,
-        cultivos: {}
-      }
-    }
   } finally {
     loading.value = false
   }

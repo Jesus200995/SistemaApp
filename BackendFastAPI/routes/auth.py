@@ -8,7 +8,7 @@ import bcrypt, jwt, os
 from dotenv import load_dotenv
 
 load_dotenv()
-SECRET = os.getenv("JWT_SECRET", "mi_clave_jwt_2025")
+SECRET = os.getenv("JWT_SECRET", "clave_super_segura")
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 bearer_scheme = HTTPBearer()

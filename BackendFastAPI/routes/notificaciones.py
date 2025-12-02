@@ -10,7 +10,7 @@ from datetime import datetime
 from typing import List
 
 load_dotenv()
-SECRET = os.getenv("JWT_SECRET", "mi_clave_jwt_2025")
+SECRET = os.getenv("JWT_SECRET", "tu_clave_secreta")
 
 router = APIRouter(prefix="/notificaciones", tags=["Notificaciones"])
 bearer = HTTPBearer()
