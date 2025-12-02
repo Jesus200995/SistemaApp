@@ -1,8 +1,5 @@
 import { ref, onMounted } from 'vue'
 
-// Solo habilitar PWA en producción
-const isProd = import.meta.env.PROD
-
 export function usePWA() {
   const isInstallable = ref(false)
   const isInstalled = ref(false)
@@ -10,12 +7,6 @@ export function usePWA() {
   const swRegistration = ref<ServiceWorkerRegistration | null>(null)
 
   onMounted(() => {
-    // Solo ejecutar en producción
-    if (!isProd) {
-      console.log('📱 PWA deshabilitado en desarrollo')
-      return
-    }
-
     // Detectar si la app ya está instalada
     if (window.matchMedia('(display-mode: standalone)').matches) {
       isInstalled.value = true
@@ -35,14 +26,17 @@ export function usePWA() {
       deferredPrompt.value = null
     })
 
-    // Registrar Service Worker - El plugin PWA lo maneja automáticamente
+    // Registrar Service Worker
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.ready.then((registration) => {
-        swRegistration.value = registration
-        console.log('✅ Service Worker listo:', registration.scope)
-      }).catch((error) => {
-        console.warn('⚠️ Service Worker no disponible:', error.message)
-      })
+      navigator.serviceWorker
+        .register('/sw.js', { scope: '/' })
+        .then((registration) => {
+          swRegistration.value = registration
+          console.log('✅ Service Worker registrado:', registration)
+        })
+        .catch((error) => {
+          console.error('❌ Error registrando Service Worker:', error)
+        })
     }
   })
 
