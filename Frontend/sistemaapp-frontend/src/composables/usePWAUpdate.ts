@@ -2,17 +2,29 @@ import { ref, onMounted, onUnmounted } from 'vue'
 
 const isUpdateAvailable = ref(false)
 const registrations = ref<ServiceWorkerRegistration[]>([])
+let updateInterval: ReturnType<typeof setInterval> | null = null
 
 export function usePWAUpdate() {
-  const checkForUpdates = () => {
+  const checkForUpdates = async () => {
     if (!('serviceWorker' in navigator)) {
       console.warn('[PWA] Service Workers no soportados')
       return
     }
 
-    navigator.serviceWorker.getRegistrations().then((regs) => {
-      console.log('[PWA] Registraciones encontradas:', regs.length)
+    try {
+      const regs = await navigator.serviceWorker.getRegistrations()
+      
+      // Solo loguear si hay cambios o en la primera vez
+      if (registrations.value.length !== regs.length) {
+        console.log('[PWA] Registraciones encontradas:', regs.length)
+      }
+      
       registrations.value = [...regs] as ServiceWorkerRegistration[]
+
+      if (regs.length === 0) {
+        // No hay SW registrado aún, no es un error en desarrollo
+        return
+      }
 
       regs.forEach((registration) => {
         // Verificar actualizaciones periódicamente
@@ -46,13 +58,18 @@ export function usePWAUpdate() {
         })
 
         // Verificar actualizaciones manualmente
-        registration.update()
+        registration.update().catch(() => {
+          // Silenciar errores de actualización en desarrollo
+        })
       })
-    })
+    } catch (error) {
+      // Silenciar errores - normal en desarrollo
+      console.debug('[PWA] Error verificando actualizaciones:', error)
+    }
   }
 
   const forceUpdate = () => {
-    if (navigator.serviceWorker.controller) {
+    if (navigator.serviceWorker?.controller) {
       navigator.serviceWorker.controller.postMessage({
         type: 'FORCE_UPDATE',
       })
@@ -60,12 +77,12 @@ export function usePWAUpdate() {
 
     // También verificar registraciones
     registrations.value.forEach((reg) => {
-      reg.update()
+      reg.update().catch(() => {})
     })
   }
 
   const skipWaiting = () => {
-    if (navigator.serviceWorker.controller) {
+    if (navigator.serviceWorker?.controller) {
       navigator.serviceWorker.controller.postMessage({
         type: 'SKIP_WAITING',
       })
@@ -78,7 +95,7 @@ export function usePWAUpdate() {
   }
 
   const clearCache = () => {
-    if (navigator.serviceWorker.controller) {
+    if (navigator.serviceWorker?.controller) {
       navigator.serviceWorker.controller.postMessage({
         type: 'CLEAR_CACHE',
       })
@@ -86,8 +103,10 @@ export function usePWAUpdate() {
   }
 
   // Escuchar mensajes del Service Worker
-  const handleServiceWorkerMessage = (event: any) => {
-    console.log('[PWA] Mensaje del SW:', event.data)
+  const handleServiceWorkerMessage = (event: MessageEvent) => {
+    if (!event.data?.type) return
+    
+    console.log('[PWA] Mensaje del SW:', event.data.type)
 
     if (event.data.type === 'UPDATE_AVAILABLE') {
       console.log('[PWA] Actualización disponible')
@@ -125,23 +144,28 @@ export function usePWAUpdate() {
   }
 
   onMounted(() => {
+    if (!('serviceWorker' in navigator)) return
+    
     // Verificar actualizaciones al montar
     checkForUpdates()
 
     // Escuchar mensajes del Service Worker
     navigator.serviceWorker.addEventListener('message', handleServiceWorkerMessage)
 
-    // Verificar actualizaciones cada minuto
-    const updateInterval = setInterval(() => {
-      console.log('[PWA] Verificando actualizaciones automáticas...')
+    // Verificar actualizaciones cada 2 minutos (reducido para menos spam en logs)
+    updateInterval = setInterval(() => {
       checkForUpdates()
-    }, 60000) // Cada minuto
-
-    // Cleanup
-    onUnmounted(() => {
+    }, 120000) // Cada 2 minutos
+  })
+  
+  onUnmounted(() => {
+    if (updateInterval) {
       clearInterval(updateInterval)
+      updateInterval = null
+    }
+    if ('serviceWorker' in navigator) {
       navigator.serviceWorker.removeEventListener('message', handleServiceWorkerMessage)
-    })
+    }
   })
 
   return {

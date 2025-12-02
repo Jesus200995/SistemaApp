@@ -6,7 +6,7 @@ export function usePWA() {
   const deferredPrompt = ref<any>(null)
   const swRegistration = ref<ServiceWorkerRegistration | null>(null)
 
-  onMounted(() => {
+  onMounted(async () => {
     // Detectar si la app ya está instalada
     if (window.matchMedia('(display-mode: standalone)').matches) {
       isInstalled.value = true
@@ -26,17 +26,18 @@ export function usePWA() {
       deferredPrompt.value = null
     })
 
-    // Registrar Service Worker
+    // Obtener registro existente del SW (gestionado por vite-plugin-pwa)
+    // NO registrar manualmente - usar el registro de registerSW.js
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker
-        .register('/sw.js', { scope: '/' })
-        .then((registration) => {
-          swRegistration.value = registration
-          console.log('✅ Service Worker registrado:', registration)
-        })
-        .catch((error) => {
-          console.error('❌ Error registrando Service Worker:', error)
-        })
+      try {
+        const registrations = await navigator.serviceWorker.getRegistrations()
+        if (registrations.length > 0) {
+          swRegistration.value = registrations[0]
+          console.log('✅ Service Worker activo encontrado')
+        }
+      } catch (error) {
+        console.warn('⚠️ No se pudo obtener el SW:', error)
+      }
     }
   })
 

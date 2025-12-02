@@ -147,7 +147,7 @@ export default defineConfig({
         ],
       },
       devOptions: {
-        enabled: true,
+        enabled: false, // Deshabilitado en desarrollo para evitar conflictos
         navigateFallback: 'index.html',
         suppressWarnings: true,
         type: 'module',
