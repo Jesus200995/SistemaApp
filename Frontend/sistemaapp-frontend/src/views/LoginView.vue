@@ -233,7 +233,7 @@ const crearAdmin = async () => {
     const emailAdmin = prompt('Correo del administrador:')
     if (!emailAdmin) return
 
-    const passwordAdmin = prompt('Contraseña del administrador:')
+    const passwordAdmin = prompt('Contraseña del administrador (mínimo 6 caracteres):')
     if (!passwordAdmin) return
 
     if (!nombre || !emailAdmin || !passwordAdmin) {
@@ -241,16 +241,23 @@ const crearAdmin = async () => {
       return
     }
 
-    await axios.post(`${import.meta.env.VITE_API_URL}/auth/register`, {
+    if (passwordAdmin.length < 6) {
+      await Swal.fire('⚠️ Contraseña muy corta', 'La contraseña debe tener al menos 6 caracteres', 'warning')
+      return
+    }
+
+    // Usar el endpoint especial para crear admin inicial
+    await axios.post(`${import.meta.env.VITE_API_URL}/auth/setup-admin`, {
       nombre,
-      email: emailAdmin,
+      email: emailAdmin.trim().toLowerCase(),
       password: passwordAdmin,
       rol: 'admin'
     })
 
     await Swal.fire('✅ Administrador creado', 'Ya puedes iniciar sesión con este usuario', 'success')
   } catch (err) {
-    await Swal.fire('❌ Error', err.response?.data?.detail || 'No se pudo crear el usuario', 'error')
+    const errorMsg = err.response?.data?.detail || 'No se pudo crear el usuario'
+    await Swal.fire('❌ Error', errorMsg, 'error')
   }
 }
 </script>

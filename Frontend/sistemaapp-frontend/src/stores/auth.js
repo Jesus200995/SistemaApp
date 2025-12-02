@@ -11,9 +11,13 @@ export const useAuthStore = defineStore('auth', {
   actions: {
     async login(email, password) {
       try {
+        this.error = null
+        // Normalizar email a minúsculas
+        const emailNormalizado = email.trim().toLowerCase()
+        
         const { data } = await axios.post(
           `${import.meta.env.VITE_API_URL}/auth/login`,
-          { email, password }
+          { email: emailNormalizado, password }
         )
         this.user = data.user
         this.token = data.token
@@ -21,6 +25,7 @@ export const useAuthStore = defineStore('auth', {
         this.error = null
         return true
       } catch (err) {
+        console.error('❌ Error en login:', err.response?.data || err.message)
         this.error = err.response?.data?.detail || 'Error al iniciar sesión'
         return false
       }

@@ -290,11 +290,26 @@ def get_roles_permitidos(
 
 @router.post("/login")
 def login(request: LoginRequest, db: Session = Depends(get_db)):
-    user = db.query(User).filter(User.email == request.email).first()
-    if not user:
-        raise HTTPException(status_code=400, detail="Usuario no encontrado")
+    # Normalizar email a minúsculas para la búsqueda
+    email_normalizado = request.email.strip().lower()
     
-    if not bcrypt.checkpw(request.password.encode("utf-8"), user.password.encode("utf-8")):
+    user = db.query(User).filter(User.email == email_normalizado).first()
+    if not user:
+        # También buscar sin normalizar por si acaso
+        user = db.query(User).filter(User.email == request.email).first()
+        if not user:
+            raise HTTPException(status_code=400, detail="Usuario no encontrado")
+    
+    try:
+        password_valido = bcrypt.checkpw(
+            request.password.encode("utf-8"), 
+            user.password.encode("utf-8")
+        )
+    except Exception as e:
+        print(f"❌ [LOGIN] Error verificando contraseña: {str(e)}")
+        raise HTTPException(status_code=400, detail="Error verificando credenciales")
+    
+    if not password_valido:
         raise HTTPException(status_code=400, detail="Contraseña incorrecta")
     
     # ✅ Normalizar rol a minúsculas para evitar problemas de case-sensitivity
@@ -307,6 +322,72 @@ def login(request: LoginRequest, db: Session = Depends(get_db)):
         algorithm="HS256"
     )
     return {"token": token, "user": {"id": user.id, "nombre": user.nombre, "rol": rol_normalizado}}
+
+
+@router.post("/setup-admin")
+def setup_admin(request: RegisterRequest, db: Session = Depends(get_db)):
+    """
+    Crear el primer administrador del sistema.
+    
+    ⚠️ IMPORTANTE: Este endpoint solo funciona si NO existe ningún admin en el sistema.
+    Una vez creado el primer admin, este endpoint deja de funcionar.
+    
+    Uso: Solo para configuración inicial del sistema.
+    """
+    import re
+    
+    # ✅ Verificar si ya existe un admin
+    admin_existente = db.query(User).filter(User.rol.ilike("admin")).first()
+    if admin_existente:
+        raise HTTPException(
+            status_code=403, 
+            detail="Ya existe un administrador en el sistema. Usa el login para acceder."
+        )
+    
+    # ✅ Validar email
+    email_regex = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+    if not re.match(email_regex, request.email):
+        raise HTTPException(status_code=400, detail="Email inválido")
+    
+    # ✅ Validar nombre (mínimo 2 caracteres)
+    if len(request.nombre.strip()) < 2:
+        raise HTTPException(status_code=400, detail="El nombre debe tener al menos 2 caracteres")
+    
+    # ✅ Validar contraseña (mínimo 6 caracteres)
+    if len(request.password) < 6:
+        raise HTTPException(status_code=400, detail="La contraseña debe tener al menos 6 caracteres")
+    
+    # ✅ Verificar si el email ya existe
+    existente = db.query(User).filter(User.email == request.email.strip().lower()).first()
+    if existente:
+        raise HTTPException(status_code=400, detail="El correo ya está registrado")
+    
+    # ✅ Hashear contraseña
+    hashed = bcrypt.hashpw(request.password.encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
+    
+    # ✅ Crear admin
+    nuevo = User(
+        nombre=request.nombre.strip(),
+        email=request.email.strip().lower(),
+        password=hashed,
+        rol="admin",
+        superior_id=None
+    )
+    
+    db.add(nuevo)
+    db.commit()
+    db.refresh(nuevo)
+    
+    print(f"✅ [SETUP-ADMIN] Administrador creado: {nuevo.email}")
+    
+    return {
+        "success": True,
+        "id": nuevo.id,
+        "nombre": nuevo.nombre,
+        "email": nuevo.email,
+        "rol": nuevo.rol,
+        "message": "Administrador creado exitosamente. Ya puedes iniciar sesión."
+    }
 
 @router.get("/me")
 def get_current_user(
