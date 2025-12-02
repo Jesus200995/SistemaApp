@@ -159,21 +159,4 @@ export default defineConfig({
       '@': fileURLToPath(new URL('./src', import.meta.url))
     },
   },
-  // ✅ Proxy para evitar problemas de CORS en desarrollo
-  server: {
-    proxy: {
-      '/api': {
-        target: 'https://sistemaapi.sembrandodatos.com',
-        changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api/, ''),
-        secure: true,
-      },
-      '/ws': {
-        target: 'wss://sistemaapi.sembrandodatos.com',
-        changeOrigin: true,
-        ws: true,
-        secure: true,
-      },
-    },
-  },
 })

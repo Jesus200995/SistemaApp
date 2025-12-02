@@ -161,20 +161,12 @@ const formatTime = (timestamp: any) => {
 const connectWebSocket = () => {
   try {
     const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000'
-    let wsUrl: string
+    // Determinar protocolo basado en la URL del API, no en window.location
+    const isSecure = apiUrl.startsWith('https')
+    const protocol = isSecure ? 'wss:' : 'ws:'
+    const host = apiUrl.replace('https://', '').replace('http://', '').replace(/\/$/, '')
     
-    // Si usamos proxy (/api), construir URL de WebSocket relativa
-    if (apiUrl.startsWith('/')) {
-      const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:'
-      wsUrl = `${protocol}//${window.location.host}/ws/notificaciones/ws`
-    } else {
-      const isSecure = apiUrl.startsWith('https')
-      const protocol = isSecure ? 'wss:' : 'ws:'
-      const host = apiUrl.replace('https://', '').replace('http://', '').replace(/\/$/, '')
-      wsUrl = `${protocol}//${host}/notificaciones/ws`
-    }
-    
-    ws.value = new WebSocket(wsUrl) as WebSocket
+    ws.value = new WebSocket(`${protocol}//${host}/notificaciones/ws`) as WebSocket
     
     ws.value.onopen = () => {
       console.log('✅ Conectado a notificaciones en navbar')

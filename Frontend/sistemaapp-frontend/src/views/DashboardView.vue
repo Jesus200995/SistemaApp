@@ -270,8 +270,6 @@ const auth = useAuthStore()
 const router = useRouter()
 const notificaciones = ref<any[]>([])
 const ws = ref<WebSocket | null>(null)
-const wsReconnectAttempts = ref(0)
-const maxReconnectAttempts = 3
 
 onMounted(() => {
   auth.fetchProfile()
@@ -286,35 +284,20 @@ onUnmounted(() => {
 })
 
 const connectWebSocket = () => {
-  // No intentar reconectar si ya alcanzamos el máximo de intentos
-  if (wsReconnectAttempts.value >= maxReconnectAttempts) {
-    console.log('⚠️ Máximo de intentos de reconexión alcanzado')
-    return
-  }
-  
   try {
     const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000'
-    let wsUrl: string
+    // Determinar protocolo basado en la URL del API, no en window.location
+    const isSecure = apiUrl.startsWith('https')
+    const protocol = isSecure ? 'wss:' : 'ws:'
+    const host = apiUrl.replace(/^(https?:\/\/)/, '').replace(/\/$/, '')
     
-    // Si usamos proxy (/api), construir URL de WebSocket relativa
-    if (apiUrl.startsWith('/')) {
-      const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:'
-      wsUrl = `${protocol}//${window.location.host}/ws/notificaciones/ws`
-    } else {
-      // URL completa del API
-      const isSecure = apiUrl.startsWith('https')
-      const protocol = isSecure ? 'wss:' : 'ws:'
-      const host = apiUrl.replace(/^(https?:\/\/)/, '').replace(/\/$/, '')
-      wsUrl = `${protocol}//${host}/notificaciones/ws`
-    }
-    
+    const wsUrl = `${protocol}//${host}/notificaciones/ws`
     console.log('🔌 Conectando WebSocket:', wsUrl)
     
     ws.value = new WebSocket(wsUrl)
 
     ws.value.onopen = () => {
       console.log('✅ WebSocket conectado en Dashboard')
-      wsReconnectAttempts.value = 0 // Resetear intentos al conectar
       setInterval(() => {
         if (ws.value?.readyState === WebSocket.OPEN) {
           ws.value?.send('ping')
@@ -341,19 +324,11 @@ const connectWebSocket = () => {
     }
 
     ws.value.onerror = (error) => {
-      console.warn('⚠️ Error WebSocket (el servidor puede no soportar WebSocket):', error)
+      console.error('❌ Error WebSocket:', error)
     }
 
     ws.value.onclose = () => {
       console.log('🔌 Desconectado de WebSocket')
-      // Intentar reconectar después de 5 segundos
-      wsReconnectAttempts.value++
-      if (wsReconnectAttempts.value < maxReconnectAttempts) {
-        setTimeout(() => {
-          console.log(`🔄 Reintentando conexión WebSocket (${wsReconnectAttempts.value}/${maxReconnectAttempts})...`)
-          connectWebSocket()
-        }, 5000)
-      }
     }
   } catch (error) {
     console.error('Error conectando WebSocket:', error)
@@ -363,35 +338,15 @@ const connectWebSocket = () => {
 const getNotificaciones = async () => {
   try {
     const token = localStorage.getItem('token') || auth.token
-    if (!token) {
-      console.warn('⚠️ No hay token disponible para cargar notificaciones')
-      return
-    }
-    
     const apiUrl = import.meta.env.VITE_API_URL?.replace(/\/$/, '') || 'http://localhost:8000'
     const response = await axios.get(
       `${apiUrl}/notificaciones/`,
-      { 
-        headers: { Authorization: `Bearer ${token}` },
-        timeout: 10000 // 10 segundos de timeout
-      }
+      { headers: { Authorization: `Bearer ${token}` } }
     )
-    
-    // Manejar diferentes formatos de respuesta
-    const data = response.data?.notificaciones || response.data || []
-    notificaciones.value = Array.isArray(data) ? data.reverse() : []
+    notificaciones.value = (response.data || []).reverse()
     console.log('✅ Notificaciones cargadas en Dashboard:', notificaciones.value.length)
-  } catch (error: any) {
-    // No mostrar errores de red como críticos - el dashboard sigue funcionando
-    if (error.code === 'ERR_NETWORK' || error.response?.status >= 500) {
-      console.warn('⚠️ Servidor de notificaciones no disponible - continuando sin notificaciones')
-    } else if (error.response?.status === 401) {
-      console.warn('⚠️ Token expirado o inválido')
-    } else {
-      console.error('❌ Error cargando notificaciones:', error.message || error)
-    }
-    // Mantener notificaciones vacías pero no fallar
-    notificaciones.value = []
+  } catch (error) {
+    console.error('❌ Error cargando notificaciones:', error)
   }
 }
 
