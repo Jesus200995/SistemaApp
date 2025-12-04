@@ -1,14 +1,21 @@
 /**
  * Helper para obtener la URL segura de la API
- * Fuerza HTTPS cuando la página está cargada sobre HTTPS
+ * SIEMPRE fuerza HTTPS cuando la página está cargada sobre HTTPS
  * para evitar errores de "Mixed Content"
  */
 export const getSecureApiUrl = (): string => {
   let apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000'
   
-  // Si la página está en HTTPS, forzar que la API también use HTTPS
-  if (typeof window !== 'undefined' && window.location.protocol === 'https:' && apiUrl.startsWith('http://')) {
-    apiUrl = apiUrl.replace('http://', 'https://')
+  // SIEMPRE forzar HTTPS si la página está en HTTPS (producción)
+  if (typeof window !== 'undefined' && window.location.protocol === 'https:') {
+    // Reemplazar http:// por https:// si existe
+    if (apiUrl.startsWith('http://')) {
+      apiUrl = apiUrl.replace('http://', 'https://')
+    }
+    // Si no tiene protocolo, agregar https://
+    if (!apiUrl.startsWith('https://') && !apiUrl.startsWith('/')) {
+      apiUrl = 'https://' + apiUrl
+    }
   }
   
   return apiUrl
