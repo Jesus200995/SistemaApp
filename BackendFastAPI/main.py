@@ -8,9 +8,6 @@ Base.metadata.create_all(bind=engine)
 
 app = FastAPI(
     title="SistemaApp API (FastAPI + PostgreSQL)",
-    # ✅ CRÍTICO: Deshabilitar redirección automática de trailing slash
-    # Esto evita el problema de CORS cuando se redirige /path a /path/
-    redirect_slashes=False,
     # ✅ Configuración para proxy reverso (Nginx con HTTPS)
     root_path="",
     servers=[

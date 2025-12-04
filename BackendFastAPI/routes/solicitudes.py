@@ -23,7 +23,6 @@ bearer_scheme = HTTPBearer()
 
 
 @router.post("/")
-@router.post("")  # ← También acepta sin slash final (evita redirección CORS)
 def crear_solicitud(data: dict,
                     credentials: HTTPAuthorizationCredentials = Security(bearer_scheme),
                     db: Session = Depends(get_db)):
@@ -69,7 +68,6 @@ def crear_solicitud(data: dict,
 
 
 @router.get("/")
-@router.get("")  # ← También acepta sin slash final (evita redirección CORS)
 def listar_solicitudes(credentials: HTTPAuthorizationCredentials = Security(bearer_scheme),
                        db: Session = Depends(get_db)):
     try:

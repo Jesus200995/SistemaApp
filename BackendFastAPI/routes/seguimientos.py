@@ -90,7 +90,6 @@ def crear_seguimiento(
 
 
 @router.get("/")
-@router.get("")  # ← También acepta sin slash final (evita redirección CORS)
 def listar_seguimientos(
     sembrador_id: int = None,
     current_user: dict = Depends(get_current_user),

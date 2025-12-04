@@ -35,7 +35,6 @@ def get_current_user(credentials: HTTPAuthorizationCredentials = Security(bearer
 
 # ========== POST: Crear nuevo sembrador ==========
 @router.post("/")
-@router.post("")  # ← También acepta sin slash final (evita redirección CORS)
 def crear_sembrador(
     data: dict,
     current_user: dict = Depends(get_current_user),
@@ -88,7 +87,6 @@ def crear_sembrador(
 
 # ========== GET: Listar sembradores según jerarquía ==========
 @router.get("/")
-@router.get("")  # ← También acepta sin slash final (evita redirección CORS)
 def listar_sembradores(
     current_user: dict = Depends(get_current_user),
     db: Session = Depends(get_db)
