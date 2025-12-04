@@ -25,6 +25,10 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.ico', 'robots.txt', 'apple-touch-icon.png'],
       workbox: {
+        // Forzar actualización del SW al cambiar archivos
+        cleanupOutdatedCaches: true,
+        skipWaiting: true,
+        clientsClaim: true,
         globPatterns: ['**/*.{js,css,html,ico,png,jpg,jpeg,gif,svg,woff,woff2,ttf,eot}'],
         runtimeCaching: [
           {
@@ -61,8 +65,6 @@ export default defineConfig({
             },
           },
         ],
-        skipWaiting: true,
-        clientsClaim: true,
       },
       manifest: {
         name: 'SistemaApp - Panel de Control',
