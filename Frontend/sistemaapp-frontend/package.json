@@ -10,7 +10,7 @@
     "dev": "npm run generate-icons && vite",
     "build": "npm run generate-icons && run-p type-check \"build-only {@}\" --",
     "preview": "vite preview",
-    "build-only": "vite build",
+    "build-only": "vite build --mode production",
     "type-check": "vue-tsc --build",
     "lint": "eslint . --fix --cache",
     "format": "prettier --write src/",

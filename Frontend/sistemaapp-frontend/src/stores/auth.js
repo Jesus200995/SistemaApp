@@ -2,8 +2,6 @@ import { defineStore } from 'pinia'
 import axios from 'axios'
 import { getSecureApiUrl } from '../utils/api'
 
-const API_URL = getSecureApiUrl()
-
 export const useAuthStore = defineStore('auth', {
   state: () => ({
     user: null,
@@ -17,6 +15,7 @@ export const useAuthStore = defineStore('auth', {
         this.error = null
         // Normalizar email a minúsculas
         const emailNormalizado = email.trim().toLowerCase()
+        const API_URL = getSecureApiUrl()
         
         const { data } = await axios.post(
           `${API_URL}/auth/login`,
@@ -36,6 +35,7 @@ export const useAuthStore = defineStore('auth', {
 
     async register(nombre, email, password, rol = 'usuario') {
       try {
+        const API_URL = getSecureApiUrl()
         await axios.post(`${API_URL}/auth/register`, {
           nombre,
           email,
@@ -55,6 +55,7 @@ export const useAuthStore = defineStore('auth', {
      */
     async createUserHierarchical(nombre, email, password, rol) {
       try {
+        const API_URL = getSecureApiUrl()
         const { data } = await axios.post(
           `${API_URL}/auth/create-user`,
           { nombre, email, password, rol },
@@ -77,6 +78,7 @@ export const useAuthStore = defineStore('auth', {
      */
     async getRolesPermitidos() {
       try {
+        const API_URL = getSecureApiUrl()
         const { data } = await axios.get(
           `${API_URL}/auth/roles-permitidos`,
           {
@@ -95,6 +97,7 @@ export const useAuthStore = defineStore('auth', {
     async fetchProfile() {
       if (!this.token) return
       try {
+        const API_URL = getSecureApiUrl()
         const { data } = await axios.get(
           `${API_URL}/auth/me`,
           {
