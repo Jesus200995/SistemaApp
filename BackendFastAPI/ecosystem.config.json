@@ -1,0 +1,18 @@
+{
+  "apps": [
+    {
+      "name": "sistemaapi-backend",
+      "cwd": "/var/www/SistemaApp/Backend/BackendFastAPI",
+      "script": "uvicorn",
+      "args": "main:app --host 0.0.0.0 --port 8000 --proxy-headers --forwarded-allow-ips=*",
+      "interpreter": "python3",
+      "interpreter_args": "-m",
+      "env": {
+        "PYTHONUNBUFFERED": "1"
+      },
+      "error_file": "/var/log/pm2/sistemaapi-error.log",
+      "out_file": "/var/log/pm2/sistemaapi-out.log",
+      "time": true
+    }
+  ]
+}

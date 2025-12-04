@@ -1,11 +1,43 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
+from starlette.middleware.base import BaseHTTPMiddleware
 from routes import auth, layers, chat, notificaciones, sembradores, seguimientos, solicitudes
 from database import Base, engine
 
 Base.metadata.create_all(bind=engine)
 
-app = FastAPI(title="SistemaApp API (FastAPI + PostgreSQL)")
+app = FastAPI(
+    title="SistemaApp API (FastAPI + PostgreSQL)",
+    # ✅ Configuración para proxy reverso (Nginx con HTTPS)
+    root_path="",
+    servers=[
+        {"url": "https://sistemaapi.sembrandodatos.com", "description": "Producción HTTPS"},
+        {"url": "http://localhost:8000", "description": "Desarrollo local"}
+    ]
+)
+
+
+# ✅ Middleware para manejar X-Forwarded-Proto y forzar HTTPS en producción
+class ProxyHeadersMiddleware(BaseHTTPMiddleware):
+    """
+    Middleware que corrige el esquema de URL cuando está detrás de un proxy HTTPS.
+    Esto asegura que FastAPI genere URLs con https:// cuando el proxy usa HTTPS.
+    """
+    async def dispatch(self, request: Request, call_next):
+        # Leer X-Forwarded-Proto del proxy Nginx
+        forwarded_proto = request.headers.get("x-forwarded-proto", "").lower()
+        
+        # Si el proxy indica HTTPS, actualizar el scope
+        if forwarded_proto == "https":
+            # Modificar el scope para que FastAPI use https://
+            request.scope["scheme"] = "https"
+        
+        response = await call_next(request)
+        return response
+
+
+# ✅ Agregar middleware de proxy ANTES de CORS
+app.add_middleware(ProxyHeadersMiddleware)
 
 # ✅ Configuración CORS correcta
 origins = [
