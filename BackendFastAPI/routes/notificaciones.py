@@ -138,8 +138,9 @@ async def crear_notificacion(
         )
 
 
-# ✅ Obtener todas las notificaciones
+# ✅ Obtener todas las notificaciones (acepta con y sin slash)
 @router.get("/")
+@router.get("")  # ← También acepta sin slash final
 async def obtener_notificaciones(
     credentials: HTTPAuthorizationCredentials = Security(bearer),
     db: Session = Depends(get_db)
