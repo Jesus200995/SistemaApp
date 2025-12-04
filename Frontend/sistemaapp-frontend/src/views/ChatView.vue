@@ -112,9 +112,18 @@ const getTime = () => {
 
 const connect = () => {
   const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:'
-  const host = import.meta.env.VITE_API_URL.replace('https://', '').replace('http://', '')
+  const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000'
   
-  ws.value = new WebSocket(`${protocol}//${host}/chat/ws`)
+  // Si la API es relativa (/api), usar el host actual
+  let wsUrl: string
+  if (apiUrl.startsWith('/')) {
+    wsUrl = `${protocol}//${window.location.host}${apiUrl}/chat/ws`
+  } else {
+    const host = apiUrl.replace(/^(https?:\/\/)/, '').replace(/\/$/, '')
+    wsUrl = `${protocol}//${host}/chat/ws`
+  }
+  
+  ws.value = new WebSocket(wsUrl)
 
   ws.value.onopen = () => {
     isConnected.value = true

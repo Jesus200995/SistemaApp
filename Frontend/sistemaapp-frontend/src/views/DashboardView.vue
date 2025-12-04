@@ -286,10 +286,16 @@ onUnmounted(() => {
 const connectWebSocket = () => {
   try {
     const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:'
-    const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000'
-    const host = apiUrl.replace(/^(https?:\/\/)/, '').replace(/\/$/, '')
+    let apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000'
     
-    const wsUrl = `${protocol}//${host}/notificaciones/ws`
+    // Si la API es relativa (/api), usar el host actual
+    let wsUrl: string
+    if (apiUrl.startsWith('/')) {
+      wsUrl = `${protocol}//${window.location.host}${apiUrl}/notificaciones/ws`
+    } else {
+      const host = apiUrl.replace(/^(https?:\/\/)/, '').replace(/\/$/, '')
+      wsUrl = `${protocol}//${host}/notificaciones/ws`
+    }
     console.log('🔌 Conectando WebSocket:', wsUrl)
     
     ws.value = new WebSocket(wsUrl)
