@@ -112,6 +112,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { useRouter } from "vue-router";
+import { getSecureApiUrl } from "../utils/api";
 
 const props = defineProps({
   mostrar: {
@@ -177,7 +178,7 @@ const registrar = async () => {
   cargando.value = true;
 
   try {
-    const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:8000";
+    const apiUrl = getSecureApiUrl();
     
     const response = await fetch(`${apiUrl}/auth/register`, {
       method: "POST",

@@ -189,6 +189,7 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { User, Mail, Lock, AlertCircle, CheckCircle, Briefcase, ArrowLeft } from 'lucide-vue-next'
+import { getSecureApiUrl } from '../utils/api'
 
 const router = useRouter()
 const loading = ref(false)
@@ -243,7 +244,7 @@ const handleRegister = async () => {
   loading.value = true
 
   try {
-    const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000'
+    const apiUrl = getSecureApiUrl()
     
     const response = await fetch(`${apiUrl}/auth/register`, {
       method: 'POST',

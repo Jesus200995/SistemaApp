@@ -367,6 +367,7 @@ import { ref, computed, onMounted } from 'vue'
 import axios from 'axios'
 import { Users, RotateCw, Search, ChevronLeft, ChevronRight, ArrowLeft, Edit, Trash2, UserPlus, X, User, Mail, Lock, Shield, Eye, EyeOff, Loader2 } from 'lucide-vue-next'
 import { useAuthStore } from '../stores/auth'
+import { getSecureApiUrl } from '../utils/api'
 import Swal from 'sweetalert2'
 import 'sweetalert2/dist/sweetalert2.min.css'
 
@@ -544,7 +545,8 @@ const crearUsuario = async () => {
 const fetchUsuarios = async () => {
   try {
     loading.value = true
-    const { data } = await axios.get(`${import.meta.env.VITE_API_URL}/auth/users`, {
+    const apiUrl = getSecureApiUrl()
+    const { data } = await axios.get(`${apiUrl}/auth/users`, {
       params: { page: page.value, limit },
       headers: { Authorization: `Bearer ${auth.token}` },
     })
@@ -594,7 +596,8 @@ const editUser = async (user) => {
 
   if (formValues) {
     try {
-      await axios.put(`${import.meta.env.VITE_API_URL}/auth/users/${user.id}`, formValues, {
+      const apiUrl = getSecureApiUrl()
+      await axios.put(`${apiUrl}/auth/users/${user.id}`, formValues, {
         headers: { Authorization: `Bearer ${auth.token}` },
       })
       Swal.fire('✅ Actualizado', 'El usuario fue modificado correctamente.', 'success')
@@ -617,7 +620,8 @@ const deleteUser = async (id) => {
 
   if (result.isConfirmed) {
     try {
-      await axios.delete(`${import.meta.env.VITE_API_URL}/auth/users/${id}`, {
+      const apiUrl = getSecureApiUrl()
+      await axios.delete(`${apiUrl}/auth/users/${id}`, {
         headers: { Authorization: `Bearer ${auth.token}` },
       })
       Swal.fire('🗑️ Eliminado', 'El usuario ha sido eliminado.', 'success')

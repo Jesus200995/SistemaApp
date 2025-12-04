@@ -86,6 +86,7 @@
 import { ref, onMounted, onUnmounted, computed } from 'vue'
 // @ts-ignore
 import { useAuthStore } from '../stores/auth'
+import { getSecureApiUrl, getSecureWsUrl } from '../utils/api'
 import { Bell, X, CheckCircle, AlertCircle, Clock, Trash2, Info } from 'lucide-vue-next'
 import axios from 'axios'
 
@@ -120,8 +121,9 @@ const toggleDropdown = async () => {
 const marcarComoLeida = async (id: number) => {
   try {
     const token = localStorage.getItem('token') || auth.token
+    const apiUrl = getSecureApiUrl()
     await axios.patch(
-      `${import.meta.env.VITE_API_URL}/notificaciones/${id}/leer`,
+      `${apiUrl}/notificaciones/${id}/leer`,
       {},
       { headers: { Authorization: `Bearer ${token}` } }
     )
@@ -135,8 +137,9 @@ const marcarComoLeida = async (id: number) => {
 const eliminarNotificacion = async (id: number) => {
   try {
     const token = localStorage.getItem('token') || auth.token
+    const apiUrl = getSecureApiUrl()
     await axios.delete(
-      `${import.meta.env.VITE_API_URL}/notificaciones/${id}`,
+      `${apiUrl}/notificaciones/${id}`,
       { headers: { Authorization: `Bearer ${token}` } }
     )
     notificaciones.value = notificaciones.value.filter(n => n.id !== id)
@@ -181,8 +184,9 @@ const formatearFecha = (fecha: string) => {
 const getNotificaciones = async () => {
   try {
     const token = localStorage.getItem('token') || auth.token
+    const apiUrl = getSecureApiUrl()
     const response = await axios.get(
-      `${import.meta.env.VITE_API_URL}/notificaciones`,
+      `${apiUrl}/notificaciones`,
       { headers: { Authorization: `Bearer ${token}` } }
     )
     notificaciones.value = (response.data || []).reverse()
@@ -198,7 +202,7 @@ onMounted(() => {
   
   // Conectar WebSocket
   const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:'
-  const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000'
+  const apiUrl = getSecureApiUrl()
   
   let wsUrl = ''
   if (apiUrl.startsWith('/')) {

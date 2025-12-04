@@ -262,6 +262,7 @@
 import { onMounted, ref, computed, onUnmounted } from 'vue'
 // @ts-ignore
 import { useAuthStore } from '../stores/auth'
+import { getSecureApiUrl, getSecureWsUrl } from '../utils/api'
 import { useRouter } from 'vue-router'
 import { LogOut, User, Mail, LayoutDashboard, BarChart3, Users, Settings, MapPin, Sprout, FileText, Smile, Clipboard, Check, Shield, Zap, Bell, Clock, CheckCircle, AlertCircle, Info } from 'lucide-vue-next'
 import axios from 'axios'
@@ -286,7 +287,7 @@ onUnmounted(() => {
 const connectWebSocket = () => {
   try {
     const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:'
-    const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000'
+    const apiUrl = getSecureApiUrl()
     
     let wsUrl = ''
     if (apiUrl.startsWith('/')) {
@@ -341,8 +342,9 @@ const connectWebSocket = () => {
 const getNotificaciones = async () => {
   try {
     const token = localStorage.getItem('token') || auth.token
+    const apiUrl = getSecureApiUrl()
     const response = await axios.get(
-      `${import.meta.env.VITE_API_URL}/notificaciones`,
+      `${apiUrl}/notificaciones`,
       { headers: { Authorization: `Bearer ${token}` } }
     )
     notificaciones.value = (response.data || []).reverse()

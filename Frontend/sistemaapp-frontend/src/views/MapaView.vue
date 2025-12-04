@@ -239,6 +239,7 @@ import { LMap, LTileLayer, LMarker, LPopup } from '@vue-leaflet/vue-leaflet'
 import L from 'leaflet'
 import axios from 'axios'
 import { useAuthStore } from '../stores/auth'
+import { getSecureApiUrl } from '../utils/api'
 import { addOfflinePoint, getOfflinePoints, clearOfflinePoints } from '../utils/db'
 import 'leaflet/dist/leaflet.css'
 import 'leaflet-defaulticon-compatibility'
@@ -318,7 +319,8 @@ const visibleCapas = computed(() => {
 // ========== FUNCIONES PARA SEMBRADORES ==========
 const getSembradoresMapa = async () => {
   try {
-    const { data } = await axios.get(`${import.meta.env.VITE_API_URL}/sembradores/map`, {
+    const apiUrl = getSecureApiUrl()
+    const { data } = await axios.get(`${apiUrl}/sembradores/map`, {
       headers: { Authorization: `Bearer ${auth.token}` }
     })
     sembradores.value = data.items || data || []
@@ -349,8 +351,9 @@ const centerOnUser = () => {
 
 const loadLayers = async () => {
   try {
+    const apiUrl = getSecureApiUrl()
     for (const c of capas) {
-      const { data } = await axios.get(`${import.meta.env.VITE_API_URL}/layers/${c.value}`, {
+      const { data } = await axios.get(`${apiUrl}/layers/${c.value}`, {
         headers: { Authorization: `Bearer ${auth.token}` },
       })
       dataCapas.value[c.value] = data.items.map(p => ({
@@ -375,7 +378,8 @@ const onMapClick = async (event) => {
   const point = { tipo, nombre, lat, lng }
 
   try {
-    await axios.post(`${import.meta.env.VITE_API_URL}/layers/${tipo}`, point, {
+    const apiUrl = getSecureApiUrl()
+    await axios.post(`${apiUrl}/layers/${tipo}`, point, {
       headers: { Authorization: `Bearer ${auth.token}` },
     })
     alert("✅ Punto guardado en servidor")
@@ -391,9 +395,10 @@ const syncOfflinePoints = async () => {
   const offlinePoints = await getOfflinePoints()
   if (offlinePoints.length === 0) return
 
+  const apiUrl = getSecureApiUrl()
   for (const p of offlinePoints) {
     try {
-      await axios.post(`${import.meta.env.VITE_API_URL}/layers/${p.tipo}`, p, {
+      await axios.post(`${apiUrl}/layers/${p.tipo}`, p, {
         headers: { Authorization: `Bearer ${auth.token}` },
       })
     } catch {

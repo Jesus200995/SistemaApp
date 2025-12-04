@@ -226,6 +226,7 @@
 import { ref, onMounted, computed } from 'vue'
 import axios from 'axios'
 import { useAuthStore } from '../stores/auth'
+import { getSecureApiUrl } from '../utils/api'
 import { Bar } from 'vue-chartjs'
 import {
   Chart as ChartJS,
@@ -242,7 +243,7 @@ import { BarChart3, Users, CheckCircle2, TrendingUp, List, BarChart2, Leaf, Arro
 ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale)
 
 const auth = useAuthStore()
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000'
+const API_URL = getSecureApiUrl()
 
 // Estado
 const stats = ref({

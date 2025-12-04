@@ -118,6 +118,7 @@ import {
 } from 'lucide-vue-next'
 // @ts-ignore
 import { useAuthStore } from '../stores/auth'
+import { getSecureApiUrl, getSecureWsUrl } from '../utils/api'
 
 const router = useRouter()
 const auth = useAuthStore()
@@ -160,10 +161,9 @@ const formatTime = (timestamp: any) => {
 
 const connectWebSocket = () => {
   try {
-    const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:'
-    const host = import.meta.env.VITE_API_URL.replace('https://', '').replace('http://', '')
+    const wsUrl = getSecureWsUrl('/notificaciones/ws')
     
-    ws.value = new WebSocket(`${protocol}//${host}/notificaciones/ws`) as WebSocket
+    ws.value = new WebSocket(wsUrl) as WebSocket
     
     ws.value.onopen = () => {
       console.log('✅ Conectado a notificaciones en navbar')

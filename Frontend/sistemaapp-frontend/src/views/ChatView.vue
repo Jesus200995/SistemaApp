@@ -86,6 +86,7 @@
 <script setup>
 import { ref, onMounted, onBeforeUnmount, nextTick } from 'vue'
 import { useAuthStore } from '../stores/auth'
+import { getSecureApiUrl, getSecureWsUrl } from '../utils/api'
 import { useRouter } from 'vue-router'
 import { MessageCircle, WifiOff, ArrowLeft, Send } from 'lucide-vue-next'
 
@@ -112,7 +113,7 @@ const getTime = () => {
 
 const connect = () => {
   const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:'
-  const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000'
+  const apiUrl = getSecureApiUrl()
   
   let wsUrl = ''
   if (apiUrl.startsWith('/')) {

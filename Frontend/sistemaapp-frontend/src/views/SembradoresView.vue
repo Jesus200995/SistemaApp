@@ -256,6 +256,7 @@
 import { ref, onMounted } from 'vue'
 import axios from 'axios'
 import { useAuthStore } from '../stores/auth'
+import { getSecureApiUrl } from '../utils/api'
 import {
   Sprout,
   User,
@@ -285,7 +286,7 @@ const form = ref({
 // Obtener sembradores
 const getSembradores = async () => {
   try {
-    const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000'
+    const apiUrl = getSecureApiUrl()
     const res = await axios.get(`${apiUrl}/sembradores/`, {
       headers: { Authorization: `Bearer ${auth.token}` }
     })
@@ -306,7 +307,7 @@ const crearSembrador = async () => {
     }
 
     loading.value = true
-    const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000'
+    const apiUrl = getSecureApiUrl()
 
     await axios.post(`${apiUrl}/sembradores/`, form.value, {
       headers: { Authorization: `Bearer ${auth.token}` }
@@ -355,7 +356,7 @@ const eliminarSembrador = async (id: number) => {
 
   if (result.isConfirmed) {
     try {
-      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000'
+      const apiUrl = getSecureApiUrl()
       await axios.delete(`${apiUrl}/sembradores/${id}`, {
         headers: { Authorization: `Bearer ${auth.token}` }
       })

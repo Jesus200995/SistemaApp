@@ -202,12 +202,13 @@
 import { ref, onMounted } from 'vue'
 import type { Ref } from 'vue'
 import { useAuthStore } from '../stores/auth'
+import { getSecureApiUrl } from '../utils/api'
 import axios from 'axios'
 import Swal from 'sweetalert2'
 import { ArrowLeft, Microscope, Plus, Trash2, Calendar, MapPin, AlertCircle } from 'lucide-vue-next'
 
 const auth = useAuthStore()
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000'
+const API_URL = getSecureApiUrl()
 
 // Interfaces
 interface Sembrador {

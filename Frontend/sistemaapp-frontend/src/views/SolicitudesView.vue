@@ -193,6 +193,7 @@ import { ref, onMounted, computed } from 'vue'
 import axios from 'axios'
 import Swal from 'sweetalert2'
 import { useAuthStore } from '../stores/auth'
+import { getSecureApiUrl } from '../utils/api'
 import { FileText, Send, Check, X, ArrowLeft } from 'lucide-vue-next'
 
 const auth = useAuthStore()
@@ -259,7 +260,8 @@ const canApprove = (solicitud: any) => {
 // API calls
 const getSolicitudes = async () => {
   try {
-    const res = await axios.get(`${import.meta.env.VITE_API_URL}/solicitudes`, {
+    const apiUrl = getSecureApiUrl()
+    const res = await axios.get(`${apiUrl}/solicitudes`, {
       headers: { Authorization: `Bearer ${auth.token}` }
     })
     solicitudes.value = res.data
@@ -284,7 +286,8 @@ const crearSolicitud = async () => {
       payload.destino_id = parseInt(form.value.destino_id as any)
     }
 
-    await axios.post(`${import.meta.env.VITE_API_URL}/solicitudes`, payload, {
+    const apiUrl = getSecureApiUrl()
+    await axios.post(`${apiUrl}/solicitudes`, payload, {
       headers: { Authorization: `Bearer ${auth.token}` }
     })
 
@@ -315,8 +318,9 @@ const actualizarEstado = async (id: number, nuevo_estado: string) => {
   if (!confirmacion.isConfirmed) return
 
   try {
+    const apiUrl = getSecureApiUrl()
     await axios.put(
-      `${import.meta.env.VITE_API_URL}/solicitudes/${id}/estado`,
+      `${apiUrl}/solicitudes/${id}/estado`,
       { estado: nuevo_estado },
       { headers: { Authorization: `Bearer ${auth.token}` } }
     )

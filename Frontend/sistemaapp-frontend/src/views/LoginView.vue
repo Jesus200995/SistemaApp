@@ -203,6 +203,7 @@ import { useAuthStore } from '../stores/auth'
 import { useRouter } from 'vue-router'
 import { Mail, Lock, AlertCircle } from 'lucide-vue-next'
 import axios from 'axios'
+import { getSecureApiUrl } from '../utils/api'
 import Swal from 'sweetalert2'
 
 const email = ref('')
@@ -247,7 +248,8 @@ const crearAdmin = async () => {
     }
 
     // Usar el endpoint especial para crear admin inicial
-    await axios.post(`${import.meta.env.VITE_API_URL}/auth/setup-admin`, {
+    const apiUrl = getSecureApiUrl()
+    await axios.post(`${apiUrl}/auth/setup-admin`, {
       nombre,
       email: emailAdmin.trim().toLowerCase(),
       password: passwordAdmin,

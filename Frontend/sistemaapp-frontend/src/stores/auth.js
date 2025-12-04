@@ -1,5 +1,8 @@
 import { defineStore } from 'pinia'
 import axios from 'axios'
+import { getSecureApiUrl } from '../utils/api'
+
+const API_URL = getSecureApiUrl()
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({
@@ -16,7 +19,7 @@ export const useAuthStore = defineStore('auth', {
         const emailNormalizado = email.trim().toLowerCase()
         
         const { data } = await axios.post(
-          `${import.meta.env.VITE_API_URL}/auth/login`,
+          `${API_URL}/auth/login`,
           { email: emailNormalizado, password }
         )
         this.user = data.user
@@ -33,7 +36,7 @@ export const useAuthStore = defineStore('auth', {
 
     async register(nombre, email, password, rol = 'usuario') {
       try {
-        await axios.post(`${import.meta.env.VITE_API_URL}/auth/register`, {
+        await axios.post(`${API_URL}/auth/register`, {
           nombre,
           email,
           password,
@@ -53,7 +56,7 @@ export const useAuthStore = defineStore('auth', {
     async createUserHierarchical(nombre, email, password, rol) {
       try {
         const { data } = await axios.post(
-          `${import.meta.env.VITE_API_URL}/auth/create-user`,
+          `${API_URL}/auth/create-user`,
           { nombre, email, password, rol },
           {
             headers: {
@@ -75,7 +78,7 @@ export const useAuthStore = defineStore('auth', {
     async getRolesPermitidos() {
       try {
         const { data } = await axios.get(
-          `${import.meta.env.VITE_API_URL}/auth/roles-permitidos`,
+          `${API_URL}/auth/roles-permitidos`,
           {
             headers: {
               Authorization: `Bearer ${this.token}`,
@@ -93,7 +96,7 @@ export const useAuthStore = defineStore('auth', {
       if (!this.token) return
       try {
         const { data } = await axios.get(
-          `${import.meta.env.VITE_API_URL}/auth/me`,
+          `${API_URL}/auth/me`,
           {
             headers: {
               Authorization: `Bearer ${this.token}`,

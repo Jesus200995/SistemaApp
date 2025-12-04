@@ -227,6 +227,7 @@ import axios from 'axios'
 import Swal from 'sweetalert2'
 // @ts-ignore
 import { useAuthStore } from '../stores/auth'
+import { getSecureApiUrl } from '../utils/api'
 import {
   ArrowLeft,
   Settings,
@@ -260,8 +261,9 @@ const notificacionesRecientes = ref<any[]>([])
 const getAdminOverview = async () => {
   try {
     const token = localStorage.getItem('token') || auth.token
+    const apiUrl = getSecureApiUrl()
     const response = await axios.get(
-      `${import.meta.env.VITE_API_URL}/auth/admin/overview`,
+      `${apiUrl}/auth/admin/overview`,
       { headers: { Authorization: `Bearer ${token}` } }
     )
     overview.value = response.data
@@ -275,8 +277,9 @@ const getAdminOverview = async () => {
 const getSolicitudesPendientes = async () => {
   try {
     const token = localStorage.getItem('token') || auth.token
+    const apiUrl = getSecureApiUrl()
     const response = await axios.get(
-      `${import.meta.env.VITE_API_URL}/solicitudes`,
+      `${apiUrl}/solicitudes`,
       { headers: { Authorization: `Bearer ${token}` } }
     )
     solicitudesPendientes.value = (response.data || []).filter(
@@ -292,8 +295,9 @@ const getSolicitudesPendientes = async () => {
 const getNotificacionesRecientes = async () => {
   try {
     const token = localStorage.getItem('token') || auth.token
+    const apiUrl = getSecureApiUrl()
     const response = await axios.get(
-      `${import.meta.env.VITE_API_URL}/notificaciones`,
+      `${apiUrl}/notificaciones`,
       { headers: { Authorization: `Bearer ${token}` } }
     )
     notificacionesRecientes.value = (response.data || []).reverse().slice(0, 10)
