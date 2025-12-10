@@ -9,6 +9,9 @@ class User(Base):
     email = Column(String, unique=True, index=True, nullable=False)
     password = Column(String, nullable=False)
     rol = Column(String, nullable=False)
+    curp = Column(String(18), nullable=True)  # CURP del usuario (18 caracteres)
+    territorio = Column(String(100), nullable=True)  # Territorio asignado
+    telefono = Column(String(20), nullable=True)  # Número de teléfono
     activo = Column(Boolean, default=True)
     superior_id = Column(Integer, ForeignKey("users.id"), nullable=True)  # 🔑 Jerarquía
     created_at = Column(DateTime(timezone=True), server_default=func.now())

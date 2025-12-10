@@ -137,6 +137,65 @@
               </select>
             </div>
 
+            <!-- Campo CURP -->
+            <div class="form-group">
+              <label for="curp" class="form-label">
+                <IdCard class="label-icon" />
+                CURP
+              </label>
+              <input
+                id="curp"
+                v-model="nuevoUsuario.curp"
+                type="text"
+                class="form-input"
+                placeholder="XXXX######HXXXXX##"
+                maxlength="18"
+                @input="nuevoUsuario.curp = nuevoUsuario.curp.toUpperCase()"
+              />
+              <span class="field-hint">18 caracteres alfanuméricos (opcional)</span>
+            </div>
+
+            <!-- Campo Teléfono -->
+            <div class="form-group">
+              <label for="telefono" class="form-label">
+                <Phone class="label-icon" />
+                Número de Teléfono
+              </label>
+              <input
+                id="telefono"
+                v-model="nuevoUsuario.telefono"
+                type="tel"
+                class="form-input"
+                placeholder="10 dígitos"
+                maxlength="15"
+              />
+            </div>
+
+            <!-- Campo Territorio -->
+            <div class="form-group">
+              <label for="territorio" class="form-label">
+                <MapPin class="label-icon" />
+                Territorio <span class="required-mark">*</span>
+              </label>
+              <select
+                id="territorio"
+                v-model="nuevoUsuario.territorio"
+                class="form-select"
+                required
+              >
+                <option value="" disabled>Selecciona un territorio</option>
+                <option value="Norte">Norte</option>
+                <option value="Sur">Sur</option>
+                <option value="Este">Este</option>
+                <option value="Oeste">Oeste</option>
+                <option value="Centro">Centro</option>
+                <option value="Noreste">Noreste</option>
+                <option value="Noroeste">Noroeste</option>
+                <option value="Sureste">Sureste</option>
+                <option value="Suroeste">Suroeste</option>
+              </select>
+            </div>
+
             <div class="form-actions">
               <button type="button" @click="cerrarModalCrearUsuario" class="btn-cancelar">
                 Cancelar
@@ -365,7 +424,7 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import axios from 'axios'
-import { Users, RotateCw, Search, ChevronLeft, ChevronRight, ArrowLeft, Edit, Trash2, UserPlus, X, User, Mail, Lock, Shield, Eye, EyeOff, Loader2 } from 'lucide-vue-next'
+import { Users, RotateCw, Search, ChevronLeft, ChevronRight, ArrowLeft, Edit, Trash2, UserPlus, X, User, Mail, Lock, Shield, Eye, EyeOff, Loader2, IdCard, Phone, MapPin } from 'lucide-vue-next'
 import { useAuthStore } from '../stores/auth'
 import { getSecureApiUrl } from '../utils/api'
 import Swal from 'sweetalert2'
@@ -390,7 +449,10 @@ const nuevoUsuario = ref({
   nombre: '',
   email: '',
   password: '',
-  rol: ''
+  rol: '',
+  curp: '',
+  telefono: '',
+  territorio: ''
 })
 
 const totalPages = computed(() => Math.ceil(total.value / limit))
@@ -478,7 +540,10 @@ const abrirModalCrearUsuario = () => {
     nombre: '',
     email: '',
     password: '',
-    rol: rolesDisponibles.value.length === 1 ? rolesDisponibles.value[0].value : ''
+    rol: rolesDisponibles.value.length === 1 ? rolesDisponibles.value[0].value : '',
+    curp: '',
+    telefono: '',
+    territorio: ''
   }
   showPassword.value = false
   showModalCrear.value = true
@@ -487,14 +552,38 @@ const abrirModalCrearUsuario = () => {
 // Cerrar modal de crear usuario
 const cerrarModalCrearUsuario = () => {
   showModalCrear.value = false
-  nuevoUsuario.value = { nombre: '', email: '', password: '', rol: '' }
+  nuevoUsuario.value = { nombre: '', email: '', password: '', rol: '', curp: '', telefono: '', territorio: '' }
 }
 
 // Crear usuario
 const crearUsuario = async () => {
   if (!nuevoUsuario.value.nombre || !nuevoUsuario.value.email || !nuevoUsuario.value.password || !nuevoUsuario.value.rol) {
-    Swal.fire('⚠️ Campos incompletos', 'Por favor completa todos los campos', 'warning')
+    Swal.fire('⚠️ Campos incompletos', 'Por favor completa todos los campos obligatorios', 'warning')
     return
+  }
+
+  // Validar territorio obligatorio
+  if (!nuevoUsuario.value.territorio) {
+    Swal.fire('⚠️ Territorio requerido', 'Debes seleccionar un territorio', 'warning')
+    return
+  }
+
+  // Validar CURP si se proporciona
+  if (nuevoUsuario.value.curp && nuevoUsuario.value.curp.trim()) {
+    const curpRegex = /^[A-Z]{4}[0-9]{6}[HM][A-Z]{5}[A-Z0-9]{2}$/
+    if (!curpRegex.test(nuevoUsuario.value.curp.toUpperCase())) {
+      Swal.fire('⚠️ CURP inválido', 'El CURP debe tener 18 caracteres en formato válido', 'warning')
+      return
+    }
+  }
+
+  // Validar teléfono si se proporciona
+  if (nuevoUsuario.value.telefono && nuevoUsuario.value.telefono.trim()) {
+    const telefonoLimpio = nuevoUsuario.value.telefono.replace(/[^0-9]/g, '')
+    if (telefonoLimpio.length < 10) {
+      Swal.fire('⚠️ Teléfono inválido', 'El teléfono debe tener al menos 10 dígitos', 'warning')
+      return
+    }
   }
 
   creando.value = true
@@ -506,7 +595,10 @@ const crearUsuario = async () => {
       nuevoUsuario.value.nombre,
       nuevoUsuario.value.email,
       nuevoUsuario.value.password,
-      nuevoUsuario.value.rol
+      nuevoUsuario.value.rol,
+      nuevoUsuario.value.curp || null,
+      nuevoUsuario.value.telefono || null,
+      nuevoUsuario.value.territorio
     )
 
     console.log('📦 Resultado de createUserHierarchical:', result)
@@ -1760,6 +1852,19 @@ onMounted(async () => {
 .eye-icon {
   width: 18px;
   height: 18px;
+}
+
+.field-hint {
+  display: block;
+  font-size: 0.7rem;
+  color: #64748b;
+  margin-top: 0.3rem;
+  font-style: italic;
+}
+
+.required-mark {
+  color: #ef4444;
+  font-weight: bold;
 }
 
 /* ========== FORM ACTIONS ========== */

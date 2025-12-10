@@ -103,6 +103,65 @@
             </div>
           </div>
 
+          <!-- Campo CURP -->
+          <div class="form-group">
+            <label for="curp" class="form-label">CURP</label>
+            <div class="input-wrapper">
+              <IdCard class="input-icon" />
+              <input
+                id="curp"
+                v-model="formData.curp"
+                type="text"
+                placeholder="XXXX######HXXXXX##"
+                class="form-input"
+                maxlength="18"
+                @input="formData.curp = formData.curp.toUpperCase()"
+              />
+            </div>
+            <p class="field-hint">18 caracteres alfanuméricos</p>
+          </div>
+
+          <!-- Campo Teléfono -->
+          <div class="form-group">
+            <label for="telefono" class="form-label">Número de Teléfono</label>
+            <div class="input-wrapper">
+              <Phone class="input-icon" />
+              <input
+                id="telefono"
+                v-model="formData.telefono"
+                type="tel"
+                placeholder="10 dígitos"
+                class="form-input"
+                maxlength="15"
+              />
+            </div>
+          </div>
+
+          <!-- Campo Territorio -->
+          <div class="form-group">
+            <label for="territorio" class="form-label">Territorio <span class="required-mark">*</span></label>
+            <div class="select-wrapper">
+              <MapPin class="select-icon" />
+              <select
+                id="territorio"
+                v-model="formData.territorio"
+                class="form-select"
+                required
+              >
+                <option value="">-- Selecciona tu territorio --</option>
+                <option value="Norte">Norte</option>
+                <option value="Sur">Sur</option>
+                <option value="Este">Este</option>
+                <option value="Oeste">Oeste</option>
+                <option value="Centro">Centro</option>
+                <option value="Noreste">Noreste</option>
+                <option value="Noroeste">Noroeste</option>
+                <option value="Sureste">Sureste</option>
+                <option value="Suroeste">Suroeste</option>
+              </select>
+            </div>
+          </div>
+
           <!-- Campo Rol -->
           <div class="form-group">
             <label for="rol" class="form-label">¿Qué tipo de técnico eres?</label>
@@ -188,7 +247,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { User, Mail, Lock, AlertCircle, CheckCircle, Briefcase, ArrowLeft } from 'lucide-vue-next'
+import { User, Mail, Lock, AlertCircle, CheckCircle, Briefcase, ArrowLeft, IdCard, Phone, MapPin } from 'lucide-vue-next'
 import { getSecureApiUrl } from '../utils/api'
 
 const router = useRouter()
@@ -201,6 +260,9 @@ const formData = ref({
   email: '',
   password: '',
   confirmPassword: '',
+  curp: '',
+  telefono: '',
+  territorio: '',
   rol: '',
   acceptTerms: false,
 })
@@ -231,6 +293,30 @@ const handleRegister = async () => {
     return
   }
 
+  // Validar CURP si se proporciona
+  if (formData.value.curp && formData.value.curp.trim()) {
+    const curpRegex = /^[A-Z]{4}[0-9]{6}[HM][A-Z]{5}[A-Z0-9]{2}$/
+    if (!curpRegex.test(formData.value.curp.toUpperCase())) {
+      error.value = 'El CURP no tiene un formato válido (18 caracteres)'
+      return
+    }
+  }
+
+  // Validar teléfono si se proporciona
+  if (formData.value.telefono && formData.value.telefono.trim()) {
+    const telefonoLimpio = formData.value.telefono.replace(/[^0-9]/g, '')
+    if (telefonoLimpio.length < 10) {
+      error.value = 'El teléfono debe tener al menos 10 dígitos'
+      return
+    }
+  }
+
+  // Validar territorio (obligatorio)
+  if (!formData.value.territorio) {
+    error.value = 'Debes seleccionar un territorio'
+    return
+  }
+
   if (!formData.value.rol) {
     error.value = 'Debes seleccionar un rol'
     return
@@ -256,6 +342,9 @@ const handleRegister = async () => {
         email: formData.value.email,
         password: formData.value.password,
         rol: formData.value.rol,
+        curp: formData.value.curp || null,
+        telefono: formData.value.telefono || null,
+        territorio: formData.value.territorio,
       }),
     })
 
@@ -656,6 +745,18 @@ const showTerms = () => {
   margin-top: 0.4rem;
   font-style: italic;
   line-height: 1.3;
+}
+
+.field-hint {
+  font-size: 0.65rem;
+  color: #94a3b8;
+  margin-top: 0.3rem;
+  font-style: italic;
+}
+
+.required-mark {
+  color: #ef4444;
+  font-weight: bold;
 }
 
 /* ========== TERMS ========== */

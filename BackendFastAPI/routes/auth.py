@@ -19,6 +19,9 @@ class RegisterRequest(BaseModel):
     email: str
     password: str
     rol: str
+    curp: str | None = None
+    territorio: str | None = None
+    telefono: str | None = None
 
 class LoginRequest(BaseModel):
     email: str
@@ -28,12 +31,18 @@ class UpdateUserRequest(BaseModel):
     nombre: str | None = None
     email: str | None = None
     rol: str | None = None
+    curp: str | None = None
+    territorio: str | None = None
+    telefono: str | None = None
 
 class CreateUserByHierarchyRequest(BaseModel):
     nombre: str
     email: str
     password: str
     rol: str
+    curp: str | None = None
+    territorio: str | None = None
+    telefono: str | None = None
 
 def get_db():
     db = SessionLocal()
@@ -88,6 +97,30 @@ def register(request: RegisterRequest, db: Session = Depends(get_db)):
     if existente:
         raise HTTPException(status_code=400, detail="El correo ya está registrado")
     
+    # ✅ Validar CURP si se proporciona (18 caracteres alfanuméricos)
+    curp = None
+    if request.curp and request.curp.strip():
+        curp = request.curp.strip().upper()
+        curp_regex = r'^[A-Z]{4}[0-9]{6}[HM][A-Z]{5}[A-Z0-9]{2}$'
+        if not re.match(curp_regex, curp):
+            raise HTTPException(status_code=400, detail="CURP inválido. Debe tener 18 caracteres alfanuméricos en formato válido")
+        # Verificar que no exista otro usuario con el mismo CURP
+        curp_existente = db.query(User).filter(User.curp == curp).first()
+        if curp_existente:
+            raise HTTPException(status_code=400, detail="Ya existe un usuario con este CURP")
+    
+    # ✅ Validar teléfono si se proporciona (10 dígitos para México)
+    telefono = None
+    if request.telefono and request.telefono.strip():
+        telefono = re.sub(r'[^0-9]', '', request.telefono)  # Eliminar todo excepto números
+        if len(telefono) < 10:
+            raise HTTPException(status_code=400, detail="El teléfono debe tener al menos 10 dígitos")
+    
+    # ✅ Validar territorio
+    territorio = None
+    if request.territorio and request.territorio.strip():
+        territorio = request.territorio.strip()
+    
     # ✅ Hashear contraseña
     hashed = bcrypt.hashpw(request.password.encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
     
@@ -97,6 +130,9 @@ def register(request: RegisterRequest, db: Session = Depends(get_db)):
         email=request.email.strip().lower(),
         password=hashed,
         rol=rol,
+        curp=curp,
+        territorio=territorio,
+        telefono=telefono,
         superior_id=None  # Será asignado por facilitador después
     )
     
@@ -204,6 +240,30 @@ def create_user_hierarchical(
     if existente:
         raise HTTPException(status_code=400, detail="El correo ya está registrado")
     
+    # ✅ Validar CURP si se proporciona (18 caracteres alfanuméricos)
+    curp = None
+    if request.curp and request.curp.strip():
+        curp = request.curp.strip().upper()
+        curp_regex = r'^[A-Z]{4}[0-9]{6}[HM][A-Z]{5}[A-Z0-9]{2}$'
+        if not re.match(curp_regex, curp):
+            raise HTTPException(status_code=400, detail="CURP inválido. Debe tener 18 caracteres alfanuméricos en formato válido")
+        # Verificar que no exista otro usuario con el mismo CURP
+        curp_existente = db.query(User).filter(User.curp == curp).first()
+        if curp_existente:
+            raise HTTPException(status_code=400, detail="Ya existe un usuario con este CURP")
+    
+    # ✅ Validar teléfono si se proporciona (10 dígitos para México)
+    telefono = None
+    if request.telefono and request.telefono.strip():
+        telefono = re.sub(r'[^0-9]', '', request.telefono)  # Eliminar todo excepto números
+        if len(telefono) < 10:
+            raise HTTPException(status_code=400, detail="El teléfono debe tener al menos 10 dígitos")
+    
+    # ✅ Validar territorio
+    territorio = None
+    if request.territorio and request.territorio.strip():
+        territorio = request.territorio.strip()
+    
     # ✅ Hashear contraseña
     hashed = bcrypt.hashpw(request.password.encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
     
@@ -213,6 +273,9 @@ def create_user_hierarchical(
         email=request.email.strip().lower(),
         password=hashed,
         rol=rol_nuevo,
+        curp=curp,
+        territorio=territorio,
+        telefono=telefono,
         superior_id=current_user_id  # Asignar usuario creador como superior
     )
     
@@ -321,7 +384,18 @@ def login(request: LoginRequest, db: Session = Depends(get_db)):
         SECRET,
         algorithm="HS256"
     )
-    return {"token": token, "user": {"id": user.id, "nombre": user.nombre, "rol": rol_normalizado}}
+    return {
+        "token": token, 
+        "user": {
+            "id": user.id, 
+            "nombre": user.nombre, 
+            "email": user.email,
+            "rol": rol_normalizado,
+            "curp": user.curp,
+            "territorio": user.territorio,
+            "telefono": user.telefono
+        }
+    }
 
 
 @router.post("/setup-admin")
@@ -362,6 +436,26 @@ def setup_admin(request: RegisterRequest, db: Session = Depends(get_db)):
     if existente:
         raise HTTPException(status_code=400, detail="El correo ya está registrado")
     
+    # ✅ Validar CURP si se proporciona
+    curp = None
+    if request.curp and request.curp.strip():
+        curp = request.curp.strip().upper()
+        curp_regex = r'^[A-Z]{4}[0-9]{6}[HM][A-Z]{5}[A-Z0-9]{2}$'
+        if not re.match(curp_regex, curp):
+            raise HTTPException(status_code=400, detail="CURP inválido")
+    
+    # ✅ Validar teléfono si se proporciona
+    telefono = None
+    if request.telefono and request.telefono.strip():
+        telefono = re.sub(r'[^0-9]', '', request.telefono)
+        if len(telefono) < 10:
+            raise HTTPException(status_code=400, detail="El teléfono debe tener al menos 10 dígitos")
+    
+    # ✅ Validar territorio
+    territorio = None
+    if request.territorio and request.territorio.strip():
+        territorio = request.territorio.strip()
+    
     # ✅ Hashear contraseña
     hashed = bcrypt.hashpw(request.password.encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
     
@@ -371,6 +465,9 @@ def setup_admin(request: RegisterRequest, db: Session = Depends(get_db)):
         email=request.email.strip().lower(),
         password=hashed,
         rol="admin",
+        curp=curp,
+        territorio=territorio,
+        telefono=telefono,
         superior_id=None
     )
     
@@ -409,6 +506,10 @@ def get_current_user(
             "nombre": user.nombre,
             "email": user.email,
             "rol": rol_normalizado,
+            "curp": user.curp,
+            "territorio": user.territorio,
+            "telefono": user.telefono,
+            "activo": user.activo,
         }
     except jwt.ExpiredSignatureError:
         raise HTTPException(status_code=401, detail="Token expirado")
@@ -469,6 +570,10 @@ def list_users(
                     "nombre": u.nombre,
                     "email": u.email,
                     "rol": u.rol.lower().strip() if u.rol else "tecnico_productivo",  # ✅ Normalizar
+                    "curp": u.curp,
+                    "territorio": u.territorio,
+                    "telefono": u.telefono,
+                    "activo": u.activo,
                     "lat": None,
                     "lng": None,
                 }
@@ -485,6 +590,8 @@ def update_user(
     credentials: HTTPAuthorizationCredentials = Security(bearer_scheme),
     db: Session = Depends(get_db)
 ):
+    import re
+    
     try:
         token = credentials.credentials
         payload = jwt.decode(token, SECRET, algorithms=["HS256"])
@@ -501,10 +608,50 @@ def update_user(
             user.email = body.email
         if body.rol:
             user.rol = body.rol
+        
+        # ✅ Actualizar CURP si se proporciona
+        if body.curp is not None:
+            if body.curp.strip():
+                curp = body.curp.strip().upper()
+                curp_regex = r'^[A-Z]{4}[0-9]{6}[HM][A-Z]{5}[A-Z0-9]{2}$'
+                if not re.match(curp_regex, curp):
+                    raise HTTPException(status_code=400, detail="CURP inválido")
+                # Verificar que no exista otro usuario con el mismo CURP
+                curp_existente = db.query(User).filter(User.curp == curp, User.id != user_id).first()
+                if curp_existente:
+                    raise HTTPException(status_code=400, detail="Ya existe un usuario con este CURP")
+                user.curp = curp
+            else:
+                user.curp = None
+        
+        # ✅ Actualizar territorio si se proporciona
+        if body.territorio is not None:
+            user.territorio = body.territorio.strip() if body.territorio.strip() else None
+        
+        # ✅ Actualizar teléfono si se proporciona
+        if body.telefono is not None:
+            if body.telefono.strip():
+                telefono = re.sub(r'[^0-9]', '', body.telefono)
+                if len(telefono) < 10:
+                    raise HTTPException(status_code=400, detail="El teléfono debe tener al menos 10 dígitos")
+                user.telefono = telefono
+            else:
+                user.telefono = None
 
         db.commit()
         db.refresh(user)
-        return {"success": True, "user": {"id": user.id, "nombre": user.nombre, "email": user.email, "rol": user.rol}}
+        return {
+            "success": True, 
+            "user": {
+                "id": user.id, 
+                "nombre": user.nombre, 
+                "email": user.email, 
+                "rol": user.rol,
+                "curp": user.curp,
+                "territorio": user.territorio,
+                "telefono": user.telefono
+            }
+        }
     except jwt.InvalidTokenError:
         raise HTTPException(status_code=401, detail="Token inválido")
 

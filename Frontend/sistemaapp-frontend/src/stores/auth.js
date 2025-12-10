@@ -53,12 +53,12 @@ export const useAuthStore = defineStore('auth', {
     /**
      * Crear usuario jerárquicamente (solo para admin, territorial, facilitador)
      */
-    async createUserHierarchical(nombre, email, password, rol) {
+    async createUserHierarchical(nombre, email, password, rol, curp = null, telefono = null, territorio = null) {
       try {
         const API_URL = getSecureApiUrl()
         const { data } = await axios.post(
           `${API_URL}/auth/create-user`,
-          { nombre, email, password, rol },
+          { nombre, email, password, rol, curp, telefono, territorio },
           {
             headers: {
               Authorization: `Bearer ${this.token}`,

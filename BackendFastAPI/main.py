@@ -5,6 +5,13 @@ from database import Base, engine
 
 Base.metadata.create_all(bind=engine)
 
+# 🔄 Ejecutar migraciones al iniciar
+try:
+    from migrations.add_user_fields import run_migration
+    run_migration()
+except Exception as e:
+    print(f"⚠️ Error ejecutando migraciones: {str(e)}")
+
 app = FastAPI(title="SistemaApp API (FastAPI + PostgreSQL)")
 
 # ✅ Configuración CORS correcta
