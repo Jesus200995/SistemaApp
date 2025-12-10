@@ -134,7 +134,6 @@ def crear_seguimiento(
         print(f"❌ Exception: {type(e).__name__}: {e}")
         db.rollback()
         raise HTTPException(status_code=500, detail=f"Error al crear seguimiento: {str(e)}")
-        raise HTTPException(status_code=500, detail=f"Error al crear seguimiento: {str(e)}")
 
 
 @router.post("/upload-foto")
