@@ -45,10 +45,11 @@
                 id="nombre"
                 v-model="formData.nombre"
                 type="text"
-                placeholder="Juan Pérez"
+                placeholder="JUAN PÉREZ"
                 class="form-input"
                 required
                 minlength="2"
+                @input="formData.nombre = formData.nombre.toUpperCase()"
               />
             </div>
           </div>
@@ -132,9 +133,13 @@
                 type="tel"
                 placeholder="10 dígitos"
                 class="form-input"
-                maxlength="15"
+                maxlength="10"
+                minlength="10"
+                pattern="[0-9]{10}"
+                @input="formData.telefono = formData.telefono.replace(/[^0-9]/g, '').slice(0, 10)"
               />
             </div>
+            <p class="field-hint" v-if="formData.telefono && formData.telefono.length > 0 && formData.telefono.length < 10">{{ formData.telefono.length }}/10 dígitos</p>
           </div>
 
           <!-- Campo Territorio -->

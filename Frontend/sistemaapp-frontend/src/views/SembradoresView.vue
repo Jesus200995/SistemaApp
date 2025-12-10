@@ -55,10 +55,11 @@
                   <input
                     v-model="form.nombre"
                     type="text"
-                    placeholder="Juan Pérez García"
+                    placeholder="JUAN PÉREZ GARCÍA"
                     class="form-input"
                     required
                     minlength="2"
+                    @input="form.nombre = form.nombre.toUpperCase()"
                   />
                 </div>
               </div>
@@ -255,8 +256,15 @@
                     placeholder="10 dígitos"
                     class="form-input"
                     required
+                    maxlength="10"
+                    minlength="10"
+                    pattern="[0-9]{10}"
+                    @input="form.telefono = form.telefono.replace(/[^0-9]/g, '').slice(0, 10)"
                   />
                 </div>
+                <span class="input-hint" v-if="form.telefono && form.telefono.length > 0 && form.telefono.length < 10">
+                  {{ form.telefono.length }}/10 dígitos
+                </span>
               </div>
             </div>
 

@@ -109,12 +109,12 @@ def register(request: RegisterRequest, db: Session = Depends(get_db)):
         if curp_existente:
             raise HTTPException(status_code=400, detail="Ya existe un usuario con este CURP")
     
-    # ✅ Validar teléfono si se proporciona (10 dígitos para México)
+    # ✅ Validar teléfono si se proporciona (exactamente 10 dígitos para México)
     telefono = None
     if request.telefono and request.telefono.strip():
         telefono = re.sub(r'[^0-9]', '', request.telefono)  # Eliminar todo excepto números
-        if len(telefono) < 10:
-            raise HTTPException(status_code=400, detail="El teléfono debe tener al menos 10 dígitos")
+        if len(telefono) != 10:
+            raise HTTPException(status_code=400, detail=f"El teléfono debe tener exactamente 10 dígitos. Actualmente tiene {len(telefono)} dígitos.")
     
     # ✅ Validar territorio
     territorio = None
@@ -124,9 +124,9 @@ def register(request: RegisterRequest, db: Session = Depends(get_db)):
     # ✅ Hashear contraseña
     hashed = bcrypt.hashpw(request.password.encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
     
-    # ✅ Crear nuevo usuario
+    # ✅ Crear nuevo usuario (nombre en MAYÚSCULAS)
     nuevo = User(
-        nombre=request.nombre.strip(),
+        nombre=request.nombre.strip().upper(),
         email=request.email.strip().lower(),
         password=hashed,
         rol=rol,
@@ -252,12 +252,12 @@ def create_user_hierarchical(
         if curp_existente:
             raise HTTPException(status_code=400, detail="Ya existe un usuario con este CURP")
     
-    # ✅ Validar teléfono si se proporciona (10 dígitos para México)
+    # ✅ Validar teléfono si se proporciona (exactamente 10 dígitos para México)
     telefono = None
     if request.telefono and request.telefono.strip():
         telefono = re.sub(r'[^0-9]', '', request.telefono)  # Eliminar todo excepto números
-        if len(telefono) < 10:
-            raise HTTPException(status_code=400, detail="El teléfono debe tener al menos 10 dígitos")
+        if len(telefono) != 10:
+            raise HTTPException(status_code=400, detail=f"El teléfono debe tener exactamente 10 dígitos. Actualmente tiene {len(telefono)} dígitos.")
     
     # ✅ Validar territorio
     territorio = None
@@ -267,9 +267,9 @@ def create_user_hierarchical(
     # ✅ Hashear contraseña
     hashed = bcrypt.hashpw(request.password.encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
     
-    # ✅ Crear nuevo usuario con superior_id
+    # ✅ Crear nuevo usuario con superior_id (nombre en MAYÚSCULAS)
     nuevo = User(
-        nombre=request.nombre.strip(),
+        nombre=request.nombre.strip().upper(),
         email=request.email.strip().lower(),
         password=hashed,
         rol=rol_nuevo,

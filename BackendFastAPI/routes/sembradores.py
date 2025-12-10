@@ -54,6 +54,8 @@ def crear_sembrador(
         "telefono": "1234567890"
     }
     """
+    import re
+    
     try:
         if not data.get("nombre"):
             raise HTTPException(status_code=400, detail="El nombre es obligatorio")
@@ -62,12 +64,18 @@ def crear_sembrador(
         if not data.get("territorio"):
             raise HTTPException(status_code=400, detail="El territorio es obligatorio")
         
+        # Validar teléfono (exactamente 10 dígitos)
+        telefono = None
+        if data.get("telefono"):
+            telefono = re.sub(r'[^0-9]', '', str(data.get("telefono")))
+            if len(telefono) != 10:
+                raise HTTPException(status_code=400, detail=f"El teléfono debe tener exactamente 10 dígitos. Actualmente tiene {len(telefono)} dígitos.")
+        
         user_id = current_user["user_id"]
         
         # Validar CURP si se proporciona
         curp = None
         if data.get("curp") and data.get("curp").strip():
-            import re
             curp = data.get("curp").strip().upper()
             if len(curp) != 18:
                 raise HTTPException(status_code=400, detail=f"El CURP debe tener exactamente 18 caracteres. Actualmente tiene {len(curp)} caracteres.")
@@ -79,13 +87,14 @@ def crear_sembrador(
             if curp_existente:
                 raise HTTPException(status_code=400, detail="Ya existe un sembrador con este CURP")
         
+        # Nombre siempre en MAYÚSCULAS
         nuevo = Sembrador(
-            nombre=data.get("nombre"),
+            nombre=data.get("nombre").strip().upper(),
             curp=curp,
             comunidad=data.get("comunidad"),
             territorio=data.get("territorio"),
             cultivo_principal=data.get("cultivo_principal"),
-            telefono=data.get("telefono"),
+            telefono=telefono,
             user_id=user_id
         )
         

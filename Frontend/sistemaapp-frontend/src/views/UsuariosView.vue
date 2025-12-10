@@ -72,9 +72,10 @@
                 v-model="nuevoUsuario.nombre"
                 type="text"
                 class="form-input"
-                placeholder="Ingresa el nombre completo"
+                placeholder="NOMBRE COMPLETO"
                 required
                 minlength="2"
+                @input="nuevoUsuario.nombre = nuevoUsuario.nombre.toUpperCase()"
               />
             </div>
 
@@ -167,8 +168,12 @@
                 type="tel"
                 class="form-input"
                 placeholder="10 dígitos"
-                maxlength="15"
+                maxlength="10"
+                minlength="10"
+                pattern="[0-9]{10}"
+                @input="nuevoUsuario.telefono = nuevoUsuario.telefono.replace(/[^0-9]/g, '').slice(0, 10)"
               />
+              <span class="field-hint" v-if="nuevoUsuario.telefono && nuevoUsuario.telefono.length > 0 && nuevoUsuario.telefono.length < 10">{{ nuevoUsuario.telefono.length }}/10 dígitos</span>
             </div>
 
             <!-- Campo Territorio -->
