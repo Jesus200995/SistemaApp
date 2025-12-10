@@ -235,20 +235,37 @@
             <p>Sin seguimientos</p>
           </div>
 
-          <div v-else class="table-wrapper">
+          <!-- Vista de tabla para desktop -->
+          <div v-else class="table-wrapper desktop-table">
             <table class="seguimiento-table">
               <thead>
                 <tr>
+                  <th>Foto</th>
                   <th>Sembrador</th>
                   <th>Fecha</th>
                   <th>Estado</th>
-                  <th>% Avance</th>
+                  <th>Avance</th>
                   <th>Observaciones</th>
                   <th>Acciones</th>
                 </tr>
               </thead>
               <tbody>
                 <tr v-for="seg in seguimientos" :key="seg.id" class="table-row">
+                  <td class="foto-cell">
+                    <div 
+                      v-if="seg.foto_url" 
+                      class="foto-thumbnail"
+                      @click="abrirFotoModal(seg.foto_url)"
+                    >
+                      <img :src="getFullImageUrl(seg.foto_url)" :alt="'Foto de ' + seg.sembrador_nombre" />
+                      <div class="foto-overlay">
+                        <Eye :size="16" />
+                      </div>
+                    </div>
+                    <div v-else class="foto-placeholder">
+                      <ImageIcon :size="18" />
+                    </div>
+                  </td>
                   <td><strong>{{ seg.sembrador_nombre }}</strong></td>
                   <td>{{ formatearFecha(seg.fecha_visita) }}</td>
                   <td>
@@ -258,10 +275,18 @@
                   </td>
                   <td>
                     <div class="progress-cell">
-                      <div class="progress-bar-small">
-                        <div class="progress-fill-small" :style="{ width: seg.avance_porcentaje + '%' }"></div>
+                      <div class="progress-bar-enhanced">
+                        <div 
+                          class="progress-fill-enhanced" 
+                          :style="{ 
+                            width: seg.avance_porcentaje + '%',
+                            background: getProgressColor(seg.avance_porcentaje)
+                          }"
+                        ></div>
                       </div>
-                      <span>{{ seg.avance_porcentaje }}%</span>
+                      <span class="progress-text" :style="{ color: getProgressColor(seg.avance_porcentaje) }">
+                        {{ seg.avance_porcentaje }}%
+                      </span>
                     </div>
                   </td>
                   <td class="text-ellipsis">{{ seg.observaciones?.substring(0, 30) || 'N/A' }}</td>
@@ -273,6 +298,59 @@
                 </tr>
               </tbody>
             </table>
+          </div>
+
+          <!-- Vista de cards para móvil -->
+          <div v-if="seguimientos.length > 0" class="mobile-cards">
+            <div v-for="seg in seguimientos" :key="'card-' + seg.id" class="seguimiento-card">
+              <!-- Header con foto y nombre -->
+              <div class="card-header-row">
+                <div 
+                  v-if="seg.foto_url" 
+                  class="card-foto"
+                  @click="abrirFotoModal(seg.foto_url)"
+                >
+                  <img :src="getFullImageUrl(seg.foto_url)" :alt="'Foto de ' + seg.sembrador_nombre" />
+                  <div class="foto-overlay-card">
+                    <Eye :size="14" />
+                  </div>
+                </div>
+                <div v-else class="card-foto-placeholder">
+                  <ImageIcon :size="20" />
+                </div>
+                <div class="card-info">
+                  <h4 class="card-sembrador">{{ seg.sembrador_nombre }}</h4>
+                  <span class="card-fecha">{{ formatearFecha(seg.fecha_visita) }}</span>
+                </div>
+                <button @click="eliminarSeguimiento(seg.id)" class="card-delete-btn" title="Eliminar">
+                  <Trash2 :size="16" />
+                </button>
+              </div>
+
+              <!-- Estado y Avance -->
+              <div class="card-stats">
+                <span class="estado-badge estado-small" :class="'estado-' + seg.estado_cultivo">
+                  {{ seg.estado_cultivo }}
+                </span>
+                <div class="card-progress">
+                  <div class="progress-bar-card">
+                    <div 
+                      class="progress-fill-card" 
+                      :style="{ 
+                        width: seg.avance_porcentaje + '%',
+                        background: getProgressColor(seg.avance_porcentaje)
+                      }"
+                    ></div>
+                  </div>
+                  <span class="progress-text-card" :style="{ color: getProgressColor(seg.avance_porcentaje) }">
+                    {{ seg.avance_porcentaje }}%
+                  </span>
+                </div>
+              </div>
+
+              <!-- Observaciones -->
+              <p class="card-observaciones">{{ seg.observaciones || 'Sin observaciones' }}</p>
+            </div>
           </div>
         </section>
 
@@ -325,6 +403,22 @@
         </div>
       </Transition>
     </Teleport>
+
+    <!-- Modal de Foto -->
+    <Teleport to="body">
+      <Transition name="modal-fade">
+        <div v-if="showFotoModal" class="foto-modal-overlay" @click.self="cerrarFotoModal">
+          <div class="foto-modal">
+            <button class="foto-modal-close" @click="cerrarFotoModal">
+              <X :size="24" />
+            </button>
+            <div class="foto-modal-content">
+              <img :src="fotoModalUrl" alt="Foto de seguimiento" class="foto-modal-image" />
+            </div>
+          </div>
+        </div>
+      </Transition>
+    </Teleport>
   </div>
 </template>
 
@@ -348,7 +442,8 @@ import {
   TrendingUp,
   FileText,
   Users,
-  BarChart3
+  BarChart3,
+  Eye
 } from 'lucide-vue-next'
 
 const auth = useAuthStore()
@@ -433,6 +528,38 @@ const subiendoFoto = ref(false)
 
 // Modal de éxito
 const showSuccessModal = ref(false)
+
+// Modal de foto
+const showFotoModal = ref(false)
+const fotoModalUrl = ref('')
+
+// Función para obtener URL completa de imagen
+const getFullImageUrl = (url: string): string => {
+  if (!url) return ''
+  // Si ya es una URL completa, retornarla
+  if (url.startsWith('http')) return url
+  // Si es una ruta relativa, agregar la URL del API
+  return `${API_URL}${url}`
+}
+
+// Funciones del modal de foto
+const abrirFotoModal = (url: string) => {
+  fotoModalUrl.value = getFullImageUrl(url)
+  showFotoModal.value = true
+}
+
+const cerrarFotoModal = () => {
+  showFotoModal.value = false
+  fotoModalUrl.value = ''
+}
+
+// Función para obtener color según porcentaje
+const getProgressColor = (porcentaje: number): string => {
+  if (porcentaje <= 25) return '#ef4444' // Rojo
+  if (porcentaje <= 50) return '#f59e0b' // Naranja
+  if (porcentaje <= 75) return '#84cc16' // Verde lima
+  return '#10b981' // Verde esmeralda
+}
 
 // Funciones para manejo de fotos
 const triggerFileInput = () => {
@@ -1429,6 +1556,296 @@ onMounted(async () => {
   text-overflow: ellipsis;
 }
 
+/* ========== Foto Thumbnail en Tabla ========== */
+.foto-cell {
+  width: 60px;
+}
+
+.foto-thumbnail {
+  width: 50px;
+  height: 50px;
+  border-radius: 8px;
+  overflow: hidden;
+  cursor: pointer;
+  position: relative;
+  border: 2px solid rgba(16, 185, 129, 0.3);
+  transition: all 0.3s ease;
+}
+
+.foto-thumbnail:hover {
+  border-color: rgba(16, 185, 129, 0.6);
+  transform: scale(1.05);
+}
+
+.foto-thumbnail img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.foto-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  color: white;
+}
+
+.foto-thumbnail:hover .foto-overlay {
+  opacity: 1;
+}
+
+.foto-placeholder {
+  width: 50px;
+  height: 50px;
+  border-radius: 8px;
+  background: rgba(148, 163, 184, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #64748b;
+}
+
+/* ========== Barra de Progreso Mejorada ========== */
+.progress-bar-enhanced {
+  flex: 1;
+  height: 8px;
+  background: rgba(148, 163, 184, 0.15);
+  border-radius: 4px;
+  overflow: hidden;
+  min-width: 60px;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.progress-fill-enhanced {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.4s ease, background 0.3s ease;
+  box-shadow: 0 0 6px rgba(16, 185, 129, 0.4);
+}
+
+.progress-text {
+  font-weight: 700;
+  font-size: 0.85rem;
+  min-width: 40px;
+  text-align: right;
+}
+
+/* ========== Vista Mobile Cards ========== */
+.mobile-cards {
+  display: none;
+}
+
+.seguimiento-card {
+  background: rgba(30, 41, 59, 0.6);
+  border: 1px solid rgba(148, 163, 184, 0.1);
+  border-radius: 12px;
+  padding: 1rem;
+  margin-bottom: 0.75rem;
+  backdrop-filter: blur(8px);
+}
+
+.card-header-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.card-foto {
+  width: 48px;
+  height: 48px;
+  border-radius: 8px;
+  overflow: hidden;
+  flex-shrink: 0;
+  cursor: pointer;
+  position: relative;
+  border: 2px solid rgba(16, 185, 129, 0.3);
+}
+
+.card-foto img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.foto-overlay-card {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.card-foto:active .foto-overlay-card {
+  opacity: 1;
+}
+
+.card-foto-placeholder {
+  width: 48px;
+  height: 48px;
+  border-radius: 8px;
+  background: rgba(148, 163, 184, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #64748b;
+  flex-shrink: 0;
+}
+
+.card-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.card-sembrador {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #f1f5f9;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.card-fecha {
+  font-size: 0.8rem;
+  color: #94a3b8;
+}
+
+.card-delete-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  border: none;
+  background: rgba(239, 68, 68, 0.1);
+  color: #f87171;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.card-delete-btn:active {
+  background: rgba(239, 68, 68, 0.2);
+}
+
+.card-stats {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.estado-small {
+  padding: 0.25rem 0.6rem;
+  font-size: 0.75rem;
+}
+
+.card-progress {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.progress-bar-card {
+  flex: 1;
+  height: 6px;
+  background: rgba(148, 163, 184, 0.15);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.progress-fill-card {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.3s ease;
+}
+
+.progress-text-card {
+  font-size: 0.8rem;
+  font-weight: 700;
+  min-width: 35px;
+  text-align: right;
+}
+
+.card-observaciones {
+  font-size: 0.85rem;
+  color: #94a3b8;
+  margin: 0;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* ========== Modal de Foto ========== */
+.foto-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.9);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  padding: 1rem;
+}
+
+.foto-modal {
+  position: relative;
+  max-width: 90vw;
+  max-height: 90vh;
+  animation: modal-pop 0.3s ease;
+}
+
+.foto-modal-close {
+  position: absolute;
+  top: -40px;
+  right: 0;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  z-index: 10;
+}
+
+.foto-modal-close:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: scale(1.1);
+}
+
+.foto-modal-content {
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+}
+
+.foto-modal-image {
+  max-width: 90vw;
+  max-height: 85vh;
+  object-fit: contain;
+  display: block;
+}
+
 .btn-action {
   display: inline-flex;
   align-items: center;
@@ -1620,6 +2037,15 @@ onMounted(async () => {
     overflow-x: auto;
   }
 
+  /* Mostrar cards y ocultar tabla en móvil */
+  .desktop-table {
+    display: none;
+  }
+
+  .mobile-cards {
+    display: block;
+  }
+
   .seguimiento-table {
     font-size: 0.75rem;
   }
@@ -1627,6 +2053,19 @@ onMounted(async () => {
   .seguimiento-table th,
   .seguimiento-table td {
     padding: 0.6rem 0.5rem;
+  }
+
+  /* Modal de foto responsive */
+  .foto-modal-close {
+    top: -35px;
+    right: 5px;
+    width: 32px;
+    height: 32px;
+  }
+
+  .foto-modal-image {
+    max-width: 95vw;
+    max-height: 80vh;
   }
 
   .reportes-grid {
@@ -1800,6 +2239,34 @@ onMounted(async () => {
   .seguimiento-table th,
   .seguimiento-table td {
     padding: 0.4rem 0.3rem;
+  }
+
+  /* Cards más compactas en móviles pequeños */
+  .seguimiento-card {
+    padding: 0.85rem;
+  }
+
+  .card-foto,
+  .card-foto-placeholder {
+    width: 42px;
+    height: 42px;
+  }
+
+  .card-sembrador {
+    font-size: 0.9rem;
+  }
+
+  .card-fecha {
+    font-size: 0.75rem;
+  }
+
+  .card-delete-btn {
+    width: 32px;
+    height: 32px;
+  }
+
+  .card-observaciones {
+    font-size: 0.8rem;
   }
 }
 
