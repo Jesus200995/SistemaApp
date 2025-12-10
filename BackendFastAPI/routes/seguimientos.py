@@ -58,45 +58,66 @@ def crear_seguimiento(
     }
     """
     try:
+        print(f"📝 Datos recibidos: {data}")
+        print(f"👤 Usuario: {current_user}")
+        
         user_id = current_user["user_id"]
         
-        if not data.get("sembrador_id"):
+        # Validar sembrador_id
+        sembrador_id = data.get("sembrador_id")
+        if not sembrador_id:
             raise HTTPException(status_code=400, detail="Debe indicar el sembrador")
         
+        # Convertir sembrador_id a int si viene como string
+        try:
+            sembrador_id = int(sembrador_id)
+        except (ValueError, TypeError):
+            raise HTTPException(status_code=400, detail="sembrador_id debe ser un número")
+        
         # Verificar que el sembrador existe
-        sembrador = db.query(Sembrador).filter(Sembrador.id == data.get("sembrador_id")).first()
+        sembrador = db.query(Sembrador).filter(Sembrador.id == sembrador_id).first()
         if not sembrador:
             raise HTTPException(status_code=404, detail="Sembrador no encontrado")
         
         # Parsear fecha (soportar formato "YYYY-MM-DD" y "YYYY-MM-DDTHH:MM:SS")
         fecha_visita = datetime.now()
-        if data.get("fecha_visita"):
-            fecha_str = data.get("fecha_visita")
+        fecha_str = data.get("fecha_visita")
+        if fecha_str:
             try:
-                # Intentar primero como datetime completo
-                if "T" in fecha_str:
-                    fecha_visita = datetime.fromisoformat(fecha_str.replace("Z", "+00:00"))
-                else:
-                    # Solo fecha, agregar hora actual
-                    fecha_visita = datetime.strptime(fecha_str, "%Y-%m-%d")
-            except ValueError:
-                # Fallback a fecha actual si hay error
+                if isinstance(fecha_str, str):
+                    if "T" in fecha_str:
+                        fecha_visita = datetime.fromisoformat(fecha_str.replace("Z", "+00:00"))
+                    else:
+                        fecha_visita = datetime.strptime(fecha_str, "%Y-%m-%d")
+            except ValueError as e:
+                print(f"⚠️ Error parseando fecha '{fecha_str}': {e}")
                 fecha_visita = datetime.now()
+        
+        # Convertir avance_porcentaje a float
+        avance = data.get("avance_porcentaje", 0)
+        try:
+            avance = float(avance) if avance else 0.0
+        except (ValueError, TypeError):
+            avance = 0.0
+        
+        print(f"📅 Fecha: {fecha_visita}, 📊 Avance: {avance}")
         
         # Crear nuevo seguimiento
         nuevo_seguimiento = Seguimiento(
-            sembrador_id=data.get("sembrador_id"),
+            sembrador_id=sembrador_id,
             user_id=user_id,
             fecha_visita=fecha_visita,
-            estado_cultivo=data.get("estado_cultivo"),
-            observaciones=data.get("observaciones"),
-            avance_porcentaje=data.get("avance_porcentaje", 0.0),
-            foto_url=data.get("foto_url")
+            estado_cultivo=data.get("estado_cultivo", ""),
+            observaciones=data.get("observaciones", ""),
+            avance_porcentaje=avance,
+            foto_url=data.get("foto_url", "")
         )
         
         db.add(nuevo_seguimiento)
         db.commit()
         db.refresh(nuevo_seguimiento)
+        
+        print(f"✅ Seguimiento creado con ID: {nuevo_seguimiento.id}")
         
         return {
             "success": True,
@@ -104,10 +125,15 @@ def crear_seguimiento(
             "mensaje": "Seguimiento creado exitosamente"
         }
     
+    except HTTPException:
+        raise
     except ValueError as e:
+        print(f"❌ ValueError: {e}")
         raise HTTPException(status_code=400, detail=f"Error en formato de datos: {str(e)}")
     except Exception as e:
+        print(f"❌ Exception: {type(e).__name__}: {e}")
         db.rollback()
+        raise HTTPException(status_code=500, detail=f"Error al crear seguimiento: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Error al crear seguimiento: {str(e)}")
 
 
