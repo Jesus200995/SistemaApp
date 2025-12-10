@@ -145,15 +145,98 @@
             <div class="form-row">
               <div class="form-group">
                 <label class="form-label">Cultivo Principal *</label>
-                <div class="input-wrapper">
+                <div class="select-wrapper">
                   <Leaf class="input-icon" />
-                  <input
+                  <select
                     v-model="form.cultivo_principal"
-                    type="text"
-                    placeholder="Maíz, Papa, etc."
-                    class="form-input"
+                    class="form-select"
                     required
-                  />
+                  >
+                    <option value="">-- Selecciona cultivo --</option>
+                    <!-- Granos básicos -->
+                    <option value="Maíz">Maíz</option>
+                    <option value="Frijol">Frijol</option>
+                    <option value="Trigo">Trigo</option>
+                    <option value="Arroz">Arroz</option>
+                    <option value="Sorgo">Sorgo</option>
+                    <option value="Avena">Avena</option>
+                    <option value="Cebada">Cebada</option>
+                    <!-- Hortalizas -->
+                    <option value="Tomate">Tomate</option>
+                    <option value="Chile">Chile</option>
+                    <option value="Cebolla">Cebolla</option>
+                    <option value="Calabaza">Calabaza</option>
+                    <option value="Pepino">Pepino</option>
+                    <option value="Zanahoria">Zanahoria</option>
+                    <option value="Lechuga">Lechuga</option>
+                    <option value="Brócoli">Brócoli</option>
+                    <option value="Coliflor">Coliflor</option>
+                    <option value="Espinaca">Espinaca</option>
+                    <option value="Chayote">Chayote</option>
+                    <option value="Ejote">Ejote</option>
+                    <option value="Nopal">Nopal</option>
+                    <!-- Frutas -->
+                    <option value="Aguacate">Aguacate</option>
+                    <option value="Limón">Limón</option>
+                    <option value="Naranja">Naranja</option>
+                    <option value="Mango">Mango</option>
+                    <option value="Plátano">Plátano</option>
+                    <option value="Papaya">Papaya</option>
+                    <option value="Piña">Piña</option>
+                    <option value="Sandía">Sandía</option>
+                    <option value="Melón">Melón</option>
+                    <option value="Fresa">Fresa</option>
+                    <option value="Guayaba">Guayaba</option>
+                    <option value="Manzana">Manzana</option>
+                    <option value="Durazno">Durazno</option>
+                    <option value="Uva">Uva</option>
+                    <option value="Coco">Coco</option>
+                    <option value="Tamarindo">Tamarindo</option>
+                    <option value="Ciruela">Ciruela</option>
+                    <option value="Zarzamora">Zarzamora</option>
+                    <option value="Frambuesa">Frambuesa</option>
+                    <option value="Arándano">Arándano</option>
+                    <!-- Oleaginosas -->
+                    <option value="Soya">Soya</option>
+                    <option value="Cacahuate">Cacahuate</option>
+                    <option value="Ajonjolí">Ajonjolí</option>
+                    <option value="Girasol">Girasol</option>
+                    <option value="Cártamo">Cártamo</option>
+                    <!-- Cultivos industriales -->
+                    <option value="Caña de azúcar">Caña de azúcar</option>
+                    <option value="Café">Café</option>
+                    <option value="Cacao">Cacao</option>
+                    <option value="Algodón">Algodón</option>
+                    <option value="Tabaco">Tabaco</option>
+                    <option value="Agave">Agave</option>
+                    <option value="Henequén">Henequén</option>
+                    <option value="Vainilla">Vainilla</option>
+                    <!-- Tubérculos -->
+                    <option value="Papa">Papa</option>
+                    <option value="Camote">Camote</option>
+                    <option value="Yuca">Yuca</option>
+                    <option value="Jícama">Jícama</option>
+                    <!-- Especias y condimentos -->
+                    <option value="Cilantro">Cilantro</option>
+                    <option value="Perejil">Perejil</option>
+                    <option value="Epazote">Epazote</option>
+                    <option value="Orégano">Orégano</option>
+                    <option value="Hierbabuena">Hierbabuena</option>
+                    <!-- Forrajes -->
+                    <option value="Alfalfa">Alfalfa</option>
+                    <option value="Pasto">Pasto</option>
+                    <option value="Maíz forrajero">Maíz forrajero</option>
+                    <!-- Otros -->
+                    <option value="Amaranto">Amaranto</option>
+                    <option value="Chía">Chía</option>
+                    <option value="Quinoa">Quinoa</option>
+                    <option value="Jamaica">Jamaica</option>
+                    <option value="Achiote">Achiote</option>
+                    <option value="Palma de aceite">Palma de aceite</option>
+                    <option value="Hule">Hule</option>
+                    <option value="Flores">Flores</option>
+                    <option value="Otro">Otro</option>
+                  </select>
                 </div>
               </div>
 
