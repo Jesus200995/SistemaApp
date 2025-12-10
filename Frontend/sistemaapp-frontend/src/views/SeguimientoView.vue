@@ -304,6 +304,27 @@
         </section>
       </div>
     </main>
+
+    <!-- Modal de Éxito -->
+    <Teleport to="body">
+      <Transition name="modal-fade">
+        <div v-if="showSuccessModal" class="success-modal-overlay" @click.self="showSuccessModal = false">
+          <div class="success-modal">
+            <div class="success-modal-icon">
+              <svg viewBox="0 0 24 24" fill="none" class="success-check">
+                <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" class="success-circle"/>
+                <path d="M8 12l2.5 2.5L16 9" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="success-path"/>
+              </svg>
+            </div>
+            <h3 class="success-modal-title">¡Creado con éxito!</h3>
+            <p class="success-modal-text">El seguimiento se ha guardado correctamente</p>
+            <div class="success-modal-progress">
+              <div class="success-progress-bar"></div>
+            </div>
+          </div>
+        </div>
+      </Transition>
+    </Teleport>
   </div>
 </template>
 
@@ -398,6 +419,9 @@ const cameraInput = ref<HTMLInputElement | null>(null)
 // Estado de foto
 const fotoPreview = ref<string | null>(null)
 const subiendoFoto = ref(false)
+
+// Modal de éxito
+const showSuccessModal = ref(false)
 
 // Funciones para manejo de fotos
 const triggerFileInput = () => {
@@ -508,7 +532,8 @@ const crearSeguimiento = async () => {
       headers: { Authorization: `Bearer ${auth.token}` }
     })
     
-    alert('✅ Seguimiento creado exitosamente')
+    // Mostrar modal de éxito
+    showSuccessModal.value = true
     
     // Limpiar formulario y foto
     formulario.value = {
@@ -522,7 +547,12 @@ const crearSeguimiento = async () => {
     fotoPreview.value = null
     
     await obtenerSeguimientos()
-    activeTab.value = 'Mis Seguimientos'
+    
+    // Cerrar modal después de 2 segundos y cambiar a tab
+    setTimeout(() => {
+      showSuccessModal.value = false
+      activeTab.value = 'Mis Seguimientos'
+    }, 2000)
   } catch (error) {
     console.error('Error:', error)
     alert('❌ Error al crear seguimiento')
@@ -1890,6 +1920,191 @@ onMounted(async () => {
 
   .preview-image {
     max-height: 200px;
+  }
+}
+
+/* ========== Modal de Éxito ========== */
+.success-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  padding: 1rem;
+}
+
+.success-modal {
+  background: linear-gradient(145deg, #1e293b 0%, #0f172a 100%);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  border-radius: 20px;
+  padding: 2rem 2.5rem;
+  text-align: center;
+  max-width: 320px;
+  width: 100%;
+  box-shadow: 
+    0 25px 50px -12px rgba(0, 0, 0, 0.5),
+    0 0 40px rgba(16, 185, 129, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  animation: modal-pop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes modal-pop {
+  0% {
+    opacity: 0;
+    transform: scale(0.8) translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.success-modal-icon {
+  width: 70px;
+  height: 70px;
+  margin: 0 auto 1.25rem;
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.2) 0%, rgba(16, 185, 129, 0.05) 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.success-modal-icon::before {
+  content: '';
+  position: absolute;
+  inset: -3px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #10b981, #059669);
+  opacity: 0.3;
+  animation: pulse-ring 1.5s ease-out infinite;
+}
+
+@keyframes pulse-ring {
+  0% {
+    transform: scale(1);
+    opacity: 0.3;
+  }
+  100% {
+    transform: scale(1.3);
+    opacity: 0;
+  }
+}
+
+.success-check {
+  width: 40px;
+  height: 40px;
+  color: #10b981;
+  position: relative;
+  z-index: 1;
+}
+
+.success-circle {
+  stroke-dasharray: 63;
+  stroke-dashoffset: 63;
+  animation: draw-circle 0.6s ease forwards 0.2s;
+}
+
+.success-path {
+  stroke-dasharray: 20;
+  stroke-dashoffset: 20;
+  animation: draw-check 0.4s ease forwards 0.6s;
+}
+
+@keyframes draw-circle {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes draw-check {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.success-modal-title {
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: #f1f5f9;
+  margin-bottom: 0.5rem;
+  letter-spacing: -0.02em;
+}
+
+.success-modal-text {
+  font-size: 0.9rem;
+  color: #94a3b8;
+  margin-bottom: 1.5rem;
+  line-height: 1.5;
+}
+
+.success-modal-progress {
+  width: 100%;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.success-progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #10b981, #84cc16);
+  border-radius: 2px;
+  animation: progress-shrink 2s linear forwards;
+}
+
+@keyframes progress-shrink {
+  from {
+    width: 100%;
+  }
+  to {
+    width: 0%;
+  }
+}
+
+/* Transiciones del modal */
+.modal-fade-enter-active,
+.modal-fade-leave-active {
+  transition: all 0.3s ease;
+}
+
+.modal-fade-enter-from,
+.modal-fade-leave-to {
+  opacity: 0;
+}
+
+.modal-fade-enter-from .success-modal,
+.modal-fade-leave-to .success-modal {
+  transform: scale(0.9) translateY(10px);
+}
+
+/* Responsive modal */
+@media (max-width: 400px) {
+  .success-modal {
+    padding: 1.5rem 1.75rem;
+    max-width: 280px;
+  }
+  
+  .success-modal-icon {
+    width: 60px;
+    height: 60px;
+  }
+  
+  .success-check {
+    width: 32px;
+    height: 32px;
+  }
+  
+  .success-modal-title {
+    font-size: 1.2rem;
+  }
+  
+  .success-modal-text {
+    font-size: 0.85rem;
   }
 }
 </style>

@@ -4,7 +4,8 @@ from sqlalchemy.orm import Session
 from sqlalchemy import and_, or_
 from database import get_db
 from models import Seguimiento, Sembrador, User
-from datetime import datetime
+from datetime import datetime, timezone
+import pytz
 import jwt
 import os
 import uuid
@@ -13,6 +14,9 @@ from dotenv import load_dotenv
 
 load_dotenv()
 SECRET = os.getenv("JWT_SECRET", "mi_clave_jwt_2025")
+
+# Zona horaria de Ciudad de México
+CDMX_TZ = pytz.timezone('America/Mexico_City')
 
 # 📁 Directorio de uploads
 UPLOAD_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), "uploads", "seguimientos")
@@ -79,19 +83,26 @@ def crear_seguimiento(
         if not sembrador:
             raise HTTPException(status_code=404, detail="Sembrador no encontrado")
         
-        # Parsear fecha (soportar formato "YYYY-MM-DD" y "YYYY-MM-DDTHH:MM:SS")
-        fecha_visita = datetime.now()
+        # Parsear fecha con zona horaria de Ciudad de México
+        # El frontend envía "YYYY-MM-DD" que es la fecha seleccionada por el usuario en CDMX
+        fecha_visita = datetime.now(CDMX_TZ)
         fecha_str = data.get("fecha_visita")
         if fecha_str:
             try:
                 if isinstance(fecha_str, str):
                     if "T" in fecha_str:
-                        fecha_visita = datetime.fromisoformat(fecha_str.replace("Z", "+00:00"))
+                        # Si viene con tiempo, parsearlo y localizarlo a CDMX
+                        fecha_naive = datetime.fromisoformat(fecha_str.replace("Z", ""))
+                        fecha_visita = CDMX_TZ.localize(fecha_naive)
                     else:
-                        fecha_visita = datetime.strptime(fecha_str, "%Y-%m-%d")
+                        # Formato "YYYY-MM-DD" - crear datetime a medianoche en CDMX
+                        fecha_naive = datetime.strptime(fecha_str, "%Y-%m-%d")
+                        # Establecer a mediodía de ese día en CDMX para evitar problemas de zona horaria
+                        fecha_naive = fecha_naive.replace(hour=12, minute=0, second=0)
+                        fecha_visita = CDMX_TZ.localize(fecha_naive)
             except ValueError as e:
                 print(f"⚠️ Error parseando fecha '{fecha_str}': {e}")
-                fecha_visita = datetime.now()
+                fecha_visita = datetime.now(CDMX_TZ)
         
         # Convertir avance_porcentaje a float
         avance = data.get("avance_porcentaje", 0)
