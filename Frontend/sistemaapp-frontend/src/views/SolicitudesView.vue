@@ -50,7 +50,10 @@
               <div class="form-grid">
                 <!-- Tipo de solicitud -->
                 <div class="form-group">
-                  <label class="form-label">Tipo de Solicitud *</label>
+                  <label class="form-label">
+                    <FileText :size="14" class="label-icon" />
+                    Tipo de Solicitud *
+                  </label>
                   <select v-model="form.tipo" class="form-select" required>
                     <option value="">-- Selecciona tipo de solicitud --</option>
                     <option value="cambio_superior">Cambio de superior</option>
@@ -61,21 +64,54 @@
                   </select>
                 </div>
 
-                <!-- ID de destino -->
+                <!-- Usuario Destino - Dropdown mejorado -->
                 <div class="form-group">
-                  <label class="form-label">Usuario Destino (ID)</label>
-                  <input
-                    v-model="form.destino_id"
-                    type="number"
-                    placeholder="Ej: 5"
-                    class="form-input"
-                  />
-                  <p class="form-hint">ID del usuario que recibirá la solicitud</p>
+                  <label class="form-label">
+                    <UserCheck :size="14" class="label-icon" />
+                    Enviar a *
+                  </label>
+                  <div class="select-wrapper">
+                    <select 
+                      v-model="form.destino_id" 
+                      class="form-select"
+                      :class="{ 'loading-select': loadingUsuarios }"
+                      required
+                    >
+                      <option value="">-- Selecciona destinatario --</option>
+                      <optgroup 
+                        v-for="grupo in usuariosAgrupados" 
+                        :key="grupo.rol" 
+                        :label="formatRol(grupo.rol)"
+                      >
+                        <option 
+                          v-for="usuario in grupo.usuarios" 
+                          :key="usuario.id" 
+                          :value="usuario.id"
+                        >
+                          {{ usuario.nombre }} ({{ usuario.territorio }})
+                        </option>
+                      </optgroup>
+                    </select>
+                    <div v-if="loadingUsuarios" class="select-loading">
+                      <div class="mini-spinner"></div>
+                    </div>
+                  </div>
+                  <p class="form-hint">
+                    <span v-if="usuariosDisponibles.length === 0 && !loadingUsuarios">
+                      No hay usuarios disponibles
+                    </span>
+                    <span v-else>
+                      {{ usuariosDisponibles.length }} usuario(s) disponible(s)
+                    </span>
+                  </p>
                 </div>
 
                 <!-- Descripción -->
                 <div class="form-group form-group-full">
-                  <label class="form-label">Descripción o Motivo *</label>
+                  <label class="form-label">
+                    <MessageSquare :size="14" class="label-icon" />
+                    Descripción o Motivo *
+                  </label>
                   <textarea
                     v-model="form.descripcion"
                     placeholder="Detalla el motivo de tu solicitud..."
@@ -86,7 +122,7 @@
                 </div>
 
                 <!-- Botón de envío -->
-                <button type="submit" class="form-button" :disabled="loading">
+                <button type="submit" class="form-button" :disabled="loading || !form.destino_id">
                   <Send class="button-icon" />
                   <span>{{ loading ? 'Enviando...' : 'Enviar Solicitud' }}</span>
                 </button>
@@ -194,12 +230,66 @@ import axios from 'axios'
 import Swal from 'sweetalert2'
 import { useAuthStore } from '../stores/auth'
 import { getSecureApiUrl } from '../utils/api'
-import { FileText, Send, Check, X, ArrowLeft } from 'lucide-vue-next'
+import { FileText, Send, Check, X, ArrowLeft, UserCheck, MessageSquare } from 'lucide-vue-next'
 
 const auth = useAuthStore()
-const form = ref({ tipo: '', destino_id: null, descripcion: '' })
+const form = ref({ tipo: '', destino_id: null as number | null, descripcion: '' })
 const solicitudes = ref([])
 const loading = ref(false)
+
+// Usuarios disponibles para enviar solicitud
+const usuariosDisponibles = ref<any[]>([])
+const loadingUsuarios = ref(false)
+
+// Agrupar usuarios por rol
+const usuariosAgrupados = computed(() => {
+  const grupos: { [key: string]: any[] } = {}
+  
+  usuariosDisponibles.value.forEach(usuario => {
+    if (!grupos[usuario.rol]) {
+      grupos[usuario.rol] = []
+    }
+    grupos[usuario.rol].push(usuario)
+  })
+  
+  // Ordenar por jerarquía: admin > territorial > facilitador > tecnico
+  const ordenRoles = ['admin', 'territorial', 'facilitador', 'tecnico']
+  
+  return ordenRoles
+    .filter(rol => grupos[rol] && grupos[rol].length > 0)
+    .map(rol => ({
+      rol,
+      usuarios: grupos[rol]
+    }))
+})
+
+// Formatear nombre del rol
+const formatRol = (rol: string): string => {
+  const roles: { [key: string]: string } = {
+    admin: '👑 Administradores',
+    territorial: '🌍 Territoriales',
+    facilitador: '🤝 Facilitadores',
+    tecnico: '🔧 Técnicos'
+  }
+  return roles[rol] || rol
+}
+
+// Cargar usuarios disponibles
+const cargarUsuariosDisponibles = async () => {
+  loadingUsuarios.value = true
+  try {
+    const apiUrl = getSecureApiUrl()
+    const res = await axios.get(`${apiUrl}/users/superiores`, {
+      headers: { Authorization: `Bearer ${auth.token}` }
+    })
+    usuariosDisponibles.value = res.data.items || []
+  } catch (err) {
+    console.error('Error al cargar usuarios:', err)
+    usuariosDisponibles.value = []
+  } finally {
+    loadingUsuarios.value = false
+  }
+}
 
 // Funciones auxiliares
 const formatTipo = (tipo: string) => {
@@ -223,12 +313,16 @@ const formatEstado = (estado: string) => {
 }
 
 const formatFecha = (fecha: string) => {
-  return new Date(fecha).toLocaleString('es-ES', {
+  // Usar zona horaria CDMX
+  const fechaStr = fecha.includes('T') ? fecha.split('T')[0] : fecha
+  const [year, month, day] = fechaStr.split('-').map(Number)
+  const date = new Date(year, month - 1, day, 12, 0, 0)
+  
+  return date.toLocaleDateString('es-MX', {
     year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-    hour: '2-digit',
-    minute: '2-digit'
+    month: 'short',
+    day: 'numeric',
+    timeZone: 'America/Mexico_City'
   })
 }
 
@@ -336,6 +430,7 @@ const recargarSolicitudes = async () => {
   loading.value = true
   try {
     await getSolicitudes()
+    await cargarUsuariosDisponibles()
     await Swal.fire('✅ Recargado', 'Las solicitudes se han actualizado', 'success')
   } catch (err) {
     await Swal.fire('❌ Error', 'No se pudo recargar las solicitudes', 'error')
@@ -344,7 +439,12 @@ const recargarSolicitudes = async () => {
   }
 }
 
-onMounted(getSolicitudes)
+onMounted(async () => {
+  await Promise.all([
+    getSolicitudes(),
+    cargarUsuariosDisponibles()
+  ])
+})
 </script>
 
 <style scoped>
@@ -650,6 +750,7 @@ onMounted(getSolicitudes)
   font-size: 0.9rem;
   font-family: inherit;
   transition: all 0.3s ease;
+  width: 100%;
 }
 
 .form-select:focus,
@@ -664,6 +765,57 @@ onMounted(getSolicitudes)
 .form-input,
 .form-select {
   height: 42px;
+}
+
+/* ========== SELECT MEJORADO ========== */
+.select-wrapper {
+  position: relative;
+}
+
+.form-select optgroup {
+  background: #1e293b;
+  color: #84cc16;
+  font-weight: 600;
+  padding: 0.5rem;
+}
+
+.form-select option {
+  background: #0f172a;
+  color: #f1f5f9;
+  padding: 0.5rem;
+}
+
+.loading-select {
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+.select-loading {
+  position: absolute;
+  right: 2.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.mini-spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(16, 185, 129, 0.3);
+  border-top-color: #10b981;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ========== LABEL CON ICONO ========== */
+.label-icon {
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: 0.35rem;
+  color: #84cc16;
 }
 
 .form-textarea {

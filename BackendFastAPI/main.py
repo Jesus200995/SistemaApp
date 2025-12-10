@@ -2,7 +2,7 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import JSONResponse
-from routes import auth, layers, chat, notificaciones, sembradores, seguimientos, solicitudes
+from routes import auth, layers, chat, notificaciones, sembradores, seguimientos, solicitudes, users
 from database import Base, engine
 import os
 
@@ -61,6 +61,7 @@ app.include_router(notificaciones.router)
 app.include_router(sembradores.router)
 app.include_router(seguimientos.router)
 app.include_router(solicitudes.router)
+app.include_router(users.router)
 
 # 📁 Servir archivos estáticos (uploads)
 app.mount("/uploads", StaticFiles(directory=os.path.join(os.path.dirname(__file__), "uploads")), name="uploads")
