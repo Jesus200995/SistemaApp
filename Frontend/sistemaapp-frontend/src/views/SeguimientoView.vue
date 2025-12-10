@@ -582,7 +582,21 @@ const recargarSeguimientos = async () => {
   }
 }
 
-onMounted(() => {
+onMounted(async () => {
+  // Esperar a que el token esté disponible
+  if (!auth.token) {
+    console.warn('⚠️ Token no disponible, esperando...')
+    // Intentar obtener del localStorage directamente
+    const tokenFromStorage = localStorage.getItem('token')
+    if (tokenFromStorage) {
+      console.log('✅ Token recuperado de localStorage')
+    } else {
+      console.error('❌ No hay token disponible')
+      return
+    }
+  }
+  console.log('🔑 Token disponible:', auth.token ? 'Sí' : 'No')
+  
   obtenerSembradores()
   obtenerSeguimientos()
   cargarReportes()

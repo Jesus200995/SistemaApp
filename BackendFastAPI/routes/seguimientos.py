@@ -26,7 +26,8 @@ def get_current_user(credentials: HTTPAuthorizationCredentials = Security(bearer
     """Extrae y valida el token JWT"""
     try:
         payload = jwt.decode(credentials.credentials, SECRET, algorithms=["HS256"])
-        user_id = payload.get("sub")
+        # El token usa "id" como clave, no "sub"
+        user_id = payload.get("id")
         rol = payload.get("rol")
         
         if not user_id:
