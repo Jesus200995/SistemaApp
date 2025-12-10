@@ -50,7 +50,7 @@ def crear_seguimiento(
     Body esperado:
     {
         "sembrador_id": 1,
-        "fecha_visita": "2024-01-15T10:30:00",
+        "fecha_visita": "2024-01-15" o "2024-01-15T10:30:00",
         "estado_cultivo": "Germinando",
         "observaciones": "Cultivo en buen estado",
         "avance_porcentaje": 25.5,
@@ -68,11 +68,26 @@ def crear_seguimiento(
         if not sembrador:
             raise HTTPException(status_code=404, detail="Sembrador no encontrado")
         
+        # Parsear fecha (soportar formato "YYYY-MM-DD" y "YYYY-MM-DDTHH:MM:SS")
+        fecha_visita = datetime.now()
+        if data.get("fecha_visita"):
+            fecha_str = data.get("fecha_visita")
+            try:
+                # Intentar primero como datetime completo
+                if "T" in fecha_str:
+                    fecha_visita = datetime.fromisoformat(fecha_str.replace("Z", "+00:00"))
+                else:
+                    # Solo fecha, agregar hora actual
+                    fecha_visita = datetime.strptime(fecha_str, "%Y-%m-%d")
+            except ValueError:
+                # Fallback a fecha actual si hay error
+                fecha_visita = datetime.now()
+        
         # Crear nuevo seguimiento
         nuevo_seguimiento = Seguimiento(
             sembrador_id=data.get("sembrador_id"),
             user_id=user_id,
-            fecha_visita=datetime.fromisoformat(data.get("fecha_visita")) if data.get("fecha_visita") else datetime.now(),
+            fecha_visita=fecha_visita,
             estado_cultivo=data.get("estado_cultivo"),
             observaciones=data.get("observaciones"),
             avance_porcentaje=data.get("avance_porcentaje", 0.0),
