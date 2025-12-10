@@ -378,6 +378,242 @@
         </section>
       </div>
     </main>
+
+    <!-- Modal de Edición -->
+    <Teleport to="body">
+      <div v-if="showEditModal" class="modal-overlay" @click.self="cerrarModalEdicion">
+        <div class="modal-edicion" v-motion
+          :initial="{ opacity: 0, scale: 0.9, y: 20 }"
+          :enter="{ opacity: 1, scale: 1, y: 0, transition: { duration: 300 } }"
+        >
+          <div class="modal-header">
+            <h2 class="modal-title">Editar Sembrador</h2>
+            <button @click="cerrarModalEdicion" class="modal-close-btn" title="Cerrar">
+              <X class="modal-close-icon" />
+            </button>
+          </div>
+
+          <form @submit.prevent="guardarEdicion" class="modal-form">
+            <!-- Fila 1: Nombre y CURP -->
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Nombre Completo *</label>
+                <div class="input-wrapper">
+                  <User class="input-icon" />
+                  <input
+                    v-model="form.nombre"
+                    type="text"
+                    placeholder="JUAN PÉREZ GARCÍA"
+                    class="form-input"
+                    required
+                    minlength="2"
+                    @input="form.nombre = form.nombre.toUpperCase()"
+                  />
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">CURP <span class="optional-label">(opcional)</span></label>
+                <div class="input-wrapper">
+                  <IdCard class="input-icon" />
+                  <input
+                    v-model="form.curp"
+                    type="text"
+                    placeholder="Ej: GAPA850101HDFRRL09"
+                    class="form-input"
+                    maxlength="18"
+                    minlength="18"
+                    pattern="[A-Z]{4}[0-9]{6}[HM][A-Z]{5}[A-Z0-9]{2}"
+                    @input="form.curp = form.curp.toUpperCase().replace(/[^A-Z0-9]/g, '')"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <!-- Fila 2: Comunidad y Territorio -->
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Comunidad *</label>
+                <div class="input-wrapper">
+                  <MapPin class="input-icon" />
+                  <input
+                    v-model="form.comunidad"
+                    type="text"
+                    placeholder="La Esperanza"
+                    class="form-input"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Territorio *</label>
+                <div class="select-wrapper">
+                  <Globe class="input-icon" />
+                  <select
+                    v-model="form.territorio"
+                    class="form-select"
+                    required
+                  >
+                    <option value="">-- Selecciona --</option>
+                    <option value="Acapulco - Centro - Norte - Tierra Caliente">Acapulco - Centro - Norte - Tierra Caliente</option>
+                    <option value="Acayucan">Acayucan</option>
+                    <option value="Balancán">Balancán</option>
+                    <option value="Chihuahua / Sonora">Chihuahua / Sonora</option>
+                    <option value="Colima">Colima</option>
+                    <option value="Comalcalco">Comalcalco</option>
+                    <option value="Córdoba">Córdoba</option>
+                    <option value="Costa Chica - Montaña">Costa Chica - Montaña</option>
+                    <option value="Costa Grande - Sierra">Costa Grande - Sierra</option>
+                    <option value="Durango / Zacatecas">Durango / Zacatecas</option>
+                    <option value="Hidalgo">Hidalgo</option>
+                    <option value="Istmo">Istmo</option>
+                    <option value="Michoacán">Michoacán</option>
+                    <option value="Mixteca">Mixteca</option>
+                    <option value="Morelos">Morelos</option>
+                    <option value="Nayarit / Jalisco">Nayarit / Jalisco</option>
+                    <option value="Ocosingo">Ocosingo</option>
+                    <option value="Palenque">Palenque</option>
+                    <option value="Papantla">Papantla</option>
+                    <option value="Pichucalco">Pichucalco</option>
+                    <option value="Puebla">Puebla</option>
+                    <option value="San Luis Potosí">San Luis Potosí</option>
+                    <option value="Sinaloa">Sinaloa</option>
+                    <option value="Tamaulipas">Tamaulipas</option>
+                    <option value="Tantoyuca">Tantoyuca</option>
+                    <option value="Tapachula">Tapachula</option>
+                    <option value="Teapa">Teapa</option>
+                    <option value="Tlaxcala / Estado de México">Tlaxcala / Estado de México</option>
+                    <option value="Tzucacab / Opb">Tzucacab / Opb</option>
+                    <option value="Xpujil">Xpujil</option>
+                    <option value="Oficinas Centrales">Oficinas Centrales</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <!-- Fila 3: Cultivo y Teléfono -->
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Cultivo Principal *</label>
+                <div class="select-wrapper">
+                  <Leaf class="input-icon" />
+                  <select
+                    v-model="form.cultivo_principal"
+                    class="form-select"
+                    required
+                  >
+                    <option value="">-- Selecciona cultivo --</option>
+                    <option value="Maíz">Maíz</option>
+                    <option value="Frijol">Frijol</option>
+                    <option value="Trigo">Trigo</option>
+                    <option value="Arroz">Arroz</option>
+                    <option value="Sorgo">Sorgo</option>
+                    <option value="Avena">Avena</option>
+                    <option value="Cebada">Cebada</option>
+                    <option value="Tomate">Tomate</option>
+                    <option value="Chile">Chile</option>
+                    <option value="Cebolla">Cebolla</option>
+                    <option value="Calabaza">Calabaza</option>
+                    <option value="Pepino">Pepino</option>
+                    <option value="Zanahoria">Zanahoria</option>
+                    <option value="Lechuga">Lechuga</option>
+                    <option value="Brócoli">Brócoli</option>
+                    <option value="Coliflor">Coliflor</option>
+                    <option value="Espinaca">Espinaca</option>
+                    <option value="Chayote">Chayote</option>
+                    <option value="Ejote">Ejote</option>
+                    <option value="Nopal">Nopal</option>
+                    <option value="Aguacate">Aguacate</option>
+                    <option value="Limón">Limón</option>
+                    <option value="Naranja">Naranja</option>
+                    <option value="Mango">Mango</option>
+                    <option value="Plátano">Plátano</option>
+                    <option value="Papaya">Papaya</option>
+                    <option value="Piña">Piña</option>
+                    <option value="Sandía">Sandía</option>
+                    <option value="Melón">Melón</option>
+                    <option value="Fresa">Fresa</option>
+                    <option value="Guayaba">Guayaba</option>
+                    <option value="Manzana">Manzana</option>
+                    <option value="Durazno">Durazno</option>
+                    <option value="Uva">Uva</option>
+                    <option value="Coco">Coco</option>
+                    <option value="Tamarindo">Tamarindo</option>
+                    <option value="Ciruela">Ciruela</option>
+                    <option value="Zarzamora">Zarzamora</option>
+                    <option value="Frambuesa">Frambuesa</option>
+                    <option value="Arándano">Arándano</option>
+                    <option value="Soya">Soya</option>
+                    <option value="Cacahuate">Cacahuate</option>
+                    <option value="Ajonjolí">Ajonjolí</option>
+                    <option value="Girasol">Girasol</option>
+                    <option value="Cártamo">Cártamo</option>
+                    <option value="Caña de azúcar">Caña de azúcar</option>
+                    <option value="Café">Café</option>
+                    <option value="Cacao">Cacao</option>
+                    <option value="Algodón">Algodón</option>
+                    <option value="Tabaco">Tabaco</option>
+                    <option value="Agave">Agave</option>
+                    <option value="Henequén">Henequén</option>
+                    <option value="Vainilla">Vainilla</option>
+                    <option value="Papa">Papa</option>
+                    <option value="Camote">Camote</option>
+                    <option value="Yuca">Yuca</option>
+                    <option value="Jícama">Jícama</option>
+                    <option value="Cilantro">Cilantro</option>
+                    <option value="Perejil">Perejil</option>
+                    <option value="Epazote">Epazote</option>
+                    <option value="Orégano">Orégano</option>
+                    <option value="Hierbabuena">Hierbabuena</option>
+                    <option value="Alfalfa">Alfalfa</option>
+                    <option value="Pasto">Pasto</option>
+                    <option value="Maíz forrajero">Maíz forrajero</option>
+                    <option value="Amaranto">Amaranto</option>
+                    <option value="Chía">Chía</option>
+                    <option value="Quinoa">Quinoa</option>
+                    <option value="Jamaica">Jamaica</option>
+                    <option value="Achiote">Achiote</option>
+                    <option value="Palma de aceite">Palma de aceite</option>
+                    <option value="Hule">Hule</option>
+                    <option value="Flores">Flores</option>
+                    <option value="Otro">Otro</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Teléfono *</label>
+                <div class="input-wrapper">
+                  <Phone class="input-icon" />
+                  <input
+                    v-model="form.telefono"
+                    type="tel"
+                    placeholder="10 dígitos"
+                    class="form-input"
+                    required
+                    maxlength="10"
+                    minlength="10"
+                    pattern="[0-9]{10}"
+                    @input="form.telefono = form.telefono.replace(/[^0-9]/g, '').slice(0, 10)"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <!-- Botones -->
+            <div class="modal-actions">
+              <button type="button" @click="cerrarModalEdicion" class="btn-cancelar">
+                Cancelar
+              </button>
+              <button type="submit" class="btn-guardar" :disabled="loading">
+                {{ loading ? 'Guardando...' : 'Guardar Cambios' }}
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </Teleport>
   </div>
 </template>
 
@@ -396,13 +632,16 @@ import {
   Trash2,
   ArrowLeft,
   IdCard,
-  Globe
+  Globe,
+  X
 } from 'lucide-vue-next'
 import Swal from 'sweetalert2'
 
 const auth = useAuthStore()
 const sembradores = ref([])
 const loading = ref(false)
+const showEditModal = ref(false)
+const editingId = ref<number | null>(null)
 
 const form = ref({
   nombre: '',
@@ -485,10 +724,79 @@ const crearSembrador = async () => {
   }
 }
 
-// Editar sembrador (placeholder para futura implementación)
+// Editar sembrador - abrir modal
 const editarSembrador = (sembrador: any) => {
-  form.value = { ...sembrador }
-  Swal.fire('ℹ️ Información', 'La edición estará disponible pronto', 'info')
+  editingId.value = sembrador.id
+  form.value = {
+    nombre: sembrador.nombre || '',
+    curp: sembrador.curp || '',
+    comunidad: sembrador.comunidad || '',
+    territorio: sembrador.territorio || '',
+    cultivo_principal: sembrador.cultivo_principal || '',
+    telefono: sembrador.telefono || ''
+  }
+  showEditModal.value = true
+}
+
+// Guardar cambios de edición
+const guardarEdicion = async () => {
+  try {
+    // Validar campos obligatorios
+    if (!form.value.nombre || !form.value.comunidad || !form.value.cultivo_principal || !form.value.telefono) {
+      Swal.fire('❌ Error', 'Por favor completa todos los campos obligatorios', 'error')
+      return
+    }
+
+    // Validar territorio obligatorio
+    if (!form.value.territorio) {
+      Swal.fire('❌ Error', 'Debes seleccionar un territorio', 'error')
+      return
+    }
+
+    // Validar CURP si se proporciona
+    if (form.value.curp && form.value.curp.trim()) {
+      const curpValue = form.value.curp.trim().toUpperCase()
+      if (curpValue.length !== 18) {
+        Swal.fire('❌ Error', `El CURP debe tener exactamente 18 caracteres. Actualmente tiene ${curpValue.length} caracteres.`, 'error')
+        return
+      }
+      const curpRegex = /^[A-Z]{4}[0-9]{6}[HM][A-Z]{5}[A-Z0-9]{2}$/
+      if (!curpRegex.test(curpValue)) {
+        Swal.fire('❌ Error', 'El CURP no tiene un formato válido.\n\nFormato esperado: AAAA######HAAAAA##', 'error')
+        return
+      }
+    }
+
+    loading.value = true
+    const apiUrl = getSecureApiUrl()
+
+    await axios.put(`${apiUrl}/sembradores/${editingId.value}`, form.value, {
+      headers: { Authorization: `Bearer ${auth.token}` }
+    })
+
+    Swal.fire('✅ Éxito', 'Sembrador actualizado correctamente', 'success')
+    cerrarModalEdicion()
+    await getSembradores()
+  } catch (err: any) {
+    const errorMsg = err.response?.data?.detail || 'No se pudo actualizar el sembrador'
+    Swal.fire('❌ Error', errorMsg, 'error')
+  } finally {
+    loading.value = false
+  }
+}
+
+// Cerrar modal de edición
+const cerrarModalEdicion = () => {
+  showEditModal.value = false
+  editingId.value = null
+  form.value = {
+    nombre: '',
+    curp: '',
+    comunidad: '',
+    territorio: '',
+    cultivo_principal: '',
+    telefono: ''
+  }
 }
 
 // Eliminar sembrador
@@ -1390,6 +1698,412 @@ onMounted(getSembradores)
   }
 }
 
+/* ========== MODAL DE EDICIÓN ========== */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  backdrop-filter: blur(4px);
+  padding: 1rem;
+  overflow-y: auto;
+}
+
+.modal-edicion {
+  background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+  border: 1px solid rgba(132, 204, 22, 0.2);
+  border-radius: 16px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(12px);
+  width: 100%;
+  max-width: 600px;
+  max-height: 90vh;
+  overflow-y: auto;
+  animation: modalSlideIn 0.3s ease;
+}
+
+@keyframes modalSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.5rem;
+  border-bottom: 1px solid rgba(132, 204, 22, 0.1);
+  background: rgba(132, 204, 22, 0.05);
+  border-radius: 16px 16px 0 0;
+}
+
+.modal-title {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #84cc16;
+  text-shadow: 0 0 8px rgba(132, 204, 22, 0.3);
+  margin: 0;
+}
+
+.modal-close-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+}
+
+.modal-close-btn:hover {
+  background: rgba(239, 68, 68, 0.2);
+  border-color: rgba(239, 68, 68, 0.5);
+}
+
+.modal-close-icon {
+  width: 20px;
+  height: 20px;
+  color: #ef4444;
+}
+
+.modal-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1.5rem;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(132, 204, 22, 0.1);
+}
+
+.btn-cancelar {
+  flex: 1;
+  padding: 0.75rem 1rem;
+  background: rgba(107, 114, 128, 0.1);
+  border: 1px solid rgba(107, 114, 128, 0.3);
+  border-radius: 8px;
+  color: #d1d5db;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.9rem;
+}
+
+.btn-cancelar:hover {
+  background: rgba(107, 114, 128, 0.2);
+  border-color: rgba(107, 114, 128, 0.5);
+}
+
+.btn-guardar {
+  flex: 1;
+  padding: 0.75rem 1rem;
+  background: linear-gradient(135deg, #84cc16, #65a30d);
+  border: 1px solid rgba(132, 204, 22, 0.5);
+  border-radius: 8px;
+  color: #0f172a;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.9rem;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 12px rgba(132, 204, 22, 0.2);
+}
+
+.btn-guardar:hover:not(:disabled) {
+  background: linear-gradient(135deg, #a3e635, #84cc16);
+  box-shadow: 0 6px 16px rgba(132, 204, 22, 0.3);
+  transform: translateY(-2px);
+}
+
+.btn-guardar:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ========== BOTONES CIRCULARES ========== */
+.action-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid rgba(148, 163, 184, 0.3);
+  background: rgba(15, 23, 42, 0.5);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+}
+
+.action-btn:hover {
+  transform: scale(1.1);
+}
+
+.edit-btn:hover {
+  background: rgba(16, 185, 129, 0.15);
+  border-color: rgba(16, 185, 129, 0.5);
+}
+
+.delete-btn:hover {
+  background: rgba(239, 68, 68, 0.15);
+  border-color: rgba(239, 68, 68, 0.5);
+}
+
+.action-icon {
+  width: 18px;
+  height: 18px;
+}
+
+.edit-btn:hover .action-icon {
+  color: #10b981;
+}
+
+.delete-btn:hover .action-icon {
+  color: #ef4444;
+}
+
+/* ========== RESPONSIVE MODAL ========== */
+@media (max-height: 700px) {
+  .modal-edicion {
+    max-height: 95vh;
+    border-radius: 12px;
+  }
+
+  .modal-header {
+    padding: 1rem;
+  }
+
+  .modal-form {
+    padding: 1rem;
+    gap: 0.8rem;
+  }
+
+  .form-group {
+    gap: 0.2rem;
+  }
+
+  .form-label {
+    font-size: 0.65rem;
+  }
+
+  .form-input,
+  .form-select {
+    padding: 0.4rem 0.6rem 0.4rem 1.8rem;
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 768px) {
+  .modal-overlay {
+    padding: 0.5rem;
+  }
+
+  .modal-edicion {
+    width: 100%;
+    max-height: 95vh;
+    max-width: 95vw;
+  }
+
+  .modal-header {
+    padding: 1rem;
+  }
+
+  .modal-form {
+    padding: 1rem;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+    gap: 0.7rem;
+  }
+
+  .modal-actions {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .btn-cancelar,
+  .btn-guardar {
+    padding: 0.65rem 0.9rem;
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .modal-edicion {
+    border-radius: 12px;
+  }
+
+  .modal-header {
+    padding: 0.9rem;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .modal-title {
+    font-size: 1.1rem;
+    flex: 1;
+  }
+
+  .modal-close-btn {
+    width: 36px;
+    height: 36px;
+  }
+
+  .modal-close-icon {
+    width: 18px;
+    height: 18px;
+  }
+
+  .modal-form {
+    padding: 0.9rem;
+    gap: 0.65rem;
+  }
+
+  .form-label {
+    font-size: 0.6rem;
+  }
+
+  .form-input,
+  .form-select {
+    padding: 0.35rem 0.5rem 0.35rem 1.6rem;
+    font-size: 14px;
+  }
+
+  .form-row {
+    gap: 0.6rem;
+  }
+
+  .action-btn {
+    width: 36px;
+    height: 36px;
+  }
+
+  .action-icon {
+    width: 16px;
+    height: 16px;
+  }
+
+  .btn-cancelar,
+  .btn-guardar {
+    padding: 0.6rem 0.8rem;
+    font-size: 0.8rem;
+  }
+
+  .modal-actions {
+    gap: 0.4rem;
+  }
+}
+
+/* ========== ORIENTACIÓN HORIZONTAL (LANDSCAPE) ========== */
+@media (max-height: 600px) and (orientation: landscape) {
+  .modal-edicion {
+    max-height: 90vh;
+  }
+
+  .modal-header {
+    padding: 0.8rem;
+  }
+
+  .modal-form {
+    padding: 0.8rem;
+    gap: 0.6rem;
+  }
+
+  .form-row {
+    gap: 0.6rem;
+  }
+
+  .form-label {
+    font-size: 0.6rem;
+  }
+
+  .form-input,
+  .form-select {
+    padding: 0.3rem 0.5rem 0.3rem 1.5rem;
+    font-size: 13px;
+  }
+
+  .form-group {
+    gap: 0.1rem;
+  }
+
+  .modal-actions {
+    gap: 0.4rem;
+  }
+
+  .btn-cancelar,
+  .btn-guardar {
+    padding: 0.5rem 0.7rem;
+    font-size: 0.75rem;
+  }
+
+  .modal-title {
+    font-size: 1rem;
+  }
+
+  .action-btn {
+    width: 32px;
+    height: 32px;
+  }
+
+  .action-icon {
+    width: 14px;
+    height: 14px;
+  }
+}
+
+/* ========== TABLET LANDSCAPE ========== */
+@media (min-width: 768px) and (max-width: 1024px) and (orientation: landscape) {
+  .modal-edicion {
+    max-width: 700px;
+    max-height: 85vh;
+  }
+
+  .form-row {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* ========== SCROLLBAR MODAL ========== */
+.modal-edicion::-webkit-scrollbar {
+  width: 6px;
+}
+
+.modal-edicion::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.modal-edicion::-webkit-scrollbar-thumb {
+  background: rgba(132, 204, 22, 0.3);
+  border-radius: 3px;
+}
+
+.modal-edicion::-webkit-scrollbar-thumb:hover {
+  background: rgba(132, 204, 22, 0.5);
+}
+
 /* ========== SCROLLBAR ========== */
 ::-webkit-scrollbar {
   width: 8px;
@@ -1409,3 +2123,4 @@ onMounted(getSembradores)
   background: rgba(148, 163, 184, 0.5);
 }
 </style>
+

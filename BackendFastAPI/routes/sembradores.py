@@ -250,9 +250,30 @@ def actualizar_sembrador(
         if rol != "admin" and sembrador.user_id != user_id:
             raise HTTPException(status_code=403, detail="No tienes permiso para actualizar este sembrador")
         
+        # Validar teléfono si se proporciona (exactamente 10 dígitos)
+        if "telefono" in data and data["telefono"]:
+            telefono = re.sub(r'[^0-9]', '', str(data["telefono"]))
+            if len(telefono) != 10:
+                raise HTTPException(status_code=400, detail=f"El teléfono debe tener exactamente 10 dígitos. Actualmente tiene {len(telefono)} dígitos.")
+            data["telefono"] = telefono
+        
+        # Validar CURP si se proporciona
+        if "curp" in data and data["curp"] and data["curp"].strip():
+            curp = data["curp"].strip().upper()
+            if len(curp) != 18:
+                raise HTTPException(status_code=400, detail=f"El CURP debe tener exactamente 18 caracteres. Actualmente tiene {len(curp)} caracteres.")
+            curp_regex = r'^[A-Z]{4}[0-9]{6}[HM][A-Z]{5}[A-Z0-9]{2}$'
+            if not re.match(curp_regex, curp):
+                raise HTTPException(status_code=400, detail="CURP inválido. Formato: AAAA######HAAAAA## (4 letras + 6 dígitos + H/M + 5 letras + 2 caracteres)")
+            # Verificar que no exista otro sembrador con el mismo CURP (excepto el actual)
+            curp_existente = db.query(Sembrador).filter(Sembrador.curp == curp, Sembrador.id != id).first()
+            if curp_existente:
+                raise HTTPException(status_code=400, detail="Ya existe otro sembrador con este CURP")
+            data["curp"] = curp
+        
         # Actualizar campos
         if "nombre" in data:
-            sembrador.nombre = data["nombre"]
+            sembrador.nombre = data["nombre"].strip().upper()
         if "comunidad" in data:
             sembrador.comunidad = data["comunidad"]
         if "cultivo_principal" in data:
