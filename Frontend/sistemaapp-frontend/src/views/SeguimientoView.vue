@@ -402,10 +402,21 @@ const seguimientos: Ref<Seguimiento[]> = ref([])
 const reporteTecnico: Ref<ReporteTecnico[]> = ref([])
 const reporteCultivo: Ref<ReporteCultivo[]> = ref([])
 
+// Función para obtener fecha actual en CDMX (formato YYYY-MM-DD)
+const getFechaCDMX = (): string => {
+  const now = new Date()
+  // Obtener fecha en zona horaria de México (UTC-6)
+  const cdmxDate = new Date(now.toLocaleString('en-US', { timeZone: 'America/Mexico_City' }))
+  const year = cdmxDate.getFullYear()
+  const month = String(cdmxDate.getMonth() + 1).padStart(2, '0')
+  const day = String(cdmxDate.getDate()).padStart(2, '0')
+  return `${year}-${month}-${day}`
+}
+
 // Formulario
 const formulario = ref({
   sembrador_id: null as number | null,
-  fecha_visita: new Date().toISOString().split('T')[0],
+  fecha_visita: getFechaCDMX(),
   estado_cultivo: '',
   observaciones: '',
   avance_porcentaje: 1,
@@ -538,7 +549,7 @@ const crearSeguimiento = async () => {
     // Limpiar formulario y foto
     formulario.value = {
       sembrador_id: null,
-      fecha_visita: new Date().toISOString().split('T')[0],
+      fecha_visita: getFechaCDMX(),
       estado_cultivo: '',
       observaciones: '',
       avance_porcentaje: 1,
@@ -595,11 +606,25 @@ const cargarReportes = async () => {
 
 const formatearFecha = (fecha: string): string => {
   if (!fecha) return 'N/A'
-  const date = new Date(fecha)
-  return date.toLocaleDateString('es-ES', {
+  
+  // La fecha viene del servidor como ISO string o YYYY-MM-DD
+  // Parseamos solo la parte de fecha para evitar problemas de zona horaria
+  let fechaStr = fecha
+  
+  // Si tiene T (es datetime), extraer solo la fecha
+  if (fecha.includes('T')) {
+    fechaStr = fecha.split('T')[0]
+  }
+  
+  // Parsear como fecha local (no UTC) añadiendo hora para evitar offset
+  const [year, month, day] = fechaStr.split('-').map(Number)
+  const date = new Date(year, month - 1, day, 12, 0, 0) // Mediodía para evitar problemas
+  
+  return date.toLocaleDateString('es-MX', {
     year: 'numeric',
     month: 'short',
-    day: 'numeric'
+    day: 'numeric',
+    timeZone: 'America/Mexico_City'
   })
 }
 
