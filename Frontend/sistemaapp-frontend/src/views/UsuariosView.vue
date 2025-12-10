@@ -2301,8 +2301,8 @@ onMounted(async () => {
   justify-content: center;
   z-index: 1000;
   backdrop-filter: blur(4px);
-  padding: 1rem;
   overflow: auto;
+  padding: 1rem 0;
 }
 
 .modal-edicion {
@@ -2316,7 +2316,7 @@ onMounted(async () => {
   max-height: 90vh;
   overflow-y: auto;
   animation: modalSlideIn 0.3s ease;
-  margin: auto;
+  flex-shrink: 0;
 }
 
 @keyframes modalSlideIn {
@@ -2691,31 +2691,22 @@ onMounted(async () => {
 @media (max-width: 640px) {
   .modal-overlay {
     padding: 0.75rem;
-    align-items: flex-end;
+    align-items: center;
+    justify-content: center;
   }
 
   .modal-edicion {
+    width: calc(100% - 1.5rem);
     max-width: 100%;
-    max-height: 85vh;
-    border-radius: 20px 20px 0 0;
-    margin-bottom: 0;
-    animation: modalSlideUp 0.3s ease;
-  }
-
-  @keyframes modalSlideUp {
-    from {
-      opacity: 0;
-      transform: translateY(100%);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
+    max-height: 90vh;
+    border-radius: 16px;
+    margin: auto;
+    animation: modalSlideIn 0.3s ease;
   }
 
   .modal-header {
     padding: 1.2rem 1.2rem 0.8rem;
-    border-radius: 20px 20px 0 0;
+    border-radius: 16px 16px 0 0;
   }
 
   .modal-title {
@@ -2938,11 +2929,23 @@ onMounted(async () => {
   background: rgba(239, 68, 68, 0.05) !important;
 }
 
+/* ========== SWEETALERT2 CONTAINER CENTERING ========== */
+:deep(.swal2-container) {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  z-index: 1001 !important;
+}
+
+:deep(.swal-delete-popup) {
+  margin: auto !important;
+}
+
 /* ========== RESPONSIVE SWEETALERT ========== */
 @media (max-width: 640px) {
   :deep(.swal-delete-popup) {
     padding: 1.2rem !important;
-    margin: 0 0.5rem !important;
+    margin: auto !important;
   }
 
   :deep(.swal-delete-title) {
