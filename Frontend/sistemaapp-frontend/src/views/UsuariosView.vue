@@ -240,6 +240,168 @@
       </div>
     </Teleport>
 
+    <!-- Modal de Edición de Usuario -->
+    <Teleport to="body">
+      <div v-if="showModalEditar" class="modal-overlay" @click.self="cerrarModalEditar">
+        <div class="modal-edicion" v-motion
+          :initial="{ opacity: 0, scale: 0.9, y: 20 }"
+          :enter="{ opacity: 1, scale: 1, y: 0, transition: { duration: 300 } }"
+        >
+          <div class="modal-header">
+            <h2 class="modal-title">Editar Usuario</h2>
+            <button @click="cerrarModalEditar" class="modal-close-btn" title="Cerrar">
+              <X class="modal-close-icon" />
+            </button>
+          </div>
+
+          <form @submit.prevent="guardarEdicionUsuario" class="modal-form">
+            <!-- Fila 1: Nombre y Email -->
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Nombre Completo *</label>
+                <div class="input-wrapper">
+                  <User class="input-icon" />
+                  <input
+                    v-model="usuarioEditando.nombre"
+                    type="text"
+                    placeholder="JUAN PÉREZ GARCÍA"
+                    class="form-input"
+                    required
+                    minlength="2"
+                    @input="usuarioEditando.nombre = usuarioEditando.nombre.toUpperCase()"
+                  />
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Email *</label>
+                <div class="input-wrapper">
+                  <Mail class="input-icon" />
+                  <input
+                    v-model="usuarioEditando.email"
+                    type="email"
+                    placeholder="usuario@example.com"
+                    class="form-input"
+                    required
+                  />
+                </div>
+              </div>
+            </div>
+
+            <!-- Fila 2: CURP y Teléfono -->
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">CURP *</label>
+                <div class="input-wrapper">
+                  <IdCard class="input-icon" />
+                  <input
+                    v-model="usuarioEditando.curp"
+                    type="text"
+                    placeholder="XXXX######HXXXXX##"
+                    class="form-input"
+                    maxlength="18"
+                    minlength="18"
+                    pattern="[A-Z]{4}[0-9]{6}[HM][A-Z]{5}[A-Z0-9]{2}"
+                    @input="usuarioEditando.curp = usuarioEditando.curp.toUpperCase()"
+                  />
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Teléfono</label>
+                <div class="input-wrapper">
+                  <Phone class="input-icon" />
+                  <input
+                    v-model="usuarioEditando.telefono"
+                    type="tel"
+                    placeholder="10 dígitos"
+                    class="form-input"
+                    maxlength="10"
+                    minlength="10"
+                    pattern="[0-9]{10}"
+                    @input="usuarioEditando.telefono = usuarioEditando.telefono.replace(/[^0-9]/g, '').slice(0, 10)"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <!-- Fila 3: Territorio y Rol -->
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Territorio *</label>
+                <div class="select-wrapper">
+                  <MapPin class="input-icon" />
+                  <select
+                    v-model="usuarioEditando.territorio"
+                    class="form-select"
+                    required
+                  >
+                    <option value="">-- Selecciona territorio --</option>
+                    <option value="Acapulco - Centro - Norte - Tierra Caliente">Acapulco - Centro - Norte - Tierra Caliente</option>
+                    <option value="Acayucan">Acayucan</option>
+                    <option value="Balancán">Balancán</option>
+                    <option value="Chihuahua / Sonora">Chihuahua / Sonora</option>
+                    <option value="Colima">Colima</option>
+                    <option value="Comalcalco">Comalcalco</option>
+                    <option value="Córdoba">Córdoba</option>
+                    <option value="Costa Chica - Montaña">Costa Chica - Montaña</option>
+                    <option value="Costa Grande - Sierra">Costa Grande - Sierra</option>
+                    <option value="Durango / Zacatecas">Durango / Zacatecas</option>
+                    <option value="Hidalgo">Hidalgo</option>
+                    <option value="Istmo">Istmo</option>
+                    <option value="Michoacán">Michoacán</option>
+                    <option value="Mixteca">Mixteca</option>
+                    <option value="Morelos">Morelos</option>
+                    <option value="Nayarit / Jalisco">Nayarit / Jalisco</option>
+                    <option value="Ocosingo">Ocosingo</option>
+                    <option value="Palenque">Palenque</option>
+                    <option value="Papantla">Papantla</option>
+                    <option value="Pichucalco">Pichucalco</option>
+                    <option value="Puebla">Puebla</option>
+                    <option value="San Luis Potosí">San Luis Potosí</option>
+                    <option value="Sinaloa">Sinaloa</option>
+                    <option value="Tamaulipas">Tamaulipas</option>
+                    <option value="Tantoyuca">Tantoyuca</option>
+                    <option value="Tapachula">Tapachula</option>
+                    <option value="Teapa">Teapa</option>
+                    <option value="Tlaxcala / Estado de México">Tlaxcala / Estado de México</option>
+                    <option value="Tzucacab / Opb">Tzucacab / Opb</option>
+                    <option value="Xpujil">Xpujil</option>
+                    <option value="Oficinas Centrales">Oficinas Centrales</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Rol</label>
+                <div class="select-wrapper">
+                  <Shield class="input-icon" />
+                  <select
+                    v-model="usuarioEditando.rol"
+                    class="form-select"
+                    disabled
+                  >
+                    <option :value="usuarioEditando.rol">{{ usuarioEditando.rol.toUpperCase().replace(/_/g, ' ') }}</option>
+                  </select>
+                </div>
+                <span class="field-hint">El rol no se puede cambiar por seguridad</span>
+              </div>
+            </div>
+
+            <!-- Botones de acciones -->
+            <div class="modal-actions">
+              <button type="button" @click="cerrarModalEditar" class="btn-cancelar">
+                Cancelar
+              </button>
+              <button type="submit" class="btn-guardar" :disabled="editandoUsuario">
+                {{ editandoUsuario ? 'Guardando...' : 'Guardar Cambios' }}
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </Teleport>
+
     <!-- Contenido principal -->
     <div class="usuarios-content">
       <!-- Tarjeta principal -->
@@ -273,6 +435,9 @@
                 <th>ID</th>
                 <th>Nombre</th>
                 <th>Email</th>
+                <th>CURP</th>
+                <th>Teléfono</th>
+                <th>Territorio</th>
                 <th>Rol</th>
                 <th>Acciones</th>
               </tr>
@@ -280,7 +445,7 @@
             <tbody>
               <!-- Skeleton loader -->
               <tr v-if="loading" v-for="n in limit" :key="'skeleton-' + n" class="skeleton-row">
-                <td colspan="5">
+                <td colspan="8">
                   <div class="skeleton-line"></div>
                 </td>
               </tr>
@@ -300,26 +465,37 @@
                   </div>
                 </td>
                 <td class="cell-email">{{ u.email }}</td>
+                <td class="cell-curp">
+                  <span class="curp-badge">{{ u.curp || '—' }}</span>
+                </td>
+                <td class="cell-telefono">
+                  <span class="telefono-text">{{ u.telefono || '—' }}</span>
+                </td>
+                <td class="cell-territorio">
+                  <span class="territorio-badge">{{ u.territorio || '—' }}</span>
+                </td>
                 <td class="cell-rol">
                   <span :class="['rol-badge', `rol-${u.rol}`]">
-                    {{ u.rol.toUpperCase() }}
+                    {{ u.rol.toUpperCase().replace(/_/g, ' ') }}
                   </span>
                 </td>
                 <td class="cell-actions">
-                  <button
-                    @click="editUser(u)"
-                    class="action-btn edit-btn"
-                    title="Editar"
-                  >
-                    <Edit class="action-icon" />
-                  </button>
-                  <button
-                    @click="deleteUser(u.id)"
-                    class="action-btn delete-btn"
-                    title="Eliminar"
-                  >
-                    <Trash2 class="action-icon" />
-                  </button>
+                  <div class="actions-group">
+                    <button
+                      @click="abrirModalEditar(u)"
+                      class="action-btn edit-btn"
+                      title="Editar usuario"
+                    >
+                      <Edit class="action-icon" />
+                    </button>
+                    <button
+                      @click="abrirConfirmarEliminar(u.id, u.nombre)"
+                      class="action-btn delete-btn"
+                      title="Eliminar usuario"
+                    >
+                      <Trash2 class="action-icon" />
+                    </button>
+                  </div>
                 </td>
               </tr>
             </tbody>
@@ -350,32 +526,28 @@
             <div class="card-header">
               <div class="card-nombre">
                 <div class="card-avatar">{{ u.nombre.charAt(0).toUpperCase() }}</div>
-                <div>
+                <div class="card-info">
                   <h3>{{ u.nombre }}</h3>
                   <p class="card-email">{{ u.email }}</p>
                 </div>
               </div>
               <span :class="['rol-badge', `rol-${u.rol}`]">
-                {{ u.rol.toUpperCase() }}
+                {{ u.rol.toUpperCase().replace(/_/g, ' ') }}
               </span>
             </div>
-            <div class="card-actions">
-              <button
-                @click="editUser(u)"
-                class="action-btn edit-btn"
-                title="Editar"
-              >
-                <Edit class="action-icon" />
-                <span>Editar</span>
-              </button>
-              <button
-                @click="deleteUser(u.id)"
-                class="action-btn delete-btn"
-                title="Eliminar"
-              >
-                <Trash2 class="action-icon" />
-                <span>Eliminar</span>
-              </button>
+            <div class="card-details">
+              <div class="detail-item">
+                <span class="detail-label">CURP:</span>
+                <span class="detail-value">{{ u.curp || '—' }}</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">Tel:</span>
+                <span class="detail-value">{{ u.telefono || '—' }}</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">Territorio:</span>
+                <span class="detail-value">{{ u.territorio || '—' }}</span>
+              </div>
             </div>
           </div>
 
@@ -474,6 +646,19 @@ const creando = ref(false)
 const showPassword = ref(false)
 const puedeCrearUsuarios = ref(false)
 const rolesDisponibles = ref([])
+
+// Estados para el modal de edición
+const showModalEditar = ref(false)
+const editandoUsuario = ref(false)
+const usuarioEditando = ref({
+  id: null,
+  nombre: '',
+  email: '',
+  rol: '',
+  curp: '',
+  telefono: '',
+  territorio: ''
+})
 
 const nuevoUsuario = ref({
   nombre: '',
@@ -700,60 +885,114 @@ const prevPage = () => {
   }
 }
 
-const editUser = async (user) => {
-  const { value: formValues } = await Swal.fire({
-    title: 'Editar usuario',
-    html:
-      `<input id="nombre" class="swal2-input" placeholder="Nombre" value="${user.nombre}">` +
-      `<input id="email" class="swal2-input" placeholder="Email" value="${user.email}">` +
-      `<input id="rol" class="swal2-input" placeholder="Rol" value="${user.rol}">`,
-    focusConfirm: false,
-    showCancelButton: true,
-    confirmButtonText: 'Guardar',
-    preConfirm: () => {
-      return {
-        nombre: document.getElementById('nombre').value,
-        email: document.getElementById('email').value,
-        rol: document.getElementById('rol').value,
-      }
-    },
-  })
+// Abrir modal de edición
+const abrirModalEditar = (usuario) => {
+  usuarioEditando.value = {
+    id: usuario.id,
+    nombre: usuario.nombre || '',
+    email: usuario.email || '',
+    rol: usuario.rol || '',
+    curp: usuario.curp || '',
+    telefono: usuario.telefono || '',
+    territorio: usuario.territorio || ''
+  }
+  showModalEditar.value = true
+}
 
-  if (formValues) {
-    try {
-      const apiUrl = getSecureApiUrl()
-      await axios.put(`${apiUrl}/auth/users/${user.id}`, formValues, {
-        headers: { Authorization: `Bearer ${auth.token}` },
-      })
-      Swal.fire('✅ Actualizado', 'El usuario fue modificado correctamente.', 'success')
-      fetchUsuarios()
-    } catch (err) {
-      Swal.fire('❌ Error', 'No se pudo actualizar el usuario.', 'error')
-    }
+// Cerrar modal de edición
+const cerrarModalEditar = () => {
+  showModalEditar.value = false
+  usuarioEditando.value = {
+    id: null,
+    nombre: '',
+    email: '',
+    rol: '',
+    curp: '',
+    telefono: '',
+    territorio: ''
   }
 }
 
-const deleteUser = async (id) => {
-  const result = await Swal.fire({
-    title: '¿Eliminar usuario?',
-    text: 'Esta acción no se puede deshacer.',
-    icon: 'warning',
-    showCancelButton: true,
-    confirmButtonText: 'Sí, eliminar',
-    cancelButtonText: 'Cancelar',
-  })
+// Guardar edición del usuario
+const guardarEdicionUsuario = async () => {
+  if (!usuarioEditando.value.nombre || !usuarioEditando.value.email || !usuarioEditando.value.territorio) {
+    Swal.fire('⚠️ Campos incompletos', 'Por favor completa todos los campos obligatorios', 'warning')
+    return
+  }
 
-  if (result.isConfirmed) {
-    try {
-      const apiUrl = getSecureApiUrl()
-      await axios.delete(`${apiUrl}/auth/users/${id}`, {
-        headers: { Authorization: `Bearer ${auth.token}` },
-      })
-      Swal.fire('🗑️ Eliminado', 'El usuario ha sido eliminado.', 'success')
-      fetchUsuarios()
-    } catch (err) {
-      Swal.fire('❌ Error', 'No se pudo eliminar el usuario.', 'error')
+  editandoUsuario.value = true
+
+  try {
+    const apiUrl = getSecureApiUrl()
+    const dataToUpdate = {
+      nombre: usuarioEditando.value.nombre,
+      email: usuarioEditando.value.email,
+      curp: usuarioEditando.value.curp || null,
+      telefono: usuarioEditando.value.telefono || null,
+      territorio: usuarioEditando.value.territorio
     }
+
+    await axios.put(`${apiUrl}/auth/users/${usuarioEditando.value.id}`, dataToUpdate, {
+      headers: { Authorization: `Bearer ${auth.token}` },
+    })
+
+    Swal.fire('✅ Actualizado', 'El usuario fue modificado correctamente.', 'success')
+    cerrarModalEditar()
+    fetchUsuarios()
+  } catch (err) {
+    console.error('❌ Error al actualizar usuario:', err)
+    Swal.fire('❌ Error', err.response?.data?.detail || 'No se pudo actualizar el usuario.', 'error')
+  } finally {
+    editandoUsuario.value = false
+  }
+}
+
+// Abrir confirmación de eliminación
+const abrirConfirmarEliminar = (id, nombre) => {
+  Swal.fire({
+    title: '¿Eliminar usuario?',
+    html: `<p style="color: #e2e8f0; font-size: 1rem; margin: 1rem 0;">Estás a punto de eliminar a</p><p style="color: #fca5a5; font-weight: 700; font-size: 1.1rem; margin: 0.5rem 0;">«${nombre}»</p><p style="color: #cbd5e1; font-size: 0.9rem; margin: 1rem 0;">Esta acción no se puede deshacer.</p>`,
+    icon: 'warning',
+    iconHtml: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 3rem; height: 3rem; margin: 0 auto;"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>',
+    showCancelButton: true,
+    confirmButtonText: 'Sí, eliminar usuario',
+    cancelButtonText: 'Cancelar',
+    confirmButtonColor: '#ef4444',
+    cancelButtonColor: '#6b7280',
+    customClass: {
+      popup: 'swal-delete-popup',
+      title: 'swal-delete-title',
+      htmlContainer: 'swal-delete-html',
+      confirmButton: 'swal-delete-confirm',
+      cancelButton: 'swal-delete-cancel'
+    },
+    background: 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)',
+    didOpen: () => {
+      const popup = document.querySelector('.swal2-popup');
+      if (popup) {
+        popup.style.border = '1.5px solid rgba(239, 68, 68, 0.3)';
+        popup.style.boxShadow = '0 20px 60px rgba(239, 68, 68, 0.2)';
+      }
+    }
+  }).then((result) => {
+    if (result.isConfirmed) {
+      eliminarUsuario(id)
+    }
+  })
+}
+
+// Eliminar usuario
+const eliminarUsuario = async (id) => {
+  try {
+    const apiUrl = getSecureApiUrl()
+    await axios.delete(`${apiUrl}/auth/users/${id}`, {
+      headers: { Authorization: `Bearer ${auth.token}` },
+    })
+    Swal.fire('🗑️ Eliminado', 'El usuario ha sido eliminado.', 'success')
+    fetchUsuarios()
+  } catch (err) {
+    console.error('❌ Error al eliminar usuario:', err)
+    Swal.fire('❌ Error', err.response?.data?.detail || 'No se pudo eliminar el usuario.', 'error')
   }
 }
 
@@ -1155,6 +1394,56 @@ onMounted(async () => {
   font-size: 0.9rem;
 }
 
+.cell-curp {
+  font-family: 'Courier New', monospace;
+  width: 140px;
+}
+
+.curp-badge {
+  display: inline-block;
+  background: rgba(59, 130, 246, 0.15);
+  color: #60a5fa;
+  padding: 0.375rem 0.75rem;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+  border: 1px solid rgba(59, 130, 246, 0.3);
+}
+
+.cell-telefono {
+  width: 110px;
+}
+
+.telefono-text {
+  display: inline-block;
+  background: rgba(139, 92, 246, 0.15);
+  color: #a78bfa;
+  padding: 0.375rem 0.75rem;
+  border-radius: 6px;
+  font-weight: 500;
+  border: 1px solid rgba(139, 92, 246, 0.3);
+}
+
+.cell-territorio {
+  width: 150px;
+}
+
+.territorio-badge {
+  display: inline-block;
+  background: rgba(236, 72, 153, 0.15);
+  color: #f472b6;
+  padding: 0.375rem 0.75rem;
+  border-radius: 6px;
+  font-weight: 500;
+  font-size: 0.8rem;
+  border: 1px solid rgba(236, 72, 153, 0.3);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 140px;
+}
+
 .cell-rol {
   text-align: center;
 }
@@ -1254,16 +1543,18 @@ onMounted(async () => {
 }
 
 .user-card {
-  padding: 1rem 0.9rem;
-  background: rgba(15, 23, 42, 0.5);
-  border: 1px solid rgba(148, 163, 184, 0.2);
-  border-radius: 12px;
+  padding: 1.25rem;
+  background: linear-gradient(135deg, rgba(30, 41, 59, 0.6) 0%, rgba(15, 23, 42, 0.6) 100%);
+  border: 1px solid rgba(132, 204, 22, 0.15);
+  border-radius: 14px;
   transition: all 0.3s ease;
+  backdrop-filter: blur(4px);
 }
 
 .user-card:hover {
-  background: rgba(15, 23, 42, 0.7);
-  border-color: rgba(16, 185, 129, 0.3);
+  background: linear-gradient(135deg, rgba(30, 41, 59, 0.8) 0%, rgba(15, 23, 42, 0.8) 100%);
+  border-color: rgba(132, 204, 22, 0.3);
+  box-shadow: 0 8px 24px rgba(132, 204, 22, 0.1);
 }
 
 .card-header {
@@ -1271,87 +1562,87 @@ onMounted(async () => {
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
+  margin-bottom: 1rem;
 }
 
 .card-nombre {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 0.85rem;
   flex: 1;
 }
 
 .card-avatar {
-  width: 36px;
-  height: 36px;
-  background: transparent;
-  border: 2px solid #84cc16;
+  width: 44px;
+  height: 44px;
+  background: linear-gradient(135deg, rgba(132, 204, 22, 0.2), rgba(132, 204, 22, 0.1));
+  border: 2.5px solid #84cc16;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   color: #84cc16;
-  font-weight: 600;
+  font-weight: 700;
   flex-shrink: 0;
-  font-size: 0.75rem;
+  font-size: 0.9rem;
   text-shadow: 0 0 8px rgba(132, 204, 22, 0.5);
+  box-shadow: 0 0 12px rgba(132, 204, 22, 0.2);
+}
+
+.card-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
 }
 
 .card-nombre h3 {
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: #e2e8f0;
-  margin-bottom: 0.1rem;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #f1f5f9;
+  margin: 0;
   line-height: 1.2;
 }
 
 .card-email {
-  font-size: 0.7rem;
+  font-size: 0.75rem;
   color: #94a3b8;
+  margin: 0;
   line-height: 1.2;
 }
 
-.card-actions {
+.card-details {
   display: flex;
+  flex-direction: column;
   gap: 0.6rem;
-  margin-top: 0.75rem;
-  padding-top: 0.75rem;
-  border-top: 1px solid rgba(148, 163, 184, 0.1);
+  padding-top: 1rem;
+  border-top: 1px solid rgba(132, 204, 22, 0.1);
 }
 
-.card-actions .action-btn {
-  flex: 1;
-  padding: 0.4rem 0.8rem;
-  font-size: 0.7rem;
-  border-radius: 8px;
-  transition: all 0.2s ease;
+.detail-item {
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  justify-content: center;
-  gap: 0.3rem;
+  gap: 0.75rem;
 }
 
-.card-actions .edit-btn {
-  background: rgba(59, 130, 246, 0.1);
-  color: #3b82f6;
-  border: 1px solid rgba(59, 130, 246, 0.3);
+.detail-label {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
-.card-actions .edit-btn:hover {
-  background: rgba(59, 130, 246, 0.2);
-  border-color: rgba(59, 130, 246, 0.5);
-  transform: scale(1.05);
+.detail-value {
+  font-size: 0.8rem;
+  color: #e2e8f0;
+  font-family: 'Courier New', monospace;
+  text-align: right;
+  flex: 1;
 }
 
-.card-actions .delete-btn {
-  background: rgba(239, 68, 68, 0.1);
-  color: #ef4444;
-  border: 1px solid rgba(239, 68, 68, 0.3);
-}
-
-.card-actions .delete-btn:hover {
-  background: rgba(239, 68, 68, 0.2);
-  border-color: rgba(239, 68, 68, 0.5);
-  transform: scale(1.05);
+.card-actions {
+  display: none;
 }
 
 /* ========== EMPTY STATE ========== */
@@ -1998,6 +2289,465 @@ onMounted(async () => {
   .form-actions {
     flex-direction: column;
   }
+}
+
+/* ========== MODAL OVERLAY ========== */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  backdrop-filter: blur(4px);
+  padding: 1rem;
+  overflow-y: auto;
+}
+
+.modal-edicion {
+  background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+  border: 1px solid rgba(132, 204, 22, 0.2);
+  border-radius: 16px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(12px);
+  width: 100%;
+  max-width: 600px;
+  max-height: 90vh;
+  overflow-y: auto;
+  animation: modalSlideIn 0.3s ease;
+}
+
+@keyframes modalSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.5rem;
+  border-bottom: 1px solid rgba(132, 204, 22, 0.1);
+  background: rgba(132, 204, 22, 0.05);
+  border-radius: 16px 16px 0 0;
+}
+
+.modal-title {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #84cc16;
+  text-shadow: 0 0 8px rgba(132, 204, 22, 0.3);
+  margin: 0;
+}
+
+.modal-close-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+}
+
+.modal-close-btn:hover {
+  background: rgba(239, 68, 68, 0.2);
+  border-color: rgba(239, 68, 68, 0.5);
+}
+
+.modal-close-icon {
+  width: 20px;
+  height: 20px;
+  color: #ef4444;
+}
+
+.modal-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1.5rem;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #e2e8f0;
+  margin-bottom: 0.5rem;
+}
+
+.input-icon {
+  width: 16px;
+  height: 16px;
+  color: #84cc16;
+}
+
+.input-wrapper,
+.select-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-wrapper .input-icon,
+.select-wrapper .input-icon {
+  position: absolute;
+  left: 0.75rem;
+  pointer-events: none;
+}
+
+.form-input,
+.form-select {
+  width: 100%;
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 10px;
+  padding: 0.75rem 1rem 0.75rem 2.5rem;
+  color: #e2e8f0;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+}
+
+.form-input::placeholder {
+  color: #64748b;
+}
+
+.form-input:focus,
+.form-select:focus {
+  outline: none;
+  border-color: #84cc16;
+  background: rgba(15, 23, 42, 0.8);
+  box-shadow: 0 0 0 3px rgba(132, 204, 22, 0.1);
+}
+
+.form-select {
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2394a3b8'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  background-size: 1rem;
+  padding-right: 2.5rem;
+}
+
+.form-select option {
+  background: #1e293b;
+  color: #e2e8f0;
+}
+
+.form-select:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.field-hint {
+  display: block;
+  font-size: 0.7rem;
+  color: #64748b;
+  margin-top: 0.3rem;
+  font-style: italic;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(132, 204, 22, 0.1);
+}
+
+.btn-cancelar {
+  flex: 1;
+  padding: 0.75rem 1rem;
+  background: rgba(107, 114, 128, 0.1);
+  border: 1px solid rgba(107, 114, 128, 0.3);
+  border-radius: 8px;
+  color: #d1d5db;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.9rem;
+}
+
+.btn-cancelar:hover {
+  background: rgba(107, 114, 128, 0.2);
+  border-color: rgba(107, 114, 128, 0.5);
+}
+
+.btn-guardar {
+  flex: 1;
+  padding: 0.75rem 1rem;
+  background: linear-gradient(135deg, #84cc16, #65a30d);
+  border: 1px solid rgba(132, 204, 22, 0.5);
+  border-radius: 8px;
+  color: #0f172a;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.9rem;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 12px rgba(132, 204, 22, 0.2);
+}
+
+.btn-guardar:hover:not(:disabled) {
+  background: linear-gradient(135deg, #a3e635, #84cc16);
+  box-shadow: 0 6px 16px rgba(132, 204, 22, 0.3);
+  transform: translateY(-2px);
+}
+
+.btn-guardar:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ========== BOTONES CIRCULARES ========== */
+.action-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(148, 163, 184, 0.4);
+  background: rgba(15, 23, 42, 0.7);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+  padding: 0;
+}
+
+.action-btn:hover {
+  transform: scale(1.1);
+}
+
+.action-icon {
+  width: 18px;
+  height: 18px;
+  stroke-width: 2;
+}
+
+.edit-btn {
+  border-color: rgba(16, 185, 129, 0.4);
+}
+
+.edit-btn .action-icon {
+  color: #10b981;
+  transition: all 0.3s ease;
+}
+
+.edit-btn:hover {
+  background: rgba(16, 185, 129, 0.2);
+  border-color: rgba(16, 185, 129, 0.7);
+  box-shadow: 0 0 12px rgba(16, 185, 129, 0.3);
+}
+
+.edit-btn:hover .action-icon {
+  color: #34d399;
+  filter: drop-shadow(0 0 4px rgba(16, 185, 129, 0.5));
+}
+
+.delete-btn {
+  border-color: rgba(239, 68, 68, 0.4);
+}
+
+.delete-btn .action-icon {
+  color: #ef4444;
+  transition: all 0.3s ease;
+}
+
+.delete-btn:hover {
+  background: rgba(239, 68, 68, 0.2);
+  border-color: rgba(239, 68, 68, 0.7);
+  box-shadow: 0 0 12px rgba(239, 68, 68, 0.3);
+}
+
+.delete-btn:hover .action-icon {
+  color: #f87171;
+  filter: drop-shadow(0 0 4px rgba(239, 68, 68, 0.5));
+}
+
+.actions-group {
+  display: flex;
+  gap: 0.25rem;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ========== RESPONSIVE MODAL ========== */
+@media (max-height: 700px) {
+  .modal-edicion {
+    max-height: 95vh;
+    border-radius: 12px;
+  }
+
+  .modal-header {
+    padding: 1rem;
+  }
+
+  .modal-form {
+    padding: 1rem;
+    gap: 0.75rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .modal-edicion {
+    max-width: 95vw;
+    border-radius: 16px;
+  }
+
+  .modal-header {
+    padding: 1.25rem;
+  }
+
+  .modal-form {
+    padding: 1.25rem;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .modal-actions {
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 480px) {
+  .modal-close-btn {
+    width: 36px;
+    height: 36px;
+  }
+
+  .modal-close-icon {
+    width: 18px;
+    height: 18px;
+  }
+
+  .modal-title {
+    font-size: 1.1rem;
+  }
+
+  .modal-form {
+    padding: 1rem;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .action-btn {
+    width: 36px;
+    height: 36px;
+  }
+
+  .action-icon {
+    width: 16px;
+    height: 16px;
+  }
+
+  .modal-edicion::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .modal-edicion::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .modal-edicion::-webkit-scrollbar-thumb {
+    background: rgba(132, 204, 22, 0.3);
+    border-radius: 3px;
+  }
+
+  .modal-edicion::-webkit-scrollbar-thumb:hover {
+    background: rgba(132, 204, 22, 0.5);
+  }
+}
+
+/* ========== SWEETALERT MODAL DELETE ========== */
+:deep(.swal-delete-popup) {
+  background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%) !important;
+  border: 1.5px solid rgba(239, 68, 68, 0.3) !important;
+  border-radius: 16px !important;
+  box-shadow: 0 20px 60px rgba(239, 68, 68, 0.2) !important;
+  backdrop-filter: blur(12px) !important;
+}
+
+:deep(.swal-delete-title) {
+  color: #fca5a5 !important;
+  font-size: 1.4rem !important;
+  font-weight: 700 !important;
+  text-shadow: 0 0 8px rgba(239, 68, 68, 0.3) !important;
+}
+
+:deep(.swal-delete-html) {
+  color: #cbd5e1 !important;
+  font-size: 0.95rem !important;
+}
+
+:deep(.swal-delete-confirm) {
+  background: linear-gradient(135deg, #ef4444, #dc2626) !important;
+  border: none !important;
+  color: white !important;
+  font-weight: 700 !important;
+  box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3) !important;
+  transition: all 0.3s ease !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2) !important;
+}
+
+:deep(.swal-delete-confirm:hover) {
+  background: linear-gradient(135deg, #f87171, #ef4444) !important;
+  box-shadow: 0 6px 20px rgba(239, 68, 68, 0.4) !important;
+  transform: translateY(-2px) !important;
+}
+
+:deep(.swal-delete-confirm:active) {
+  transform: translateY(0) !important;
+}
+
+:deep(.swal-delete-cancel) {
+  background: rgba(107, 114, 128, 0.1) !important;
+  border: 1px solid rgba(107, 114, 128, 0.3) !important;
+  color: #d1d5db !important;
+  font-weight: 600 !important;
+  transition: all 0.3s ease !important;
+}
+
+:deep(.swal-delete-cancel:hover) {
+  background: rgba(107, 114, 128, 0.2) !important;
+  border-color: rgba(107, 114, 128, 0.5) !important;
+}
+
+:deep(.swal2-icon-warning) {
+  border-color: rgba(239, 68, 68, 0.3) !important;
+  background: rgba(239, 68, 68, 0.05) !important;
 }
 
 /* ========== SCROLLBAR ========== */
