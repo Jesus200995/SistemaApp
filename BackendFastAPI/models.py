@@ -86,7 +86,9 @@ class Sembrador(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     nombre = Column(String(100))
+    curp = Column(String(18), nullable=True)  # CURP del sembrador
     comunidad = Column(String(100))
+    territorio = Column(String(100), nullable=True)  # Territorio asignado
     cultivo_principal = Column(String(100))
     telefono = Column(String(30))
     lat = Column(Float)

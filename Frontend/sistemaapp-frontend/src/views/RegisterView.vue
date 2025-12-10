@@ -149,15 +149,37 @@
                 required
               >
                 <option value="">-- Selecciona tu territorio --</option>
-                <option value="Norte">Norte</option>
-                <option value="Sur">Sur</option>
-                <option value="Este">Este</option>
-                <option value="Oeste">Oeste</option>
-                <option value="Centro">Centro</option>
-                <option value="Noreste">Noreste</option>
-                <option value="Noroeste">Noroeste</option>
-                <option value="Sureste">Sureste</option>
-                <option value="Suroeste">Suroeste</option>
+                <option value="Acapulco - Centro - Norte - Tierra Caliente">Acapulco - Centro - Norte - Tierra Caliente</option>
+                <option value="Acayucan">Acayucan</option>
+                <option value="Balancán">Balancán</option>
+                <option value="Chihuahua / Sonora">Chihuahua / Sonora</option>
+                <option value="Colima">Colima</option>
+                <option value="Comalcalco">Comalcalco</option>
+                <option value="Córdoba">Córdoba</option>
+                <option value="Costa Chica - Montaña">Costa Chica - Montaña</option>
+                <option value="Costa Grande - Sierra">Costa Grande - Sierra</option>
+                <option value="Durango / Zacatecas">Durango / Zacatecas</option>
+                <option value="Hidalgo">Hidalgo</option>
+                <option value="Istmo">Istmo</option>
+                <option value="Michoacán">Michoacán</option>
+                <option value="Mixteca">Mixteca</option>
+                <option value="Morelos">Morelos</option>
+                <option value="Nayarit / Jalisco">Nayarit / Jalisco</option>
+                <option value="Ocosingo">Ocosingo</option>
+                <option value="Palenque">Palenque</option>
+                <option value="Papantla">Papantla</option>
+                <option value="Pichucalco">Pichucalco</option>
+                <option value="Puebla">Puebla</option>
+                <option value="San Luis Potosí">San Luis Potosí</option>
+                <option value="Sinaloa">Sinaloa</option>
+                <option value="Tamaulipas">Tamaulipas</option>
+                <option value="Tantoyuca">Tantoyuca</option>
+                <option value="Tapachula">Tapachula</option>
+                <option value="Teapa">Teapa</option>
+                <option value="Tlaxcala / Estado de México">Tlaxcala / Estado de México</option>
+                <option value="Tzucacab / Opb">Tzucacab / Opb</option>
+                <option value="Xpujil">Xpujil</option>
+                <option value="Oficinas Centrales">Oficinas Centrales</option>
               </select>
             </div>
           </div>

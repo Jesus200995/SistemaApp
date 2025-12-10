@@ -58,11 +58,30 @@ def crear_sembrador(
         if not data.get("nombre"):
             raise HTTPException(status_code=400, detail="El nombre es obligatorio")
         
+        # Validar territorio obligatorio
+        if not data.get("territorio"):
+            raise HTTPException(status_code=400, detail="El territorio es obligatorio")
+        
         user_id = current_user["user_id"]
+        
+        # Validar CURP si se proporciona
+        curp = None
+        if data.get("curp") and data.get("curp").strip():
+            import re
+            curp = data.get("curp").strip().upper()
+            curp_regex = r'^[A-Z]{4}[0-9]{6}[HM][A-Z]{5}[A-Z0-9]{2}$'
+            if not re.match(curp_regex, curp):
+                raise HTTPException(status_code=400, detail="CURP inválido. Debe tener 18 caracteres en formato válido")
+            # Verificar que no exista otro sembrador con el mismo CURP
+            curp_existente = db.query(Sembrador).filter(Sembrador.curp == curp).first()
+            if curp_existente:
+                raise HTTPException(status_code=400, detail="Ya existe un sembrador con este CURP")
         
         nuevo = Sembrador(
             nombre=data.get("nombre"),
+            curp=curp,
             comunidad=data.get("comunidad"),
+            territorio=data.get("territorio"),
             cultivo_principal=data.get("cultivo_principal"),
             telefono=data.get("telefono"),
             lat=data.get("lat"),

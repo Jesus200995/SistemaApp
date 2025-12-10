@@ -46,7 +46,7 @@
           </div>
 
           <form @submit.prevent="crearSembrador" class="sembrador-form">
-            <!-- Fila 1: Nombre y Comunidad -->
+            <!-- Fila 1: Nombre y CURP -->
             <div class="form-row">
               <div class="form-group">
                 <label class="form-label">Nombre Completo *</label>
@@ -64,6 +64,24 @@
               </div>
 
               <div class="form-group">
+                <label class="form-label">CURP</label>
+                <div class="input-wrapper">
+                  <IdCard class="input-icon" />
+                  <input
+                    v-model="form.curp"
+                    type="text"
+                    placeholder="XXXX######HXXXXX##"
+                    class="form-input"
+                    maxlength="18"
+                    @input="form.curp = form.curp.toUpperCase()"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <!-- Fila 2: Comunidad y Territorio -->
+            <div class="form-row">
+              <div class="form-group">
                 <label class="form-label">Comunidad *</label>
                 <div class="input-wrapper">
                   <MapPin class="input-icon" />
@@ -76,9 +94,54 @@
                   />
                 </div>
               </div>
+
+              <div class="form-group">
+                <label class="form-label">Territorio *</label>
+                <div class="select-wrapper">
+                  <Globe class="input-icon" />
+                  <select
+                    v-model="form.territorio"
+                    class="form-select"
+                    required
+                  >
+                    <option value="">-- Selecciona --</option>
+                    <option value="Acapulco - Centro - Norte - Tierra Caliente">Acapulco - Centro - Norte - Tierra Caliente</option>
+                    <option value="Acayucan">Acayucan</option>
+                    <option value="Balancán">Balancán</option>
+                    <option value="Chihuahua / Sonora">Chihuahua / Sonora</option>
+                    <option value="Colima">Colima</option>
+                    <option value="Comalcalco">Comalcalco</option>
+                    <option value="Córdoba">Córdoba</option>
+                    <option value="Costa Chica - Montaña">Costa Chica - Montaña</option>
+                    <option value="Costa Grande - Sierra">Costa Grande - Sierra</option>
+                    <option value="Durango / Zacatecas">Durango / Zacatecas</option>
+                    <option value="Hidalgo">Hidalgo</option>
+                    <option value="Istmo">Istmo</option>
+                    <option value="Michoacán">Michoacán</option>
+                    <option value="Mixteca">Mixteca</option>
+                    <option value="Morelos">Morelos</option>
+                    <option value="Nayarit / Jalisco">Nayarit / Jalisco</option>
+                    <option value="Ocosingo">Ocosingo</option>
+                    <option value="Palenque">Palenque</option>
+                    <option value="Papantla">Papantla</option>
+                    <option value="Pichucalco">Pichucalco</option>
+                    <option value="Puebla">Puebla</option>
+                    <option value="San Luis Potosí">San Luis Potosí</option>
+                    <option value="Sinaloa">Sinaloa</option>
+                    <option value="Tamaulipas">Tamaulipas</option>
+                    <option value="Tantoyuca">Tantoyuca</option>
+                    <option value="Tapachula">Tapachula</option>
+                    <option value="Teapa">Teapa</option>
+                    <option value="Tlaxcala / Estado de México">Tlaxcala / Estado de México</option>
+                    <option value="Tzucacab / Opb">Tzucacab / Opb</option>
+                    <option value="Xpujil">Xpujil</option>
+                    <option value="Oficinas Centrales">Oficinas Centrales</option>
+                  </select>
+                </div>
+              </div>
             </div>
 
-            <!-- Fila 2: Cultivo y Teléfono -->
+            <!-- Fila 3: Cultivo y Teléfono -->
             <div class="form-row">
               <div class="form-group">
                 <label class="form-label">Cultivo Principal *</label>
@@ -109,7 +172,7 @@
               </div>
             </div>
 
-            <!-- Fila 3: Latitud y Longitud -->
+            <!-- Fila 4: Latitud y Longitud -->
             <div class="form-row">
               <div class="form-group">
                 <label class="form-label">Latitud</label>
@@ -179,10 +242,11 @@
                 <thead>
                   <tr class="table-header-row">
                     <th class="table-header-cell">Nombre</th>
+                    <th class="table-header-cell">CURP</th>
                     <th class="table-header-cell">Comunidad</th>
+                    <th class="table-header-cell">Territorio</th>
                     <th class="table-header-cell">Cultivo</th>
                     <th class="table-header-cell">Teléfono</th>
-                    <th class="table-header-cell">Ubicación</th>
                     <th class="table-header-cell">Acciones</th>
                   </tr>
                 </thead>
@@ -204,10 +268,16 @@
                       </div>
                     </td>
                     <td class="table-cell">
+                      <span class="cell-curp">{{ sembrador.curp || 'N/A' }}</span>
+                    </td>
+                    <td class="table-cell">
                       <div class="cell-location">
                         <MapPin class="icon-tiny" />
                         {{ sembrador.comunidad }}
                       </div>
+                    </td>
+                    <td class="table-cell">
+                      <span class="cell-badge territorio-badge">{{ sembrador.territorio || 'N/A' }}</span>
                     </td>
                     <td class="table-cell">
                       <span class="cell-badge">{{ sembrador.cultivo_principal }}</span>
@@ -216,12 +286,6 @@
                       <a :href="`tel:${sembrador.telefono}`" class="cell-phone">
                         {{ sembrador.telefono }}
                       </a>
-                    </td>
-                    <td class="table-cell">
-                      <div class="cell-location-small">
-                        {{ sembrador.lat ? `${sembrador.lat.toFixed(4)}°` : 'N/A' }}
-                        {{ sembrador.lng ? `${sembrador.lng.toFixed(4)}°` : '' }}
-                      </div>
                     </td>
                     <td class="table-cell">
                       <div class="cell-actions">
@@ -266,7 +330,9 @@ import {
   Navigation,
   Edit2,
   Trash2,
-  ArrowLeft
+  ArrowLeft,
+  IdCard,
+  Globe
 } from 'lucide-vue-next'
 import Swal from 'sweetalert2'
 
@@ -276,7 +342,9 @@ const loading = ref(false)
 
 const form = ref({
   nombre: '',
+  curp: '',
   comunidad: '',
+  territorio: '',
   cultivo_principal: '',
   telefono: '',
   lat: null,
@@ -306,6 +374,21 @@ const crearSembrador = async () => {
       return
     }
 
+    // Validar territorio obligatorio
+    if (!form.value.territorio) {
+      Swal.fire('❌ Error', 'Debes seleccionar un territorio', 'error')
+      return
+    }
+
+    // Validar CURP si se proporciona
+    if (form.value.curp && form.value.curp.trim()) {
+      const curpRegex = /^[A-Z]{4}[0-9]{6}[HM][A-Z]{5}[A-Z0-9]{2}$/
+      if (!curpRegex.test(form.value.curp.toUpperCase())) {
+        Swal.fire('❌ Error', 'El CURP no tiene un formato válido (18 caracteres)', 'error')
+        return
+      }
+    }
+
     loading.value = true
     const apiUrl = getSecureApiUrl()
 
@@ -318,7 +401,9 @@ const crearSembrador = async () => {
     // Limpiar formulario
     form.value = {
       nombre: '',
+      curp: '',
       comunidad: '',
+      territorio: '',
       cultivo_principal: '',
       telefono: '',
       lat: null,
@@ -697,6 +782,52 @@ onMounted(getSembradores)
   box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.1);
 }
 
+/* ========== SELECT WRAPPER ========== */
+.select-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.select-wrapper .input-icon {
+  position: absolute;
+  left: 0.6rem;
+  width: 14px;
+  height: 14px;
+  color: #10b981;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.form-select {
+  width: 100%;
+  background: rgba(15, 23, 42, 0.5);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 8px;
+  padding: 0.5rem 2rem 0.5rem 2rem;
+  color: #e2e8f0;
+  font-size: 0.8rem;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2394a3b8'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.6rem center;
+  background-size: 1rem;
+}
+
+.form-select:focus {
+  outline: none;
+  border-color: #10b981;
+  background-color: rgba(15, 23, 42, 0.7);
+  box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.1);
+}
+
+.form-select option {
+  background: #1e293b;
+  color: #e2e8f0;
+}
+
 /* ========== SUBMIT BUTTON ========== */
 .submit-btn {
   display: flex;
@@ -915,6 +1046,19 @@ onMounted(getSembradores)
   font-weight: 500;
   font-size: 0.875rem;
   border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.territorio-badge {
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.2) 0%, rgba(99, 102, 241, 0.1) 100%);
+  color: #c4b5fd;
+  border: 1px solid rgba(99, 102, 241, 0.3);
+}
+
+.cell-curp {
+  font-family: 'Courier New', monospace;
+  font-size: 0.75rem;
+  color: #94a3b8;
+  letter-spacing: 0.5px;
 }
 
 .cell-phone {
