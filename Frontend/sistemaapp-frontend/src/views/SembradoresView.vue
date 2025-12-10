@@ -1892,6 +1892,47 @@ onMounted(getSembradores)
 }
 
 /* ========== RESPONSIVE MODAL ========== */
+
+/* ========== MODAL OVERLAY ========== */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  backdrop-filter: blur(4px);
+  padding: 1rem;
+  overflow: auto;
+}
+
+.modal-edicion {
+  background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+  border: 1px solid rgba(132, 204, 22, 0.2);
+  border-radius: 16px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(12px);
+  width: 100%;
+  max-width: 600px;
+  max-height: 90vh;
+  overflow-y: auto;
+  animation: modalSlideIn 0.3s ease;
+  margin: auto;
+}
+
+@keyframes modalSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* ========== TABLETS & LANDSCAPE ========== */
 @media (max-height: 700px) {
   .modal-edicion {
     max-height: 95vh;
@@ -1922,56 +1963,171 @@ onMounted(getSembradores)
   }
 }
 
-@media (max-width: 768px) {
+/* ========== LANDSCAPE MODE ========== */
+@media (orientation: landscape) and (min-height: 400px) {
+  .modal-edicion {
+    max-height: 88vh;
+    border-radius: 14px;
+  }
+
+  .modal-header {
+    padding: 0.9rem 1.2rem;
+  }
+
+  .modal-form {
+    padding: 0.9rem 1.2rem;
+    gap: 0.6rem;
+  }
+
+  .form-row {
+    gap: 0.6rem;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .form-label {
+    font-size: 0.75rem;
+  }
+
+  .form-input,
+  .form-select {
+    font-size: 14px;
+    padding: 0.5rem 0.8rem 0.5rem 1.9rem;
+  }
+}
+
+/* ========== TABLET VERTICAL (768px - 1024px) ========== */
+@media (min-width: 768px) and (max-width: 1024px) {
+  .modal-edicion {
+    max-width: 550px;
+    max-height: 90vh;
+  }
+
+  .modal-header {
+    padding: 1.2rem;
+  }
+
+  .modal-form {
+    padding: 1.2rem;
+    gap: 0.9rem;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+
+  .modal-actions {
+    gap: 0.8rem;
+  }
+}
+
+/* ========== TABLET HORIZONTAL (1024px+) ========== */
+@media (min-width: 1024px) {
+  .modal-edicion {
+    max-width: 700px;
+  }
+
+  .form-row {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.2rem;
+  }
+}
+
+/* ========== MOBILE VERTICAL (< 640px) ========== */
+@media (max-width: 640px) {
+  .modal-overlay {
+    padding: 0.75rem;
+    align-items: flex-end;
+  }
+
+  .modal-edicion {
+    max-width: 100%;
+    max-height: 85vh;
+    border-radius: 20px 20px 0 0;
+    animation: modalSlideUp 0.3s ease;
+  }
+
+  @keyframes modalSlideUp {
+    from {
+      opacity: 0;
+      transform: translateY(100%);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .modal-header {
+    padding: 1.2rem 1.2rem 0.8rem;
+    border-radius: 20px 20px 0 0;
+  }
+
+  .modal-title {
+    font-size: 1.2rem;
+    flex: 1;
+  }
+
+  .modal-close-btn {
+    width: 38px;
+    height: 38px;
+    flex-shrink: 0;
+  }
+
+  .modal-close-icon {
+    width: 18px;
+    height: 18px;
+  }
+
+  .modal-form {
+    padding: 1.2rem;
+    gap: 0.85rem;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+    gap: 0.85rem;
+  }
+
+  .form-label {
+    font-size: 0.8rem;
+  }
+
+  .form-input,
+  .form-select {
+    font-size: 16px;
+    padding: 0.7rem 1rem 0.7rem 2.3rem;
+  }
+
+  .modal-actions {
+    flex-direction: column;
+    gap: 0.7rem;
+  }
+
+  .btn-cancelar,
+  .btn-guardar {
+    padding: 0.7rem 1rem;
+    font-size: 0.85rem;
+  }
+}
+
+/* ========== MOBILE SMALL (< 480px) ========== */
+@media (max-width: 480px) {
   .modal-overlay {
     padding: 0.5rem;
   }
 
   .modal-edicion {
-    width: 100%;
-    max-height: 95vh;
-    max-width: 95vw;
+    max-height: 88vh;
+    border-radius: 20px 20px 0 0;
   }
 
   .modal-header {
-    padding: 1rem;
-  }
-
-  .modal-form {
-    padding: 1rem;
-  }
-
-  .form-row {
-    grid-template-columns: 1fr;
-    gap: 0.7rem;
-  }
-
-  .modal-actions {
-    flex-direction: column;
-    gap: 0.5rem;
-  }
-
-  .btn-cancelar,
-  .btn-guardar {
-    padding: 0.65rem 0.9rem;
-    font-size: 0.85rem;
-  }
-}
-
-@media (max-width: 480px) {
-  .modal-edicion {
-    border-radius: 12px;
-  }
-
-  .modal-header {
-    padding: 0.9rem;
-    flex-wrap: wrap;
-    gap: 0.5rem;
+    padding: 1rem 1rem 0.6rem;
   }
 
   .modal-title {
     font-size: 1.1rem;
-    flex: 1;
   }
 
   .modal-close-btn {
@@ -1985,22 +2141,23 @@ onMounted(getSembradores)
   }
 
   .modal-form {
-    padding: 0.9rem;
-    gap: 0.65rem;
+    padding: 1rem;
+    gap: 0.75rem;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
   }
 
   .form-label {
-    font-size: 0.6rem;
+    font-size: 0.75rem;
   }
 
   .form-input,
   .form-select {
-    padding: 0.35rem 0.5rem 0.35rem 1.6rem;
-    font-size: 14px;
-  }
-
-  .form-row {
-    gap: 0.6rem;
+    padding: 0.65rem 0.9rem 0.65rem 2.2rem;
+    font-size: 16px;
   }
 
   .action-btn {
@@ -2015,82 +2172,47 @@ onMounted(getSembradores)
 
   .btn-cancelar,
   .btn-guardar {
-    padding: 0.6rem 0.8rem;
+    padding: 0.65rem 0.9rem;
     font-size: 0.8rem;
   }
 
   .modal-actions {
-    gap: 0.4rem;
+    gap: 0.6rem;
   }
 }
 
-/* ========== ORIENTACIÓN HORIZONTAL (LANDSCAPE) ========== */
-@media (max-height: 600px) and (orientation: landscape) {
+/* ========== EXTRA SMALL (< 375px) ========== */
+@media (max-width: 375px) {
   .modal-edicion {
     max-height: 90vh;
   }
 
   .modal-header {
-    padding: 0.8rem;
-  }
-
-  .modal-form {
-    padding: 0.8rem;
-    gap: 0.6rem;
-  }
-
-  .form-row {
-    gap: 0.6rem;
-  }
-
-  .form-label {
-    font-size: 0.6rem;
-  }
-
-  .form-input,
-  .form-select {
-    padding: 0.3rem 0.5rem 0.3rem 1.5rem;
-    font-size: 13px;
-  }
-
-  .form-group {
-    gap: 0.1rem;
-  }
-
-  .modal-actions {
-    gap: 0.4rem;
-  }
-
-  .btn-cancelar,
-  .btn-guardar {
-    padding: 0.5rem 0.7rem;
-    font-size: 0.75rem;
+    padding: 0.9rem 0.9rem 0.5rem;
   }
 
   .modal-title {
     font-size: 1rem;
   }
 
-  .action-btn {
-    width: 32px;
-    height: 32px;
+  .modal-form {
+    padding: 0.9rem;
   }
 
-  .action-icon {
-    width: 14px;
-    height: 14px;
-  }
-}
-
-/* ========== TABLET LANDSCAPE ========== */
-@media (min-width: 768px) and (max-width: 1024px) and (orientation: landscape) {
-  .modal-edicion {
-    max-width: 700px;
-    max-height: 85vh;
+  .form-label {
+    font-size: 0.7rem;
   }
 
-  .form-row {
-    grid-template-columns: repeat(2, 1fr);
+  .form-input,
+  .form-select {
+    padding: 0.6rem 0.8rem 0.6rem 2rem;
+    font-size: 15px;
+  }
+
+  .btn-cancelar,
+  .btn-guardar {
+    padding: 0.6rem 0.8rem;
+    font-size: 0.75rem;
   }
 }
 
