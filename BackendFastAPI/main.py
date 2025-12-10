@@ -1,7 +1,9 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from routes import auth, layers, chat, notificaciones, sembradores, seguimientos, solicitudes
 from database import Base, engine
+import os
 
 Base.metadata.create_all(bind=engine)
 
@@ -11,6 +13,10 @@ try:
     run_migration()
 except Exception as e:
     print(f"⚠️ Error ejecutando migraciones: {str(e)}")
+
+# 📁 Crear carpeta de uploads si no existe
+UPLOAD_DIR = os.path.join(os.path.dirname(__file__), "uploads", "seguimientos")
+os.makedirs(UPLOAD_DIR, exist_ok=True)
 
 app = FastAPI(title="SistemaApp API (FastAPI + PostgreSQL)")
 
@@ -44,6 +50,9 @@ app.include_router(notificaciones.router)
 app.include_router(sembradores.router)
 app.include_router(seguimientos.router)
 app.include_router(solicitudes.router)
+
+# 📁 Servir archivos estáticos (uploads)
+app.mount("/uploads", StaticFiles(directory=os.path.join(os.path.dirname(__file__), "uploads")), name="uploads")
 
 @app.get("/")
 def root():

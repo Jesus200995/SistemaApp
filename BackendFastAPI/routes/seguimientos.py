@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, Security
+from fastapi import APIRouter, Depends, HTTPException, Security, UploadFile, File
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from sqlalchemy.orm import Session
 from sqlalchemy import and_, or_
@@ -7,10 +7,16 @@ from models import Seguimiento, Sembrador, User
 from datetime import datetime
 import jwt
 import os
+import uuid
+import shutil
 from dotenv import load_dotenv
 
 load_dotenv()
 SECRET = os.getenv("JWT_SECRET", "mi_clave_jwt_2025")
+
+# 📁 Directorio de uploads
+UPLOAD_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), "uploads", "seguimientos")
+os.makedirs(UPLOAD_DIR, exist_ok=True)
 
 router = APIRouter(prefix="/seguimientos", tags=["Seguimiento de Campo"])
 bearer_scheme = HTTPBearer()
@@ -87,6 +93,56 @@ def crear_seguimiento(
     except Exception as e:
         db.rollback()
         raise HTTPException(status_code=500, detail=f"Error al crear seguimiento: {str(e)}")
+
+
+@router.post("/upload-foto")
+async def upload_foto(
+    file: UploadFile = File(...),
+    current_user: dict = Depends(get_current_user)
+):
+    """
+    Sube una imagen de seguimiento y retorna la URL
+    Acepta: jpg, jpeg, png, webp
+    Tamaño máximo: 10MB
+    """
+    try:
+        # Validar tipo de archivo
+        allowed_types = ["image/jpeg", "image/jpg", "image/png", "image/webp"]
+        if file.content_type not in allowed_types:
+            raise HTTPException(
+                status_code=400, 
+                detail=f"Tipo de archivo no permitido. Usa: jpg, jpeg, png o webp"
+            )
+        
+        # Validar tamaño (10MB máximo)
+        contents = await file.read()
+        if len(contents) > 10 * 1024 * 1024:
+            raise HTTPException(status_code=400, detail="El archivo es muy grande. Máximo 10MB")
+        
+        # Generar nombre único
+        ext = file.filename.split(".")[-1] if "." in file.filename else "jpg"
+        unique_name = f"{uuid.uuid4().hex}_{datetime.now().strftime('%Y%m%d%H%M%S')}.{ext}"
+        file_path = os.path.join(UPLOAD_DIR, unique_name)
+        
+        # Guardar archivo
+        with open(file_path, "wb") as f:
+            f.write(contents)
+        
+        # Retornar URL relativa
+        foto_url = f"/uploads/seguimientos/{unique_name}"
+        
+        return {
+            "success": True,
+            "foto_url": foto_url,
+            "filename": unique_name,
+            "size": len(contents),
+            "mensaje": "Imagen subida exitosamente"
+        }
+    
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error al subir imagen: {str(e)}")
 
 
 @router.get("/")
