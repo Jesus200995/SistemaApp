@@ -707,7 +707,47 @@ const crearSembrador = async () => {
       headers: { Authorization: `Bearer ${auth.token}` }
     })
 
-    Swal.fire('✅ Éxito', 'Sembrador registrado correctamente', 'success')
+    // Mostrar mensaje de éxito con diseño profesional
+    Swal.fire({
+      icon: 'success',
+      title: 'Sembrador Creado',
+      html: `
+        <div class="swal-success-content">
+          <div class="swal-success-item">
+            <span class="swal-success-label">Nombre</span>
+            <span class="swal-success-value">${form.value.nombre}</span>
+          </div>
+          <div class="swal-success-item">
+            <span class="swal-success-label">CURP</span>
+            <span class="swal-success-value" style="font-family: monospace; font-size: 0.8rem;">${form.value.curp}</span>
+          </div>
+          <div class="swal-success-item">
+            <span class="swal-success-label">Comunidad</span>
+            <span class="swal-success-value">${form.value.comunidad}</span>
+          </div>
+          <div class="swal-success-item">
+            <span class="swal-success-label">Territorio</span>
+            <span class="swal-success-badge">${form.value.territorio}</span>
+          </div>
+        </div>
+      `,
+      confirmButtonText: 'Aceptar',
+      customClass: {
+        popup: 'swal-success-popup',
+        title: 'swal-success-title',
+        htmlContainer: 'swal-success-html',
+        confirmButton: 'swal-success-confirm',
+        icon: 'swal-success-icon'
+      },
+      background: 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)',
+      color: '#e2e8f0',
+      showClass: {
+        popup: 'animate__animated animate__fadeInUp animate__faster'
+      },
+      hideClass: {
+        popup: 'animate__animated animate__fadeOutDown animate__faster'
+      }
+    })
     
     // Limpiar formulario
     form.value = {
@@ -2224,6 +2264,195 @@ onMounted(getSembradores)
 
 .modal-edicion::-webkit-scrollbar-thumb:hover {
   background: rgba(132, 204, 22, 0.5);
+}
+
+/* ========== SWEETALERT SUCCESS MODAL ========== */
+:deep(.swal-success-popup) {
+  border-radius: 16px !important;
+  border: 1px solid rgba(16, 185, 129, 0.3) !important;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5), 0 0 30px rgba(16, 185, 129, 0.15) !important;
+  padding: 1.5rem !important;
+  max-width: 420px !important;
+  width: 90% !important;
+  margin: auto !important;
+}
+
+:deep(.swal-success-title) {
+  font-size: 1.5rem !important;
+  font-weight: 700 !important;
+  color: #10b981 !important;
+  text-shadow: 0 0 10px rgba(16, 185, 129, 0.3) !important;
+  margin-bottom: 0.5rem !important;
+}
+
+:deep(.swal-success-icon) {
+  border-color: rgba(16, 185, 129, 0.4) !important;
+  margin-bottom: 1rem !important;
+}
+
+:deep(.swal-success-icon .swal2-success-ring) {
+  border-color: rgba(16, 185, 129, 0.3) !important;
+}
+
+:deep(.swal-success-icon .swal2-success-line-tip),
+:deep(.swal-success-icon .swal2-success-line-long) {
+  background-color: #10b981 !important;
+}
+
+:deep(.swal-success-html) {
+  padding: 0 !important;
+  margin-top: 0.5rem !important;
+}
+
+:deep(.swal-success-content) {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1rem;
+  background: rgba(15, 23, 42, 0.5);
+  border-radius: 12px;
+  border: 1px solid rgba(16, 185, 129, 0.15);
+}
+
+:deep(.swal-success-item) {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.6rem 0.8rem;
+  background: rgba(30, 41, 59, 0.6);
+  border-radius: 8px;
+  border: 1px solid rgba(71, 85, 105, 0.3);
+}
+
+:deep(.swal-success-label) {
+  font-size: 0.85rem;
+  color: #94a3b8;
+  font-weight: 500;
+}
+
+:deep(.swal-success-value) {
+  font-size: 0.9rem;
+  color: #e2e8f0;
+  font-weight: 600;
+  text-align: right;
+  max-width: 60%;
+  word-break: break-word;
+}
+
+:deep(.swal-success-badge) {
+  font-size: 0.75rem;
+  padding: 0.3rem 0.75rem;
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(16, 185, 129, 0.1));
+  border: 1px solid rgba(16, 185, 129, 0.4);
+  border-radius: 20px;
+  color: #34d399;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+:deep(.swal-success-confirm) {
+  background: linear-gradient(135deg, #10b981, #059669) !important;
+  border: 1px solid rgba(16, 185, 129, 0.5) !important;
+  border-radius: 10px !important;
+  padding: 0.75rem 2rem !important;
+  font-weight: 700 !important;
+  font-size: 0.95rem !important;
+  color: #0f172a !important;
+  box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3) !important;
+  transition: all 0.3s ease !important;
+}
+
+:deep(.swal-success-confirm:hover) {
+  background: linear-gradient(135deg, #34d399, #10b981) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4) !important;
+}
+
+/* ========== SWEETALERT SUCCESS RESPONSIVE ========== */
+@media (max-width: 640px) {
+  :deep(.swal-success-popup) {
+    padding: 1.25rem !important;
+    max-width: 95% !important;
+    border-radius: 14px !important;
+  }
+
+  :deep(.swal-success-title) {
+    font-size: 1.3rem !important;
+  }
+
+  :deep(.swal-success-content) {
+    padding: 0.75rem;
+    gap: 0.6rem;
+  }
+
+  :deep(.swal-success-item) {
+    padding: 0.5rem 0.65rem;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.3rem;
+  }
+
+  :deep(.swal-success-value) {
+    max-width: 100%;
+    text-align: left;
+  }
+
+  :deep(.swal-success-confirm) {
+    padding: 0.7rem 1.5rem !important;
+    font-size: 0.9rem !important;
+    width: 100% !important;
+  }
+}
+
+@media (max-width: 480px) {
+  :deep(.swal-success-popup) {
+    padding: 1rem !important;
+  }
+
+  :deep(.swal-success-title) {
+    font-size: 1.2rem !important;
+  }
+
+  :deep(.swal-success-content) {
+    padding: 0.6rem;
+    gap: 0.5rem;
+  }
+
+  :deep(.swal-success-item) {
+    padding: 0.45rem 0.55rem;
+  }
+
+  :deep(.swal-success-label) {
+    font-size: 0.75rem;
+  }
+
+  :deep(.swal-success-value) {
+    font-size: 0.85rem;
+  }
+
+  :deep(.swal-success-badge) {
+    font-size: 0.7rem;
+    padding: 0.25rem 0.6rem;
+  }
+}
+
+@media (max-width: 375px) {
+  :deep(.swal-success-popup) {
+    padding: 0.9rem !important;
+  }
+
+  :deep(.swal-success-title) {
+    font-size: 1.1rem !important;
+  }
+
+  :deep(.swal-success-label) {
+    font-size: 0.7rem;
+  }
+
+  :deep(.swal-success-value) {
+    font-size: 0.8rem;
+  }
 }
 
 /* ========== SCROLLBAR ========== */
