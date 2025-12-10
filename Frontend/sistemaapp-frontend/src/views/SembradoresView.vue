@@ -164,40 +164,9 @@
                   <input
                     v-model="form.telefono"
                     type="tel"
-                    placeholder="+56912345678"
+                    placeholder="10 dígitos"
                     class="form-input"
                     required
-                  />
-                </div>
-              </div>
-            </div>
-
-            <!-- Fila 4: Latitud y Longitud -->
-            <div class="form-row">
-              <div class="form-group">
-                <label class="form-label">Latitud</label>
-                <div class="input-wrapper">
-                  <Navigation class="input-icon" />
-                  <input
-                    v-model="form.lat"
-                    type="number"
-                    placeholder="-33.8688"
-                    step="0.0001"
-                    class="form-input"
-                  />
-                </div>
-              </div>
-
-              <div class="form-group">
-                <label class="form-label">Longitud</label>
-                <div class="input-wrapper">
-                  <Navigation class="input-icon" />
-                  <input
-                    v-model="form.lng"
-                    type="number"
-                    placeholder="-51.2093"
-                    step="0.0001"
-                    class="form-input"
                   />
                 </div>
               </div>
@@ -327,7 +296,6 @@ import {
   MapPin,
   Leaf,
   Phone,
-  Navigation,
   Edit2,
   Trash2,
   ArrowLeft,
@@ -346,9 +314,7 @@ const form = ref({
   comunidad: '',
   territorio: '',
   cultivo_principal: '',
-  telefono: '',
-  lat: null,
-  lng: null
+  telefono: ''
 })
 
 // Obtener sembradores
@@ -405,9 +371,7 @@ const crearSembrador = async () => {
       comunidad: '',
       territorio: '',
       cultivo_principal: '',
-      telefono: '',
-      lat: null,
-      lng: null
+      telefono: ''
     }
 
     // Recargar lista

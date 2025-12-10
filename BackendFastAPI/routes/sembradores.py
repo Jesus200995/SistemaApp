@@ -47,11 +47,11 @@ def crear_sembrador(
     Body esperado:
     {
         "nombre": "Nombre del sembrador",
+        "curp": "CURP del sembrador (opcional)",
         "comunidad": "Comunidad",
+        "territorio": "Territorio",
         "cultivo_principal": "Maíz",
-        "telefono": "+56912345678",
-        "lat": -33.8688,
-        "lng": -51.2093
+        "telefono": "1234567890"
     }
     """
     try:
@@ -84,8 +84,6 @@ def crear_sembrador(
             territorio=data.get("territorio"),
             cultivo_principal=data.get("cultivo_principal"),
             telefono=data.get("telefono"),
-            lat=data.get("lat"),
-            lng=data.get("lng"),
             user_id=user_id
         )
         

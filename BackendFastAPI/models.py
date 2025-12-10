@@ -91,8 +91,6 @@ class Sembrador(Base):
     territorio = Column(String(100), nullable=True)  # Territorio asignado
     cultivo_principal = Column(String(100))
     telefono = Column(String(30))
-    lat = Column(Float)
-    lng = Column(Float)
     user_id = Column(Integer, ForeignKey("users.id"))
     creado_en = Column(DateTime(timezone=True), server_default=func.now())
 
