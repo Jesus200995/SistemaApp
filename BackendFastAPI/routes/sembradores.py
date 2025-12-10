@@ -162,11 +162,11 @@ def listar_sembradores(
                 {
                     "id": s.id,
                     "nombre": s.nombre,
+                    "curp": s.curp,
                     "comunidad": s.comunidad,
+                    "territorio": s.territorio,
                     "cultivo_principal": s.cultivo_principal,
                     "telefono": s.telefono,
-                    "lat": s.lat,
-                    "lng": s.lng,
                     "user_id": s.user_id,
                     "creado_en": s.creado_en
                 }
@@ -214,11 +214,11 @@ def obtener_sembrador(
         return {
             "id": sembrador.id,
             "nombre": sembrador.nombre,
+            "curp": sembrador.curp,
             "comunidad": sembrador.comunidad,
+            "territorio": sembrador.territorio,
             "cultivo_principal": sembrador.cultivo_principal,
             "telefono": sembrador.telefono,
-            "lat": sembrador.lat,
-            "lng": sembrador.lng,
             "user_id": sembrador.user_id,
             "creado_en": sembrador.creado_en
         }
@@ -259,10 +259,10 @@ def actualizar_sembrador(
             sembrador.cultivo_principal = data["cultivo_principal"]
         if "telefono" in data:
             sembrador.telefono = data["telefono"]
-        if "lat" in data:
-            sembrador.lat = data["lat"]
-        if "lng" in data:
-            sembrador.lng = data["lng"]
+        if "territorio" in data:
+            sembrador.territorio = data["territorio"]
+        if "curp" in data:
+            sembrador.curp = data["curp"]
         
         db.commit()
         db.refresh(sembrador)
@@ -276,8 +276,6 @@ def actualizar_sembrador(
                 "comunidad": sembrador.comunidad,
                 "cultivo_principal": sembrador.cultivo_principal,
                 "telefono": sembrador.telefono,
-                "lat": sembrador.lat,
-                "lng": sembrador.lng,
                 "user_id": sembrador.user_id
             }
         }
@@ -393,8 +391,6 @@ def obtener_sembradores_mapa(
                 "nombre": s.nombre,
                 "comunidad": s.comunidad,
                 "cultivo": s.cultivo_principal,
-                "lat": float(s.lat) if s.lat else None,
-                "lng": float(s.lng) if s.lng else None,
                 "user_id": s.user_id,
                 "tecnico_nombre": usuario.nombre if usuario else "Desconocido",
                 "tecnico_rol": usuario.rol if usuario else "desconocido",
