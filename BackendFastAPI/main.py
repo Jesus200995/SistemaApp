@@ -1,6 +1,7 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
+from fastapi.responses import JSONResponse
 from routes import auth, layers, chat, notificaciones, sembradores, seguimientos, solicitudes
 from database import Base, engine
 import os
@@ -20,27 +21,37 @@ os.makedirs(UPLOAD_DIR, exist_ok=True)
 
 app = FastAPI(title="SistemaApp API (FastAPI + PostgreSQL)")
 
-# ✅ Configuración CORS correcta
-origins = [
-    "http://localhost:5173",                 # desarrollo local
-    "http://localhost:5174",                 # desarrollo local (puerto alternativo)
-    "http://localhost:5175",                 # desarrollo local (puerto alternativo)
-    "http://localhost:5176",                 # desarrollo local (puerto alternativo)
-    "http://localhost:5177",                 # desarrollo local (puerto alternativo)
-    "http://127.0.0.1:5173",                 # desarrollo local (IP)
-    "http://127.0.0.1:5174",                 # desarrollo local (IP)
-    "http://127.0.0.1:5177",                 # desarrollo local (IP)
-    "https://sistemaapp.sembrandodatos.com", # frontend desplegado
-    "http://sistemaapp.sembrandodatos.com",  # frontend sin SSL
-]
-
+# ✅ Configuración CORS PERMISIVA - Permitir todos los orígenes
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
-    allow_credentials=True,
-    allow_methods=["*"],
+    allow_origins=["*"],  # Permitir TODOS los orígenes
+    allow_credentials=False,  # No se puede usar True con "*"
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
     allow_headers=["*"],
+    expose_headers=["*"],
+    max_age=3600,  # Cache preflight por 1 hora
 )
+
+# 🔧 Middleware adicional para manejar OPTIONS manualmente si es necesario
+@app.middleware("http")
+async def add_cors_headers(request: Request, call_next):
+    # Manejar preflight OPTIONS explícitamente
+    if request.method == "OPTIONS":
+        response = JSONResponse(content={"status": "ok"})
+        response.headers["Access-Control-Allow-Origin"] = "*"
+        response.headers["Access-Control-Allow-Methods"] = "GET, POST, PUT, DELETE, OPTIONS, PATCH"
+        response.headers["Access-Control-Allow-Headers"] = "*"
+        response.headers["Access-Control-Max-Age"] = "3600"
+        return response
+    
+    response = await call_next(request)
+    
+    # Agregar headers CORS a todas las respuestas
+    response.headers["Access-Control-Allow-Origin"] = "*"
+    response.headers["Access-Control-Allow-Methods"] = "GET, POST, PUT, DELETE, OPTIONS, PATCH"
+    response.headers["Access-Control-Allow-Headers"] = "*"
+    
+    return response
 
 # 👇 Rutas
 app.include_router(auth.router)
