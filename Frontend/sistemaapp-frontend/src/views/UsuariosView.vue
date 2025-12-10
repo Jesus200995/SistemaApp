@@ -151,9 +151,12 @@
                 class="form-input"
                 placeholder="XXXX######HXXXXX##"
                 maxlength="18"
+                minlength="18"
+                pattern="[A-Z]{4}[0-9]{6}[HM][A-Z]{5}[A-Z0-9]{2}"
                 @input="nuevoUsuario.curp = nuevoUsuario.curp.toUpperCase()"
+                required
               />
-              <span class="field-hint">18 caracteres alfanuméricos (opcional)</span>
+              <span class="field-hint">18 caracteres alfanuméricos (obligatorio)</span>
             </div>
 
             <!-- Campo Teléfono -->
@@ -595,13 +598,16 @@ const crearUsuario = async () => {
     return
   }
 
-  // Validar CURP si se proporciona
-  if (nuevoUsuario.value.curp && nuevoUsuario.value.curp.trim()) {
-    const curpRegex = /^[A-Z]{4}[0-9]{6}[HM][A-Z]{5}[A-Z0-9]{2}$/
-    if (!curpRegex.test(nuevoUsuario.value.curp.toUpperCase())) {
-      Swal.fire('⚠️ CURP inválido', 'El CURP debe tener 18 caracteres en formato válido', 'warning')
-      return
-    }
+  // Validar CURP obligatorio
+  if (!nuevoUsuario.value.curp || !nuevoUsuario.value.curp.trim()) {
+    Swal.fire('⚠️ CURP requerido', 'El CURP es obligatorio', 'warning')
+    return
+  }
+
+  const curpRegex = /^[A-Z]{4}[0-9]{6}[HM][A-Z]{5}[A-Z0-9]{2}$/
+  if (!curpRegex.test(nuevoUsuario.value.curp.toUpperCase())) {
+    Swal.fire('⚠️ CURP inválido', 'El CURP debe tener 18 caracteres en formato válido', 'warning')
+    return
   }
 
   // Validar teléfono si se proporciona

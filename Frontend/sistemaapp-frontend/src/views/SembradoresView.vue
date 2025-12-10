@@ -65,7 +65,7 @@
               </div>
 
               <div class="form-group">
-                <label class="form-label">CURP <span class="optional-label">(opcional)</span></label>
+                <label class="form-label">CURP *</label>
                 <div class="input-wrapper">
                   <IdCard class="input-icon" />
                   <input
@@ -77,6 +77,7 @@
                     minlength="18"
                     pattern="[A-Z]{4}[0-9]{6}[HM][A-Z]{5}[A-Z0-9]{2}"
                     @input="form.curp = form.curp.toUpperCase().replace(/[^A-Z0-9]/g, '')"
+                    required
                   />
                 </div>
                 <span class="input-hint" v-if="form.curp && form.curp.length > 0 && form.curp.length < 18">
@@ -413,7 +414,7 @@
               </div>
 
               <div class="form-group">
-                <label class="form-label">CURP <span class="optional-label">(opcional)</span></label>
+                <label class="form-label">CURP *</label>
                 <div class="input-wrapper">
                   <IdCard class="input-icon" />
                   <input
@@ -425,6 +426,7 @@
                     minlength="18"
                     pattern="[A-Z]{4}[0-9]{6}[HM][A-Z]{5}[A-Z0-9]{2}"
                     @input="form.curp = form.curp.toUpperCase().replace(/[^A-Z0-9]/g, '')"
+                    required
                   />
                 </div>
               </div>
@@ -681,18 +683,21 @@ const crearSembrador = async () => {
       return
     }
 
-    // Validar CURP si se proporciona
-    if (form.value.curp && form.value.curp.trim()) {
-      const curpValue = form.value.curp.trim().toUpperCase()
-      if (curpValue.length !== 18) {
-        Swal.fire('❌ Error', `El CURP debe tener exactamente 18 caracteres. Actualmente tiene ${curpValue.length} caracteres.`, 'error')
-        return
-      }
-      const curpRegex = /^[A-Z]{4}[0-9]{6}[HM][A-Z]{5}[A-Z0-9]{2}$/
-      if (!curpRegex.test(curpValue)) {
-        Swal.fire('❌ Error', 'El CURP no tiene un formato válido.\n\nFormato esperado: AAAA######HAAAAA##\n• 4 letras iniciales\n• 6 dígitos (fecha nacimiento)\n• H o M (sexo)\n• 5 letras (estado + consonantes)\n• 2 caracteres finales', 'error')
-        return
-      }
+    // Validar CURP obligatorio
+    if (!form.value.curp || !form.value.curp.trim()) {
+      Swal.fire('❌ Error', 'El CURP es obligatorio', 'error')
+      return
+    }
+
+    const curpValue = form.value.curp.trim().toUpperCase()
+    if (curpValue.length !== 18) {
+      Swal.fire('❌ Error', `El CURP debe tener exactamente 18 caracteres. Actualmente tiene ${curpValue.length} caracteres.`, 'error')
+      return
+    }
+    const curpRegex = /^[A-Z]{4}[0-9]{6}[HM][A-Z]{5}[A-Z0-9]{2}$/
+    if (!curpRegex.test(curpValue)) {
+      Swal.fire('❌ Error', 'El CURP no tiene un formato válido.\n\nFormato esperado: AAAA######HAAAAA##\n• 4 letras iniciales\n• 6 dígitos (fecha nacimiento)\n• H o M (sexo)\n• 5 letras (estado + consonantes)\n• 2 caracteres finales', 'error')
+      return
     }
 
     loading.value = true
@@ -753,18 +758,21 @@ const guardarEdicion = async () => {
       return
     }
 
-    // Validar CURP si se proporciona
-    if (form.value.curp && form.value.curp.trim()) {
-      const curpValue = form.value.curp.trim().toUpperCase()
-      if (curpValue.length !== 18) {
-        Swal.fire('❌ Error', `El CURP debe tener exactamente 18 caracteres. Actualmente tiene ${curpValue.length} caracteres.`, 'error')
-        return
-      }
-      const curpRegex = /^[A-Z]{4}[0-9]{6}[HM][A-Z]{5}[A-Z0-9]{2}$/
-      if (!curpRegex.test(curpValue)) {
-        Swal.fire('❌ Error', 'El CURP no tiene un formato válido.\n\nFormato esperado: AAAA######HAAAAA##', 'error')
-        return
-      }
+    // Validar CURP obligatorio
+    if (!form.value.curp || !form.value.curp.trim()) {
+      Swal.fire('❌ Error', 'El CURP es obligatorio', 'error')
+      return
+    }
+
+    const curpValue = form.value.curp.trim().toUpperCase()
+    if (curpValue.length !== 18) {
+      Swal.fire('❌ Error', `El CURP debe tener exactamente 18 caracteres. Actualmente tiene ${curpValue.length} caracteres.`, 'error')
+      return
+    }
+    const curpRegex = /^[A-Z]{4}[0-9]{6}[HM][A-Z]{5}[A-Z0-9]{2}$/
+    if (!curpRegex.test(curpValue)) {
+      Swal.fire('❌ Error', 'El CURP no tiene un formato válido.\n\nFormato esperado: AAAA######HAAAAA##', 'error')
+      return
     }
 
     loading.value = true

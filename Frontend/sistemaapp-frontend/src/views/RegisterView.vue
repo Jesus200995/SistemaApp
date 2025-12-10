@@ -116,10 +116,13 @@
                 placeholder="XXXX######HXXXXX##"
                 class="form-input"
                 maxlength="18"
+                minlength="18"
+                pattern="[A-Z]{4}[0-9]{6}[HM][A-Z]{5}[A-Z0-9]{2}"
                 @input="formData.curp = formData.curp.toUpperCase()"
+                required
               />
             </div>
-            <p class="field-hint">18 caracteres alfanuméricos</p>
+            <p class="field-hint">18 caracteres alfanuméricos (obligatorio)</p>
           </div>
 
           <!-- Campo Teléfono -->
@@ -320,13 +323,16 @@ const handleRegister = async () => {
     return
   }
 
-  // Validar CURP si se proporciona
-  if (formData.value.curp && formData.value.curp.trim()) {
-    const curpRegex = /^[A-Z]{4}[0-9]{6}[HM][A-Z]{5}[A-Z0-9]{2}$/
-    if (!curpRegex.test(formData.value.curp.toUpperCase())) {
-      error.value = 'El CURP no tiene un formato válido (18 caracteres)'
-      return
-    }
+  // Validar CURP obligatorio
+  if (!formData.value.curp || !formData.value.curp.trim()) {
+    error.value = 'El CURP es obligatorio'
+    return
+  }
+
+  const curpRegex = /^[A-Z]{4}[0-9]{6}[HM][A-Z]{5}[A-Z0-9]{2}$/
+  if (!curpRegex.test(formData.value.curp.toUpperCase())) {
+    error.value = 'El CURP no tiene un formato válido (18 caracteres)'
+    return
   }
 
   // Validar teléfono si se proporciona
