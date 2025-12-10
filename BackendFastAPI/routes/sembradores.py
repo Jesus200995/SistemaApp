@@ -69,9 +69,11 @@ def crear_sembrador(
         if data.get("curp") and data.get("curp").strip():
             import re
             curp = data.get("curp").strip().upper()
+            if len(curp) != 18:
+                raise HTTPException(status_code=400, detail=f"El CURP debe tener exactamente 18 caracteres. Actualmente tiene {len(curp)} caracteres.")
             curp_regex = r'^[A-Z]{4}[0-9]{6}[HM][A-Z]{5}[A-Z0-9]{2}$'
             if not re.match(curp_regex, curp):
-                raise HTTPException(status_code=400, detail="CURP inválido. Debe tener 18 caracteres en formato válido")
+                raise HTTPException(status_code=400, detail="CURP inválido. Formato: AAAA######HAAAAA## (4 letras + 6 dígitos + H/M + 5 letras + 2 caracteres)")
             # Verificar que no exista otro sembrador con el mismo CURP
             curp_existente = db.query(Sembrador).filter(Sembrador.curp == curp).first()
             if curp_existente:

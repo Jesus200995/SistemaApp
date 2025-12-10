@@ -64,18 +64,23 @@
               </div>
 
               <div class="form-group">
-                <label class="form-label">CURP</label>
+                <label class="form-label">CURP <span class="optional-label">(opcional)</span></label>
                 <div class="input-wrapper">
                   <IdCard class="input-icon" />
                   <input
                     v-model="form.curp"
                     type="text"
-                    placeholder="XXXX######HXXXXX##"
+                    placeholder="Ej: GAPA850101HDFRRL09"
                     class="form-input"
                     maxlength="18"
-                    @input="form.curp = form.curp.toUpperCase()"
+                    minlength="18"
+                    pattern="[A-Z]{4}[0-9]{6}[HM][A-Z]{5}[A-Z0-9]{2}"
+                    @input="form.curp = form.curp.toUpperCase().replace(/[^A-Z0-9]/g, '')"
                   />
                 </div>
+                <span class="input-hint" v-if="form.curp && form.curp.length > 0 && form.curp.length < 18">
+                  {{ form.curp.length }}/18 caracteres
+                </span>
               </div>
             </div>
 
@@ -431,9 +436,14 @@ const crearSembrador = async () => {
 
     // Validar CURP si se proporciona
     if (form.value.curp && form.value.curp.trim()) {
+      const curpValue = form.value.curp.trim().toUpperCase()
+      if (curpValue.length !== 18) {
+        Swal.fire('❌ Error', `El CURP debe tener exactamente 18 caracteres. Actualmente tiene ${curpValue.length} caracteres.`, 'error')
+        return
+      }
       const curpRegex = /^[A-Z]{4}[0-9]{6}[HM][A-Z]{5}[A-Z0-9]{2}$/
-      if (!curpRegex.test(form.value.curp.toUpperCase())) {
-        Swal.fire('❌ Error', 'El CURP no tiene un formato válido (18 caracteres)', 'error')
+      if (!curpRegex.test(curpValue)) {
+        Swal.fire('❌ Error', 'El CURP no tiene un formato válido.\n\nFormato esperado: AAAA######HAAAAA##\n• 4 letras iniciales\n• 6 dígitos (fecha nacimiento)\n• H o M (sexo)\n• 5 letras (estado + consonantes)\n• 2 caracteres finales', 'error')
         return
       }
     }
@@ -789,6 +799,20 @@ onMounted(getSembradores)
   color: #e2e8f0;
   text-transform: uppercase;
   letter-spacing: 0.05em;
+}
+
+.optional-label {
+  font-weight: 400;
+  color: #64748b;
+  text-transform: lowercase;
+  font-size: 0.6rem;
+}
+
+.input-hint {
+  font-size: 0.6rem;
+  color: #f59e0b;
+  margin-top: 0.2rem;
+  font-weight: 500;
 }
 
 .input-wrapper {
