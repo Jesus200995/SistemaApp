@@ -403,16 +403,44 @@ const formatTime = (timestamp: string): string => {
   }
 }
 
-const actions = [
-  { title: 'Usuarios', icon: Users, route: '/usuarios' },
-  { title: 'Estadísticas', icon: BarChart3, route: '/estadisticas' },
-  { title: 'Solicitudes', icon: FileText, route: '/solicitudes' },
-  { title: 'Mapa', icon: MapPin, route: '/mapa' },
-  { title: 'Sembradores', icon: Sprout, route: '/sembradores' },
-]
+const actions = computed(() => {
+  const rol = auth.user?.rol || ''
+  const isTecnico = rol.includes('tecnico')
+  const canManageUsers = ['admin', 'territorial', 'facilitador'].includes(rol)
+  const canViewStats = ['admin', 'territorial', 'facilitador'].includes(rol)
+  
+  const baseActions = []
+  
+  // Usuarios - Solo Admin, Territorial, Facilitador
+  if (canManageUsers) {
+    baseActions.push({ title: 'Usuarios', icon: Users, route: '/usuarios' })
+  }
+  
+  // Estadísticas - Solo Admin, Territorial, Facilitador
+  if (canViewStats) {
+    baseActions.push({ title: 'Estadísticas', icon: BarChart3, route: '/estadisticas' })
+  }
+  
+  // Solicitudes - Todos los roles
+  baseActions.push({ title: 'Solicitudes', icon: FileText, route: '/solicitudes' })
+  
+  // Mapa - Todos los roles
+  baseActions.push({ title: 'Mapa', icon: MapPin, route: '/mapa' })
+  
+  // Sembradores - Todos los roles
+  baseActions.push({ title: 'Sembradores', icon: Sprout, route: '/sembradores' })
+  
+  // Seguimiento - Solo técnicos
+  if (isTecnico) {
+    baseActions.push({ title: 'Seguimiento', icon: Clipboard, route: '/seguimiento' })
+  }
+  
+  return baseActions
+})
 
 const goTo = (route: string) => {
-  if (route === '/usuarios' || route === '/estadisticas' || route === '/mapa' || route === '/sembradores' || route === '/solicitudes') {
+  const validRoutes = ['/usuarios', '/estadisticas', '/solicitudes', '/mapa', '/sembradores', '/seguimiento']
+  if (validRoutes.includes(route)) {
     router.push(route)
   } else {
     alert(`👉 Próximamente: ${route}`)

@@ -46,14 +46,20 @@ const router = createRouter({
       name: 'usuarios',
       // @ts-ignore
       component: () => import('../views/UsuariosView.vue'),
-      meta: { requiresAuth: true }, // 🔒 protegida
+      meta: { 
+        requiresAuth: true,
+        allowedRoles: ['admin', 'territorial', 'facilitador']
+      },
     },
     {
       path: '/estadisticas',
       name: 'estadisticas',
       // @ts-ignore
       component: () => import('../views/EstadisticasView.vue'),
-      meta: { requiresAuth: true }, // 🔒 protegida
+      meta: { 
+        requiresAuth: true,
+        allowedRoles: ['admin', 'territorial', 'facilitador']
+      },
     },
     {
       path: '/mapa',
@@ -81,7 +87,10 @@ const router = createRouter({
       name: 'seguimiento',
       // @ts-ignore
       component: () => import('../views/SeguimientoView.vue'),
-      meta: { requiresAuth: true }, // 🔒 protegida
+      meta: { 
+        requiresAuth: true,
+        allowedRoles: ['tecnico_productivo', 'tecnico_social']
+      },
     },
     {
       path: '/solicitudes',
@@ -95,7 +104,10 @@ const router = createRouter({
       name: 'admin-panel',
       // @ts-ignore
       component: () => import('../views/AdminDashboardView.vue'),
-      meta: { requiresAuth: true }, // 🔒 protegida, solo admin
+      meta: { 
+        requiresAuth: true,
+        allowedRoles: ['admin']
+      },
     },
   ],
 })
@@ -130,6 +142,24 @@ router.beforeEach(async (to, from, next) => {
   // 🚀 Si está loguado y trata de acceder a / (home), redirigir a dashboard
   if (token && to.path === '/') {
     return next('/dashboard')
+  }
+
+  // 🔐 Verificar roles permitidos
+  const allowedRoles = to.meta.allowedRoles as string[] | undefined
+  if (allowedRoles && token && auth.user) {
+    const userRole = auth.user.rol || ''
+    // Para técnicos, verificar si el rol incluye 'tecnico' cuando está en allowedRoles
+    const hasAccess = allowedRoles.some(role => {
+      if (role.includes('tecnico') && userRole.includes('tecnico')) {
+        return true
+      }
+      return role === userRole
+    })
+    
+    if (!hasAccess) {
+      console.warn(`⛔ Acceso denegado a ${to.path} para rol ${userRole}`)
+      return next('/dashboard')
+    }
   }
 
   // ✅ Continuar normalmente
