@@ -209,7 +209,7 @@
               </select>
             </div>
             <p class="rol-hint">
-              ¿Eres Facilitador, Territorial o Admin? Contacta a tu superior jerárquico.
+              ¿Eres Facilitador, Territorial o Admin? Debes ser creado por tu supervisor. Solicita a tu superior jerárquico que te registre.
             </p>
           </div>
 

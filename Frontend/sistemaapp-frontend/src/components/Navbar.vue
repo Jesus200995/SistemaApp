@@ -26,11 +26,19 @@
         <Sprout class="link-icon" />
         <span>Sembradores</span>
       </router-link>
-      <router-link v-if="auth.user" to="/seguimiento" class="nav-link">
+      <router-link 
+        v-if="auth.user && auth.user.rol && auth.user.rol.includes('tecnico')" 
+        to="/seguimiento" 
+        class="nav-link"
+      >
         <BarChart3 class="link-icon" />
         <span>Seguimiento</span>
       </router-link>
-      <router-link v-if="auth.user" to="/usuarios" class="nav-link">
+      <router-link 
+        v-if="auth.user && ['admin', 'territorial', 'facilitador'].includes(auth.user?.rol)"
+        to="/usuarios" 
+        class="nav-link"
+      >
         <Users class="link-icon" />
         <span>Usuarios</span>
       </router-link>

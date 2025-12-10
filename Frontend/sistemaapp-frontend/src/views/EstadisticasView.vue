@@ -226,7 +226,9 @@
 import { ref, onMounted, computed } from 'vue'
 import axios from 'axios'
 import { useAuthStore } from '../stores/auth'
+import { useRouter } from 'vue-router'
 import { getSecureApiUrl } from '../utils/api'
+import Swal from 'sweetalert2'
 import { Bar } from 'vue-chartjs'
 import {
   Chart as ChartJS,
@@ -243,6 +245,7 @@ import { BarChart3, Users, CheckCircle2, TrendingUp, List, BarChart2, Leaf, Arro
 ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale)
 
 const auth = useAuthStore()
+const router = useRouter()
 const API_URL = getSecureApiUrl()
 
 // Estado
@@ -364,6 +367,20 @@ const chartOptions: any = {
 
 // Ciclo de vida
 onMounted(() => {
+  // 🔒 Validar rol: Solo admin, territorial, facilitador pueden acceder
+  const rol = auth.user?.rol
+  if (!rol || !['admin', 'territorial', 'facilitador'].includes(rol)) {
+    // Redirigir a dashboard y mostrar error
+    Swal.fire({
+      icon: 'error',
+      title: 'Acceso Denegado',
+      text: 'No tienes permiso para acceder a reportes y estadísticas',
+      confirmButtonText: 'Ir al Dashboard'
+    }).then(() => {
+      router.push('/dashboard')
+    })
+    return
+  }
   obtenerEstadisticas()
 })
 </script>
