@@ -154,99 +154,6 @@
           </div>
         </div>
 
-        <!-- Sección de módulos especializados -->
-        <div class="specialized-section">
-          <h3 class="section-title">Módulos Especializados</h3>
-          
-          <div class="specialized-grid">
-            <!-- Seguimiento de Campo - Solo técnicos -->
-            <router-link
-              v-if="auth.user?.rol && (auth.user.rol.includes('tecnico'))"
-              to="/seguimiento"
-              class="specialized-card specialized-seguimiento"
-            >
-              <div class="specialized-icon-wrapper">
-                <Clipboard class="specialized-icon-lucide" />
-              </div>
-              <h4 class="specialized-title">Seguimiento de Campo</h4>
-              <p class="specialized-desc">Registrar visitas y avances</p>
-              <div class="card-arrow">→</div>
-            </router-link>
-
-            <!-- Sembradores - Todos los roles -->
-            <router-link
-              to="/sembradores"
-              class="specialized-card specialized-sembradores"
-            >
-              <div class="specialized-icon-wrapper">
-                <Sprout class="specialized-icon-lucide" />
-              </div>
-              <h4 class="specialized-title">Sembradores en Mapa</h4>
-              <p class="specialized-desc">Gestionar sembradores</p>
-              <div class="card-arrow">→</div>
-            </router-link>
-
-            <!-- Reportes - Facilitadores, Territoriales, Admins -->
-            <router-link
-              v-if="auth.user?.rol && ['facilitador', 'territorial', 'admin'].includes(auth.user.rol)"
-              to="/estadisticas"
-              class="specialized-card specialized-reportes"
-            >
-              <div class="specialized-icon-wrapper">
-                <BarChart3 class="specialized-icon-lucide" />
-              </div>
-              <h4 class="specialized-title">Reportes y Estadísticas</h4>
-              <p class="specialized-desc">Análisis general</p>
-              <div class="card-arrow">→</div>
-            </router-link>
-
-            <!-- Solicitudes Jerárquicas - Todos los roles -->
-            <router-link
-              to="/solicitudes"
-              class="specialized-card specialized-solicitudes"
-            >
-              <!-- Badge de solicitudes pendientes -->
-              <div v-if="solicitudesPendientes > 0" class="specialized-badge">
-                {{ solicitudesPendientes }}
-              </div>
-              <div class="specialized-icon-wrapper">
-                <FileText class="specialized-icon-lucide" />
-              </div>
-              <h4 class="specialized-title">Solicitudes</h4>
-              <p class="specialized-desc">Gestionar solicitudes jerárquicas</p>
-              <div class="card-arrow">→</div>
-            </router-link>
-
-            <!-- Gestión de Usuarios - Admin, Territorial, Facilitador -->
-            <router-link
-              v-if="auth.user?.rol && ['admin', 'territorial', 'facilitador'].includes(auth.user.rol)"
-              to="/usuarios"
-              class="specialized-card specialized-usuarios"
-            >
-              <div class="specialized-icon-wrapper">
-                <Users class="specialized-icon-lucide" />
-              </div>
-              <h4 class="specialized-title">Gestión de Usuarios</h4>
-              <p class="specialized-desc">{{ getUsuariosDesc() }}</p>
-              <div class="card-arrow">→</div>
-            </router-link>
-
-            <!-- Panel de Administración Global - Solo admins -->
-            <router-link
-              v-if="auth.user?.rol === 'admin'"
-              to="/admin-panel"
-              class="specialized-card specialized-admin"
-            >
-              <div class="specialized-icon-wrapper">
-                <Settings class="specialized-icon-lucide" />
-              </div>
-              <h4 class="specialized-title">Panel Global</h4>
-              <p class="specialized-desc">Control centralizado del sistema</p>
-              <div class="card-arrow">→</div>
-            </router-link>
-          </div>
-        </div>
-
 
       </div>
     </main>
@@ -547,8 +454,14 @@ const actions = computed(() => {
   const isTecnico = rol.includes('tecnico')
   const canManageUsers = ['admin', 'territorial', 'facilitador'].includes(rol)
   const canViewStats = ['admin', 'territorial', 'facilitador'].includes(rol)
+  const isAdmin = rol === 'admin'
   
   const baseActions = []
+  
+  // Panel Global - Solo Admin
+  if (isAdmin) {
+    baseActions.push({ title: 'Panel Global', icon: Settings, route: '/admin-panel' })
+  }
   
   // Usuarios - Solo Admin, Territorial, Facilitador
   if (canManageUsers) {
@@ -563,11 +476,11 @@ const actions = computed(() => {
   // Solicitudes - Todos los roles
   baseActions.push({ title: 'Solicitudes', icon: FileText, route: '/solicitudes' })
   
-  // Mapa - Todos los roles
-  baseActions.push({ title: 'Mapa', icon: MapPin, route: '/mapa' })
-  
   // Sembradores - Todos los roles
   baseActions.push({ title: 'Sembradores', icon: Sprout, route: '/sembradores' })
+  
+  // Mapa - Todos los roles
+  baseActions.push({ title: 'Mapa', icon: MapPin, route: '/mapa' })
   
   // Seguimiento - Solo técnicos
   if (isTecnico) {
@@ -578,7 +491,7 @@ const actions = computed(() => {
 })
 
 const goTo = (route: string) => {
-  const validRoutes = ['/usuarios', '/estadisticas', '/solicitudes', '/mapa', '/sembradores', '/seguimiento']
+  const validRoutes = ['/usuarios', '/estadisticas', '/solicitudes', '/mapa', '/sembradores', '/seguimiento', '/admin-panel']
   if (validRoutes.includes(route)) {
     router.push(route)
   } else {
