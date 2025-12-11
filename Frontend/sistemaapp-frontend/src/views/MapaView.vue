@@ -498,26 +498,28 @@ onMounted(() => {
 .header-mapa {
   position: relative;
   z-index: 30;
+  background: rgba(132, 204, 22, 0.12);
+  border-bottom: 1px solid rgba(132, 204, 22, 0.1);
   backdrop-filter: blur(12px);
-  background: rgba(15, 23, 42, 0.8);
-  border-bottom: 1px solid rgba(148, 163, 184, 0.15);
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
-  padding: 1.25rem 1.5rem;
+  padding: 1rem 1.2rem;
+  box-shadow: 0 4px 20px rgba(132, 204, 22, 0.1);
+  width: 100%;
 }
 
 .header-wrapper {
-  max-width: 1400px;
+  max-width: 1200px;
   margin: 0 auto;
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  gap: 2rem;
+  justify-content: space-between;
+  padding-right: 60px; /* Espacio para el menú hamburguesa */
 }
 
 .header-left {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 0.75rem;
+  flex: 1;
 }
 
 /* ========== BACK BUTTON ========== */
@@ -525,21 +527,24 @@ onMounted(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 44px;
-  height: 44px;
-  border-radius: 10px;
-  background: rgba(16, 185, 129, 0.1);
-  border: 1px solid rgba(16, 185, 129, 0.3);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(132, 204, 22, 0.1);
+  border: 1.5px solid rgba(132, 204, 22, 0.4);
   cursor: pointer;
   text-decoration: none;
   transition: all 0.3s ease;
-  color: #10b981;
+  color: #84cc16;
+  backdrop-filter: blur(10px);
+  flex-shrink: 0;
 }
 
 .back-button:hover {
-  background: rgba(16, 185, 129, 0.2);
+  background: rgba(132, 204, 22, 0.2);
   transform: translateX(-4px);
-  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25);
+  box-shadow: 0 4px 15px rgba(132, 204, 22, 0.3);
+  border-color: rgba(132, 204, 22, 0.6);
 }
 
 .back-button:active {
@@ -553,64 +558,74 @@ onMounted(() => {
 }
 
 .icon-box {
-  width: 52px;
-  height: 52px;
-  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-  border-radius: 14px;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  background: transparent;
   flex-shrink: 0;
 }
 
 .icon-header {
-  width: 28px;
-  height: 28px;
-  color: white;
+  width: 20px;
+  height: 20px;
+  color: #84cc16;
   stroke-width: 2;
 }
 
-.header-text h1 {
-  font-size: 1.75rem;
-  font-weight: 700;
-  background: linear-gradient(135deg, #10b981, #6ee7b7);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  margin-bottom: 0.25rem;
+.header-text {
+  display: flex;
+  flex-direction: column;
 }
 
-.header-text p {
-  font-size: 0.85rem;
-  color: #94a3b8;
-  font-weight: 500;
+.header-text h1,
+.header-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #84cc16;
+  margin: 0;
+  text-shadow: 0 0 8px rgba(132, 204, 22, 0.4);
+  background: none;
+  -webkit-background-clip: unset;
+  -webkit-text-fill-color: unset;
+  background-clip: unset;
+}
+
+.header-text p,
+.header-subtitle {
+  font-size: 0.75rem;
+  color: #cbd5e1;
+  margin: 0;
+  margin-top: 0.2rem;
 }
 
 .btn-location {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-  color: white;
-  border: none;
-  border-radius: 10px;
-  padding: 0.875rem 1.5rem;
-  font-size: 0.95rem;
+  gap: 0.5rem;
+  background: rgba(132, 204, 22, 0.1);
+  color: #84cc16;
+  border: 1.5px solid rgba(132, 204, 22, 0.4);
+  border-radius: 20px;
+  padding: 0.5rem 1rem;
+  font-size: 0.8rem;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
   white-space: nowrap;
 }
 
 .btn-location:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 25px rgba(16, 185, 129, 0.4);
+  background: rgba(132, 204, 22, 0.2);
+  box-shadow: 0 4px 15px rgba(132, 204, 22, 0.3);
+  border-color: rgba(132, 204, 22, 0.6);
 }
 
 .btn-location:active {
-  transform: translateY(0);
+  transform: scale(0.98);
 }
 
 .btn-icon {
@@ -854,6 +869,7 @@ onMounted(() => {
 
   .header-wrapper {
     flex-direction: column;
+    padding-right: 60px; /* Mantener espacio para menú hamburguesa */
   }
 
   .btn-location {
@@ -895,26 +911,22 @@ onMounted(() => {
   }
 
   .icon-box {
-    width: 44px;
-    height: 44px;
+    display: none;
   }
 
-  .icon-header {
-    width: 24px;
-    height: 24px;
+  .header-text h1,
+  .header-title {
+    font-size: 0.9rem;
   }
 
-  .header-text h1 {
-    font-size: 1.25rem;
-  }
-
-  .header-text p {
-    font-size: 0.8rem;
+  .header-text p,
+  .header-subtitle {
+    font-size: 0.7rem;
   }
 
   .btn-location {
-    padding: 0.75rem 1rem;
-    font-size: 0.85rem;
+    padding: 0.4rem 0.75rem;
+    font-size: 0.75rem;
   }
 
   .panel-title {

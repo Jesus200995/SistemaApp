@@ -169,16 +169,16 @@ const formatRole = (role: string): string => {
 .hamburger-btn {
   position: fixed;
   top: 12px;
-  right: 12px;
+  right: 16px;
   z-index: 1001;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 36px;
-  height: 36px;
+  width: 40px;
+  height: 40px;
   background: rgba(15, 23, 42, 0.9);
   border: 1.5px solid rgba(132, 204, 22, 0.5);
-  border-radius: 10px;
+  border-radius: 50%;
   color: #84cc16;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -467,10 +467,10 @@ const formatRole = (role: string): string => {
 /* ========== RESPONSIVE ========== */
 @media (max-width: 480px) {
   .hamburger-btn {
-    top: 10px;
+    top: 12px;
     right: 10px;
-    width: 34px;
-    height: 34px;
+    width: 36px;
+    height: 36px;
   }
 
   .hamburger-menu {

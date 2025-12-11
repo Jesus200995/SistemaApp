@@ -975,6 +975,7 @@ onMounted(getSembradores)
   display: flex;
   align-items: center;
   justify-content: space-between;
+  padding-right: 60px; /* Espacio para el menú hamburguesa */
 }
 
 .header-left {

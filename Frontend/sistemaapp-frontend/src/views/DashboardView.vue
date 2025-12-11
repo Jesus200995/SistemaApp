@@ -568,10 +568,10 @@ const getUsuariosDesc = (): string => {
   right: 0;
   z-index: 100;
   backdrop-filter: blur(12px);
-  background: rgba(132, 204, 22, 0.18);
-  border-bottom: 2px solid rgba(132, 204, 22, 0.3);
+  background: rgba(132, 204, 22, 0.12);
+  border-bottom: 1px solid rgba(132, 204, 22, 0.1);
   padding: 0;
-  box-shadow: 0 8px 40px rgba(132, 204, 22, 0.15);
+  box-shadow: 0 4px 20px rgba(132, 204, 22, 0.1);
   width: 100%;
   height: 62px;
   box-sizing: border-box;

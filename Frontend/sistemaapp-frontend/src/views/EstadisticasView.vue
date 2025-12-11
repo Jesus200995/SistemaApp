@@ -442,7 +442,7 @@ onMounted(() => {
   position: relative;
   z-index: 10;
   background: rgba(132, 204, 22, 0.12);
-  border-bottom: 2px solid rgba(132, 204, 22, 0.3);
+  border-bottom: 1px solid rgba(132, 204, 22, 0.1);
   backdrop-filter: blur(12px);
   padding: 1rem 1.2rem;
   box-shadow: 0 4px 20px rgba(132, 204, 22, 0.1);
@@ -454,8 +454,8 @@ onMounted(() => {
   margin: 0 auto;
   display: flex;
   align-items: center;
-  gap: 1rem;
   justify-content: space-between;
+  padding-right: 60px; /* Espacio para el menú hamburguesa */
 }
 
 .header-left {
@@ -533,12 +533,24 @@ onMounted(() => {
   font-size: 32px;
 }
 
+.header-text {
+  display: flex;
+  flex-direction: column;
+}
+
 .header-title {
   font-size: 0.95rem;
   font-weight: 700;
   color: #84cc16;
   margin: 0;
   text-shadow: 0 0 8px rgba(132, 204, 22, 0.4);
+}
+
+.header-subtitle {
+  font-size: 0.75rem;
+  color: #cbd5e1;
+  margin: 0;
+  margin-top: 0.2rem;
 }
 
 /* ========== RELOAD BUTTON ========== */
