@@ -108,36 +108,63 @@
           class="notifications-section"
         >
           <div class="notifications-header">
-            <h3 class="section-title">Notificaciones Recientes</h3>
-            <div class="notifications-badge">
-              {{ unreadNotifications }}
+            <div class="header-left-notif">
+              <Bell :size="18" class="header-bell-icon" />
+              <h3 class="section-title">Notificaciones Recientes</h3>
+            </div>
+            <div class="notifications-badge-glass">
+              {{ solicitudesPendientesLista.length }}
             </div>
           </div>
 
-          <div v-if="notificaciones.length === 0" class="notifications-empty">
-            <Bell :size="32" class="empty-icon" />
-            <p>Sin notificaciones nuevas</p>
+          <div v-if="solicitudesPendientesLista.length === 0" class="notifications-empty">
+            <div class="empty-icon-wrapper">
+              <Bell :size="24" class="empty-icon" />
+            </div>
+            <p>Sin notificaciones pendientes</p>
           </div>
 
           <div v-else class="notifications-list">
             <div 
-              v-for="notif in notificaciones.slice(0, 5)"
-              :key="notif.id"
-              class="notification-card"
-              :class="{ 'notif-unread': !notif.leido }"
-              :style="{ borderLeftColor: getNotificationColor(notif.tipo) }"
+              v-for="solicitud in solicitudesPendientesLista.slice(0, 3)"
+              :key="'notif-' + solicitud.id"
+              class="notif-card-pro"
             >
-              <div 
-                class="notif-icon"
-                :style="{ background: getNotificationColor(notif.tipo) }"
-              >
-                <component :is="getNotificationIcon(notif.tipo)" :size="18" color="white" />
+              <!-- Animación de fondo rojo -->
+              <div class="notif-bg-pulse"></div>
+              
+              <!-- Fecha en esquina superior derecha -->
+              <span class="notif-fecha-corner">{{ formatFechaCorta(solicitud.fecha_creacion) }}</span>
+              
+              <!-- Icono de solicitud a la izquierda -->
+              <div class="notif-icon-left">
+                <FileText :size="22" class="notif-main-icon" />
+                <span class="notif-icon-label">Solicitud</span>
               </div>
-              <div class="notif-content">
-                <p class="notif-title">{{ notif.titulo }}</p>
-                <p class="notif-message">{{ notif.mensaje }}</p>
-                <p class="notif-time">{{ formatTime(notif.timestamp) }}</p>
+              
+              <!-- Contenido -->
+              <div class="notif-card-content">
+                <!-- Tipo de solicitud (completo y destacado) -->
+                <span class="notif-tipo-tag">{{ formatTipoSolicitud(solicitud.tipo) }}</span>
+                
+                <!-- Usuario y rol -->
+                <div class="notif-user-details">
+                  <span class="notif-user-name">{{ solicitud.solicitante?.nombre || 'Usuario' }}</span>
+                  <span class="notif-user-rol">{{ formatRolUsuario(solicitud.solicitante?.rol) }}</span>
+                </div>
+                
+                <!-- Descripción como mensaje con fondo vidrio -->
+                <div v-if="solicitud.descripcion" class="notif-mensaje-box">
+                  <p class="notif-mensaje-text">{{ truncateText(solicitud.descripcion, 60) }}</p>
+                </div>
               </div>
+              
+              <!-- Botón Ver moderno -->
+              <router-link to="/solicitudes" class="notif-btn-modern">
+                <span class="btn-corner"></span>
+                <Eye :size="14" />
+                <span>Ver</span>
+              </router-link>
             </div>
           </div>
         </div>
@@ -275,7 +302,7 @@ import { onMounted, ref, computed, onUnmounted } from 'vue'
 import { useAuthStore } from '../stores/auth'
 import { getSecureApiUrl, getSecureWsUrl } from '../utils/api'
 import { useRouter } from 'vue-router'
-import { LogOut, User, Mail, LayoutDashboard, BarChart3, Users, Settings, MapPin, Sprout, FileText, Smile, Clipboard, Check, Shield, Zap, Bell, Clock, CheckCircle, AlertCircle, Info } from 'lucide-vue-next'
+import { LogOut, User, Mail, LayoutDashboard, BarChart3, Users, Settings, MapPin, Sprout, FileText, Smile, Clipboard, Check, Shield, Zap, Bell, Clock, CheckCircle, AlertCircle, Info, Eye, MessageSquare } from 'lucide-vue-next'
 import axios from 'axios'
 
 const auth = useAuthStore()
@@ -283,6 +310,7 @@ const router = useRouter()
 const notificaciones = ref<any[]>([])
 const ws = ref<WebSocket | null>(null)
 const solicitudesPendientes = ref(0)
+const solicitudesRecientes = ref<any[]>([])
 
 // Intervalo para actualizar solicitudes en tiempo real
 let solicitudesInterval: ReturnType<typeof setInterval> | null = null
@@ -386,11 +414,109 @@ const getSolicitudesPendientes = async () => {
     )
     const solicitudes = response.data || []
     solicitudesPendientes.value = solicitudes.filter((s: any) => s.estado === 'pendiente').length
+    // Guardar las solicitudes recientes (últimas 10 ordenadas por fecha)
+    solicitudesRecientes.value = solicitudes
+      .sort((a: any, b: any) => new Date(b.fecha_creacion).getTime() - new Date(a.fecha_creacion).getTime())
+      .slice(0, 10)
     console.log('📋 Solicitudes pendientes:', solicitudesPendientes.value)
+    console.log('📋 Solicitudes recientes:', solicitudesRecientes.value.length)
   } catch (error) {
     console.error('❌ Error cargando solicitudes:', error)
   }
 }
+
+// Funciones auxiliares para solicitudes
+const formatTipoSolicitud = (tipo: string): string => {
+  const tipos: Record<string, string> = {
+    cambio_superior: 'Cambio de Superior',
+    alta_subordinado: 'Alta de Subordinado',
+    baja_subordinado: 'Baja de Subordinado',
+    cambio_territorio: 'Cambio de Territorio',
+    otro: 'Otro'
+  }
+  return tipos[tipo] || tipo
+}
+
+const formatEstadoSolicitud = (estado: string): string => {
+  const estados: Record<string, string> = {
+    pendiente: 'Pendiente',
+    aprobada: 'Aprobada',
+    rechazada: 'Rechazada'
+  }
+  return estados[estado] || estado
+}
+
+const truncateText = (text: string, maxLength: number): string => {
+  if (!text) return ''
+  return text.length > maxLength ? text.substring(0, maxLength) + '...' : text
+}
+
+const formatTimeAgo = (fecha: string): string => {
+  if (!fecha) return ''
+  const now = new Date()
+  const date = new Date(fecha)
+  const diffMs = now.getTime() - date.getTime()
+  const diffMins = Math.floor(diffMs / 60000)
+  const diffHours = Math.floor(diffMs / 3600000)
+  const diffDays = Math.floor(diffMs / 86400000)
+  
+  if (diffMins < 1) return 'Ahora'
+  if (diffMins < 60) return `Hace ${diffMins}m`
+  if (diffHours < 24) return `Hace ${diffHours}h`
+  if (diffDays < 7) return `Hace ${diffDays}d`
+  return date.toLocaleDateString('es-MX', { day: 'numeric', month: 'short' })
+}
+
+// Formato de fecha corta para notificaciones
+const formatFechaCorta = (fecha: string): string => {
+  if (!fecha) return ''
+  const date = new Date(fecha)
+  return date.toLocaleDateString('es-MX', { 
+    day: 'numeric', 
+    month: 'short',
+    hour: '2-digit',
+    minute: '2-digit'
+  })
+}
+
+// Obtener iniciales del nombre
+const getInitials = (nombre: string | undefined): string => {
+  if (!nombre) return '?'
+  const parts = nombre.trim().split(' ')
+  if (parts.length >= 2) {
+    return (parts[0][0] + parts[1][0]).toUpperCase()
+  }
+  return nombre.substring(0, 2).toUpperCase()
+}
+
+// Formatear rol de usuario
+const formatRolUsuario = (rol: string | undefined): string => {
+  if (!rol) return 'Usuario'
+  const roles: Record<string, string> = {
+    admin: 'Administrador',
+    territorial: 'Territorial',
+    facilitador: 'Facilitador',
+    tecnico: 'Técnico',
+    tecnico_operativo: 'Técnico Operativo',
+    tecnico_titular: 'Técnico Titular',
+    tecnico_productivo: 'Técnico Productivo',
+    tecnico_social: 'Técnico Social',
+    coordinador: 'Coordinador',
+    sembrador: 'Sembrador',
+    usuario: 'Usuario'
+  }
+  // Buscar coincidencia exacta primero
+  if (roles[rol.toLowerCase()]) {
+    return roles[rol.toLowerCase()]
+  }
+  // Si no hay coincidencia, formatear el texto (reemplazar _ por espacio y capitalizar)
+  return rol.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()).join(' ')
+}
+
+// Lista de solicitudes pendientes (solo pendientes)
+const solicitudesPendientesLista = computed(() => {
+  return solicitudesRecientes.value.filter((s: any) => s.estado === 'pendiente')
+})
 
 const unreadNotifications = computed(() => {
   return notificaciones.value.filter(n => !n.leido).length
@@ -488,16 +614,6 @@ const goTo = (route: string) => {
 const logout = () => {
   auth.logout()
   window.location.href = '/login'
-}
-
-// Obtener iniciales del usuario (máximo 2 caracteres)
-const getInitials = (name: string): string => {
-  return name
-    .split(' ')
-    .map((word) => word.charAt(0))
-    .slice(0, 2)
-    .join('')
-    .toUpperCase()
 }
 
 // Formatear el rol correctamente (convertir a palabras legibles)
@@ -1006,8 +1122,8 @@ const getUsuariosDesc = (): string => {
   font-size: 0.65rem;
   font-weight: 700;
   color: white;
-  background: radial-gradient(ellipse at 30% 30%, rgba(251, 191, 136, 0.6), rgba(251, 146, 60, 0.45) 50%, rgba(234, 88, 12, 0.35));
-  border: 1px solid rgba(251, 146, 60, 0.5);
+  background: radial-gradient(ellipse at 30% 30%, rgba(252, 165, 165, 0.6), rgba(248, 113, 113, 0.45) 50%, rgba(239, 68, 68, 0.35));
+  border: 1px solid rgba(248, 113, 113, 0.5);
   border-radius: 50%;
   backdrop-filter: blur(10px);
   z-index: 10;
@@ -1149,8 +1265,8 @@ const getUsuariosDesc = (): string => {
   font-size: 0.7rem;
   font-weight: 700;
   color: white;
-  background: radial-gradient(ellipse at 30% 30%, rgba(251, 191, 136, 0.6), rgba(251, 146, 60, 0.45) 50%, rgba(234, 88, 12, 0.35));
-  border: 1px solid rgba(251, 146, 60, 0.5);
+  background: radial-gradient(ellipse at 30% 30%, rgba(252, 165, 165, 0.6), rgba(248, 113, 113, 0.45) 50%, rgba(239, 68, 68, 0.35));
+  border: 1px solid rgba(248, 113, 113, 0.5);
   border-radius: 50%;
   backdrop-filter: blur(10px);
   z-index: 10;
@@ -1393,15 +1509,17 @@ const getUsuariosDesc = (): string => {
   border-left: 3px solid #a855f7;
 }
 
-/* ========== NOTIFICATIONS SECTION ========== */
+/* ========== NOTIFICATIONS SECTION (Solicitudes Recientes) ========== */
 .notifications-section {
-  background: rgba(132, 204, 22, 0.08);
-  border: 1.5px solid rgba(132, 204, 22, 0.3);
-  border-radius: 14px;
-  padding: 1.2rem 0.8rem;
+  background: rgba(132, 204, 22, 0.06);
+  border: 1.5px solid rgba(132, 204, 22, 0.25);
+  border-radius: 16px;
+  padding: 1.2rem;
   margin-bottom: 1rem;
-  backdrop-filter: blur(10px);
-  box-shadow: 0 8px 32px rgba(132, 204, 22, 0.1);
+  backdrop-filter: blur(12px);
+  box-shadow: 
+    0 8px 32px rgba(132, 204, 22, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
 }
 
 .notifications-header {
@@ -1409,8 +1527,527 @@ const getUsuariosDesc = (): string => {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 1rem;
+  padding-bottom: 0.8rem;
+  border-bottom: 1px solid rgba(132, 204, 22, 0.15);
 }
 
+.header-left-notif {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  line-height: 1;
+}
+
+.header-bell-icon {
+  color: #f87171;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.header-left-notif .section-title {
+  margin: 0;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+}
+
+/* Badge rojo suave estilo vidrio */
+.notifications-badge-glass {
+  min-width: 22px;
+  height: 22px;
+  padding: 0 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: white;
+  background: radial-gradient(ellipse at 30% 30%, rgba(248, 113, 113, 0.5), rgba(239, 68, 68, 0.4) 50%, rgba(220, 38, 38, 0.3));
+  border: 1px solid rgba(248, 113, 113, 0.4);
+  border-radius: 50%;
+  backdrop-filter: blur(10px);
+  line-height: 1;
+}
+
+/* Tarjeta de notificación profesional */
+.notif-card-pro {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 0.9rem;
+  background: rgba(30, 41, 59, 0.6);
+  border-radius: 12px;
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  transition: all 0.3s ease;
+  overflow: hidden;
+}
+
+.notif-card-pro:hover {
+  border-color: rgba(239, 68, 68, 0.35);
+  transform: translateY(-2px);
+}
+
+/* Animación de fondo blanco suave de lado a lado */
+.notif-bg-pulse {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.06) 50%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmerSlide 4s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes shimmerSlide {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+.notif-card-content {
+  flex: 1;
+  min-width: 0;
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding-left: 0.8rem;
+  border-left: 1px solid rgba(148, 163, 184, 0.2);
+}
+
+/* Icono de solicitud a la izquierda */
+.notif-icon-left {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  z-index: 1;
+  gap: 0.15rem;
+}
+
+.notif-main-icon {
+  color: #f87171;
+}
+
+.notif-icon-label {
+  font-size: 0.5rem;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.notif-tipo-tag {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #f87171;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+/* Fecha en esquina superior derecha */
+.notif-fecha-corner {
+  position: absolute;
+  top: 6px;
+  right: 8px;
+  font-size: 0.6rem;
+  color: #94a3b8;
+  background: rgba(100, 116, 139, 0.2);
+  padding: 2px 8px;
+  border-radius: 10px;
+  z-index: 5;
+  font-weight: 500;
+}
+
+.notif-user-details {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  margin-bottom: 0.2rem;
+}
+
+.notif-user-name {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #cbd5e1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.notif-user-rol {
+  font-size: 0.65rem;
+  color: #94a3b8;
+  font-style: italic;
+}
+
+/* Botón Ver moderno azul vidrio líquido */
+.notif-btn-modern {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.5rem 1rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #93c5fd;
+  background: rgba(59, 130, 246, 0.2);
+  border: 1.5px solid rgba(59, 130, 246, 0.4);
+  border-radius: 10px;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+  z-index: 1;
+  backdrop-filter: blur(8px);
+}
+
+.notif-btn-modern .btn-corner {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  width: 20px;
+  height: 20px;
+  background: rgba(59, 130, 246, 0.3);
+  border-radius: 50%;
+  pointer-events: none;
+  transition: all 0.3s ease;
+}
+
+.notif-btn-modern:hover {
+  transform: translateY(-2px);
+  background: rgba(59, 130, 246, 0.35);
+  border-color: rgba(96, 165, 250, 0.6);
+  color: #bfdbfe;
+  box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+}
+
+.notif-btn-modern:hover .btn-corner {
+  transform: scale(1.3);
+  background: rgba(96, 165, 250, 0.5);
+}
+
+/* Caja de mensaje con fondo vidrio gris y esquina picuda */
+.notif-mensaje-box {
+  position: relative;
+  background: rgba(100, 116, 139, 0.12);
+  border: 1px solid rgba(148, 163, 184, 0.15);
+  border-radius: 0 8px 8px 8px;
+  padding: 0.35rem 0.6rem;
+  backdrop-filter: blur(6px);
+  margin-top: 0.15rem;
+}
+
+/* Esquina picuda tipo mensaje */
+.notif-mensaje-box::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -6px;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 0 6px 8px 0;
+  border-color: transparent rgba(100, 116, 139, 0.12) transparent transparent;
+}
+
+.notif-mensaje-text {
+  font-size: 0.7rem;
+  color: #94a3b8;
+  margin: 0;
+  line-height: 1.35;
+  font-style: italic;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.notif-descripcion {
+  font-size: 0.75rem;
+  color: #94a3b8;
+  margin: 0.25rem 0;
+  line-height: 1.3;
+  font-style: italic;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+/* Botón Ver con efecto vidrio líquido sin brillo */
+.notif-btn-glass {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.5rem 1rem;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  border-radius: 8px;
+  color: #f87171;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-decoration: none;
+  backdrop-filter: blur(8px);
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 1;
+}
+
+.notif-btn-glass:hover {
+  background: rgba(239, 68, 68, 0.18);
+  border-color: rgba(239, 68, 68, 0.4);
+  transform: scale(1.02);
+}
+
+@keyframes bellPulse {
+  0%, 100% { transform: rotate(0deg); opacity: 1; }
+  25% { transform: rotate(10deg); }
+  50% { transform: rotate(-10deg); opacity: 0.8; }
+  75% { transform: rotate(5deg); }
+}
+
+.notifications-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1rem;
+  color: #cbd5e1;
+  text-align: center;
+}
+
+.empty-icon-wrapper {
+  background: rgba(245, 158, 11, 0.1);
+  border: 1px solid rgba(245, 158, 11, 0.2);
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.8rem;
+}
+
+.empty-icon {
+  color: #f59e0b;
+  opacity: 0.6;
+}
+
+.empty-hint {
+  font-size: 0.75rem;
+  color: #64748b;
+  margin-top: 0.3rem;
+}
+
+.notifications-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  max-height: 320px;
+  overflow-y: auto;
+  padding-right: 0.3rem;
+}
+
+/* Tarjeta de solicitud en notificaciones */
+.solicitud-notif-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.8rem;
+  padding: 0.9rem;
+  background: rgba(30, 41, 59, 0.5);
+  border-radius: 12px;
+  border: 1px solid rgba(148, 163, 184, 0.15);
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.solicitud-notif-card:hover {
+  background: rgba(30, 41, 59, 0.7);
+  transform: translateX(4px);
+  border-color: rgba(132, 204, 22, 0.3);
+}
+
+.solicitud-notif-card.sol-pendiente {
+  border-left: 3px solid #f59e0b;
+}
+
+.solicitud-notif-card.sol-aprobada {
+  border-left: 3px solid #10b981;
+}
+
+.solicitud-notif-card.sol-rechazada {
+  border-left: 3px solid #ef4444;
+}
+
+.sol-status-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-top: 0.2rem;
+}
+
+.status-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  animation: dotPulse 2s ease-in-out infinite;
+}
+
+.status-dot.dot-pendiente {
+  background: #f59e0b;
+  box-shadow: 0 0 8px rgba(245, 158, 11, 0.5);
+}
+
+.status-dot.dot-aprobada {
+  background: #10b981;
+  box-shadow: 0 0 8px rgba(16, 185, 129, 0.5);
+}
+
+.status-dot.dot-rechazada {
+  background: #ef4444;
+  box-shadow: 0 0 8px rgba(239, 68, 68, 0.5);
+}
+
+@keyframes dotPulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.2); opacity: 0.7; }
+}
+
+.sol-notif-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.sol-notif-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.sol-tipo-badge {
+  background: rgba(132, 204, 22, 0.15);
+  color: #a3e635;
+  font-size: 0.65rem;
+  font-weight: 600;
+  padding: 0.2rem 0.5rem;
+  border-radius: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.sol-estado-text {
+  font-size: 0.65rem;
+  font-weight: 600;
+  padding: 0.15rem 0.4rem;
+  border-radius: 4px;
+}
+
+.sol-estado-text.estado-pendiente {
+  background: rgba(245, 158, 11, 0.15);
+  color: #fbbf24;
+}
+
+.sol-estado-text.estado-aprobada {
+  background: rgba(16, 185, 129, 0.15);
+  color: #34d399;
+}
+
+.sol-estado-text.estado-rechazada {
+  background: rgba(239, 68, 68, 0.15);
+  color: #f87171;
+}
+
+.sol-descripcion {
+  color: #e2e8f0;
+  font-size: 0.8rem;
+  line-height: 1.4;
+  margin: 0 0 0.5rem 0;
+  word-break: break-word;
+}
+
+.sol-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  flex-wrap: wrap;
+}
+
+.sol-fecha,
+.sol-user {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.7rem;
+  color: #94a3b8;
+}
+
+.sol-view-btn {
+  background: linear-gradient(
+    135deg,
+    rgba(132, 204, 22, 0.2) 0%,
+    rgba(132, 204, 22, 0.1) 100%
+  );
+  border: 1px solid rgba(132, 204, 22, 0.3);
+  border-radius: 8px;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #84cc16;
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+  text-decoration: none;
+}
+
+.sol-view-btn:hover {
+  background: rgba(132, 204, 22, 0.3);
+  transform: scale(1.1);
+  box-shadow: 0 0 15px rgba(132, 204, 22, 0.3);
+}
+
+/* Botón ver todas */
+.view-all-solicitudes-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  padding: 0.7rem 1rem;
+  background: linear-gradient(
+    135deg,
+    rgba(132, 204, 22, 0.15) 0%,
+    rgba(132, 204, 22, 0.08) 100%
+  );
+  border: 1px solid rgba(132, 204, 22, 0.25);
+  border-radius: 10px;
+  color: #a3e635;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(8px);
+}
+
+.view-all-solicitudes-btn:hover {
+  background: rgba(132, 204, 22, 0.25);
+  border-color: rgba(132, 204, 22, 0.4);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(132, 204, 22, 0.2);
+}
+
+/* Legacy styles para compatibilidad */
 .notifications-badge {
   background: linear-gradient(135deg, #ef4444, #dc2626);
   color: white;
@@ -1424,32 +2061,6 @@ const getUsuariosDesc = (): string => {
   font-size: 0.8rem;
   box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
   min-width: 28px;
-}
-
-.notifications-empty {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 1.5rem 1rem;
-  color: #cbd5e1;
-  text-align: center;
-}
-
-.empty-icon {
-  color: #94a3b8;
-  margin-bottom: 0.8rem;
-  opacity: 0.6;
-  width: 28px;
-  height: 28px;
-}
-
-.notifications-list {
-  display: flex;
-  flex-direction: column;
-  gap: 0.6rem;
-  max-height: 300px;
-  overflow-y: auto;
 }
 
 .notification-card {

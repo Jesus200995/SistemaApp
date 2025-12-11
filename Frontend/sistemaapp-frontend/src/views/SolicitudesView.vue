@@ -213,9 +213,6 @@
               >
                 <History :size="18" />
                 <span>Historial</span>
-                <span v-if="solicitudesProcesadas.length > 0" class="tab-badge historial">
-                  {{ solicitudesProcesadas.length }}
-                </span>
               </button>
             </div>
             <div class="tabs-stats">
@@ -1631,9 +1628,9 @@ onMounted(async () => {
   font-size: 0.7rem;
   font-weight: 700;
   color: white;
-  background: linear-gradient(135deg, #fb923c, #ea580c);
+  background: linear-gradient(135deg, #f87171, #ef4444);
   border-radius: 50%;
-  box-shadow: 0 0 10px rgba(251, 146, 60, 0.5);
+  box-shadow: 0 0 10px rgba(248, 113, 113, 0.5);
 }
 
 .tab-badge.historial {
@@ -1653,7 +1650,7 @@ onMounted(async () => {
 }
 
 .tabs-stats .stat-value.rejected {
-  color: #ef4444;
+  color: #a855f7;
 }
 
 /* ========== TAB CONTENT ========== */
@@ -1677,16 +1674,16 @@ onMounted(async () => {
   position: relative;
   background: linear-gradient(90deg, 
     rgba(30, 41, 59, 0.85) 0%, 
-    rgba(251, 146, 60, 0.08) 25%, 
-    rgba(234, 88, 12, 0.06) 50%, 
-    rgba(251, 146, 60, 0.08) 75%, 
+    rgba(248, 113, 113, 0.08) 25%, 
+    rgba(239, 68, 68, 0.06) 50%, 
+    rgba(248, 113, 113, 0.08) 75%, 
     rgba(30, 41, 59, 0.85) 100%
   );
   background-size: 200% 100%;
   border-radius: 16px;
   padding: 1.25rem;
-  border: 1px solid rgba(251, 146, 60, 0.3);
-  border-left: 4px solid #fb923c;
+  border: 1px solid rgba(248, 113, 113, 0.3);
+  border-left: 4px solid #f87171;
   transition: all 0.3s ease;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
   overflow: visible;
@@ -1708,10 +1705,10 @@ onMounted(async () => {
 
 .solicitud-card-pending:hover {
   transform: translateY(-4px);
-  box-shadow: 0 8px 25px rgba(251, 146, 60, 0.2);
-  border-color: rgba(251, 146, 60, 0.5);
+  box-shadow: 0 8px 25px rgba(248, 113, 113, 0.2);
+  border-color: rgba(248, 113, 113, 0.5);
   animation-play-state: paused;
-  background: linear-gradient(135deg, rgba(251, 146, 60, 0.12), rgba(30, 41, 59, 0.85), rgba(15, 23, 42, 0.9));
+  background: linear-gradient(135deg, rgba(248, 113, 113, 0.12), rgba(30, 41, 59, 0.85), rgba(15, 23, 42, 0.9));
   background-size: 100% 100%;
 }
 
@@ -1719,7 +1716,7 @@ onMounted(async () => {
   animation: bellShake 0.8s ease-in-out infinite;
 }
 
-/* Campanita animada - Círculo naranja vidrio líquido pequeño */
+/* Campanita animada - Círculo rojo vidrio líquido pequeño */
 .card-bell-icon {
   position: absolute;
   top: -10px;
@@ -1730,12 +1727,12 @@ onMounted(async () => {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: radial-gradient(ellipse at 30% 30%, rgba(251, 191, 136, 0.6), rgba(251, 146, 60, 0.4) 50%, rgba(234, 88, 12, 0.3));
-  border: 1.5px solid rgba(251, 146, 60, 0.6);
+  background: radial-gradient(ellipse at 30% 30%, rgba(252, 165, 165, 0.6), rgba(248, 113, 113, 0.4) 50%, rgba(239, 68, 68, 0.3));
+  border: 1.5px solid rgba(248, 113, 113, 0.6);
   backdrop-filter: blur(12px);
   box-shadow: 
-    0 3px 12px rgba(251, 146, 60, 0.4),
-    0 0 15px rgba(251, 146, 60, 0.2),
+    0 3px 12px rgba(248, 113, 113, 0.4),
+    0 0 15px rgba(248, 113, 113, 0.2),
     inset 0 1px 3px rgba(255, 255, 255, 0.3),
     inset 0 -1px 3px rgba(0, 0, 0, 0.1);
   color: white;
@@ -1821,10 +1818,10 @@ onMounted(async () => {
   font-size: 0.7rem;
   font-weight: 600;
   padding: 4px 10px;
-  background: rgba(251, 146, 60, 0.15);
-  color: #fb923c;
+  background: rgba(248, 113, 113, 0.15);
+  color: #f87171;
   border-radius: 6px;
-  border: 1px solid rgba(251, 146, 60, 0.3);
+  border: 1px solid rgba(248, 113, 113, 0.3);
 }
 
 .card-pending-body {
@@ -1867,9 +1864,9 @@ onMounted(async () => {
   padding: 0.5rem 1rem;
   font-size: 0.8rem;
   font-weight: 600;
-  color: #c4b5fd;
-  background: rgba(139, 92, 246, 0.2);
-  border: 1.5px solid rgba(139, 92, 246, 0.4);
+  color: #93c5fd;
+  background: rgba(59, 130, 246, 0.2);
+  border: 1.5px solid rgba(59, 130, 246, 0.4);
   border-radius: 10px;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -1877,9 +1874,9 @@ onMounted(async () => {
 
 .btn-ver-completo:hover {
   transform: translateY(-2px);
-  background: rgba(139, 92, 246, 0.35);
-  border-color: rgba(167, 139, 250, 0.6);
-  color: #e9d5ff;
+  background: rgba(59, 130, 246, 0.35);
+  border-color: rgba(96, 165, 250, 0.6);
+  color: #bfdbfe;
 }
 
 .btn-ver-completo:active {
@@ -1934,7 +1931,7 @@ onMounted(async () => {
 }
 
 .stat-value.pending {
-  color: #f59e0b;
+  color: #f87171;
 }
 
 .stat-value.approved {
@@ -2119,8 +2116,8 @@ onMounted(async () => {
 }
 
 .status-pendiente {
-  background: rgba(245, 158, 11, 0.15);
-  color: #f59e0b;
+  background: rgba(248, 113, 113, 0.15);
+  color: #f87171;
 }
 
 .status-aprobada {
@@ -2129,8 +2126,8 @@ onMounted(async () => {
 }
 
 .status-rechazada {
-  background: rgba(239, 68, 68, 0.15);
-  color: #ef4444;
+  background: rgba(168, 85, 247, 0.15);
+  color: #a855f7;
 }
 
 /* ========== ACTION BUTTONS ========== */
@@ -2157,12 +2154,12 @@ onMounted(async () => {
 }
 
 .reject-btn {
-  background: rgba(239, 68, 68, 0.15);
-  color: #ef4444;
+  background: rgba(168, 85, 247, 0.15);
+  color: #a855f7;
 }
 
 .reject-btn:hover {
-  background: rgba(239, 68, 68, 0.3);
+  background: rgba(168, 85, 247, 0.3);
   transform: translateY(-2px);
 }
 
@@ -2171,7 +2168,7 @@ onMounted(async () => {
   height: 18px;
 }
 
-/* ========== BOTÓN VER CIRCULAR MORADO VIDRIO LÍQUIDO ========== */
+/* ========== BOTÓN VER CIRCULAR AZUL VIDRIO LÍQUIDO ========== */
 .btn-ver-circular {
   width: 38px;
   height: 38px;
@@ -2179,9 +2176,9 @@ onMounted(async () => {
   min-height: 38px;
   aspect-ratio: 1;
   border-radius: 50%;
-  background: radial-gradient(ellipse at 30% 30%, rgba(167, 139, 250, 0.4), rgba(139, 92, 246, 0.2) 50%, rgba(99, 102, 241, 0.15));
-  border: 1.5px solid rgba(167, 139, 250, 0.5);
-  color: #c4b5fd;
+  background: radial-gradient(ellipse at 30% 30%, rgba(96, 165, 250, 0.4), rgba(59, 130, 246, 0.2) 50%, rgba(37, 99, 235, 0.15));
+  border: 1.5px solid rgba(96, 165, 250, 0.5);
+  color: #93c5fd;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -2189,29 +2186,29 @@ onMounted(async () => {
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   backdrop-filter: blur(12px);
   box-shadow: 
-    0 4px 20px rgba(139, 92, 246, 0.3),
-    0 0 30px rgba(139, 92, 246, 0.15),
+    0 4px 20px rgba(59, 130, 246, 0.3),
+    0 0 30px rgba(59, 130, 246, 0.15),
     inset 0 2px 4px rgba(255, 255, 255, 0.2),
     inset 0 -2px 4px rgba(0, 0, 0, 0.1);
   margin: 0 auto;
 }
 
 .btn-ver-circular:hover {
-  background: radial-gradient(ellipse at 30% 30%, rgba(196, 181, 253, 0.5), rgba(167, 139, 250, 0.35) 50%, rgba(139, 92, 246, 0.25));
-  border-color: rgba(196, 181, 253, 0.7);
+  background: radial-gradient(ellipse at 30% 30%, rgba(147, 197, 253, 0.5), rgba(96, 165, 250, 0.35) 50%, rgba(59, 130, 246, 0.25));
+  border-color: rgba(147, 197, 253, 0.7);
   transform: scale(1.15);
   box-shadow: 
-    0 8px 30px rgba(139, 92, 246, 0.45),
-    0 0 40px rgba(167, 139, 250, 0.3),
+    0 8px 30px rgba(59, 130, 246, 0.45),
+    0 0 40px rgba(96, 165, 250, 0.3),
     inset 0 2px 6px rgba(255, 255, 255, 0.3),
     inset 0 -2px 6px rgba(0, 0, 0, 0.1);
-  color: #e9d5ff;
+  color: #bfdbfe;
 }
 
 .btn-ver-circular:active {
   transform: scale(0.95);
   box-shadow: 
-    0 2px 10px rgba(139, 92, 246, 0.3),
+    0 2px 10px rgba(59, 130, 246, 0.3),
     inset 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
@@ -2263,7 +2260,7 @@ onMounted(async () => {
 }
 
 .solicitud-card.card-pending {
-  border-left: 3px solid #f59e0b;
+  border-left: 3px solid #f87171;
 }
 
 .card-header {
@@ -2614,14 +2611,14 @@ onMounted(async () => {
 }
 
 .btn-rechazar {
-  background: linear-gradient(135deg, #dc2626, #b91c1c);
+  background: linear-gradient(135deg, #a855f7, #8b5cf6);
   color: white;
-  box-shadow: 0 4px 15px rgba(220, 38, 38, 0.3);
+  box-shadow: 0 4px 15px rgba(168, 85, 247, 0.3);
 }
 
 .btn-rechazar:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(220, 38, 38, 0.4);
+  box-shadow: 0 6px 20px rgba(168, 85, 247, 0.4);
 }
 
 .modal-processed {
@@ -2641,7 +2638,7 @@ onMounted(async () => {
 }
 
 .processed-text.rejected {
-  color: #ef4444;
+  color: #a855f7;
 }
 
 /* ========== ANIMACIONES DEL MODAL ========== */
