@@ -142,7 +142,7 @@
               <!-- Contenido -->
               <div class="notif-card-content">
                 <!-- Fecha arriba del tipo -->
-                <span class="notif-fecha-top">{{ formatFechaCorta(solicitud.fecha_creacion) }}</span>
+                <span class="notif-fecha-top">{{ formatFechaCorta(solicitud.fecha) }}</span>
                 
                 <!-- Tipo de solicitud (completo y destacado) -->
                 <span class="notif-tipo-tag">{{ formatTipoSolicitud(solicitud.tipo) }}</span>
@@ -414,7 +414,7 @@ const getSolicitudesPendientes = async () => {
     solicitudesPendientes.value = solicitudes.filter((s: any) => s.estado === 'pendiente').length
     // Guardar las solicitudes recientes (últimas 10 ordenadas por fecha)
     solicitudesRecientes.value = solicitudes
-      .sort((a: any, b: any) => new Date(b.fecha_creacion).getTime() - new Date(a.fecha_creacion).getTime())
+      .sort((a: any, b: any) => new Date(b.fecha).getTime() - new Date(a.fecha).getTime())
       .slice(0, 10)
     console.log('📋 Solicitudes pendientes:', solicitudesPendientes.value)
     console.log('📋 Solicitudes recientes:', solicitudesRecientes.value.length)
