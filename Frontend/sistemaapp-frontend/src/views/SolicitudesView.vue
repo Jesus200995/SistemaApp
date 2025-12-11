@@ -64,47 +64,98 @@
                   </select>
                 </div>
 
-                <!-- Usuario Destino - Dropdown mejorado -->
+                <!-- Usuario Destino - Selector en dos pasos -->
                 <div class="form-group">
                   <label class="form-label">
                     <UserCheck :size="14" class="label-icon" />
                     Enviar a *
                   </label>
+                  
+                  <!-- Paso 1: Seleccionar Rol -->
                   <div class="select-wrapper">
                     <select 
-                      v-model="form.destino_id" 
+                      v-model="rolSeleccionado" 
                       class="form-select"
                       :class="{ 'loading-select': loadingUsuarios }"
-                      required
+                      @change="onRolChange"
                     >
-                      <option value="">-- Selecciona destinatario --</option>
-                      <optgroup 
-                        v-for="grupo in usuariosAgrupados" 
+                      <option value="">-- Selecciona el tipo de destinatario --</option>
+                      <option 
+                        v-for="grupo in rolesDisponiblesParaUsuario" 
                         :key="grupo.rol" 
-                        :label="formatRol(grupo.rol)"
+                        :value="grupo.rol"
                       >
-                        <option 
-                          v-for="usuario in grupo.usuarios" 
-                          :key="usuario.id" 
-                          :value="usuario.id"
-                        >
-                          {{ usuario.nombre }} ({{ usuario.territorio }})
-                        </option>
-                      </optgroup>
+                        {{ formatRol(grupo.rol) }}
+                      </option>
                     </select>
                     <div v-if="loadingUsuarios" class="select-loading">
                       <div class="mini-spinner"></div>
                     </div>
                   </div>
+
+                  <!-- Paso 2: Seleccionar Destinatario (con búsqueda) -->
+                  <div v-if="rolSeleccionado" class="persona-selector">
+                    <div class="search-input-wrapper">
+                      <Search :size="16" class="search-icon" />
+                      <input 
+                        type="text" 
+                        v-model="busquedaPersona" 
+                        placeholder="Buscar destinatario por nombre o territorio..."
+                        class="search-input"
+                      />
+                      <button 
+                        v-if="busquedaPersona" 
+                        @click="busquedaPersona = ''" 
+                        class="clear-search"
+                        type="button"
+                      >
+                        <X :size="14" />
+                      </button>
+                    </div>
+                    
+                    <div class="personas-list">
+                      <div 
+                        v-for="usuario in personasFiltradas" 
+                        :key="usuario.id"
+                        class="persona-item"
+                        :class="{ 'selected': form.destino_id === usuario.id }"
+                        @click="seleccionarPersona(usuario)"
+                      >
+                        <div class="persona-avatar">
+                          {{ getInitials(usuario.nombre) }}
+                        </div>
+                        <div class="persona-info">
+                          <span class="persona-nombre">{{ usuario.nombre }}</span>
+                          <span class="persona-territorio">{{ usuario.territorio || 'Sin territorio' }}</span>
+                        </div>
+                        <div v-if="form.destino_id === usuario.id" class="persona-check">
+                          <Check :size="16" />
+                        </div>
+                      </div>
+                      <div v-if="personasFiltradas.length === 0" class="personas-empty">
+                        No se encontraron destinatarios
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Usuario seleccionado -->
+                  <div v-if="usuarioSeleccionadoInfo" class="usuario-seleccionado">
+                    <Check :size="14" class="check-icon" />
+                    <span>Enviando a: <strong>{{ usuarioSeleccionadoInfo.nombre }}</strong></span>
+                    <button type="button" @click="limpiarSeleccion" class="btn-limpiar">
+                      <X :size="14" />
+                    </button>
+                  </div>
+
                   <p class="form-hint">
                     <span v-if="loadingUsuarios" class="hint-loading">
-                      Cargando usuarios...
+                      Cargando destinatarios...
                     </span>
                     <span v-else-if="usuariosDisponibles.length === 0" class="hint-error">
-                      ⚠️ No hay usuarios disponibles. Actualiza el servidor.
+                      No hay destinatarios disponibles
                     </span>
-                    <span v-else class="hint-success">
-                      ✓ {{ usuariosDisponibles.length }} usuario(s) disponible(s)
+                    <span v-else-if="!rolSeleccionado" class="hint-info">
+                      Selecciona primero el tipo de destinatario
                     </span>
                   </p>
                 </div>
@@ -453,7 +504,7 @@ import axios from 'axios'
 import Swal from 'sweetalert2'
 import { useAuthStore } from '../stores/auth'
 import { getSecureApiUrl } from '../utils/api'
-import { FileText, Send, Check, X, ArrowLeft, UserCheck, MessageSquare, Eye, Calendar, User, Clock, History, CheckCircle, Bell } from 'lucide-vue-next'
+import { FileText, Send, Check, X, ArrowLeft, UserCheck, MessageSquare, Eye, Calendar, User, Clock, History, CheckCircle, Bell, Search } from 'lucide-vue-next'
 
 const auth = useAuthStore()
 const form = ref({ tipo: '', destino_id: null as number | null, descripcion: '' })
@@ -491,6 +542,50 @@ const getInitials = (nombre: string | undefined) => {
 // Usuarios disponibles para enviar solicitud
 const usuariosDisponibles = ref<any[]>([])
 const loadingUsuarios = ref(false)
+
+// Variables para el selector de dos pasos
+const rolSeleccionado = ref('')
+const busquedaPersona = ref('')
+
+// Personas filtradas por rol y búsqueda
+const personasFiltradas = computed(() => {
+  if (!rolSeleccionado.value) return []
+  
+  const grupo = usuariosAgrupados.value.find(g => g.rol === rolSeleccionado.value)
+  if (!grupo) return []
+  
+  const busqueda = busquedaPersona.value.toLowerCase().trim()
+  if (!busqueda) return grupo.usuarios
+  
+  return grupo.usuarios.filter((u: any) => 
+    u.nombre?.toLowerCase().includes(busqueda) || 
+    u.territorio?.toLowerCase().includes(busqueda)
+  )
+})
+
+// Info del usuario seleccionado
+const usuarioSeleccionadoInfo = computed(() => {
+  if (!form.value.destino_id) return null
+  return usuariosDisponibles.value.find(u => u.id === form.value.destino_id)
+})
+
+// Cuando cambia el rol seleccionado
+const onRolChange = () => {
+  form.value.destino_id = null
+  busquedaPersona.value = ''
+}
+
+// Seleccionar una persona
+const seleccionarPersona = (usuario: any) => {
+  form.value.destino_id = usuario.id
+}
+
+// Limpiar selección
+const limpiarSeleccion = () => {
+  form.value.destino_id = null
+  rolSeleccionado.value = ''
+  busquedaPersona.value = ''
+}
 
 // Función para normalizar rol a categoría
 const normalizarRol = (rol: string): string => {
@@ -535,6 +630,30 @@ const formatRol = (rol: string): string => {
   }
   return roles[rol] || rol
 }
+
+// Filtrar roles disponibles según el rol del usuario actual
+// Jerarquía: Técnico → Facilitador → Territorial → Admin
+const rolesDisponiblesParaUsuario = computed(() => {
+  const rolUsuario = normalizarRol(auth.user?.rol || '')
+  
+  // Definir qué roles puede ver cada tipo de usuario
+  const rolesPermitidos: { [key: string]: string[] } = {
+    tecnico: ['facilitador', 'territorial'],     // Técnico puede enviar a Facilitadores y Territoriales
+    facilitador: ['territorial', 'admin'],       // Facilitador puede enviar a Territoriales y Admin
+    territorial: ['admin'],                      // Territorial puede enviar a Admin
+    admin: ['admin', 'territorial', 'facilitador', 'tecnico'] // Admin puede enviar a todos
+  }
+  
+  const permitidos = rolesPermitidos[rolUsuario] || []
+  
+  // Si es admin, mostrar todos los roles disponibles
+  if (rolUsuario === 'admin') {
+    return usuariosAgrupados.value
+  }
+  
+  // Filtrar solo los roles permitidos para este usuario
+  return usuariosAgrupados.value.filter(grupo => permitidos.includes(grupo.rol))
+})
 
 // Cargar usuarios disponibles
 const cargarUsuariosDisponibles = async () => {
@@ -1206,6 +1325,216 @@ onMounted(async () => {
 
 .hint-success {
   color: #10b981;
+}
+
+.hint-info {
+  color: #94a3b8;
+}
+
+/* ========== SELECTOR DE PERSONA EN DOS PASOS ========== */
+.persona-selector {
+  margin-top: 0.75rem;
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 12px;
+  padding: 0.75rem;
+}
+
+.search-input-wrapper {
+  position: relative;
+  margin-bottom: 0.75rem;
+}
+
+.search-icon {
+  position: absolute;
+  left: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #94a3b8;
+}
+
+.search-input {
+  width: 100%;
+  padding: 0.6rem 2.5rem 0.6rem 2.5rem;
+  background: rgba(30, 41, 59, 0.8);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 8px;
+  color: #f1f5f9;
+  font-size: 0.85rem;
+  transition: all 0.3s ease;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: rgba(16, 185, 129, 0.5);
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+}
+
+.search-input::placeholder {
+  color: #64748b;
+}
+
+.clear-search {
+  position: absolute;
+  right: 0.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(239, 68, 68, 0.2);
+  border: none;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ef4444;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.clear-search:hover {
+  background: rgba(239, 68, 68, 0.3);
+}
+
+.personas-list {
+  max-height: 200px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.personas-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.personas-list::-webkit-scrollbar-track {
+  background: rgba(30, 41, 59, 0.5);
+  border-radius: 3px;
+}
+
+.personas-list::-webkit-scrollbar-thumb {
+  background: rgba(16, 185, 129, 0.4);
+  border-radius: 3px;
+}
+
+.persona-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.6rem 0.75rem;
+  background: rgba(30, 41, 59, 0.5);
+  border: 1px solid rgba(148, 163, 184, 0.15);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.persona-item:hover {
+  background: rgba(16, 185, 129, 0.1);
+  border-color: rgba(16, 185, 129, 0.3);
+}
+
+.persona-item.selected {
+  background: rgba(16, 185, 129, 0.15);
+  border-color: rgba(16, 185, 129, 0.5);
+}
+
+.persona-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: transparent;
+  border: 2px solid #00ff88;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #00ff88;
+  flex-shrink: 0;
+}
+
+.persona-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.persona-nombre {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #f1f5f9;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.persona-territorio {
+  font-size: 0.7rem;
+  color: #94a3b8;
+}
+
+.persona-check {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: rgba(16, 185, 129, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #10b981;
+  flex-shrink: 0;
+}
+
+.personas-empty {
+  text-align: center;
+  padding: 1rem;
+  color: #94a3b8;
+  font-size: 0.8rem;
+}
+
+/* Usuario seleccionado */
+.usuario-seleccionado {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+  padding: 0.6rem 0.75rem;
+  background: rgba(16, 185, 129, 0.1);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  border-radius: 8px;
+  font-size: 0.8rem;
+  color: #10b981;
+}
+
+.usuario-seleccionado .check-icon {
+  color: #10b981;
+}
+
+.usuario-seleccionado strong {
+  color: #f1f5f9;
+}
+
+.btn-limpiar {
+  margin-left: auto;
+  background: rgba(239, 68, 68, 0.15);
+  border: none;
+  border-radius: 50%;
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ef4444;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-limpiar:hover {
+  background: rgba(239, 68, 68, 0.3);
 }
 
 .form-button {
