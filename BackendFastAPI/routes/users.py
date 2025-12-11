@@ -37,47 +37,84 @@ def obtener_usuarios_superiores(
     """
     Obtiene la lista de usuarios a los que se puede enviar solicitud según la jerarquía:
     
-    Jerarquía:
-    - Técnico → puede enviar a Facilitador, Territorial, Admin
+    Jerarquía (de menor a mayor):
+    - Técnico/Técnico Productivo → puede enviar a Facilitador, Territorial, Admin
     - Facilitador → puede enviar a Territorial, Admin
     - Territorial → puede enviar a Admin
-    - Admin → puede enviar a cualquiera (Admin)
+    - Admin → puede enviar a cualquiera
     
     Retorna lista de usuarios con id, nombre, rol y territorio
     """
     rol_actual = current_user["rol"]
     user_id = current_user["user_id"]
     
-    # Definir roles superiores según jerarquía
-    roles_superiores = {
+    print(f"🔍 Usuario {user_id} con rol '{rol_actual}' solicitando superiores")
+    
+    # Normalizar rol (convertir a minúsculas y reemplazar espacios/guiones)
+    rol_normalizado = rol_actual.lower().strip().replace(" ", "_").replace("-", "_")
+    
+    # Mapeo de roles normalizados a categorías
+    # Cualquier variante de "tecnico" (tecnico, tecnico_productivo, técnico, etc.)
+    if "tecnico" in rol_normalizado or "técnico" in rol_normalizado:
+        categoria_rol = "tecnico"
+    elif "facilitador" in rol_normalizado:
+        categoria_rol = "facilitador"
+    elif "territorial" in rol_normalizado:
+        categoria_rol = "territorial"
+    elif "admin" in rol_normalizado:
+        categoria_rol = "admin"
+    else:
+        categoria_rol = rol_normalizado
+    
+    print(f"📂 Rol normalizado: '{rol_normalizado}' -> Categoría: '{categoria_rol}'")
+    
+    # Definir qué roles pueden recibir solicitudes según la categoría del usuario
+    roles_destino = {
         "tecnico": ["facilitador", "territorial", "admin"],
         "facilitador": ["territorial", "admin"],
         "territorial": ["admin"],
-        "admin": ["admin", "territorial", "facilitador", "tecnico"]  # Admin puede enviar a cualquiera
+        "admin": ["admin", "territorial", "facilitador", "tecnico"]
     }
     
-    roles_permitidos = roles_superiores.get(rol_actual, [])
+    categorias_destino = roles_destino.get(categoria_rol, [])
     
-    if not roles_permitidos:
-        return {"items": [], "mensaje": "No tienes usuarios superiores disponibles"}
+    if not categorias_destino:
+        print(f"⚠️ No hay destinos para el rol '{categoria_rol}'")
+        return {"items": [], "mensaje": f"No hay usuarios disponibles para el rol '{rol_actual}'"}
     
-    # Consultar usuarios con esos roles (excluyendo al usuario actual)
-    usuarios = db.query(User).filter(
-        User.rol.in_(roles_permitidos),
+    print(f"🎯 Buscando usuarios con roles que contengan: {categorias_destino}")
+    
+    # Consultar TODOS los usuarios activos excepto el actual
+    todos_usuarios = db.query(User).filter(
         User.id != user_id,
         User.activo == True
-    ).order_by(User.rol, User.nombre).all()
+    ).all()
     
-    # Formatear respuesta
+    # Filtrar usuarios cuyo rol normalizado coincida con las categorías destino
     resultado = []
-    for u in usuarios:
-        resultado.append({
-            "id": u.id,
-            "nombre": u.nombre,
-            "rol": u.rol,
-            "territorio": u.territorio or "Sin territorio",
-            "email": u.email
-        })
+    for u in todos_usuarios:
+        rol_usuario = u.rol.lower().strip().replace(" ", "_").replace("-", "_") if u.rol else ""
+        
+        # Verificar si el rol del usuario pertenece a alguna categoría destino
+        es_destino_valido = False
+        for cat in categorias_destino:
+            if cat in rol_usuario or rol_usuario == cat:
+                es_destino_valido = True
+                break
+        
+        if es_destino_valido:
+            resultado.append({
+                "id": u.id,
+                "nombre": u.nombre,
+                "rol": u.rol,
+                "territorio": u.territorio or "Sin territorio",
+                "email": u.email
+            })
+    
+    # Ordenar por rol y nombre
+    resultado.sort(key=lambda x: (x["rol"], x["nombre"]))
+    
+    print(f"✅ Encontrados {len(resultado)} usuarios disponibles")
     
     return {
         "items": resultado,

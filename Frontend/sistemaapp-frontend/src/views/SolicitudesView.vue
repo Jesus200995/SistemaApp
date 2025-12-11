@@ -244,15 +244,26 @@ const loading = ref(false)
 const usuariosDisponibles = ref<any[]>([])
 const loadingUsuarios = ref(false)
 
-// Agrupar usuarios por rol
+// Función para normalizar rol a categoría
+const normalizarRol = (rol: string): string => {
+  const rolLower = rol.toLowerCase().replace(/[_\s-]/g, '')
+  if (rolLower.includes('admin')) return 'admin'
+  if (rolLower.includes('territorial')) return 'territorial'
+  if (rolLower.includes('facilitador')) return 'facilitador'
+  if (rolLower.includes('tecnico') || rolLower.includes('técnico')) return 'tecnico'
+  return rol // Si no coincide, usar el rol original
+}
+
+// Agrupar usuarios por rol (normalizado)
 const usuariosAgrupados = computed(() => {
   const grupos: { [key: string]: any[] } = {}
   
   usuariosDisponibles.value.forEach(usuario => {
-    if (!grupos[usuario.rol]) {
-      grupos[usuario.rol] = []
+    const categoria = normalizarRol(usuario.rol)
+    if (!grupos[categoria]) {
+      grupos[categoria] = []
     }
-    grupos[usuario.rol].push(usuario)
+    grupos[categoria].push(usuario)
   })
   
   // Ordenar por jerarquía: admin > territorial > facilitador > tecnico
