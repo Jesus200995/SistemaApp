@@ -3,12 +3,12 @@ declare const self: ServiceWorkerGlobalScope;
 
 import { cleanupOutdatedCaches, precacheAndRoute } from 'workbox-precaching';
 import { registerRoute } from 'workbox-routing';
-import { CacheFirst, NetworkFirst, StaleWhileRevalidate } from 'workbox-strategies';
+import { CacheFirst, NetworkFirst, NetworkOnly, StaleWhileRevalidate } from 'workbox-strategies';
 import { ExpirationPlugin } from 'workbox-expiration';
 import { CacheableResponsePlugin } from 'workbox-cacheable-response';
 
 // Versión del SW para detectar cambios
-const SW_VERSION = 'v' + Date.now();
+const SW_VERSION = 'v2.0.' + Date.now();
 
 // Precache archivos generados por Vite PWA
 precacheAndRoute(self.__WB_MANIFEST);
@@ -18,10 +18,10 @@ cleanupOutdatedCaches();
 
 // ========== DETECCIÓN DE ACTUALIZACIONES ==========
 
-// Verificar actualizaciones cada 1 minuto
+// Verificar actualizaciones cada 30 segundos
 setInterval(() => {
   self.registration.update();
-}, 60000);
+}, 30000);
 
 // ========== ESTRATEGIAS DE CACHÉ ==========
 
@@ -69,28 +69,23 @@ registerRoute(
   })
 );
 
-// 4. API requests: Network First con timeout
+// 4. API requests: NETWORK ONLY - NUNCA CACHEAR datos de la API
 registerRoute(
-  ({ url }) => url.origin === self.location.origin && url.pathname.startsWith('/api'),
-  new NetworkFirst({
-    cacheName: 'api-cache',
-    networkTimeoutSeconds: 5,
-    plugins: [
-      new ExpirationPlugin({
-        maxEntries: 50,
-        maxAgeSeconds: 24 * 60 * 60, // 1 día
-      }),
-    ],
-  })
+  ({ url }) => url.pathname.startsWith('/api') || 
+               url.pathname.startsWith('/solicitudes') ||
+               url.pathname.startsWith('/usuarios') ||
+               url.pathname.startsWith('/auth') ||
+               url.pathname.startsWith('/notificaciones') ||
+               url.pathname.startsWith('/sembradores') ||
+               url.pathname.startsWith('/seguimientos'),
+  new NetworkOnly()
 );
 
-// 5. WebSocket fallback (no se cachea)
+// 5. Cualquier otra llamada a API externa: Network Only
 registerRoute(
-  ({ url }) => url.pathname.startsWith('/notificaciones') || url.pathname.startsWith('/chat'),
-  new NetworkFirst({
-    cacheName: 'realtime-cache',
-    networkTimeoutSeconds: 2,
-  })
+  ({ url }) => url.origin !== self.location.origin && 
+               (url.pathname.includes('/api') || url.pathname.includes('/solicitudes')),
+  new NetworkOnly()
 );
 
 // ========== EVENTOS DEL SERVICE WORKER ==========
@@ -101,16 +96,13 @@ self.addEventListener('activate', (event: ExtendableEvent) => {
   
   event.waitUntil(
     Promise.all([
-      // Limpiar cachés antiguos
+      // LIMPIAR TODOS LOS CACHÉS al activar nueva versión
       caches.keys().then((cacheNames) => {
+        console.log('[SW] Limpiando TODOS los cachés:', cacheNames);
         return Promise.all(
           cacheNames.map((cacheName) => {
-            if (cacheName !== 'pages-cache' && cacheName !== 'static-resources' && 
-                cacheName !== 'images-cache' && cacheName !== 'api-cache' && 
-                cacheName !== 'realtime-cache') {
-              console.log('[SW] Eliminando caché antiguo:', cacheName);
-              return caches.delete(cacheName);
-            }
+            console.log('[SW] Eliminando caché:', cacheName);
+            return caches.delete(cacheName);
           })
         );
       }),
@@ -126,21 +118,23 @@ self.addEventListener('activate', (event: ExtendableEvent) => {
     ])
   );
   
-  // Forzar que este SW controle todas las páginas inmediatamente
-  self.skipWaiting();
+  // Tomar control de todas las páginas inmediatamente
+  self.clients.claim();
 });
 
 // Instalación del Service Worker
 self.addEventListener('install', (event: ExtendableEvent) => {
   console.log('[SW] Instalando Service Worker:', SW_VERSION);
   
-  // Forzar que se convierta en activo inmediatamente
+  // Forzar que se convierta en activo inmediatamente - NO ESPERAR
   self.skipWaiting();
   
   event.waitUntil(
-    caches.open('pages-cache').then((cache) => {
-      console.log('[SW] Precaché inicializado');
-      return Promise.resolve();
+    // Limpiar cachés antiguos durante la instalación también
+    caches.keys().then((cacheNames) => {
+      return Promise.all(
+        cacheNames.map((cacheName) => caches.delete(cacheName))
+      );
     })
   );
 });

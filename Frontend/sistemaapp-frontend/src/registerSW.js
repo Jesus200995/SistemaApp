@@ -1,22 +1,37 @@
 import { registerSW } from 'virtual:pwa-register'
 
+// Función para limpiar todo el caché
+const clearAllCaches = async () => {
+  if ('caches' in window) {
+    const cacheNames = await caches.keys()
+    await Promise.all(cacheNames.map(name => caches.delete(name)))
+    console.log('🗑️ Todos los cachés limpiados')
+  }
+}
+
 // Solo registrar el SW si estamos en un entorno que lo soporta
 const updateSW = registerSW({
   immediate: true,
-  onNeedRefresh() {
-    console.log('🔄 Nueva versión disponible')
-    // Actualizar automáticamente sin preguntar en desarrollo
-    if (import.meta.env.DEV) {
+  async onNeedRefresh() {
+    console.log('🔄 Nueva versión disponible - Actualizando automáticamente...')
+    // Limpiar todos los cachés antes de actualizar
+    await clearAllCaches()
+    // Actualizar automáticamente SIN preguntar
+    updateSW(true)
+    // Recargar la página después de un breve delay
+    setTimeout(() => {
       window.location.reload()
-    } else if (confirm('🔄 Hay una nueva versión disponible. ¿Actualizar ahora?')) {
-      updateSW(true)
-    }
+    }, 500)
   },
   onOfflineReady() {
     console.log('📡 App lista para funcionar sin conexión')
   },
   onRegistered(registration) {
     console.log('✅ Service Worker registrado correctamente')
+    // Verificar actualizaciones cada 30 segundos
+    setInterval(() => {
+      registration.update()
+    }, 30000)
   },
   onRegisterError(error) {
     // En desarrollo, los errores de SW son normales debido a HMR
@@ -27,3 +42,6 @@ const updateSW = registerSW({
     }
   },
 })
+
+// Exportar función para limpiar caché manualmente si se necesita
+export { clearAllCaches }
