@@ -191,6 +191,10 @@
                 :key="'pending-' + solicitud.id" 
                 class="solicitud-card-pending"
               >
+                <!-- Campanita animada -->
+                <div class="card-bell-icon">
+                  <Bell :size="18" />
+                </div>
                 <div class="card-pending-header">
                   <div class="card-pending-user">
                     <div class="user-avatar">
@@ -281,10 +285,10 @@
                       <td class="cell-acciones">
                         <button
                           @click="abrirModalDetalle(solicitud)"
-                          class="action-btn view-btn"
+                          class="btn-ver-circular"
                           title="Ver detalles"
                         >
-                          <Eye class="action-icon" />
+                          <Eye :size="18" />
                         </button>
                       </td>
                     </tr>
@@ -449,7 +453,7 @@ import axios from 'axios'
 import Swal from 'sweetalert2'
 import { useAuthStore } from '../stores/auth'
 import { getSecureApiUrl } from '../utils/api'
-import { FileText, Send, Check, X, ArrowLeft, UserCheck, MessageSquare, Eye, Calendar, User, Clock, History, CheckCircle } from 'lucide-vue-next'
+import { FileText, Send, Check, X, ArrowLeft, UserCheck, MessageSquare, Eye, Calendar, User, Clock, History, CheckCircle, Bell } from 'lucide-vue-next'
 
 const auth = useAuthStore()
 const form = ref({ tipo: '', destino_id: null as number | null, descripcion: '' })
@@ -524,10 +528,10 @@ const usuariosAgrupados = computed(() => {
 // Formatear nombre del rol
 const formatRol = (rol: string): string => {
   const roles: { [key: string]: string } = {
-    admin: '👑 Administradores',
-    territorial: '🌍 Territoriales',
-    facilitador: '🤝 Facilitadores',
-    tecnico: '🔧 Técnicos'
+    admin: 'Administradores',
+    territorial: 'Territoriales',
+    facilitador: 'Facilitadores',
+    tecnico: 'Técnicos'
   }
   return roles[rol] || rol
 }
@@ -610,13 +614,13 @@ const getBadgeClass = (tipo: string) => {
 const formatRolUsuario = (rol: string): string => {
   if (!rol) return 'N/A'
   const rolLower = rol.toLowerCase()
-  if (rolLower.includes('admin')) return '👑 Admin'
-  if (rolLower.includes('territorial')) return '🌍 Territorial'
-  if (rolLower.includes('facilitador')) return '🤝 Facilitador'
+  if (rolLower.includes('admin')) return 'Admin'
+  if (rolLower.includes('territorial')) return 'Territorial'
+  if (rolLower.includes('facilitador')) return 'Facilitador'
   if (rolLower.includes('tecnico') || rolLower.includes('técnico')) {
-    if (rolLower.includes('productivo')) return '🌱 Téc. Productivo'
-    if (rolLower.includes('social')) return '👥 Téc. Social'
-    return '🔧 Técnico'
+    if (rolLower.includes('productivo')) return 'Téc. Productivo'
+    if (rolLower.includes('social')) return 'Téc. Social'
+    return 'Técnico'
   }
   return rol
 }
@@ -1298,12 +1302,14 @@ onMounted(async () => {
   font-size: 0.7rem;
   font-weight: 700;
   color: white;
-  background: linear-gradient(135deg, #f59e0b, #d97706);
-  border-radius: 10px;
+  background: linear-gradient(135deg, #fb923c, #ea580c);
+  border-radius: 50%;
+  box-shadow: 0 0 10px rgba(251, 146, 60, 0.5);
 }
 
 .tab-badge.historial {
   background: linear-gradient(135deg, #6366f1, #4f46e5);
+  box-shadow: 0 0 10px rgba(99, 102, 241, 0.5);
 }
 
 .tabs-stats {
@@ -1339,19 +1345,90 @@ onMounted(async () => {
 }
 
 .solicitud-card-pending {
-  background: linear-gradient(135deg, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.9));
+  position: relative;
+  background: linear-gradient(90deg, 
+    rgba(30, 41, 59, 0.85) 0%, 
+    rgba(251, 146, 60, 0.08) 25%, 
+    rgba(234, 88, 12, 0.06) 50%, 
+    rgba(251, 146, 60, 0.08) 75%, 
+    rgba(30, 41, 59, 0.85) 100%
+  );
+  background-size: 200% 100%;
   border-radius: 16px;
   padding: 1.25rem;
-  border: 1px solid rgba(245, 158, 11, 0.3);
-  border-left: 4px solid #f59e0b;
+  border: 1px solid rgba(251, 146, 60, 0.3);
+  border-left: 4px solid #fb923c;
   transition: all 0.3s ease;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  overflow: visible;
+  margin-top: 10px;
+  animation: cardShimmer 5s ease-in-out infinite;
+}
+
+@keyframes cardShimmer {
+  0% { 
+    background-position: 100% 0;
+  }
+  50% { 
+    background-position: 0% 0;
+  }
+  100% { 
+    background-position: 100% 0;
+  }
 }
 
 .solicitud-card-pending:hover {
   transform: translateY(-4px);
-  box-shadow: 0 8px 25px rgba(245, 158, 11, 0.15);
-  border-color: rgba(245, 158, 11, 0.5);
+  box-shadow: 0 8px 25px rgba(251, 146, 60, 0.2);
+  border-color: rgba(251, 146, 60, 0.5);
+  animation-play-state: paused;
+  background: linear-gradient(135deg, rgba(251, 146, 60, 0.12), rgba(30, 41, 59, 0.85), rgba(15, 23, 42, 0.9));
+  background-size: 100% 100%;
+}
+
+.solicitud-card-pending:hover .card-bell-icon {
+  animation: bellShake 0.8s ease-in-out infinite;
+}
+
+/* Campanita animada - Círculo naranja vidrio líquido pequeño */
+.card-bell-icon {
+  position: absolute;
+  top: -10px;
+  right: -6px;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(ellipse at 30% 30%, rgba(251, 191, 136, 0.6), rgba(251, 146, 60, 0.4) 50%, rgba(234, 88, 12, 0.3));
+  border: 1.5px solid rgba(251, 146, 60, 0.6);
+  backdrop-filter: blur(12px);
+  box-shadow: 
+    0 3px 12px rgba(251, 146, 60, 0.4),
+    0 0 15px rgba(251, 146, 60, 0.2),
+    inset 0 1px 3px rgba(255, 255, 255, 0.3),
+    inset 0 -1px 3px rgba(0, 0, 0, 0.1);
+  color: white;
+  animation: bellShake 2s ease-in-out infinite;
+  z-index: 10;
+}
+
+.card-bell-icon svg {
+  width: 14px;
+  height: 14px;
+}
+
+@keyframes bellShake {
+  0%, 100% { transform: rotate(0deg); }
+  10% { transform: rotate(14deg); }
+  20% { transform: rotate(-12deg); }
+  30% { transform: rotate(10deg); }
+  40% { transform: rotate(-8deg); }
+  50% { transform: rotate(6deg); }
+  60% { transform: rotate(-4deg); }
+  70% { transform: rotate(2deg); }
+  80%, 100% { transform: rotate(0deg); }
 }
 
 .card-pending-header {
@@ -1370,15 +1447,17 @@ onMounted(async () => {
 .user-avatar {
   width: 42px;
   height: 42px;
-  border-radius: 12px;
-  background: linear-gradient(135deg, #10b981, #059669);
+  border-radius: 50%;
+  background: transparent;
+  border: 2px solid #00ff88;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 0.85rem;
   font-weight: 700;
-  color: white;
-  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+  color: #00ff88;
+  box-shadow: 0 0 15px rgba(0, 255, 136, 0.4), inset 0 0 10px rgba(0, 255, 136, 0.1);
+  text-shadow: 0 0 8px rgba(0, 255, 136, 0.6);
 }
 
 .user-details {
@@ -1395,11 +1474,15 @@ onMounted(async () => {
 
 .user-rol {
   font-size: 0.7rem;
-  font-weight: 500;
+  font-weight: 600;
   padding: 2px 8px;
   border-radius: 4px;
   display: inline-block;
   width: fit-content;
+  background: rgba(0, 255, 136, 0.1);
+  color: #00ff88;
+  border: 1px solid rgba(0, 255, 136, 0.3);
+  text-shadow: 0 0 8px rgba(0, 255, 136, 0.5);
 }
 
 .status-pendiente {
@@ -1409,10 +1492,10 @@ onMounted(async () => {
   font-size: 0.7rem;
   font-weight: 600;
   padding: 4px 10px;
-  background: rgba(245, 158, 11, 0.15);
-  color: #f59e0b;
+  background: rgba(251, 146, 60, 0.15);
+  color: #fb923c;
   border-radius: 6px;
-  border: 1px solid rgba(245, 158, 11, 0.3);
+  border: 1px solid rgba(251, 146, 60, 0.3);
 }
 
 .card-pending-body {
@@ -1421,6 +1504,8 @@ onMounted(async () => {
 
 .card-pending-body .badge {
   margin-bottom: 0.75rem;
+  border-radius: 20px;
+  padding: 0.4rem 1rem;
 }
 
 .card-pending-descripcion {
@@ -1453,18 +1538,23 @@ onMounted(async () => {
   padding: 0.5rem 1rem;
   font-size: 0.8rem;
   font-weight: 600;
-  color: white;
-  background: linear-gradient(135deg, #6366f1, #4f46e5);
-  border: none;
-  border-radius: 8px;
+  color: #c4b5fd;
+  background: rgba(139, 92, 246, 0.2);
+  border: 1.5px solid rgba(139, 92, 246, 0.4);
+  border-radius: 10px;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3);
 }
 
 .btn-ver-completo:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+  background: rgba(139, 92, 246, 0.35);
+  border-color: rgba(167, 139, 250, 0.6);
+  color: #e9d5ff;
+}
+
+.btn-ver-completo:active {
+  transform: scale(0.98);
 }
 
 /* Empty state icon success */
@@ -1533,12 +1623,15 @@ onMounted(async () => {
 
 .table-responsive {
   overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .solicitudes-table {
   width: 100%;
+  min-width: 650px;
   border-collapse: collapse;
   font-size: 0.85rem;
+  table-layout: fixed;
 }
 
 .solicitudes-table thead {
@@ -1554,6 +1647,10 @@ onMounted(async () => {
   text-transform: uppercase;
   font-size: 0.7rem;
   letter-spacing: 0.05em;
+}
+
+.solicitudes-table th:last-child {
+  text-align: center;
 }
 
 .solicitud-row {
@@ -1572,7 +1669,8 @@ onMounted(async () => {
 
 /* ========== CELDA SOLICITANTE ========== */
 .cell-solicitante {
-  width: 20%;
+  width: 18%;
+  min-width: 110px;
 }
 
 .solicitante-info {
@@ -1589,41 +1687,36 @@ onMounted(async () => {
 
 .solicitante-rol {
   font-size: 0.7rem;
-  font-weight: 500;
+  font-weight: 600;
   padding: 0.15rem 0.5rem;
   border-radius: 4px;
   display: inline-block;
   width: fit-content;
+  background: rgba(0, 255, 136, 0.1);
+  color: #00ff88;
+  border: 1px solid rgba(0, 255, 136, 0.3);
+  text-shadow: 0 0 8px rgba(0, 255, 136, 0.5);
 }
 
-/* Clases de rol por color */
-.rol-admin {
-  background: rgba(234, 179, 8, 0.15);
-  color: #eab308;
-}
-
-.rol-territorial {
-  background: rgba(59, 130, 246, 0.15);
-  color: #3b82f6;
-}
-
-.rol-facilitador {
-  background: rgba(139, 92, 246, 0.15);
-  color: #8b5cf6;
-}
-
+/* Clases de rol - Todos en verde neon */
+.rol-admin,
+.rol-territorial,
+.rol-facilitador,
 .rol-tecnico {
-  background: rgba(16, 185, 129, 0.15);
-  color: #10b981;
+  background: rgba(0, 255, 136, 0.1);
+  color: #00ff88;
+  border: 1px solid rgba(0, 255, 136, 0.3);
+  text-shadow: 0 0 8px rgba(0, 255, 136, 0.5);
 }
 
 .cell-tipo {
-  width: 13%;
+  width: 15%;
+  min-width: 100px;
 }
 
 .cell-descripcion {
-  width: 35%;
-  max-width: 200px;
+  width: 25%;
+  min-width: 120px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -1631,17 +1724,23 @@ onMounted(async () => {
 
 .cell-estado {
   width: 12%;
+  min-width: 90px;
 }
 
 .cell-fecha {
-  width: 20%;
-  font-size: 0.85rem;
+  width: 13%;
+  min-width: 90px;
+  font-size: 0.8rem;
 }
 
 .cell-acciones {
-  width: 18%;
-  display: flex;
-  gap: 0.5rem;
+  width: 10%;
+  min-width: 60px;
+  text-align: center;
+}
+
+.cell-acciones .btn-ver-circular {
+  margin: 0 auto;
 }
 
 /* ========== BADGES ========== */
@@ -1741,6 +1840,58 @@ onMounted(async () => {
 .action-icon {
   width: 18px;
   height: 18px;
+}
+
+/* ========== BOTÓN VER CIRCULAR MORADO VIDRIO LÍQUIDO ========== */
+.btn-ver-circular {
+  width: 38px;
+  height: 38px;
+  min-width: 38px;
+  min-height: 38px;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(ellipse at 30% 30%, rgba(167, 139, 250, 0.4), rgba(139, 92, 246, 0.2) 50%, rgba(99, 102, 241, 0.15));
+  border: 1.5px solid rgba(167, 139, 250, 0.5);
+  color: #c4b5fd;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  backdrop-filter: blur(12px);
+  box-shadow: 
+    0 4px 20px rgba(139, 92, 246, 0.3),
+    0 0 30px rgba(139, 92, 246, 0.15),
+    inset 0 2px 4px rgba(255, 255, 255, 0.2),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.1);
+  margin: 0 auto;
+}
+
+.btn-ver-circular:hover {
+  background: radial-gradient(ellipse at 30% 30%, rgba(196, 181, 253, 0.5), rgba(167, 139, 250, 0.35) 50%, rgba(139, 92, 246, 0.25));
+  border-color: rgba(196, 181, 253, 0.7);
+  transform: scale(1.15);
+  box-shadow: 
+    0 8px 30px rgba(139, 92, 246, 0.45),
+    0 0 40px rgba(167, 139, 250, 0.3),
+    inset 0 2px 6px rgba(255, 255, 255, 0.3),
+    inset 0 -2px 6px rgba(0, 0, 0, 0.1);
+  color: #e9d5ff;
+}
+
+.btn-ver-circular:active {
+  transform: scale(0.95);
+  box-shadow: 
+    0 2px 10px rgba(139, 92, 246, 0.3),
+    inset 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Centrar la celda de acciones */
+.cell-acciones {
+  text-align: center !important;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
 }
 
 /* ========== BOTÓN VER DETALLE ========== */
@@ -2030,6 +2181,10 @@ onMounted(async () => {
   padding: 0.2rem 0.6rem;
   border-radius: 4px;
   font-size: 0.75rem;
+  background: rgba(0, 255, 136, 0.1);
+  color: #00ff88;
+  border: 1px solid rgba(0, 255, 136, 0.3);
+  text-shadow: 0 0 8px rgba(0, 255, 136, 0.5);
 }
 
 .user-card-value.email {
@@ -2062,9 +2217,13 @@ onMounted(async () => {
 
 .dest-rol {
   font-size: 0.7rem;
-  font-weight: 500;
+  font-weight: 600;
   padding: 0.15rem 0.5rem;
   border-radius: 4px;
+  background: rgba(0, 255, 136, 0.1);
+  color: #00ff88;
+  border: 1px solid rgba(0, 255, 136, 0.3);
+  text-shadow: 0 0 8px rgba(0, 255, 136, 0.5);
 }
 
 .user-name {
@@ -2261,12 +2420,36 @@ onMounted(async () => {
   
   .solicitud-card-pending {
     padding: 1rem;
+    margin-top: 10px;
+  }
+  
+  .card-bell-icon {
+    width: 24px;
+    height: 24px;
+    top: -8px;
+    right: -5px;
+  }
+  
+  .card-bell-icon svg {
+    width: 12px;
+    height: 16px;
   }
   
   .user-avatar {
     width: 36px;
     height: 36px;
+    min-width: 36px;
+    min-height: 36px;
     font-size: 0.75rem;
+    border-radius: 50%;
+  }
+  
+  /* Botón ver circular responsive */
+  .btn-ver-circular {
+    width: 34px;
+    height: 34px;
+    min-width: 34px;
+    min-height: 34px;
   }
   
   .user-name {
@@ -2368,6 +2551,61 @@ onMounted(async () => {
     justify-content: center;
     width: 100%;
   }
+  
+  /* Tabla responsive */
+  .solicitudes-table-wrapper {
+    margin: 0 -0.5rem;
+    border-radius: 8px;
+  }
+  
+  .solicitudes-table {
+    min-width: 600px;
+    font-size: 0.75rem;
+  }
+  
+  .solicitudes-table th,
+  .solicitudes-table td {
+    padding: 0.6rem 0.5rem;
+  }
+  
+  .cell-solicitante {
+    min-width: 100px;
+  }
+  
+  .solicitante-nombre {
+    font-size: 0.8rem;
+  }
+  
+  .solicitante-rol {
+    font-size: 0.65rem;
+    padding: 0.1rem 0.4rem;
+  }
+  
+  .cell-descripcion {
+    min-width: 100px;
+  }
+  
+  .badge {
+    font-size: 0.65rem;
+    padding: 0.3rem 0.5rem;
+  }
+  
+  .status-badge {
+    font-size: 0.65rem;
+    padding: 0.25rem 0.5rem;
+  }
+  
+  .btn-ver-circular {
+    width: 32px;
+    height: 32px;
+    min-width: 32px;
+    min-height: 32px;
+  }
+  
+  .btn-ver-circular svg {
+    width: 16px;
+    height: 16px;
+  }
 }
 
 @media (max-width: 640px) {
@@ -2409,11 +2647,36 @@ onMounted(async () => {
 
   .solicitudes-table {
     font-size: 0.7rem;
+    min-width: 550px;
   }
 
   .solicitudes-table th,
   .solicitudes-table td {
     padding: 0.5rem 0.4rem;
+  }
+  
+  .cell-solicitante {
+    min-width: 90px;
+  }
+  
+  .cell-tipo {
+    min-width: 85px;
+  }
+  
+  .cell-descripcion {
+    min-width: 90px;
+  }
+  
+  .cell-estado {
+    min-width: 75px;
+  }
+  
+  .cell-fecha {
+    min-width: 80px;
+  }
+  
+  .cell-acciones {
+    min-width: 55px;
   }
 }
 
@@ -2474,11 +2737,37 @@ onMounted(async () => {
 
   .solicitudes-table {
     font-size: 0.65rem;
+    min-width: 500px;
   }
 
   .solicitudes-table th,
   .solicitudes-table td {
     padding: 0.4rem 0.3rem;
+  }
+  
+  .solicitante-nombre {
+    font-size: 0.7rem;
+  }
+  
+  .solicitante-rol {
+    font-size: 0.6rem;
+  }
+  
+  .badge {
+    font-size: 0.6rem;
+    padding: 0.25rem 0.4rem;
+  }
+  
+  .btn-ver-circular {
+    width: 30px;
+    height: 30px;
+    min-width: 30px;
+    min-height: 30px;
+  }
+  
+  .btn-ver-circular svg {
+    width: 14px;
+    height: 14px;
   }
 }
 </style>
