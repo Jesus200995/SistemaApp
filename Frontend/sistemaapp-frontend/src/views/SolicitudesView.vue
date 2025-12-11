@@ -1,5 +1,8 @@
 <template>
   <div class="solicitudes-container">
+    <!-- Menú hamburguesa global -->
+    <HamburgerMenu />
+
     <!-- Background decorativo -->
     <div class="background-blobs">
       <div class="blob blob-1"></div>
@@ -570,6 +573,7 @@ import axios from 'axios'
 import Swal from 'sweetalert2'
 import { useAuthStore } from '../stores/auth'
 import { getSecureApiUrl } from '../utils/api'
+import HamburgerMenu from '../components/HamburgerMenu.vue'
 import { FileText, Send, Check, X, ArrowLeft, UserCheck, MessageSquare, Eye, Calendar, User, Clock, History, CheckCircle, Bell, Search, Edit, SendHorizontal } from 'lucide-vue-next'
 
 const auth = useAuthStore()

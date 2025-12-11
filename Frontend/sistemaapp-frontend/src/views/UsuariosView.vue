@@ -1,5 +1,8 @@
 <template>
   <div class="usuarios-container">
+    <!-- Menú hamburguesa global -->
+    <HamburgerMenu />
+
     <!-- Fondo decorativo -->
     <div class="background-decoration">
       <div class="blob blob-1"></div>
@@ -611,6 +614,7 @@ import axios from 'axios'
 import { Users, RotateCw, Search, ChevronLeft, ChevronRight, ArrowLeft, Edit, Trash2, UserPlus, X, User, Mail, Lock, Shield, Eye, EyeOff, Loader2, IdCard, Phone, MapPin } from 'lucide-vue-next'
 import { useAuthStore } from '../stores/auth'
 import { getSecureApiUrl } from '../utils/api'
+import HamburgerMenu from '../components/HamburgerMenu.vue'
 import Swal from 'sweetalert2'
 import 'sweetalert2/dist/sweetalert2.min.css'
 

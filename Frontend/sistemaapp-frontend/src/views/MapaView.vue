@@ -1,5 +1,8 @@
 <template>
   <div class="mapa-container">
+    <!-- Menú hamburguesa global -->
+    <HamburgerMenu />
+
     <!-- Fondo decorativo con blobs animados -->
     <div class="background-blobs">
       <div class="blob blob-1"></div>
@@ -240,6 +243,7 @@ import L from 'leaflet'
 import axios from 'axios'
 import { useAuthStore } from '../stores/auth'
 import { getSecureApiUrl } from '../utils/api'
+import HamburgerMenu from '../components/HamburgerMenu.vue'
 import { addOfflinePoint, getOfflinePoints, clearOfflinePoints } from '../utils/db'
 import 'leaflet/dist/leaflet.css'
 import 'leaflet-defaulticon-compatibility'

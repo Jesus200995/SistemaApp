@@ -1,5 +1,8 @@
 <template>
   <div class="dashboard-container">
+    <!-- Menú hamburguesa global -->
+    <HamburgerMenu :pendingCount="solicitudesPendientes" />
+
     <!-- Header moderno -->
     <header class="dashboard-header">
       <div class="header-content">
@@ -36,10 +39,6 @@
             <p class="app-subtitle">Panel de Control</p>
           </div>
         </div>
-        <button @click="logout" class="logout-btn">
-          <LogOut class="logout-icon" />
-          <span class="logout-text">Salir</span>
-        </button>
       </div>
     </header>
 
@@ -172,6 +171,7 @@ import { useAuthStore } from '../stores/auth'
 import { getSecureApiUrl, getSecureWsUrl } from '../utils/api'
 import { useRouter } from 'vue-router'
 import { LogOut, User, Mail, LayoutDashboard, BarChart3, Users, Settings, MapPin, Sprout, FileText, Smile, Clipboard, Check, Shield, Zap, Bell, Clock, CheckCircle, AlertCircle, Info, Eye, MessageSquare } from 'lucide-vue-next'
+import HamburgerMenu from '../components/HamburgerMenu.vue'
 import axios from 'axios'
 
 const auth = useAuthStore()
@@ -566,7 +566,7 @@ const getUsuariosDesc = (): string => {
   top: 0;
   left: 0;
   right: 0;
-  z-index: 9999;
+  z-index: 100;
   backdrop-filter: blur(12px);
   background: rgba(132, 204, 22, 0.18);
   border-bottom: 2px solid rgba(132, 204, 22, 0.3);
@@ -574,19 +574,7 @@ const getUsuariosDesc = (): string => {
   box-shadow: 0 8px 40px rgba(132, 204, 22, 0.15);
   width: 100%;
   height: 62px;
-  animation: header-slide-down 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
   box-sizing: border-box;
-}
-
-@keyframes header-slide-down {
-  from {
-    transform: translateY(-60px);
-    opacity: 0;
-  }
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
 }
 
 .header-content {

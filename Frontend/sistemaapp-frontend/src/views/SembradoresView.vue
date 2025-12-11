@@ -1,5 +1,8 @@
 <template>
   <div class="sembradores-container">
+    <!-- Menú hamburguesa global -->
+    <HamburgerMenu />
+
     <!-- Fondo decorativo con blobs animados -->
     <div class="background-blobs">
       <div class="blob blob-1"></div>
@@ -611,6 +614,7 @@ import { ref, onMounted } from 'vue'
 import axios from 'axios'
 import { useAuthStore } from '../stores/auth'
 import { getSecureApiUrl } from '../utils/api'
+import HamburgerMenu from '../components/HamburgerMenu.vue'
 import {
   Sprout,
   User,

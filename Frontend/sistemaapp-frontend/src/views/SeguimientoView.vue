@@ -1,5 +1,8 @@
 <template>
   <div class="seguimiento-container">
+    <!-- Menú hamburguesa global -->
+    <HamburgerMenu />
+
     <!-- Fondo decorativo con blobs -->
     <div class="background-blobs">
       <div class="blob blob-1"></div>
@@ -427,6 +430,7 @@ import { ref, onMounted } from 'vue'
 import type { Ref } from 'vue'
 import { useAuthStore } from '../stores/auth'
 import { getSecureApiUrl } from '../utils/api'
+import HamburgerMenu from '../components/HamburgerMenu.vue'
 import axios from 'axios'
 import Swal from 'sweetalert2'
 import { 

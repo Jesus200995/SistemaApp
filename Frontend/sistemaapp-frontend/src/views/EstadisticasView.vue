@@ -1,5 +1,8 @@
 <template>
   <div class="estadisticas-container">
+    <!-- Menú hamburguesa global -->
+    <HamburgerMenu />
+
     <!-- Fondo decorativo con blobs -->
     <div class="background-blobs">
       <div class="blob blob-1"></div>
@@ -203,6 +206,7 @@ import axios from 'axios'
 import { useAuthStore } from '../stores/auth'
 import { useRouter } from 'vue-router'
 import { getSecureApiUrl } from '../utils/api'
+import HamburgerMenu from '../components/HamburgerMenu.vue'
 import Swal from 'sweetalert2'
 import { Bar } from 'vue-chartjs'
 import {
