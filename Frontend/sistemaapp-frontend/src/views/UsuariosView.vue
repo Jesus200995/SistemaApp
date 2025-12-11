@@ -44,12 +44,7 @@
     <!-- Modal Crear Usuario -->
     <Teleport to="body">
       <div v-if="showModalCrear" class="modal-overlay" @click.self="cerrarModalCrearUsuario">
-        <div 
-          class="modal-crear-usuario"
-          v-motion
-          :initial="{ opacity: 0, scale: 0.9, y: -20 }"
-          :enter="{ opacity: 1, scale: 1, y: 0, transition: { duration: 300 } }"
-        >
+        <div class="modal-crear-usuario">
           <div class="modal-header">
             <div class="modal-icon">
               <UserPlus class="modal-icon-svg" />
@@ -243,10 +238,7 @@
     <!-- Modal de Edición de Usuario -->
     <Teleport to="body">
       <div v-if="showModalEditar" class="modal-overlay" @click.self="cerrarModalEditar">
-        <div class="modal-edicion" v-motion
-          :initial="{ opacity: 0, scale: 0.9, y: 20 }"
-          :enter="{ opacity: 1, scale: 1, y: 0, transition: { duration: 300 } }"
-        >
+        <div class="modal-edicion">
           <div class="modal-header">
             <h2 class="modal-title">Editar Usuario</h2>
             <button @click="cerrarModalEditar" class="modal-close-btn" title="Cerrar">
@@ -405,12 +397,7 @@
     <!-- Contenido principal -->
     <div class="usuarios-content">
       <!-- Tarjeta principal -->
-      <div
-        v-motion
-        :initial="{ opacity: 0, scale: 0.95, y: 30 }"
-        :enter="{ opacity: 1, scale: 1, y: 0, transition: { delay: 200, duration: 700 } }"
-        class="usuarios-card"
-      >
+      <div class="usuarios-card">
         <!-- Buscador -->
         <div class="search-section">
           <div class="search-wrapper">
@@ -588,12 +575,7 @@
       </div>
 
       <!-- Estadísticas -->
-      <div
-        v-motion
-        :initial="{ opacity: 0 }"
-        :enter="{ opacity: 1, transition: { delay: 600, duration: 600 } }"
-        class="stats-section"
-      >
+      <div class="stats-section">
         <div class="stat-card" v-if="adminCount > 0">
           <div class="stat-number">{{ adminCount }}</div>
           <div class="stat-label">Admins</div>

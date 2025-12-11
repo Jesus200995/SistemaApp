@@ -36,12 +36,7 @@
     <!-- Contenido principal -->
     <div class="login-content">
       <!-- Logo y título -->
-      <div
-        v-motion
-        :initial="{ opacity: 0, y: -50 }"
-        :enter="{ opacity: 1, y: 0, transition: { duration: 600 } }"
-        class="logo-section"
-      >
+      <div class="logo-section">
         <!-- Animación de maceta con flor -->
         <div class="flowerpot-animation">
           <svg viewBox="0 0 200 240" class="flowerpot-svg">
@@ -104,12 +99,7 @@
       </div>
 
       <!-- Tarjeta de login -->
-      <div
-        v-motion
-        :initial="{ opacity: 0, scale: 0.9, y: 50 }"
-        :enter="{ opacity: 1, scale: 1, y: 0, transition: { delay: 200, duration: 700 } }"
-        class="login-card"
-      >
+      <div class="login-card">
         <h2 class="login-title">Inicia Sesión</h2>
         <p class="login-subtitle">Ingresa tus credenciales</p>
 
@@ -185,12 +175,7 @@
       </div>
 
       <!-- Footer -->
-      <div
-        v-motion
-        :initial="{ opacity: 0 }"
-        :enter="{ opacity: 1, transition: { delay: 600, duration: 600 } }"
-        class="login-footer"
-      >
+      <div class="login-footer">
         <p>© 2025 <span class="footer-highlight">Sistema de Administración</span>. Todos los derechos reservados.</p>
       </div>
     </div>

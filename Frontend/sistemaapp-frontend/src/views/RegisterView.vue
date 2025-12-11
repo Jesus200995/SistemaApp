@@ -15,23 +15,13 @@
     <!-- Contenido principal -->
     <div class="register-content">
       <!-- Logo y título -->
-      <div
-        v-motion
-        :initial="{ opacity: 0, y: -50 }"
-        :enter="{ opacity: 1, y: 0, transition: { duration: 600 } }"
-        class="logo-section"
-      >
+      <div class="logo-section">
         <h1 class="app-title">Sistema de Administración</h1>
         <p class="app-subtitle">Crea tu cuenta</p>
       </div>
 
       <!-- Tarjeta de registro -->
-      <div
-        v-motion
-        :initial="{ opacity: 0, scale: 0.9, y: 50 }"
-        :enter="{ opacity: 1, scale: 1, y: 0, transition: { delay: 200, duration: 700 } }"
-        class="register-card"
-      >
+      <div class="register-card">
         <h2 class="register-title">Crear Cuenta</h2>
         <p class="register-subtitle">Completa el formulario</p>
 
@@ -262,12 +252,7 @@
       </div>
 
       <!-- Footer -->
-      <div
-        v-motion
-        :initial="{ opacity: 0 }"
-        :enter="{ opacity: 1, transition: { delay: 600, duration: 600 } }"
-        class="register-footer"
-      >
+      <div class="register-footer">
         <p>© 2025 <span class="footer-highlight">Sistema de Administración</span>. Todos los derechos reservados.</p>
       </div>
     </div>

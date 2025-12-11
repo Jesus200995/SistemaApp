@@ -50,12 +50,7 @@
         <div class="profile-label">Mi Perfil</div>
 
         <!-- Tarjeta de perfil -->
-        <div
-          v-motion
-          :initial="{ opacity: 0, scale: 0.8, y: 50 }"
-          :enter="{ opacity: 1, scale: 1, y: 0, transition: { delay: 200, duration: 700 } }"
-          class="profile-card"
-        >
+        <div class="profile-card">
           <!-- Avatar neon circle con iniciales -->
           <div class="profile-header">
             <div class="avatar-initials">
@@ -79,9 +74,6 @@
             <div
               v-for="(action, index) in actions"
               :key="action.title"
-              v-motion
-              :initial="{ opacity: 0, y: 30 }"
-              :enter="{ opacity: 1, y: 0, transition: { delay: 500 + index * 100, duration: 500 } }"
               @click="goTo(action.route)"
               class="action-card"
             >
@@ -101,12 +93,7 @@
         </div>
 
         <!-- Sección de notificaciones recientes -->
-        <div
-          v-motion
-          :initial="{ opacity: 0, y: 30 }"
-          :enter="{ opacity: 1, y: 0, transition: { delay: 950, duration: 500 } }"
-          class="notifications-section"
-        >
+        <div class="notifications-section">
           <div class="notifications-header">
             <div class="header-left-notif">
               <Bell :size="18" class="header-bell-icon" />
@@ -176,9 +163,6 @@
             <router-link
               v-if="auth.user?.rol && (auth.user.rol.includes('tecnico'))"
               to="/seguimiento"
-              v-motion
-              :initial="{ opacity: 0, y: 30 }"
-              :enter="{ opacity: 1, y: 0, transition: { delay: 600, duration: 500 } }"
               class="specialized-card specialized-seguimiento"
             >
               <div class="specialized-icon-wrapper">
@@ -192,9 +176,6 @@
             <!-- Sembradores - Todos los roles -->
             <router-link
               to="/sembradores"
-              v-motion
-              :initial="{ opacity: 0, y: 30 }"
-              :enter="{ opacity: 1, y: 0, transition: { delay: 700, duration: 500 } }"
               class="specialized-card specialized-sembradores"
             >
               <div class="specialized-icon-wrapper">
@@ -209,9 +190,6 @@
             <router-link
               v-if="auth.user?.rol && ['facilitador', 'territorial', 'admin'].includes(auth.user.rol)"
               to="/estadisticas"
-              v-motion
-              :initial="{ opacity: 0, y: 30 }"
-              :enter="{ opacity: 1, y: 0, transition: { delay: 800, duration: 500 } }"
               class="specialized-card specialized-reportes"
             >
               <div class="specialized-icon-wrapper">
@@ -225,9 +203,6 @@
             <!-- Solicitudes Jerárquicas - Todos los roles -->
             <router-link
               to="/solicitudes"
-              v-motion
-              :initial="{ opacity: 0, y: 30 }"
-              :enter="{ opacity: 1, y: 0, transition: { delay: 850, duration: 500 } }"
               class="specialized-card specialized-solicitudes"
             >
               <!-- Badge de solicitudes pendientes -->
@@ -246,9 +221,6 @@
             <router-link
               v-if="auth.user?.rol && ['admin', 'territorial', 'facilitador'].includes(auth.user.rol)"
               to="/usuarios"
-              v-motion
-              :initial="{ opacity: 0, y: 30 }"
-              :enter="{ opacity: 1, y: 0, transition: { delay: 900, duration: 500 } }"
               class="specialized-card specialized-usuarios"
             >
               <div class="specialized-icon-wrapper">
@@ -263,9 +235,6 @@
             <router-link
               v-if="auth.user?.rol === 'admin'"
               to="/admin-panel"
-              v-motion
-              :initial="{ opacity: 0, y: 30 }"
-              :enter="{ opacity: 1, y: 0, transition: { delay: 950, duration: 500 } }"
               class="specialized-card specialized-admin"
             >
               <div class="specialized-icon-wrapper">
@@ -283,12 +252,7 @@
     </main>
 
     <!-- Footer -->
-    <footer
-      v-motion
-      :initial="{ opacity: 0 }"
-      :enter="{ opacity: 1, transition: { delay: 1000, duration: 600 } }"
-      class="dashboard-footer"
-    >
+    <footer class="dashboard-footer">
       <p>© 2025 <span class="footer-highlight">SistemaApp</span>. Todos los derechos reservados.</p>
     </footer>
   </div>

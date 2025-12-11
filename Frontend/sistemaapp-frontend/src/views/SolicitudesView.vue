@@ -34,12 +34,7 @@
     <main class="solicitudes-main">
       <div class="solicitudes-content">
         <!-- Formulario de creación -->
-        <section
-          v-motion
-          :initial="{ opacity: 0, y: 30 }"
-          :enter="{ opacity: 1, y: 0, transition: { duration: 600 } }"
-          class="form-section"
-        >
+        <section class="form-section">
           <div class="form-card">
             <div class="form-header">
               <h2 class="form-title">Crear Nueva Solicitud</h2>
@@ -186,12 +181,7 @@
         </section>
 
         <!-- Sección de solicitudes con pestañas -->
-        <section
-          v-motion
-          :initial="{ opacity: 0, y: 30 }"
-          :enter="{ opacity: 1, y: 0, transition: { delay: 200, duration: 600 } }"
-          class="solicitudes-section"
-        >
+        <section class="solicitudes-section">
           <!-- Pestañas -->
           <div class="tabs-container">
             <div class="tabs-wrapper">

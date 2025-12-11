@@ -34,12 +34,7 @@
     <main class="sembradores-main">
       <div class="sembradores-content">
         <!-- Formulario de registro -->
-        <section
-          v-motion
-          :initial="{ opacity: 0, y: 30 }"
-          :enter="{ opacity: 1, y: 0, transition: { duration: 600 } }"
-          class="form-section"
-        >
+        <section class="form-section">
           <div class="form-header">
             <h2 class="form-title">Registrar Nuevo Sembrador</h2>
             <p class="form-subtitle">Completa los datos del sembrador</p>
@@ -278,12 +273,7 @@
         </section>
 
         <!-- Sección de lista de sembradores -->
-        <section
-          v-motion
-          :initial="{ opacity: 0, y: 30 }"
-          :enter="{ opacity: 1, y: 0, transition: { delay: 200, duration: 600 } }"
-          class="list-section"
-        >
+        <section class="list-section">
           <div class="list-header">
             <h2 class="list-title">
               <span class="count-badge">{{ sembradores.length }}</span>
@@ -383,10 +373,7 @@
     <!-- Modal de Edición -->
     <Teleport to="body">
       <div v-if="showEditModal" class="modal-overlay" @click.self="cerrarModalEdicion">
-        <div class="modal-edicion" v-motion
-          :initial="{ opacity: 0, scale: 0.9, y: 20 }"
-          :enter="{ opacity: 1, scale: 1, y: 0, transition: { duration: 300 } }"
-        >
+        <div class="modal-edicion">
           <div class="modal-header">
             <h2 class="modal-title">Editar Sembrador</h2>
             <button @click="cerrarModalEdicion" class="modal-close-btn" title="Cerrar">

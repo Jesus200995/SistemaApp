@@ -34,12 +34,7 @@
     <main class="estadisticas-main">
       <div class="estadisticas-content">
         <!-- Estadísticas Principales -->
-        <section
-          v-motion
-          :initial="{ opacity: 0, y: 30 }"
-          :enter="{ opacity: 1, y: 0, transition: { duration: 600 } }"
-          class="stats-section"
-        >
+        <section class="stats-section">
           <div class="stats-grid">
             <!-- Card 1: Total Sembradores -->
             <div class="stat-card stat-card-1">
@@ -88,12 +83,7 @@
         </section>
 
         <!-- Gráfico de Cultivos -->
-        <section
-          v-motion
-          :initial="{ opacity: 0, y: 30 }"
-          :enter="{ opacity: 1, y: 0, transition: { delay: 200, duration: 600 } }"
-          class="chart-section"
-        >
+        <section class="chart-section">
           <div class="chart-header">
             <div class="chart-title-wrapper">
               <BarChart3 class="chart-title-icon" />
@@ -116,12 +106,7 @@
         </section>
 
         <!-- Tabla de Cultivos Detallada -->
-        <section
-          v-motion
-          :initial="{ opacity: 0, y: 30 }"
-          :enter="{ opacity: 1, y: 0, transition: { delay: 400, duration: 600 } }"
-          class="table-section"
-        >
+        <section class="table-section">
           <div class="table-header">
             <div class="table-title-wrapper">
               <List class="table-title-icon" />
@@ -166,12 +151,7 @@
         </section>
 
         <!-- Resumen General -->
-        <section
-          v-motion
-          :initial="{ opacity: 0, y: 30 }"
-          :enter="{ opacity: 1, y: 0, transition: { delay: 600, duration: 600 } }"
-          class="summary-section"
-        >
+        <section class="summary-section">
           <div class="summary-card">
             <div class="summary-header">
               <div class="summary-title-wrapper">
@@ -211,12 +191,7 @@
     </main>
 
     <!-- Pie de página -->
-    <footer
-      v-motion
-      :initial="{ opacity: 0 }"
-      :enter="{ opacity: 1, transition: { delay: 800, duration: 600 } }"
-      class="estadisticas-footer"
-    >
+    <footer class="estadisticas-footer">
       <p>© 2025 <span class="footer-highlight">SistemaApp</span>. Reportes actualizados en tiempo real.</p>
     </footer>
   </div>

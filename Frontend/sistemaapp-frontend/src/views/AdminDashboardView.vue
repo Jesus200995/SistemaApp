@@ -34,12 +34,7 @@
     <main class="admin-main">
       <div class="admin-content">
         <!-- Indicadores principales (Cards) -->
-        <section
-          v-motion
-          :initial="{ opacity: 0, y: 30 }"
-          :enter="{ opacity: 1, y: 0, transition: { duration: 600 } }"
-          class="stats-section"
-        >
+        <section class="stats-section">
           <h2 class="section-title">Estadísticas Generales</h2>
           
           <div class="stats-grid">
@@ -101,12 +96,7 @@
         </section>
 
         <!-- Solicitudes Pendientes -->
-        <section
-          v-motion
-          :initial="{ opacity: 0, y: 30 }"
-          :enter="{ opacity: 1, y: 0, transition: { delay: 100, duration: 600 } }"
-          class="solicitudes-section"
-        >
+        <section class="solicitudes-section">
           <div class="section-header">
             <h2 class="section-title">
               <span class="count-badge">{{ solicitudesPendientes.length }}</span>
@@ -172,12 +162,7 @@
         </section>
 
         <!-- Notificaciones Recientes -->
-        <section
-          v-motion
-          :initial="{ opacity: 0, y: 30 }"
-          :enter="{ opacity: 1, y: 0, transition: { delay: 200, duration: 600 } }"
-          class="notifications-section"
-        >
+        <section class="notifications-section">
           <div class="section-header">
             <h2 class="section-title">
               <span class="count-badge">{{ notificacionesRecientes.length }}</span>
