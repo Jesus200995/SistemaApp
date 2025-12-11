@@ -30,6 +30,8 @@ export default defineConfig({
         skipWaiting: true,
         clientsClaim: true,
         globPatterns: ['**/*.{js,css,html,ico,png,jpg,jpeg,gif,svg,woff,woff2,ttf,eot}'],
+        // IMPORTANTE: Excluir archivos de API del precache
+        navigateFallbackDenylist: [/^\/api/, /^\/auth/, /^\/solicitudes/, /^\/usuarios/],
         runtimeCaching: [
           {
             urlPattern: ({ request }) => request.destination === 'document',
@@ -55,14 +57,22 @@ export default defineConfig({
               expiration: { maxEntries: 100, maxAgeSeconds: 7 * 24 * 60 * 60 },
             },
           },
+          // NETWORK ONLY para TODAS las rutas de API - NUNCA CACHEAR
           {
-            urlPattern: ({ url }) => url.pathname.startsWith('/api'),
-            handler: 'NetworkFirst',
-            options: {
-              cacheName: 'api-cache',
-              networkTimeoutSeconds: 5,
-              expiration: { maxEntries: 50, maxAgeSeconds: 24 * 60 * 60 },
-            },
+            urlPattern: ({ url }) => 
+              url.pathname.startsWith('/api') ||
+              url.pathname.startsWith('/auth') ||
+              url.pathname.startsWith('/solicitudes') ||
+              url.pathname.startsWith('/usuarios') ||
+              url.pathname.startsWith('/notificaciones') ||
+              url.pathname.startsWith('/sembradores') ||
+              url.pathname.startsWith('/seguimientos'),
+            handler: 'NetworkOnly',
+          },
+          // NETWORK ONLY para API externa (otro dominio)
+          {
+            urlPattern: ({ url }) => url.origin.includes('sistemaapi.sembrandodatos.com'),
+            handler: 'NetworkOnly',
           },
         ],
       },

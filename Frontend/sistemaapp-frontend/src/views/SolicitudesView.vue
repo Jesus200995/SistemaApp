@@ -828,12 +828,24 @@ const canApprove = (solicitud: any) => {
 const getSolicitudes = async () => {
   try {
     const apiUrl = getSecureApiUrl()
+    console.log('📡 getSolicitudes - URL:', apiUrl)
+    console.log('🔑 getSolicitudes - Token:', auth.token ? 'Presente' : 'AUSENTE')
+    
+    if (!auth.token) {
+      console.error('❌ getSolicitudes - No hay token de autenticación')
+      return
+    }
+    
     const res = await axios.get(`${apiUrl}/solicitudes`, {
       headers: { Authorization: `Bearer ${auth.token}` }
     })
     solicitudes.value = res.data
+    console.log('✅ getSolicitudes - Recibidas:', res.data?.length || 0, 'solicitudes')
   } catch (err) {
-    console.error('Error al obtener solicitudes:', err)
+    console.error('❌ Error al obtener solicitudes:', err.response?.status, err.response?.data || err.message)
+    if (err.response?.status === 401) {
+      console.log('🔒 Token inválido en getSolicitudes')
+    }
   }
 }
 

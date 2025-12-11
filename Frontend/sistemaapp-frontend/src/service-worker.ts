@@ -70,21 +70,36 @@ registerRoute(
 );
 
 // 4. API requests: NETWORK ONLY - NUNCA CACHEAR datos de la API
+// Incluye tanto rutas locales como API externa en otro dominio
 registerRoute(
-  ({ url }) => url.pathname.startsWith('/api') || 
-               url.pathname.startsWith('/solicitudes') ||
-               url.pathname.startsWith('/usuarios') ||
-               url.pathname.startsWith('/auth') ||
-               url.pathname.startsWith('/notificaciones') ||
-               url.pathname.startsWith('/sembradores') ||
-               url.pathname.startsWith('/seguimientos'),
+  ({ url }) => {
+    // Rutas locales de API
+    if (url.pathname.startsWith('/api') || 
+        url.pathname.startsWith('/solicitudes') ||
+        url.pathname.startsWith('/usuarios') ||
+        url.pathname.startsWith('/auth') ||
+        url.pathname.startsWith('/notificaciones') ||
+        url.pathname.startsWith('/sembradores') ||
+        url.pathname.startsWith('/seguimientos')) {
+      return true;
+    }
+    
+    // API externa en otro dominio (sistemaapi.sembrandodatos.com)
+    if (url.origin !== self.location.origin) {
+      // Verificar si es una llamada a la API externa
+      const apiPaths = ['/api', '/solicitudes', '/usuarios', '/auth', '/notificaciones', '/sembradores', '/seguimientos'];
+      return apiPaths.some(path => url.pathname.startsWith(path) || url.pathname.includes(path));
+    }
+    
+    return false;
+  },
   new NetworkOnly()
 );
 
-// 5. Cualquier otra llamada a API externa: Network Only
+// 5. CUALQUIER request a dominio externo diferente al frontend: Network Only
+// Esto asegura que TODAS las llamadas a APIs externas nunca se cacheen
 registerRoute(
-  ({ url }) => url.origin !== self.location.origin && 
-               (url.pathname.includes('/api') || url.pathname.includes('/solicitudes')),
+  ({ url }) => url.origin !== self.location.origin,
   new NetworkOnly()
 );
 
