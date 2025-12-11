@@ -239,6 +239,11 @@
                 :key="'pending-' + solicitud.id" 
                 class="solicitud-card-pending"
               >
+                <!-- Barra superior PENDIENTE -->
+                <div class="card-pending-topbar">
+                  <span class="topbar-text">PENDIENTE</span>
+                </div>
+                
                 <!-- Campanita animada -->
                 <div class="card-bell-icon">
                   <Bell :size="18" />
@@ -255,17 +260,13 @@
                       </span>
                     </div>
                   </div>
-                  <span class="status-badge status-pendiente">
-                    <Clock :size="12" />
-                    Pendiente
-                  </span>
                 </div>
                 
                 <div class="card-pending-body">
                   <span class="badge" :class="getBadgeClass(solicitud.tipo)">
                     {{ formatTipo(solicitud.tipo) }}
                   </span>
-                  <p class="card-pending-descripcion">{{ solicitud.descripcion }}</p>
+                  <p class="card-pending-descripcion">{{ truncarTexto(solicitud.descripcion, 60) }}</p>
                 </div>
                 
                 <div class="card-pending-footer">
@@ -277,8 +278,8 @@
                     @click="abrirModalDetalle(solicitud)"
                     class="btn-ver-completo"
                   >
-                    <Eye :size="16" />
-                    Ver completo
+                    <Edit :size="16" />
+                    Gestionar
                   </button>
                 </div>
               </div>
@@ -501,7 +502,7 @@ import axios from 'axios'
 import Swal from 'sweetalert2'
 import { useAuthStore } from '../stores/auth'
 import { getSecureApiUrl } from '../utils/api'
-import { FileText, Send, Check, X, ArrowLeft, UserCheck, MessageSquare, Eye, Calendar, User, Clock, History, CheckCircle, Bell, Search } from 'lucide-vue-next'
+import { FileText, Send, Check, X, ArrowLeft, UserCheck, MessageSquare, Eye, Calendar, User, Clock, History, CheckCircle, Bell, Search, Edit } from 'lucide-vue-next'
 
 const auth = useAuthStore()
 const form = ref({ tipo: '', destino_id: null as number | null, descripcion: '' })
@@ -713,6 +714,12 @@ const formatFecha = (fecha: string) => {
     day: 'numeric',
     timeZone: 'America/Mexico_City'
   })
+}
+
+// Truncar texto con puntos suspensivos
+const truncarTexto = (texto: string, maxLength: number): string => {
+  if (!texto) return ''
+  return texto.length > maxLength ? texto.substring(0, maxLength) + '...' : texto
 }
 
 const getBadgeClass = (tipo: string) => {
@@ -1682,6 +1689,7 @@ onMounted(async () => {
   background-size: 200% 100%;
   border-radius: 16px;
   padding: 1.25rem;
+  padding-top: 2.5rem; /* Espacio para la barra superior */
   border: 1px solid rgba(248, 113, 113, 0.3);
   border-left: 4px solid #f87171;
   transition: all 0.3s ease;
@@ -1689,6 +1697,29 @@ onMounted(async () => {
   overflow: visible;
   margin-top: 10px;
   animation: cardShimmer 5s ease-in-out infinite;
+}
+
+/* Barra superior PENDIENTE */
+.card-pending-topbar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 24px;
+  background: linear-gradient(90deg, rgba(248, 113, 113, 0.3) 0%, rgba(248, 113, 113, 0.15) 50%, rgba(248, 113, 113, 0.3) 100%);
+  border-radius: 16px 16px 0 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-bottom: 1px solid rgba(248, 113, 113, 0.25);
+}
+
+.topbar-text {
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: #f87171;
+  letter-spacing: 2px;
+  text-transform: uppercase;
 }
 
 @keyframes cardShimmer {
@@ -2746,7 +2777,16 @@ onMounted(async () => {
   
   .solicitud-card-pending {
     padding: 1rem;
+    padding-top: 2.2rem; /* Espacio para la barra PENDIENTE */
     margin-top: 10px;
+  }
+  
+  .card-pending-topbar {
+    height: 22px;
+  }
+  
+  .topbar-text {
+    font-size: 0.6rem;
   }
   
   .card-bell-icon {
