@@ -97,11 +97,14 @@
                     </div>
                   </div>
                   <p class="form-hint">
-                    <span v-if="usuariosDisponibles.length === 0 && !loadingUsuarios">
-                      No hay usuarios disponibles
+                    <span v-if="loadingUsuarios" class="hint-loading">
+                      Cargando usuarios...
                     </span>
-                    <span v-else>
-                      {{ usuariosDisponibles.length }} usuario(s) disponible(s)
+                    <span v-else-if="usuariosDisponibles.length === 0" class="hint-error">
+                      ⚠️ No hay usuarios disponibles. Actualiza el servidor.
+                    </span>
+                    <span v-else class="hint-success">
+                      ✓ {{ usuariosDisponibles.length }} usuario(s) disponible(s)
                     </span>
                   </p>
                 </div>
@@ -279,13 +282,24 @@ const cargarUsuariosDisponibles = async () => {
   loadingUsuarios.value = true
   try {
     const apiUrl = getSecureApiUrl()
+    console.log('🔍 Cargando usuarios superiores desde:', `${apiUrl}/users/superiores`)
     const res = await axios.get(`${apiUrl}/users/superiores`, {
       headers: { Authorization: `Bearer ${auth.token}` }
     })
+    console.log('✅ Usuarios recibidos:', res.data)
     usuariosDisponibles.value = res.data.items || []
-  } catch (err) {
-    console.error('Error al cargar usuarios:', err)
+    
+    if (usuariosDisponibles.value.length === 0) {
+      console.warn('⚠️ No se encontraron usuarios superiores disponibles')
+    }
+  } catch (err: any) {
+    console.error('❌ Error al cargar usuarios:', err.response?.data || err.message)
     usuariosDisponibles.value = []
+    
+    // Si el error es 404, puede que el endpoint no exista en el servidor
+    if (err.response?.status === 404) {
+      console.error('⚠️ El endpoint /users/superiores no existe. Asegúrate de actualizar el servidor.')
+    }
   } finally {
     loadingUsuarios.value = false
   }
@@ -751,6 +765,7 @@ onMounted(async () => {
   font-family: inherit;
   transition: all 0.3s ease;
   width: 100%;
+  box-sizing: border-box;
 }
 
 .form-select:focus,
@@ -762,9 +777,25 @@ onMounted(async () => {
   background: rgba(15, 23, 42, 0.7);
 }
 
-.form-input,
+.form-input {
+  height: 44px;
+}
+
 .form-select {
-  height: 42px;
+  height: 46px;
+  padding-right: 2.5rem;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  background-size: 16px;
+  cursor: pointer;
+}
+
+.form-select:hover {
+  border-color: rgba(16, 185, 129, 0.5);
 }
 
 /* ========== SELECT MEJORADO ========== */
@@ -826,7 +857,19 @@ onMounted(async () => {
 .form-hint {
   font-size: 0.75rem;
   color: #cbd5e1;
-  margin-top: 0.25rem;
+  margin-top: 0.35rem;
+}
+
+.hint-loading {
+  color: #94a3b8;
+}
+
+.hint-error {
+  color: #f59e0b;
+}
+
+.hint-success {
+  color: #10b981;
 }
 
 .form-button {
