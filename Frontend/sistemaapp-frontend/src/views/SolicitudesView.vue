@@ -208,6 +208,17 @@
               </button>
               <button 
                 class="tab-btn" 
+                :class="{ active: activeTab === 'enviadas' }"
+                @click="activeTab = 'enviadas'"
+              >
+                <SendHorizontal :size="18" />
+                <span>Enviadas</span>
+                <span v-if="solicitudesEnviadas.length > 0" class="tab-badge tab-badge-enviadas">
+                  {{ solicitudesEnviadas.length }}
+                </span>
+              </button>
+              <button 
+                class="tab-btn" 
                 :class="{ active: activeTab === 'historial' }"
                 @click="activeTab = 'historial'"
               >
@@ -218,15 +229,15 @@
             <div class="tabs-stats">
               <div class="stat-item">
                 <span class="stat-label">Pendientes:</span>
-                <span class="stat-value pending">{{ countByStatus('pendiente') }}</span>
+                <span class="stat-value pending">{{ solicitudesPendientes.length }}</span>
               </div>
               <div class="stat-item">
-                <span class="stat-label">Aprobadas:</span>
-                <span class="stat-value approved">{{ countByStatus('aprobada') }}</span>
+                <span class="stat-label">Enviadas:</span>
+                <span class="stat-value sent">{{ solicitudesEnviadas.length }}</span>
               </div>
               <div class="stat-item">
-                <span class="stat-label">Rechazadas:</span>
-                <span class="stat-value rejected">{{ countByStatus('rechazada') }}</span>
+                <span class="stat-label">Procesadas:</span>
+                <span class="stat-value approved">{{ solicitudesProcesadas.length }}</span>
               </div>
             </div>
           </div>
@@ -290,6 +301,66 @@
               <CheckCircle class="empty-icon success" />
               <p class="empty-title">¡Sin solicitudes pendientes!</p>
               <p class="empty-text">Todas tus solicitudes han sido procesadas</p>
+            </div>
+          </div>
+
+          <!-- Tab: Enviadas (solicitudes que YO envié) -->
+          <div v-show="activeTab === 'enviadas'" class="tab-content">
+            <div v-if="solicitudesEnviadas.length > 0" class="solicitudes-table-wrapper">
+              <div class="table-responsive">
+                <table class="solicitudes-table">
+                  <thead>
+                    <tr>
+                      <th>Enviada a</th>
+                      <th>Tipo</th>
+                      <th>Descripción</th>
+                      <th>Estado</th>
+                      <th>Fecha</th>
+                      <th>Acciones</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr v-for="solicitud in solicitudesEnviadas" :key="'enviada-' + solicitud.id" class="solicitud-row">
+                      <td class="cell-solicitante">
+                        <div class="solicitante-info">
+                          <span class="solicitante-nombre">{{ solicitud.destinatario?.nombre || 'Sin asignar' }}</span>
+                          <span class="solicitante-rol" :class="getRolClass(solicitud.destinatario?.rol)">
+                            {{ formatRolUsuario(solicitud.destinatario?.rol) }}
+                          </span>
+                        </div>
+                      </td>
+                      <td class="cell-tipo">
+                        <span class="badge" :class="getBadgeClass(solicitud.tipo)">
+                          {{ formatTipo(solicitud.tipo) }}
+                        </span>
+                      </td>
+                      <td class="cell-descripcion">{{ truncateText(solicitud.descripcion, 30) }}</td>
+                      <td class="cell-estado">
+                        <span class="status-badge" :class="`status-${solicitud.estado}`">
+                          {{ formatEstado(solicitud.estado) }}
+                        </span>
+                      </td>
+                      <td class="cell-fecha">{{ formatFecha(solicitud.fecha) }}</td>
+                      <td class="cell-acciones">
+                        <button
+                          @click="abrirModalDetalle(solicitud)"
+                          class="btn-ver-circular"
+                          title="Ver detalles"
+                        >
+                          <Eye :size="18" />
+                        </button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- Estado vacío enviadas -->
+            <div v-if="solicitudesEnviadas.length === 0" class="empty-state">
+              <SendHorizontal class="empty-icon" />
+              <p class="empty-title">No has enviado solicitudes</p>
+              <p class="empty-text">Usa el formulario de arriba para crear una nueva solicitud</p>
             </div>
           </div>
 
@@ -475,6 +546,13 @@
               </button>
             </div>
 
+            <!-- Mensaje si es mi solicitud enviada -->
+            <div v-else-if="esMiSolicitudEnviada && solicitudSeleccionada?.estado === 'pendiente'" class="modal-processed">
+              <p class="processed-text sent">
+                📤 Solicitud enviada - En espera de respuesta
+              </p>
+            </div>
+
             <!-- Mensaje si ya fue procesada -->
             <div v-else-if="solicitudSeleccionada?.estado !== 'pendiente'" class="modal-processed">
               <p v-if="solicitudSeleccionada?.estado === 'aprobada'" class="processed-text approved">
@@ -502,7 +580,7 @@ import axios from 'axios'
 import Swal from 'sweetalert2'
 import { useAuthStore } from '../stores/auth'
 import { getSecureApiUrl } from '../utils/api'
-import { FileText, Send, Check, X, ArrowLeft, UserCheck, MessageSquare, Eye, Calendar, User, Clock, History, CheckCircle, Bell, Search, Edit } from 'lucide-vue-next'
+import { FileText, Send, Check, X, ArrowLeft, UserCheck, MessageSquare, Eye, Calendar, User, Clock, History, CheckCircle, Bell, Search, Edit, SendHorizontal } from 'lucide-vue-next'
 
 const auth = useAuthStore()
 const form = ref({ tipo: '', destino_id: null as number | null, descripcion: '' })
@@ -517,14 +595,32 @@ const showModalDetalle = ref(false)
 const solicitudSeleccionada = ref<any>(null)
 const procesandoAccion = ref(false)
 
-// Computed: Solicitudes pendientes (sin procesar)
+// Computed: Solicitudes RECIBIDAS pendientes (donde YO soy el destino y están pendientes)
+// Excluye las que YO envié
 const solicitudesPendientes = computed(() => {
-  return solicitudes.value.filter((s: any) => s.estado === 'pendiente')
+  const userId = auth.user?.id
+  return solicitudes.value.filter((s: any) => 
+    s.estado === 'pendiente' && 
+    s.destino_id === userId && 
+    s.usuario_id !== userId  // Excluir las que yo envié
+  )
 })
 
-// Computed: Solicitudes procesadas (aprobadas o rechazadas)
+// Computed: Solicitudes ENVIADAS por mí (donde YO soy el solicitante)
+const solicitudesEnviadas = computed(() => {
+  const userId = auth.user?.id
+  return solicitudes.value.filter((s: any) => s.usuario_id === userId)
+})
+
+// Computed: Solicitudes procesadas (aprobadas o rechazadas) que YO recibí
+// Excluye las que yo envié (esas van en "Enviadas")
 const solicitudesProcesadas = computed(() => {
-  return solicitudes.value.filter((s: any) => s.estado === 'aprobada' || s.estado === 'rechazada')
+  const userId = auth.user?.id
+  return solicitudes.value.filter((s: any) => 
+    (s.estado === 'aprobada' || s.estado === 'rechazada') && 
+    s.destino_id === userId &&
+    s.usuario_id !== userId  // Excluir las que yo envié
+  )
 })
 
 // Obtener iniciales del nombre
@@ -815,14 +911,23 @@ const rechazarDesdeModal = async () => {
 }
 
 const canApprove = (solicitud: any) => {
-  // Admin puede aprobar todas
+  // NUNCA puede aprobar sus propias solicitudes
+  if (solicitud?.usuario_id === auth.user?.id) return false
+  
+  // Admin puede aprobar todas (excepto las propias)
   if (auth.user?.rol === 'admin') return true
+  
   // Territorial/Facilitador puede aprobar las dirigidas a él
   if (auth.user?.rol === 'territorial' || auth.user?.rol === 'facilitador') {
     return solicitud.destino_id === auth.user?.id
   }
   return false
 }
+
+// Computed para verificar si la solicitud seleccionada fue enviada por mí
+const esMiSolicitudEnviada = computed(() => {
+  return solicitudSeleccionada.value?.usuario_id === auth.user?.id
+})
 
 // API calls
 const getSolicitudes = async () => {
@@ -1652,6 +1757,11 @@ onMounted(async () => {
   box-shadow: 0 0 10px rgba(248, 113, 113, 0.5);
 }
 
+.tab-badge.tab-badge-enviadas {
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  box-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
+}
+
 .tab-badge.historial {
   background: linear-gradient(135deg, #6366f1, #4f46e5);
   box-shadow: 0 0 10px rgba(99, 102, 241, 0.5);
@@ -1975,6 +2085,10 @@ onMounted(async () => {
 
 .stat-value.pending {
   color: #f87171;
+}
+
+.stat-value.sent {
+  color: #3b82f6;
 }
 
 .stat-value.approved {
@@ -2682,6 +2796,10 @@ onMounted(async () => {
 
 .processed-text.rejected {
   color: #a855f7;
+}
+
+.processed-text.sent {
+  color: #3b82f6;
 }
 
 /* ========== ANIMACIONES DEL MODAL ========== */

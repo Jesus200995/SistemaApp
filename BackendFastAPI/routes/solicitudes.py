@@ -78,11 +78,17 @@ def listar_solicitudes(credentials: HTTPAuthorizationCredentials = Security(bear
         query = db.query(Solicitud)
 
         if rol == "admin":
+            # Admin ve todas las solicitudes
             pass
-        elif rol in ["territorial", "facilitador"]:
-            query = query.filter(Solicitud.destino_id == user_id)
         else:
-            query = query.filter(Solicitud.usuario_id == user_id)
+            # Todos los demás ven: solicitudes que ENVIARON + solicitudes que LES LLEGARON
+            from sqlalchemy import or_
+            query = query.filter(
+                or_(
+                    Solicitud.usuario_id == user_id,  # Las que envió
+                    Solicitud.destino_id == user_id   # Las que recibió
+                )
+            )
 
         solicitudes = query.order_by(Solicitud.fecha.desc()).all()
         

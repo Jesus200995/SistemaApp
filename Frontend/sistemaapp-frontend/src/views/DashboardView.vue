@@ -411,12 +411,20 @@ const getSolicitudesPendientes = async () => {
       { headers: { Authorization: `Bearer ${token}` } }
     )
     const solicitudes = response.data || []
-    solicitudesPendientes.value = solicitudes.filter((s: any) => s.estado === 'pendiente').length
+    const userId = auth.user?.id
+    
+    // Filtrar solo las pendientes que ME LLEGARON (no las que yo envié)
+    solicitudesPendientes.value = solicitudes.filter((s: any) => 
+      s.estado === 'pendiente' && 
+      s.destino_id === userId &&
+      s.usuario_id !== userId
+    ).length
+    
     // Guardar las solicitudes recientes (últimas 10 ordenadas por fecha)
     solicitudesRecientes.value = solicitudes
       .sort((a: any, b: any) => new Date(b.fecha).getTime() - new Date(a.fecha).getTime())
       .slice(0, 10)
-    console.log('📋 Solicitudes pendientes:', solicitudesPendientes.value)
+    console.log('📋 Solicitudes pendientes (recibidas):', solicitudesPendientes.value)
     console.log('📋 Solicitudes recientes:', solicitudesRecientes.value.length)
   } catch (error) {
     console.error('❌ Error cargando solicitudes:', error)
@@ -511,9 +519,14 @@ const formatRolUsuario = (rol: string | undefined): string => {
   return rol.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()).join(' ')
 }
 
-// Lista de solicitudes pendientes (solo pendientes)
+// Lista de solicitudes pendientes (solo pendientes que ME LLEGARON, no las que YO envié)
 const solicitudesPendientesLista = computed(() => {
-  return solicitudesRecientes.value.filter((s: any) => s.estado === 'pendiente')
+  const userId = auth.user?.id
+  return solicitudesRecientes.value.filter((s: any) => 
+    s.estado === 'pendiente' && 
+    s.destino_id === userId &&      // Me llegaron a mí
+    s.usuario_id !== userId          // No las envié yo
+  )
 })
 
 const unreadNotifications = computed(() => {
