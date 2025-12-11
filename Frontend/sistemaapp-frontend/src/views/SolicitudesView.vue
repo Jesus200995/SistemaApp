@@ -134,20 +134,40 @@
           </div>
         </section>
 
-        <!-- Sección de solicitudes -->
+        <!-- Sección de solicitudes con pestañas -->
         <section
           v-motion
           :initial="{ opacity: 0, y: 30 }"
           :enter="{ opacity: 1, y: 0, transition: { delay: 200, duration: 600 } }"
           class="solicitudes-section"
         >
-          <div class="section-header">
-            <h2 class="section-title">Historial de Solicitudes</h2>
-            <div class="section-stats">
-              <div class="stat-item">
-                <span class="stat-label">Total:</span>
-                <span class="stat-value">{{ solicitudes.length }}</span>
-              </div>
+          <!-- Pestañas -->
+          <div class="tabs-container">
+            <div class="tabs-wrapper">
+              <button 
+                class="tab-btn" 
+                :class="{ active: activeTab === 'pendientes' }"
+                @click="activeTab = 'pendientes'"
+              >
+                <Clock :size="18" />
+                <span>Mis Solicitudes</span>
+                <span v-if="solicitudesPendientes.length > 0" class="tab-badge">
+                  {{ solicitudesPendientes.length }}
+                </span>
+              </button>
+              <button 
+                class="tab-btn" 
+                :class="{ active: activeTab === 'historial' }"
+                @click="activeTab = 'historial'"
+              >
+                <History :size="18" />
+                <span>Historial</span>
+                <span v-if="solicitudesProcesadas.length > 0" class="tab-badge historial">
+                  {{ solicitudesProcesadas.length }}
+                </span>
+              </button>
+            </div>
+            <div class="tabs-stats">
               <div class="stat-item">
                 <span class="stat-label">Pendientes:</span>
                 <span class="stat-value pending">{{ countByStatus('pendiente') }}</span>
@@ -156,103 +176,129 @@
                 <span class="stat-label">Aprobadas:</span>
                 <span class="stat-value approved">{{ countByStatus('aprobada') }}</span>
               </div>
+              <div class="stat-item">
+                <span class="stat-label">Rechazadas:</span>
+                <span class="stat-value rejected">{{ countByStatus('rechazada') }}</span>
+              </div>
             </div>
           </div>
 
-          <!-- Vista Desktop: Tabla -->
-          <div v-if="solicitudes.length > 0" class="solicitudes-table-wrapper desktop-view">
-            <div class="table-responsive">
-              <table class="solicitudes-table">
-                <thead>
-                  <tr>
-                    <th>Solicitante</th>
-                    <th>Tipo</th>
-                    <th>Descripción</th>
-                    <th>Estado</th>
-                    <th>Fecha</th>
-                    <th>Acciones</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr v-for="solicitud in solicitudes" :key="solicitud.id" class="solicitud-row">
-                    <td class="cell-solicitante">
-                      <div class="solicitante-info">
-                        <span class="solicitante-nombre">{{ solicitud.solicitante?.nombre || 'N/A' }}</span>
-                        <span class="solicitante-rol" :class="getRolClass(solicitud.solicitante?.rol)">
-                          {{ formatRolUsuario(solicitud.solicitante?.rol) }}
-                        </span>
-                      </div>
-                    </td>
-                    <td class="cell-tipo">
-                      <span class="badge" :class="getBadgeClass(solicitud.tipo)">
-                        {{ formatTipo(solicitud.tipo) }}
+          <!-- Tab: Mis Solicitudes (Pendientes) -->
+          <div v-show="activeTab === 'pendientes'" class="tab-content">
+            <div v-if="solicitudesPendientes.length > 0" class="solicitudes-cards-grid">
+              <div 
+                v-for="solicitud in solicitudesPendientes" 
+                :key="'pending-' + solicitud.id" 
+                class="solicitud-card-pending"
+              >
+                <div class="card-pending-header">
+                  <div class="card-pending-user">
+                    <div class="user-avatar">
+                      {{ getInitials(solicitud.solicitante?.nombre) }}
+                    </div>
+                    <div class="user-details">
+                      <span class="user-name">{{ solicitud.solicitante?.nombre || 'Usuario' }}</span>
+                      <span class="user-rol" :class="getRolClass(solicitud.solicitante?.rol)">
+                        {{ formatRolUsuario(solicitud.solicitante?.rol) }}
                       </span>
-                    </td>
-                    <td class="cell-descripcion">{{ truncateText(solicitud.descripcion, 30) }}</td>
-                    <td class="cell-estado">
-                      <span class="status-badge" :class="`status-${solicitud.estado}`">
-                        {{ formatEstado(solicitud.estado) }}
-                      </span>
-                    </td>
-                    <td class="cell-fecha">{{ formatFecha(solicitud.fecha) }}</td>
-                    <td class="cell-acciones">
-                      <button
-                        @click="abrirModalDetalle(solicitud)"
-                        class="action-btn view-btn"
-                        title="Ver detalles"
-                      >
-                        <Eye class="action-icon" />
-                      </button>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-
-          <!-- Vista Mobile: Cards -->
-          <div v-if="solicitudes.length > 0" class="solicitudes-cards mobile-view">
-            <div 
-              v-for="solicitud in solicitudes" 
-              :key="'card-' + solicitud.id" 
-              class="solicitud-card"
-              :class="{ 'card-pending': solicitud.estado === 'pendiente' }"
-            >
-              <div class="card-header">
-                <div class="card-solicitante">
-                  <span class="solicitante-nombre-card">{{ solicitud.solicitante?.nombre || 'N/A' }}</span>
-                  <span class="solicitante-rol-card" :class="getRolClass(solicitud.solicitante?.rol)">
-                    {{ formatRolUsuario(solicitud.solicitante?.rol) }}
+                    </div>
+                  </div>
+                  <span class="status-badge status-pendiente">
+                    <Clock :size="12" />
+                    Pendiente
                   </span>
                 </div>
-                <span class="status-badge status-small" :class="`status-${solicitud.estado}`">
-                  {{ formatEstado(solicitud.estado) }}
-                </span>
+                
+                <div class="card-pending-body">
+                  <span class="badge" :class="getBadgeClass(solicitud.tipo)">
+                    {{ formatTipo(solicitud.tipo) }}
+                  </span>
+                  <p class="card-pending-descripcion">{{ solicitud.descripcion }}</p>
+                </div>
+                
+                <div class="card-pending-footer">
+                  <span class="card-pending-fecha">
+                    <Calendar :size="14" />
+                    {{ formatFecha(solicitud.fecha) }}
+                  </span>
+                  <button
+                    @click="abrirModalDetalle(solicitud)"
+                    class="btn-ver-completo"
+                  >
+                    <Eye :size="16" />
+                    Ver completo
+                  </button>
+                </div>
               </div>
-              <div class="card-tipo-row">
-                <span class="badge badge-small" :class="getBadgeClass(solicitud.tipo)">
-                  {{ formatTipo(solicitud.tipo) }}
-                </span>
-              </div>
-              <p class="card-descripcion">{{ truncateText(solicitud.descripcion, 60) }}</p>
-              <div class="card-footer">
-                <span class="card-fecha">{{ formatFecha(solicitud.fecha) }}</span>
-                <button
-                  @click="abrirModalDetalle(solicitud)"
-                  class="btn-ver-detalle"
-                >
-                  <Eye :size="14" />
-                  Ver completo
-                </button>
-              </div>
+            </div>
+
+            <!-- Estado vacío pendientes -->
+            <div v-else class="empty-state">
+              <CheckCircle class="empty-icon success" />
+              <p class="empty-title">¡Sin solicitudes pendientes!</p>
+              <p class="empty-text">Todas tus solicitudes han sido procesadas</p>
             </div>
           </div>
 
-          <!-- Estado vacío -->
-          <div v-if="solicitudes.length === 0" class="empty-state">
-            <FileText class="empty-icon" />
-            <p class="empty-title">No hay solicitudes</p>
-            <p class="empty-text">Crea una nueva solicitud para comenzar</p>
+          <!-- Tab: Historial (Aprobadas/Rechazadas) -->
+          <div v-show="activeTab === 'historial'" class="tab-content">
+            <!-- Vista Desktop: Tabla -->
+            <div v-if="solicitudesProcesadas.length > 0" class="solicitudes-table-wrapper">
+              <div class="table-responsive">
+                <table class="solicitudes-table">
+                  <thead>
+                    <tr>
+                      <th>Solicitante</th>
+                      <th>Tipo</th>
+                      <th>Descripción</th>
+                      <th>Estado</th>
+                      <th>Fecha</th>
+                      <th>Acciones</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr v-for="solicitud in solicitudesProcesadas" :key="solicitud.id" class="solicitud-row">
+                      <td class="cell-solicitante">
+                        <div class="solicitante-info">
+                          <span class="solicitante-nombre">{{ solicitud.solicitante?.nombre || 'N/A' }}</span>
+                          <span class="solicitante-rol" :class="getRolClass(solicitud.solicitante?.rol)">
+                            {{ formatRolUsuario(solicitud.solicitante?.rol) }}
+                          </span>
+                        </div>
+                      </td>
+                      <td class="cell-tipo">
+                        <span class="badge" :class="getBadgeClass(solicitud.tipo)">
+                          {{ formatTipo(solicitud.tipo) }}
+                        </span>
+                      </td>
+                      <td class="cell-descripcion">{{ truncateText(solicitud.descripcion, 30) }}</td>
+                      <td class="cell-estado">
+                        <span class="status-badge" :class="`status-${solicitud.estado}`">
+                          {{ formatEstado(solicitud.estado) }}
+                        </span>
+                      </td>
+                      <td class="cell-fecha">{{ formatFecha(solicitud.fecha) }}</td>
+                      <td class="cell-acciones">
+                        <button
+                          @click="abrirModalDetalle(solicitud)"
+                          class="action-btn view-btn"
+                          title="Ver detalles"
+                        >
+                          <Eye class="action-icon" />
+                        </button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- Estado vacío historial -->
+            <div v-if="solicitudesProcesadas.length === 0" class="empty-state">
+              <FileText class="empty-icon" />
+              <p class="empty-title">Sin historial</p>
+              <p class="empty-text">No hay solicitudes aprobadas o rechazadas</p>
+            </div>
           </div>
         </section>
       </div>
@@ -403,17 +449,40 @@ import axios from 'axios'
 import Swal from 'sweetalert2'
 import { useAuthStore } from '../stores/auth'
 import { getSecureApiUrl } from '../utils/api'
-import { FileText, Send, Check, X, ArrowLeft, UserCheck, MessageSquare, Eye, Calendar, User } from 'lucide-vue-next'
+import { FileText, Send, Check, X, ArrowLeft, UserCheck, MessageSquare, Eye, Calendar, User, Clock, History, CheckCircle } from 'lucide-vue-next'
 
 const auth = useAuthStore()
 const form = ref({ tipo: '', destino_id: null as number | null, descripcion: '' })
 const solicitudes = ref([])
 const loading = ref(false)
 
+// Estado de las pestañas
+const activeTab = ref('pendientes')
+
 // Estado del modal de detalle
 const showModalDetalle = ref(false)
 const solicitudSeleccionada = ref<any>(null)
 const procesandoAccion = ref(false)
+
+// Computed: Solicitudes pendientes (sin procesar)
+const solicitudesPendientes = computed(() => {
+  return solicitudes.value.filter((s: any) => s.estado === 'pendiente')
+})
+
+// Computed: Solicitudes procesadas (aprobadas o rechazadas)
+const solicitudesProcesadas = computed(() => {
+  return solicitudes.value.filter((s: any) => s.estado === 'aprobada' || s.estado === 'rechazada')
+})
+
+// Obtener iniciales del nombre
+const getInitials = (nombre: string | undefined) => {
+  if (!nombre) return '?'
+  const parts = nombre.split(' ')
+  if (parts.length >= 2) {
+    return (parts[0][0] + parts[1][0]).toUpperCase()
+  }
+  return nombre.substring(0, 2).toUpperCase()
+}
 
 // Usuarios disponibles para enviar solicitud
 const usuariosDisponibles = ref<any[]>([])
@@ -1173,6 +1242,236 @@ onMounted(async () => {
   position: relative;
 }
 
+/* ========== TABS ========== */
+.tabs-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.25rem;
+  padding-bottom: 0;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.tabs-wrapper {
+  display: flex;
+  background: rgba(30, 41, 59, 0.5);
+  border-radius: 12px;
+  padding: 4px;
+  border: 1px solid rgba(148, 163, 184, 0.15);
+}
+
+.tab-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.65rem 1.25rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #94a3b8;
+  background: transparent;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.tab-btn:hover {
+  color: #e2e8f0;
+  background: rgba(148, 163, 184, 0.1);
+}
+
+.tab-btn.active {
+  color: #10b981;
+  background: rgba(16, 185, 129, 0.15);
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.2);
+}
+
+.tab-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: white;
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  border-radius: 10px;
+}
+
+.tab-badge.historial {
+  background: linear-gradient(135deg, #6366f1, #4f46e5);
+}
+
+.tabs-stats {
+  display: flex;
+  gap: 1rem;
+}
+
+.tabs-stats .stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.tabs-stats .stat-value.rejected {
+  color: #ef4444;
+}
+
+/* ========== TAB CONTENT ========== */
+.tab-content {
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ========== CARDS GRID (Pendientes) ========== */
+.solicitudes-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 1rem;
+}
+
+.solicitud-card-pending {
+  background: linear-gradient(135deg, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.9));
+  border-radius: 16px;
+  padding: 1.25rem;
+  border: 1px solid rgba(245, 158, 11, 0.3);
+  border-left: 4px solid #f59e0b;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.solicitud-card-pending:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 25px rgba(245, 158, 11, 0.15);
+  border-color: rgba(245, 158, 11, 0.5);
+}
+
+.card-pending-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+}
+
+.card-pending-user {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.user-avatar {
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #10b981, #059669);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: white;
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+}
+
+.user-details {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.user-name {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #f1f5f9;
+}
+
+.user-rol {
+  font-size: 0.7rem;
+  font-weight: 500;
+  padding: 2px 8px;
+  border-radius: 4px;
+  display: inline-block;
+  width: fit-content;
+}
+
+.status-pendiente {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 4px 10px;
+  background: rgba(245, 158, 11, 0.15);
+  color: #f59e0b;
+  border-radius: 6px;
+  border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+.card-pending-body {
+  margin-bottom: 1rem;
+}
+
+.card-pending-body .badge {
+  margin-bottom: 0.75rem;
+}
+
+.card-pending-descripcion {
+  font-size: 0.85rem;
+  color: #cbd5e1;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.card-pending-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(148, 163, 184, 0.1);
+}
+
+.card-pending-fecha {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.75rem;
+  color: #94a3b8;
+}
+
+.btn-ver-completo {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.5rem 1rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: white;
+  background: linear-gradient(135deg, #6366f1, #4f46e5);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3);
+}
+
+.btn-ver-completo:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+}
+
+/* Empty state icon success */
+.empty-icon.success {
+  color: #10b981;
+}
+
 .section-header {
   display: flex;
   justify-content: space-between;
@@ -1927,13 +2226,51 @@ onMounted(async () => {
 
 /* ========== RESPONSIVE ========== */
 @media (max-width: 768px) {
-  /* Mostrar cards, ocultar tabla */
-  .mobile-view {
-    display: flex;
+  /* Tabs responsive */
+  .tabs-container {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.75rem;
   }
   
-  .desktop-view {
+  .tabs-wrapper {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .tab-btn {
+    flex: 1;
+    justify-content: center;
+    padding: 0.6rem 0.75rem;
+    font-size: 0.8rem;
+  }
+  
+  .tab-btn span:not(.tab-badge) {
     display: none;
+  }
+  
+  .tabs-stats {
+    justify-content: center;
+    width: 100%;
+  }
+  
+  /* Cards grid responsive */
+  .solicitudes-cards-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .solicitud-card-pending {
+    padding: 1rem;
+  }
+  
+  .user-avatar {
+    width: 36px;
+    height: 36px;
+    font-size: 0.75rem;
+  }
+  
+  .user-name {
+    font-size: 0.85rem;
   }
   
   .solicitudes-header {
