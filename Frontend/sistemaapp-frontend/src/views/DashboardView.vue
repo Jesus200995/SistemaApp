@@ -85,6 +85,13 @@
               @click="goTo(action.route)"
               class="action-card"
             >
+              <!-- Badge de solicitudes pendientes -->
+              <div 
+                v-if="action.route === '/solicitudes' && solicitudesPendientes > 0" 
+                class="solicitudes-badge"
+              >
+                {{ solicitudesPendientes }}
+              </div>
               <div class="action-icon-wrapper">
                 <component :is="action.icon" class="action-icon" />
               </div>
@@ -198,6 +205,10 @@
               :enter="{ opacity: 1, y: 0, transition: { delay: 850, duration: 500 } }"
               class="specialized-card specialized-solicitudes"
             >
+              <!-- Badge de solicitudes pendientes -->
+              <div v-if="solicitudesPendientes > 0" class="specialized-badge">
+                {{ solicitudesPendientes }}
+              </div>
               <div class="specialized-icon-wrapper">
                 <FileText class="specialized-icon-lucide" />
               </div>
@@ -271,16 +282,26 @@ const auth = useAuthStore()
 const router = useRouter()
 const notificaciones = ref<any[]>([])
 const ws = ref<WebSocket | null>(null)
+const solicitudesPendientes = ref(0)
+
+// Intervalo para actualizar solicitudes en tiempo real
+let solicitudesInterval: ReturnType<typeof setInterval> | null = null
 
 onMounted(() => {
   auth.fetchProfile()
   getNotificaciones()
   connectWebSocket()
+  getSolicitudesPendientes()
+  // Actualizar cada 30 segundos
+  solicitudesInterval = setInterval(getSolicitudesPendientes, 30000)
 })
 
 onUnmounted(() => {
   if (ws.value) {
     ws.value.close()
+  }
+  if (solicitudesInterval) {
+    clearInterval(solicitudesInterval)
   }
 })
 
@@ -351,6 +372,23 @@ const getNotificaciones = async () => {
     console.log('✅ Notificaciones cargadas en Dashboard:', notificaciones.value.length)
   } catch (error) {
     console.error('❌ Error cargando notificaciones:', error)
+  }
+}
+
+// Obtener solicitudes pendientes
+const getSolicitudesPendientes = async () => {
+  try {
+    const token = localStorage.getItem('token') || auth.token
+    const apiUrl = getSecureApiUrl()
+    const response = await axios.get(
+      `${apiUrl}/solicitudes`,
+      { headers: { Authorization: `Bearer ${token}` } }
+    )
+    const solicitudes = response.data || []
+    solicitudesPendientes.value = solicitudes.filter((s: any) => s.estado === 'pendiente').length
+    console.log('📋 Solicitudes pendientes:', solicitudesPendientes.value)
+  } catch (error) {
+    console.error('❌ Error cargando solicitudes:', error)
   }
 }
 
@@ -938,6 +976,7 @@ const getUsuariosDesc = (): string => {
 }
 
 .action-card {
+  position: relative;
   background: transparent;
   border: 2px solid rgba(132, 204, 22, 0.3);
   border-radius: 20px;
@@ -950,6 +989,28 @@ const getUsuariosDesc = (): string => {
   gap: 0.6rem;
   text-decoration: none;
   color: inherit;
+  overflow: visible;
+}
+
+/* Badge de solicitudes pendientes */
+.solicitudes-badge {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: white;
+  background: radial-gradient(ellipse at 30% 30%, rgba(251, 191, 136, 0.6), rgba(251, 146, 60, 0.45) 50%, rgba(234, 88, 12, 0.35));
+  border: 1px solid rgba(251, 146, 60, 0.5);
+  border-radius: 50%;
+  backdrop-filter: blur(10px);
+  z-index: 10;
 }
 
 .action-card:hover {
@@ -1072,6 +1133,27 @@ const getUsuariosDesc = (): string => {
 
 .specialized-card:active {
   transform: translateY(-4px);
+}
+
+/* Badge de solicitudes pendientes en módulos especializados */
+.specialized-badge {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: white;
+  background: radial-gradient(ellipse at 30% 30%, rgba(251, 191, 136, 0.6), rgba(251, 146, 60, 0.45) 50%, rgba(234, 88, 12, 0.35));
+  border: 1px solid rgba(251, 146, 60, 0.5);
+  border-radius: 50%;
+  backdrop-filter: blur(10px);
+  z-index: 10;
 }
 
 .specialized-icon-wrapper {
