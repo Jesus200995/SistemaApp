@@ -159,12 +159,13 @@
             </div>
           </div>
 
-          <!-- Lista de solicitudes -->
-          <div v-if="solicitudes.length > 0" class="solicitudes-table-wrapper">
+          <!-- Vista Desktop: Tabla -->
+          <div v-if="solicitudes.length > 0" class="solicitudes-table-wrapper desktop-view">
             <div class="table-responsive">
               <table class="solicitudes-table">
                 <thead>
                   <tr>
+                    <th>Solicitante</th>
                     <th>Tipo</th>
                     <th>Descripción</th>
                     <th>Estado</th>
@@ -174,12 +175,20 @@
                 </thead>
                 <tbody>
                   <tr v-for="solicitud in solicitudes" :key="solicitud.id" class="solicitud-row">
+                    <td class="cell-solicitante">
+                      <div class="solicitante-info">
+                        <span class="solicitante-nombre">{{ solicitud.solicitante?.nombre || 'N/A' }}</span>
+                        <span class="solicitante-rol" :class="getRolClass(solicitud.solicitante?.rol)">
+                          {{ formatRolUsuario(solicitud.solicitante?.rol) }}
+                        </span>
+                      </div>
+                    </td>
                     <td class="cell-tipo">
                       <span class="badge" :class="getBadgeClass(solicitud.tipo)">
                         {{ formatTipo(solicitud.tipo) }}
                       </span>
                     </td>
-                    <td class="cell-descripcion">{{ solicitud.descripcion }}</td>
+                    <td class="cell-descripcion">{{ truncateText(solicitud.descripcion, 30) }}</td>
                     <td class="cell-estado">
                       <span class="status-badge" :class="`status-${solicitud.estado}`">
                         {{ formatEstado(solicitud.estado) }}
@@ -188,20 +197,11 @@
                     <td class="cell-fecha">{{ formatFecha(solicitud.fecha) }}</td>
                     <td class="cell-acciones">
                       <button
-                        v-if="canApprove(solicitud) && solicitud.estado === 'pendiente'"
-                        @click="actualizarEstado(solicitud.id, 'aprobada')"
-                        class="action-btn approve-btn"
-                        title="Aprobar"
+                        @click="abrirModalDetalle(solicitud)"
+                        class="action-btn view-btn"
+                        title="Ver detalles"
                       >
-                        <Check class="action-icon" />
-                      </button>
-                      <button
-                        v-if="canApprove(solicitud) && solicitud.estado === 'pendiente'"
-                        @click="actualizarEstado(solicitud.id, 'rechazada')"
-                        class="action-btn reject-btn"
-                        title="Rechazar"
-                      >
-                        <X class="action-icon" />
+                        <Eye class="action-icon" />
                       </button>
                     </td>
                   </tr>
@@ -210,8 +210,46 @@
             </div>
           </div>
 
+          <!-- Vista Mobile: Cards -->
+          <div v-if="solicitudes.length > 0" class="solicitudes-cards mobile-view">
+            <div 
+              v-for="solicitud in solicitudes" 
+              :key="'card-' + solicitud.id" 
+              class="solicitud-card"
+              :class="{ 'card-pending': solicitud.estado === 'pendiente' }"
+            >
+              <div class="card-header">
+                <div class="card-solicitante">
+                  <span class="solicitante-nombre-card">{{ solicitud.solicitante?.nombre || 'N/A' }}</span>
+                  <span class="solicitante-rol-card" :class="getRolClass(solicitud.solicitante?.rol)">
+                    {{ formatRolUsuario(solicitud.solicitante?.rol) }}
+                  </span>
+                </div>
+                <span class="status-badge status-small" :class="`status-${solicitud.estado}`">
+                  {{ formatEstado(solicitud.estado) }}
+                </span>
+              </div>
+              <div class="card-tipo-row">
+                <span class="badge badge-small" :class="getBadgeClass(solicitud.tipo)">
+                  {{ formatTipo(solicitud.tipo) }}
+                </span>
+              </div>
+              <p class="card-descripcion">{{ truncateText(solicitud.descripcion, 60) }}</p>
+              <div class="card-footer">
+                <span class="card-fecha">{{ formatFecha(solicitud.fecha) }}</span>
+                <button
+                  @click="abrirModalDetalle(solicitud)"
+                  class="btn-ver-detalle"
+                >
+                  <Eye :size="14" />
+                  Ver completo
+                </button>
+              </div>
+            </div>
+          </div>
+
           <!-- Estado vacío -->
-          <div v-else class="empty-state">
+          <div v-if="solicitudes.length === 0" class="empty-state">
             <FileText class="empty-icon" />
             <p class="empty-title">No hay solicitudes</p>
             <p class="empty-text">Crea una nueva solicitud para comenzar</p>
@@ -219,6 +257,138 @@
         </section>
       </div>
     </main>
+
+    <!-- Modal de Detalle de Solicitud -->
+    <Teleport to="body">
+      <Transition name="modal-fade">
+        <div v-if="showModalDetalle" class="modal-overlay" @click.self="cerrarModalDetalle">
+          <div class="modal-detalle">
+            <button class="modal-close" @click="cerrarModalDetalle">
+              <X :size="20" />
+            </button>
+            
+            <div class="modal-header">
+              <div class="modal-icon-wrapper">
+                <FileText :size="24" />
+              </div>
+              <div class="modal-title-group">
+                <h3 class="modal-title">Detalle de Solicitud</h3>
+                <span class="badge" :class="getBadgeClass(solicitudSeleccionada?.tipo || '')">
+                  {{ formatTipo(solicitudSeleccionada?.tipo || '') }}
+                </span>
+              </div>
+            </div>
+
+            <div class="modal-body">
+              <!-- Estado de la solicitud -->
+              <div class="detalle-estado">
+                <span class="status-badge status-large" :class="`status-${solicitudSeleccionada?.estado}`">
+                  {{ formatEstado(solicitudSeleccionada?.estado || '') }}
+                </span>
+              </div>
+
+              <!-- Información del solicitante -->
+              <div class="detalle-section">
+                <h4 class="detalle-label">
+                  <User :size="16" />
+                  Información del Solicitante
+                </h4>
+                <div class="detalle-user-card">
+                  <div class="user-card-row">
+                    <span class="user-card-label">Nombre:</span>
+                    <span class="user-card-value">{{ solicitudSeleccionada?.solicitante?.nombre || 'N/A' }}</span>
+                  </div>
+                  <div class="user-card-row">
+                    <span class="user-card-label">Rol:</span>
+                    <span class="user-card-value rol-badge" :class="getRolClass(solicitudSeleccionada?.solicitante?.rol)">
+                      {{ formatRolUsuario(solicitudSeleccionada?.solicitante?.rol) }}
+                    </span>
+                  </div>
+                  <div class="user-card-row">
+                    <span class="user-card-label">Email:</span>
+                    <span class="user-card-value email">{{ solicitudSeleccionada?.solicitante?.email || 'N/A' }}</span>
+                  </div>
+                  <div class="user-card-row">
+                    <span class="user-card-label">CURP:</span>
+                    <span class="user-card-value curp">{{ solicitudSeleccionada?.solicitante?.curp || 'No registrado' }}</span>
+                  </div>
+                  <div class="user-card-row">
+                    <span class="user-card-label">Territorio:</span>
+                    <span class="user-card-value">{{ solicitudSeleccionada?.solicitante?.territorio || 'No asignado' }}</span>
+                  </div>
+                  <div v-if="solicitudSeleccionada?.solicitante?.telefono" class="user-card-row">
+                    <span class="user-card-label">Teléfono:</span>
+                    <span class="user-card-value">{{ solicitudSeleccionada?.solicitante?.telefono }}</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Destinatario -->
+              <div v-if="solicitudSeleccionada?.destinatario" class="detalle-section">
+                <h4 class="detalle-label">
+                  <UserCheck :size="16" />
+                  Dirigida a
+                </h4>
+                <div class="detalle-destinatario">
+                  <span class="dest-nombre">{{ solicitudSeleccionada?.destinatario?.nombre }}</span>
+                  <span class="dest-rol" :class="getRolClass(solicitudSeleccionada?.destinatario?.rol)">
+                    {{ formatRolUsuario(solicitudSeleccionada?.destinatario?.rol) }}
+                  </span>
+                </div>
+              </div>
+
+              <!-- Descripción completa -->
+              <div class="detalle-section">
+                <h4 class="detalle-label">
+                  <MessageSquare :size="16" />
+                  Descripción de la Solicitud
+                </h4>
+                <p class="detalle-descripcion">{{ solicitudSeleccionada?.descripcion }}</p>
+              </div>
+
+              <!-- Fecha -->
+              <div class="detalle-section">
+                <h4 class="detalle-label">
+                  <Calendar :size="16" />
+                  Fecha de Solicitud
+                </h4>
+                <p class="detalle-value">{{ formatFechaCompleta(solicitudSeleccionada?.fecha) }}</p>
+              </div>
+            </div>
+
+            <!-- Acciones del modal -->
+            <div v-if="canApprove(solicitudSeleccionada) && solicitudSeleccionada?.estado === 'pendiente'" class="modal-actions">
+              <button 
+                @click="aprobarDesdeModal()" 
+                class="btn-modal btn-aprobar"
+                :disabled="procesandoAccion"
+              >
+                <Check :size="18" />
+                {{ procesandoAccion ? 'Procesando...' : 'Aprobar Solicitud' }}
+              </button>
+              <button 
+                @click="rechazarDesdeModal()" 
+                class="btn-modal btn-rechazar"
+                :disabled="procesandoAccion"
+              >
+                <X :size="18" />
+                {{ procesandoAccion ? 'Procesando...' : 'Rechazar Solicitud' }}
+              </button>
+            </div>
+
+            <!-- Mensaje si ya fue procesada -->
+            <div v-else-if="solicitudSeleccionada?.estado !== 'pendiente'" class="modal-processed">
+              <p v-if="solicitudSeleccionada?.estado === 'aprobada'" class="processed-text approved">
+                ✅ Esta solicitud fue aprobada
+              </p>
+              <p v-else-if="solicitudSeleccionada?.estado === 'rechazada'" class="processed-text rejected">
+                ❌ Esta solicitud fue rechazada
+              </p>
+            </div>
+          </div>
+        </div>
+      </Transition>
+    </Teleport>
 
     <!-- Footer -->
     <footer class="solicitudes-footer">
@@ -233,12 +403,17 @@ import axios from 'axios'
 import Swal from 'sweetalert2'
 import { useAuthStore } from '../stores/auth'
 import { getSecureApiUrl } from '../utils/api'
-import { FileText, Send, Check, X, ArrowLeft, UserCheck, MessageSquare } from 'lucide-vue-next'
+import { FileText, Send, Check, X, ArrowLeft, UserCheck, MessageSquare, Eye, Calendar, User } from 'lucide-vue-next'
 
 const auth = useAuthStore()
 const form = ref({ tipo: '', destino_id: null as number | null, descripcion: '' })
 const solicitudes = ref([])
 const loading = ref(false)
+
+// Estado del modal de detalle
+const showModalDetalle = ref(false)
+const solicitudSeleccionada = ref<any>(null)
+const procesandoAccion = ref(false)
 
 // Usuarios disponibles para enviar solicitud
 const usuariosDisponibles = ref<any[]>([])
@@ -362,8 +537,85 @@ const getBadgeClass = (tipo: string) => {
   return tipos[tipo] || 'badge-gray'
 }
 
+// Formatear rol del usuario para mostrar
+const formatRolUsuario = (rol: string): string => {
+  if (!rol) return 'N/A'
+  const rolLower = rol.toLowerCase()
+  if (rolLower.includes('admin')) return '👑 Admin'
+  if (rolLower.includes('territorial')) return '🌍 Territorial'
+  if (rolLower.includes('facilitador')) return '🤝 Facilitador'
+  if (rolLower.includes('tecnico') || rolLower.includes('técnico')) {
+    if (rolLower.includes('productivo')) return '🌱 Téc. Productivo'
+    if (rolLower.includes('social')) return '👥 Téc. Social'
+    return '🔧 Técnico'
+  }
+  return rol
+}
+
+// Clase CSS según el rol
+const getRolClass = (rol: string): string => {
+  if (!rol) return ''
+  const rolLower = rol.toLowerCase()
+  if (rolLower.includes('admin')) return 'rol-admin'
+  if (rolLower.includes('territorial')) return 'rol-territorial'
+  if (rolLower.includes('facilitador')) return 'rol-facilitador'
+  if (rolLower.includes('tecnico') || rolLower.includes('técnico')) return 'rol-tecnico'
+  return ''
+}
+
 const countByStatus = (estado: string) => {
   return solicitudes.value.filter(s => s.estado === estado).length
+}
+
+// Truncar texto
+const truncateText = (text: string, maxLength: number) => {
+  if (!text) return ''
+  return text.length > maxLength ? text.substring(0, maxLength) + '...' : text
+}
+
+// Formato de fecha completa
+const formatFechaCompleta = (fecha: string) => {
+  if (!fecha) return ''
+  const fechaStr = fecha.includes('T') ? fecha.split('T')[0] : fecha
+  const [year, month, day] = fechaStr.split('-').map(Number)
+  const date = new Date(year, month - 1, day, 12, 0, 0)
+  
+  return date.toLocaleDateString('es-MX', {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    timeZone: 'America/Mexico_City'
+  })
+}
+
+// Funciones del modal de detalle
+const abrirModalDetalle = (solicitud: any) => {
+  solicitudSeleccionada.value = solicitud
+  showModalDetalle.value = true
+  document.body.style.overflow = 'hidden'
+}
+
+const cerrarModalDetalle = () => {
+  showModalDetalle.value = false
+  solicitudSeleccionada.value = null
+  procesandoAccion.value = false
+  document.body.style.overflow = ''
+}
+
+// Aprobar/Rechazar desde modal
+const aprobarDesdeModal = async () => {
+  if (!solicitudSeleccionada.value) return
+  procesandoAccion.value = true
+  await actualizarEstado(solicitudSeleccionada.value.id, 'aprobada')
+  cerrarModalDetalle()
+}
+
+const rechazarDesdeModal = async () => {
+  if (!solicitudSeleccionada.value) return
+  procesandoAccion.value = true
+  await actualizarEstado(solicitudSeleccionada.value.id, 'rechazada')
+  cerrarModalDetalle()
 }
 
 const canApprove = (solicitud: any) => {
@@ -1019,8 +1271,55 @@ onMounted(async () => {
   color: #e2e8f0;
 }
 
+/* ========== CELDA SOLICITANTE ========== */
+.cell-solicitante {
+  width: 20%;
+}
+
+.solicitante-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.solicitante-nombre {
+  font-weight: 600;
+  color: #f1f5f9;
+  font-size: 0.85rem;
+}
+
+.solicitante-rol {
+  font-size: 0.7rem;
+  font-weight: 500;
+  padding: 0.15rem 0.5rem;
+  border-radius: 4px;
+  display: inline-block;
+  width: fit-content;
+}
+
+/* Clases de rol por color */
+.rol-admin {
+  background: rgba(234, 179, 8, 0.15);
+  color: #eab308;
+}
+
+.rol-territorial {
+  background: rgba(59, 130, 246, 0.15);
+  color: #3b82f6;
+}
+
+.rol-facilitador {
+  background: rgba(139, 92, 246, 0.15);
+  color: #8b5cf6;
+}
+
+.rol-tecnico {
+  background: rgba(16, 185, 129, 0.15);
+  color: #10b981;
+}
+
 .cell-tipo {
-  width: 15%;
+  width: 13%;
 }
 
 .cell-descripcion {
@@ -1145,6 +1444,435 @@ onMounted(async () => {
   height: 18px;
 }
 
+/* ========== BOTÓN VER DETALLE ========== */
+.view-btn {
+  background: rgba(99, 102, 241, 0.15);
+  color: #818cf8;
+}
+
+.view-btn:hover {
+  background: rgba(99, 102, 241, 0.3);
+  transform: translateY(-2px);
+}
+
+/* ========== MOBILE CARDS ========== */
+.mobile-view {
+  display: none;
+}
+
+.desktop-view {
+  display: block;
+}
+
+.solicitudes-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.solicitud-card {
+  background: linear-gradient(135deg, rgba(30, 41, 59, 0.7), rgba(15, 23, 42, 0.8));
+  border-radius: 12px;
+  padding: 1rem;
+  border: 1px solid rgba(148, 163, 184, 0.15);
+  transition: all 0.3s ease;
+}
+
+.solicitud-card:hover {
+  border-color: rgba(16, 185, 129, 0.3);
+  transform: translateY(-2px);
+}
+
+.solicitud-card.card-pending {
+  border-left: 3px solid #f59e0b;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 0.5rem;
+}
+
+.card-solicitante {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.solicitante-nombre-card {
+  font-weight: 600;
+  color: #f1f5f9;
+  font-size: 0.9rem;
+}
+
+.solicitante-rol-card {
+  font-size: 0.65rem;
+  font-weight: 500;
+  padding: 0.1rem 0.4rem;
+  border-radius: 4px;
+  display: inline-block;
+  width: fit-content;
+}
+
+.card-tipo-row {
+  margin-bottom: 0.5rem;
+}
+
+.badge-small {
+  font-size: 0.65rem;
+  padding: 0.2rem 0.5rem;
+}
+
+.status-small {
+  font-size: 0.6rem;
+  padding: 0.2rem 0.4rem;
+}
+
+.card-descripcion {
+  font-size: 0.85rem;
+  color: #cbd5e1;
+  margin: 0 0 0.75rem 0;
+  line-height: 1.4;
+}
+
+.card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.card-fecha {
+  font-size: 0.75rem;
+  color: #94a3b8;
+}
+
+.btn-ver-detalle {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.4rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #818cf8;
+  background: rgba(99, 102, 241, 0.15);
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-ver-detalle:hover {
+  background: rgba(99, 102, 241, 0.3);
+}
+
+/* ========== MODAL DETALLE ========== */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  padding: 1rem;
+}
+
+.modal-detalle {
+  background: linear-gradient(135deg, #1e293b, #0f172a);
+  border-radius: 16px;
+  border: 1px solid rgba(16, 185, 129, 0.2);
+  width: 100%;
+  max-width: 500px;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+.modal-close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(239, 68, 68, 0.15);
+  border: none;
+  color: #ef4444;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  z-index: 10;
+}
+
+.modal-close:hover {
+  background: rgba(239, 68, 68, 0.3);
+  transform: scale(1.1);
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.5rem;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.15);
+}
+
+.modal-icon-wrapper {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(5, 150, 105, 0.2));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #10b981;
+}
+
+.modal-title-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.modal-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #f1f5f9;
+  margin: 0;
+}
+
+.modal-body {
+  padding: 1.5rem;
+}
+
+.detalle-estado {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+}
+
+.status-large {
+  font-size: 0.9rem;
+  padding: 0.5rem 1.25rem;
+}
+
+.detalle-section {
+  margin-bottom: 1.25rem;
+}
+
+.detalle-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #94a3b8;
+  margin: 0 0 0.5rem 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.detalle-label svg {
+  color: #10b981;
+}
+
+.detalle-value {
+  font-size: 0.9rem;
+  color: #f1f5f9;
+  margin: 0;
+}
+
+.detalle-user-info {
+  background: rgba(30, 41, 59, 0.5);
+  border-radius: 8px;
+  padding: 0.75rem;
+  border: 1px solid rgba(148, 163, 184, 0.1);
+}
+
+/* Card de usuario en el modal */
+.detalle-user-card {
+  background: linear-gradient(135deg, rgba(30, 41, 59, 0.7), rgba(15, 23, 42, 0.8));
+  border-radius: 10px;
+  padding: 1rem;
+  border: 1px solid rgba(148, 163, 184, 0.15);
+}
+
+.user-card-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.08);
+}
+
+.user-card-row:last-child {
+  border-bottom: none;
+}
+
+.user-card-label {
+  font-size: 0.8rem;
+  color: #94a3b8;
+  font-weight: 500;
+}
+
+.user-card-value {
+  font-size: 0.85rem;
+  color: #f1f5f9;
+  font-weight: 500;
+  text-align: right;
+}
+
+.user-card-value.rol-badge {
+  padding: 0.2rem 0.6rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+}
+
+.user-card-value.email {
+  color: #60a5fa;
+  font-size: 0.8rem;
+}
+
+.user-card-value.curp {
+  font-family: monospace;
+  font-size: 0.75rem;
+  letter-spacing: 0.5px;
+}
+
+/* Destinatario en modal */
+.detalle-destinatario {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: rgba(30, 41, 59, 0.5);
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  border: 1px solid rgba(148, 163, 184, 0.1);
+}
+
+.dest-nombre {
+  font-size: 0.9rem;
+  color: #f1f5f9;
+  font-weight: 500;
+}
+
+.dest-rol {
+  font-size: 0.7rem;
+  font-weight: 500;
+  padding: 0.15rem 0.5rem;
+  border-radius: 4px;
+}
+
+.user-name {
+  font-size: 0.9rem;
+  color: #f1f5f9;
+  margin: 0;
+  font-weight: 500;
+}
+
+.detalle-descripcion {
+  font-size: 0.9rem;
+  color: #e2e8f0;
+  line-height: 1.6;
+  margin: 0;
+  background: rgba(30, 41, 59, 0.5);
+  border-radius: 8px;
+  padding: 1rem;
+  border: 1px solid rgba(148, 163, 184, 0.1);
+}
+
+/* ========== ACCIONES DEL MODAL ========== */
+.modal-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1.25rem 1.5rem;
+  border-top: 1px solid rgba(148, 163, 184, 0.15);
+  background: rgba(15, 23, 42, 0.5);
+}
+
+.btn-modal {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.85rem 1.25rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-modal:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn-aprobar {
+  background: linear-gradient(135deg, #059669, #047857);
+  color: white;
+  box-shadow: 0 4px 15px rgba(5, 150, 105, 0.3);
+}
+
+.btn-aprobar:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(5, 150, 105, 0.4);
+}
+
+.btn-rechazar {
+  background: linear-gradient(135deg, #dc2626, #b91c1c);
+  color: white;
+  box-shadow: 0 4px 15px rgba(220, 38, 38, 0.3);
+}
+
+.btn-rechazar:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(220, 38, 38, 0.4);
+}
+
+.modal-processed {
+  padding: 1.25rem 1.5rem;
+  text-align: center;
+  border-top: 1px solid rgba(148, 163, 184, 0.15);
+}
+
+.processed-text {
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.processed-text.approved {
+  color: #10b981;
+}
+
+.processed-text.rejected {
+  color: #ef4444;
+}
+
+/* ========== ANIMACIONES DEL MODAL ========== */
+.modal-fade-enter-active,
+.modal-fade-leave-active {
+  transition: all 0.3s ease;
+}
+
+.modal-fade-enter-from,
+.modal-fade-leave-to {
+  opacity: 0;
+}
+
+.modal-fade-enter-from .modal-detalle,
+.modal-fade-leave-to .modal-detalle {
+  transform: scale(0.9) translateY(20px);
+}
+
 /* ========== EMPTY STATE ========== */
 .empty-state {
   display: flex;
@@ -1199,6 +1927,15 @@ onMounted(async () => {
 
 /* ========== RESPONSIVE ========== */
 @media (max-width: 768px) {
+  /* Mostrar cards, ocultar tabla */
+  .mobile-view {
+    display: flex;
+  }
+  
+  .desktop-view {
+    display: none;
+  }
+  
   .solicitudes-header {
     padding: 0.8rem 1rem;
   }
@@ -1246,14 +1983,37 @@ onMounted(async () => {
   .form-grid {
     grid-template-columns: 1fr;
   }
-
-  .solicitudes-table {
-    font-size: 0.75rem;
+  
+  /* Modal responsive */
+  .modal-detalle {
+    max-width: 95%;
+    margin: 0.5rem;
   }
-
-  .solicitudes-table th,
-  .solicitudes-table td {
-    padding: 0.6rem 0.5rem;
+  
+  .modal-header {
+    padding: 1.25rem;
+  }
+  
+  .modal-icon-wrapper {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .modal-title {
+    font-size: 1rem;
+  }
+  
+  .modal-body {
+    padding: 1.25rem;
+  }
+  
+  .modal-actions {
+    padding: 1rem 1.25rem;
+  }
+  
+  .btn-modal {
+    padding: 0.75rem 1rem;
+    font-size: 0.85rem;
   }
 
   /* Centrar sección de historial en móviles */

@@ -84,7 +84,45 @@ def listar_solicitudes(credentials: HTTPAuthorizationCredentials = Security(bear
         else:
             query = query.filter(Solicitud.usuario_id == user_id)
 
-        return query.order_by(Solicitud.fecha.desc()).all()
+        solicitudes = query.order_by(Solicitud.fecha.desc()).all()
+        
+        # Enriquecer con datos del usuario solicitante y destinatario
+        resultado = []
+        for s in solicitudes:
+            # Obtener datos del solicitante
+            solicitante = db.query(User).filter(User.id == s.usuario_id).first()
+            # Obtener datos del destinatario
+            destinatario = db.query(User).filter(User.id == s.destino_id).first() if s.destino_id else None
+            
+            resultado.append({
+                "id": s.id,
+                "tipo": s.tipo,
+                "descripcion": s.descripcion,
+                "estado": s.estado,
+                "fecha": s.fecha.isoformat() if s.fecha else None,
+                "usuario_id": s.usuario_id,
+                "destino_id": s.destino_id,
+                # Datos del solicitante
+                "solicitante": {
+                    "id": solicitante.id,
+                    "nombre": solicitante.nombre,
+                    "email": solicitante.email,
+                    "rol": solicitante.rol,
+                    "curp": solicitante.curp,
+                    "territorio": solicitante.territorio,
+                    "telefono": solicitante.telefono
+                } if solicitante else None,
+                # Datos del destinatario
+                "destinatario": {
+                    "id": destinatario.id,
+                    "nombre": destinatario.nombre,
+                    "email": destinatario.email,
+                    "rol": destinatario.rol,
+                    "territorio": destinatario.territorio
+                } if destinatario else None
+            })
+        
+        return resultado
 
     except jwt.InvalidTokenError:
         raise HTTPException(status_code=401, detail="Token inválido")
