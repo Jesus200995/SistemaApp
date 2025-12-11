@@ -133,9 +133,6 @@
               <!-- Animación de fondo rojo -->
               <div class="notif-bg-pulse"></div>
               
-              <!-- Fecha en esquina superior derecha -->
-              <span class="notif-fecha-corner">{{ formatFechaCorta(solicitud.fecha_creacion) }}</span>
-              
               <!-- Icono de solicitud a la izquierda -->
               <div class="notif-icon-left">
                 <FileText :size="22" class="notif-main-icon" />
@@ -144,6 +141,9 @@
               
               <!-- Contenido -->
               <div class="notif-card-content">
+                <!-- Fecha arriba del tipo -->
+                <span class="notif-fecha-top">{{ formatFechaCorta(solicitud.fecha_creacion) }}</span>
+                
                 <!-- Tipo de solicitud (completo y destacado) -->
                 <span class="notif-tipo-tag">{{ formatTipoSolicitud(solicitud.tipo) }}</span>
                 
@@ -159,11 +159,9 @@
                 </div>
               </div>
               
-              <!-- Botón Ver moderno -->
-              <router-link to="/solicitudes" class="notif-btn-modern">
-                <span class="btn-corner"></span>
-                <Eye :size="14" />
-                <span>Ver</span>
+              <!-- Botón Ver medio círculo derecho -->
+              <router-link to="/solicitudes" class="notif-btn-semicircle">
+                <span class="semicircle-text">Ir</span>
               </router-link>
             </div>
           </div>
@@ -1577,6 +1575,7 @@ const getUsuariosDesc = (): string => {
   align-items: center;
   gap: 0.8rem;
   padding: 0.9rem;
+  padding-right: 55px; /* Espacio para el botón semicírculo */
   background: rgba(30, 41, 59, 0.6);
   border-radius: 12px;
   border: 1px solid rgba(239, 68, 68, 0.2);
@@ -1652,18 +1651,12 @@ const getUsuariosDesc = (): string => {
   letter-spacing: 0.02em;
 }
 
-/* Fecha en esquina superior derecha */
-.notif-fecha-corner {
-  position: absolute;
-  top: 6px;
-  right: 8px;
-  font-size: 0.6rem;
-  color: #94a3b8;
-  background: rgba(100, 116, 139, 0.2);
-  padding: 2px 8px;
-  border-radius: 10px;
-  z-index: 5;
-  font-weight: 500;
+/* Fecha arriba del contenido */
+.notif-fecha-top {
+  font-size: 0.65rem;
+  color: #64748b;
+  margin-bottom: 0.2rem;
+  display: block;
 }
 
 .notif-user-details {
@@ -1688,50 +1681,52 @@ const getUsuariosDesc = (): string => {
   font-style: italic;
 }
 
-/* Botón Ver moderno azul vidrio líquido */
-.notif-btn-modern {
-  position: relative;
+/* Botón Ver medio círculo pegado a la derecha */
+.notif-btn-semicircle {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 42px;
+  height: 60px;
   display: flex;
   align-items: center;
-  gap: 0.4rem;
-  padding: 0.5rem 1rem;
-  font-size: 0.8rem;
-  font-weight: 600;
-  color: #93c5fd;
-  background: rgba(59, 130, 246, 0.2);
-  border: 1.5px solid rgba(59, 130, 246, 0.4);
-  border-radius: 10px;
+  justify-content: center;
+  padding-left: 6px;
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.25) 0%, rgba(37, 99, 235, 0.35) 100%);
+  border: 1.5px solid rgba(96, 165, 250, 0.4);
+  border-right: none;
+  border-radius: 30px 0 0 30px;
   text-decoration: none;
   cursor: pointer;
-  transition: all 0.3s ease;
-  flex-shrink: 0;
-  z-index: 1;
-  backdrop-filter: blur(8px);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  backdrop-filter: blur(12px);
+  box-shadow: 
+    -4px 0 20px rgba(59, 130, 246, 0.2),
+    inset 2px 0 8px rgba(255, 255, 255, 0.1);
+  z-index: 5;
 }
 
-.notif-btn-modern .btn-corner {
-  position: absolute;
-  top: -8px;
-  right: -8px;
-  width: 20px;
-  height: 20px;
-  background: rgba(59, 130, 246, 0.3);
-  border-radius: 50%;
-  pointer-events: none;
+.notif-btn-semicircle:hover {
+  width: 50px;
+  background: linear-gradient(135deg, rgba(96, 165, 250, 0.35) 0%, rgba(59, 130, 246, 0.45) 100%);
+  border-color: rgba(147, 197, 253, 0.6);
+  box-shadow: 
+    -6px 0 25px rgba(59, 130, 246, 0.35),
+    inset 2px 0 12px rgba(255, 255, 255, 0.15);
+}
+
+.semicircle-text {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #93c5fd;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
   transition: all 0.3s ease;
 }
 
-.notif-btn-modern:hover {
-  transform: translateY(-2px);
-  background: rgba(59, 130, 246, 0.35);
-  border-color: rgba(96, 165, 250, 0.6);
+.notif-btn-semicircle:hover .semicircle-text {
   color: #bfdbfe;
-  box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
-}
-
-.notif-btn-modern:hover .btn-corner {
-  transform: scale(1.3);
-  background: rgba(96, 165, 250, 0.5);
 }
 
 /* Caja de mensaje con fondo vidrio gris y esquina picuda */
