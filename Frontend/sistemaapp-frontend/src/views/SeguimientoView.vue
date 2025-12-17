@@ -1018,9 +1018,9 @@ onMounted(async () => {
 .tabs-wrapper {
   position: relative;
   z-index: 9;
-  background: rgba(30, 41, 59, 0.3);
+  background: rgba(255, 255, 255, 0.9);
   backdrop-filter: blur(10px);
-  border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+  border-bottom: 1px solid rgba(22, 163, 74, 0.2);
 }
 
 .tabs-container {
@@ -1036,26 +1036,26 @@ onMounted(async () => {
   background: none;
   border: none;
   border-bottom: 3px solid transparent;
-  color: #cbd5e1;
+  color: #64748b;
   cursor: pointer;
   font-weight: 500;
   transition: all 0.3s ease;
 }
 
 .tab:hover {
-  color: #e2e8f0;
-  background: rgba(16, 185, 129, 0.05);
+  color: #1e3a2f;
+  background: rgba(22, 163, 74, 0.05);
 }
 
 .tab.active {
-  color: #10b981;
-  border-bottom-color: #10b981;
+  color: #16a34a;
+  border-bottom-color: #16a34a;
 }
 
 /* Form Section */
 .form-section {
-  background: rgba(30, 41, 59, 0.5);
-  border: 1px solid rgba(148, 163, 184, 0.1);
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(22, 163, 74, 0.2);
   border-radius: 16px;
   padding: 2rem;
   backdrop-filter: blur(10px);
@@ -1068,13 +1068,13 @@ onMounted(async () => {
 .form-title {
   font-size: 1.2rem;
   font-weight: 700;
-  color: #84cc16;
+  color: #15803d;
   margin: 0 0 0.3rem 0;
-  text-shadow: 0 0 8px rgba(132, 204, 22, 0.3);
+  text-shadow: none;
 }
 
 .form-subtitle {
-  color: #cbd5e1;
+  color: #64748b;
   margin: 0;
   font-size: 0.8rem;
 }
@@ -1104,7 +1104,7 @@ onMounted(async () => {
 .form-label {
   font-size: 0.95rem;
   font-weight: 600;
-  color: #e2e8f0;
+  color: #1e3a2f;
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -1112,7 +1112,7 @@ onMounted(async () => {
 }
 
 .label-icon {
-  color: #10b981;
+  color: #16a34a;
   flex-shrink: 0;
 }
 
@@ -1147,10 +1147,10 @@ onMounted(async () => {
 .form-input {
   width: 100%;
   padding: 0.75rem 1rem;
-  background: rgba(15, 23, 42, 0.8) !important;
-  border: 1px solid rgba(148, 163, 184, 0.3);
+  background: rgba(255, 255, 255, 0.95) !important;
+  border: 1px solid rgba(22, 163, 74, 0.3);
   border-radius: 8px;
-  color: #f1f5f9 !important;
+  color: #1e3a2f !important;
   font-size: 0.95rem;
   transition: all 0.3s ease;
   font-family: inherit;
@@ -1160,14 +1160,14 @@ onMounted(async () => {
 }
 
 .form-input:hover {
-  border-color: rgba(148, 163, 184, 0.5);
+  border-color: rgba(22, 163, 74, 0.5);
 }
 
 .form-input:focus {
   outline: none;
-  border-color: #10b981;
-  background: rgba(15, 23, 42, 0.9) !important;
-  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+  border-color: #16a34a;
+  background: white !important;
+  box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.15);
 }
 
 /* ========== SELECT STYLES ========== */
@@ -1175,24 +1175,24 @@ onMounted(async () => {
   appearance: none;
   -webkit-appearance: none;
   -moz-appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2310b981' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2316a34a' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 0.75rem center;
   padding-right: 2.5rem;
-  color: #f1f5f9 !important;
-  background-color: rgba(15, 23, 42, 0.8) !important;
+  color: #1e3a2f !important;
+  background-color: rgba(255, 255, 255, 0.95) !important;
   cursor: pointer;
 }
 
 /* Clase para cuando está el placeholder seleccionado */
 .form-select.placeholder-selected {
-  color: #9ca3af !important;
+  color: #64748b !important;
 }
 
 /* Opciones del select */
 .form-select option {
-  background: #1e293b !important;
-  color: #f1f5f9 !important;
+  background: white !important;
+  color: #1e3a2f !important;
   padding: 0.5rem;
 }
 
@@ -1262,8 +1262,8 @@ onMounted(async () => {
 .avance-input-wrapper {
   display: flex;
   align-items: center;
-  background: rgba(15, 23, 42, 0.6);
-  border: 2px solid rgba(16, 185, 129, 0.4);
+  background: rgba(255, 255, 255, 0.95);
+  border: 2px solid rgba(22, 163, 74, 0.4);
   border-radius: 12px;
   padding: 0.5rem 0.75rem;
   gap: 0.25rem;
@@ -1271,15 +1271,15 @@ onMounted(async () => {
 }
 
 .avance-input-wrapper:focus-within {
-  border-color: #10b981;
-  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2), 0 0 20px rgba(16, 185, 129, 0.2);
+  border-color: #16a34a;
+  box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.15), 0 0 20px rgba(22, 163, 74, 0.1);
 }
 
 .avance-input {
   width: 50px;
   background: transparent;
   border: none;
-  color: #10b981;
+  color: #16a34a;
   font-size: 1.1rem;
   font-weight: 700;
   text-align: center;
@@ -1442,8 +1442,8 @@ onMounted(async () => {
 
 /* Historial */
 .historial-section {
-  background: rgba(30, 41, 59, 0.5);
-  border: 1px solid rgba(148, 163, 184, 0.1);
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(22, 163, 74, 0.2);
   border-radius: 16px;
   padding: 2rem;
   backdrop-filter: blur(10px);
@@ -1645,8 +1645,8 @@ onMounted(async () => {
 }
 
 .seguimiento-card {
-  background: rgba(30, 41, 59, 0.6);
-  border: 1px solid rgba(148, 163, 184, 0.1);
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(22, 163, 74, 0.2);
   border-radius: 12px;
   padding: 1rem;
   margin-bottom: 0.75rem;
@@ -1713,7 +1713,7 @@ onMounted(async () => {
 .card-sembrador {
   font-size: 0.95rem;
   font-weight: 600;
-  color: #f1f5f9;
+  color: #1e3a2f;
   margin: 0;
   white-space: nowrap;
   overflow: hidden;
@@ -1880,8 +1880,8 @@ onMounted(async () => {
 
 /* Reportes */
 .reportes-section {
-  background: rgba(30, 41, 59, 0.5);
-  border: 1px solid rgba(148, 163, 184, 0.1);
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(22, 163, 74, 0.2);
   border-radius: 16px;
   padding: 2rem;
   backdrop-filter: blur(10px);
@@ -1894,8 +1894,8 @@ onMounted(async () => {
 }
 
 .reporte-card {
-  background: rgba(15, 23, 42, 0.5);
-  border: 1px solid rgba(148, 163, 184, 0.1);
+  background: rgba(240, 253, 244, 0.8);
+  border: 1px solid rgba(22, 163, 74, 0.2);
   border-radius: 12px;
   padding: 1.5rem;
 }
@@ -1910,7 +1910,7 @@ onMounted(async () => {
 }
 
 .card-icon {
-  color: #10b981;
+  color: #16a34a;
 }
 
 .mini-table {

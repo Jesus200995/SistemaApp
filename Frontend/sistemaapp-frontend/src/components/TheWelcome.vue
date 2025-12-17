@@ -122,8 +122,8 @@ const navigateTo = (view: string) => {
 }
 
 .action-card {
-  background: rgba(30, 41, 59, 0.6);
-  border: 1px solid rgba(148, 163, 184, 0.2);
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(22, 163, 74, 0.2);
   border-radius: 12px;
   padding: 1.5rem;
   cursor: pointer;
@@ -136,22 +136,22 @@ const navigateTo = (view: string) => {
 }
 
 .action-card:hover {
-  background: rgba(30, 41, 59, 0.9);
-  border-color: rgba(16, 185, 129, 0.5);
+  background: white;
+  border-color: rgba(22, 163, 74, 0.5);
   transform: translateY(-4px);
-  box-shadow: 0 12px 24px rgba(16, 185, 129, 0.15);
+  box-shadow: 0 12px 24px rgba(22, 163, 74, 0.15);
 }
 
 .action-icon-box {
   width: 50px;
   height: 50px;
-  background: linear-gradient(135deg, #10b981 0%, #06b6d4 100%);
+  background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
   border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
   margin-bottom: 1rem;
-  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+  box-shadow: 0 4px 12px rgba(22, 163, 74, 0.3);
 }
 
 .action-icon {
@@ -163,18 +163,18 @@ const navigateTo = (view: string) => {
 .action-card h3 {
   font-size: 1.125rem;
   font-weight: 600;
-  color: #f1f5f9;
+  color: #1e3a2f;
   margin-bottom: 0.5rem;
 }
 
 .action-card p {
   font-size: 0.875rem;
-  color: #cbd5e1;
+  color: #64748b;
 }
 
 .features-section {
-  background: rgba(30, 41, 59, 0.6);
-  border: 1px solid rgba(148, 163, 184, 0.2);
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(22, 163, 74, 0.2);
   border-radius: 12px;
   padding: 2rem;
   backdrop-filter: blur(10px);
@@ -183,7 +183,7 @@ const navigateTo = (view: string) => {
 .section-title {
   font-size: 1.5rem;
   font-weight: 700;
-  background: linear-gradient(135deg, #10b981 0%, #06b6d4 100%);
+  background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -201,14 +201,14 @@ const navigateTo = (view: string) => {
 }
 
 .features-list li {
-  color: #cbd5e1;
+  color: #374151;
   padding: 0.75rem;
-  border-left: 2px solid #10b981;
+  border-left: 2px solid #16a34a;
   padding-left: 1rem;
 }
 
 .features-list strong {
-  color: #10b981;
+  color: #16a34a;
 }
 
 @keyframes fadeInDown {

@@ -589,7 +589,7 @@ onMounted(() => {
 
 .header-subtitle {
   font-size: 0.75rem;
-  color: #cbd5e1;
+  color: #64748b;
   margin: 0;
   margin-top: 0.2rem;
 }

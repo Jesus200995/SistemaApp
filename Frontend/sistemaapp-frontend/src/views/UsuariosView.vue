@@ -840,8 +840,8 @@ const crearUsuario = async () => {
           confirmButton: 'swal-success-confirm',
           icon: 'swal-success-icon'
         },
-        background: 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)',
-        color: '#e2e8f0',
+        background: 'white',
+        color: '#1e3a2f',
         showClass: {
           popup: 'animate__animated animate__fadeInUp animate__faster'
         },
@@ -961,7 +961,7 @@ const guardarEdicionUsuario = async () => {
 const abrirConfirmarEliminar = (id, nombre) => {
   Swal.fire({
     title: '¿Eliminar usuario?',
-    html: `<p style="color: #e2e8f0; font-size: 1rem; margin: 1rem 0;">Estás a punto de eliminar a</p><p style="color: #fca5a5; font-weight: 700; font-size: 1.1rem; margin: 0.5rem 0;">«${nombre}»</p><p style="color: #cbd5e1; font-size: 0.9rem; margin: 1rem 0;">Esta acción no se puede deshacer.</p>`,
+    html: `<p style="color: #374151; font-size: 1rem; margin: 1rem 0;">Estás a punto de eliminar a</p><p style="color: #dc2626; font-weight: 700; font-size: 1.1rem; margin: 0.5rem 0;">«${nombre}»</p><p style="color: #64748b; font-size: 0.9rem; margin: 1rem 0;">Esta acción no se puede deshacer.</p>`,
     icon: 'warning',
     iconHtml: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 3rem; height: 3rem; margin: 0 auto;"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>',
     showCancelButton: true,
@@ -976,7 +976,7 @@ const abrirConfirmarEliminar = (id, nombre) => {
       confirmButton: 'swal-delete-confirm',
       cancelButton: 'swal-delete-cancel'
     },
-    background: 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)',
+    background: 'white',
     didOpen: () => {
       const popup = document.querySelector('.swal2-popup');
       if (popup) {
@@ -1230,12 +1230,12 @@ onMounted(async () => {
 
 /* ========== USUARIOS CARD ========== */
 .usuarios-card {
-  background: linear-gradient(135deg, rgba(30, 41, 59, 0.8) 0%, rgba(15, 23, 42, 0.8) 100%);
-  border: 1px solid rgba(148, 163, 184, 0.2);
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(22, 163, 74, 0.2);
   border-radius: 20px;
   padding: 1.5rem;
   backdrop-filter: blur(10px);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 8px 32px rgba(22, 163, 74, 0.1);
   margin-bottom: 1.5rem;
 }
 
@@ -1260,17 +1260,17 @@ onMounted(async () => {
   left: 12px;
   width: 20px;
   height: 20px;
-  color: #10b981;
+  color: #16a34a;
   pointer-events: none;
 }
 
 .search-input {
   width: 100%;
-  background: rgba(15, 23, 42, 0.5);
-  border: 1px solid rgba(148, 163, 184, 0.2);
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(22, 163, 74, 0.3);
   border-radius: 10px;
   padding: 0.6rem 1rem 0.6rem 2.5rem;
-  color: #e2e8f0;
+  color: #1e3a2f;
   font-size: 0.85rem;
   transition: all 0.3s ease;
 }
@@ -1281,9 +1281,9 @@ onMounted(async () => {
 
 .search-input:focus {
   outline: none;
-  border-color: #10b981;
-  background: rgba(15, 23, 42, 0.7);
-  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+  border-color: #16a34a;
+  background: white;
+  box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.15);
 }
 
 .results-info {
@@ -1308,15 +1308,15 @@ onMounted(async () => {
 }
 
 .users-table thead {
-  background: linear-gradient(135deg, rgba(16, 185, 129, 0.2) 0%, rgba(16, 185, 129, 0.1) 100%);
-  border-bottom: 2px solid rgba(16, 185, 129, 0.3);
+  background: linear-gradient(135deg, #dcfce7 0%, #f0fdf4 100%);
+  border-bottom: 2px solid rgba(22, 163, 74, 0.3);
 }
 
 .users-table thead th {
   padding: 0.6rem 0.5rem;
   text-align: left;
   font-weight: 600;
-  color: #10b981;
+  color: #15803d;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   font-size: 0.7rem;
@@ -1345,18 +1345,18 @@ onMounted(async () => {
 }
 
 .user-row {
-  border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+  border-bottom: 1px solid rgba(22, 163, 74, 0.1);
   transition: all 0.3s ease;
 }
 
 .user-row:hover {
-  background: rgba(16, 185, 129, 0.05);
-  border-bottom-color: rgba(16, 185, 129, 0.2);
+  background: rgba(22, 163, 74, 0.05);
+  border-bottom-color: rgba(22, 163, 74, 0.2);
 }
 
 .users-table td {
   padding: 0.6rem 0.5rem;
-  color: #cbd5e1;
+  color: #374151;
 }
 
 /* Cell Styles */
@@ -1366,8 +1366,8 @@ onMounted(async () => {
 
 .id-badge {
   display: inline-block;
-  background: rgba(16, 185, 129, 0.2);
-  color: #10b981;
+  background: rgba(22, 163, 74, 0.15);
+  color: #16a34a;
   padding: 0.375rem 0.75rem;
   border-radius: 6px;
   font-weight: 600;
@@ -1546,25 +1546,25 @@ onMounted(async () => {
 
 .skeleton-card {
   padding: 1.25rem;
-  background: rgba(15, 23, 42, 0.5);
-  border: 1px solid rgba(148, 163, 184, 0.1);
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(22, 163, 74, 0.2);
   border-radius: 12px;
   animation: pulse-loading 2s ease-in-out infinite;
 }
 
 .user-card {
   padding: 1.25rem;
-  background: linear-gradient(135deg, rgba(30, 41, 59, 0.6) 0%, rgba(15, 23, 42, 0.6) 100%);
-  border: 1px solid rgba(132, 204, 22, 0.15);
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(22, 163, 74, 0.2);
   border-radius: 14px;
   transition: all 0.3s ease;
   backdrop-filter: blur(4px);
 }
 
 .user-card:hover {
-  background: linear-gradient(135deg, rgba(30, 41, 59, 0.8) 0%, rgba(15, 23, 42, 0.8) 100%);
-  border-color: rgba(132, 204, 22, 0.3);
-  box-shadow: 0 8px 24px rgba(132, 204, 22, 0.1);
+  background: white;
+  border-color: rgba(22, 163, 74, 0.4);
+  box-shadow: 0 8px 24px rgba(22, 163, 74, 0.15);
 }
 
 .card-header {
@@ -1608,7 +1608,7 @@ onMounted(async () => {
 .card-nombre h3 {
   font-size: 0.95rem;
   font-weight: 700;
-  color: #f1f5f9;
+  color: #1e3a2f;
   margin: 0;
   line-height: 1.2;
 }
@@ -1645,7 +1645,7 @@ onMounted(async () => {
 
 .detail-value {
   font-size: 0.8rem;
-  color: #e2e8f0;
+  color: #1e3a2f;
   font-family: 'Courier New', monospace;
   text-align: right;
   flex: 1;
@@ -1686,8 +1686,8 @@ onMounted(async () => {
   justify-content: center;
   gap: 1.5rem;
   padding: 1.5rem;
-  background: rgba(30, 41, 59, 0.4);
-  border: 1px solid rgba(148, 163, 184, 0.1);
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(22, 163, 74, 0.2);
   border-radius: 16px;
   backdrop-filter: blur(10px);
   margin-bottom: 2rem;
@@ -1697,9 +1697,9 @@ onMounted(async () => {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  background: linear-gradient(135deg, rgba(16, 185, 129, 0.2) 0%, rgba(16, 185, 129, 0.1) 100%);
-  border: 1px solid rgba(16, 185, 129, 0.3);
-  color: #10b981;
+  background: linear-gradient(135deg, #dcfce7 0%, #f0fdf4 100%);
+  border: 1px solid rgba(22, 163, 74, 0.3);
+  color: #15803d;
   padding: 0.75rem 1.25rem;
   border-radius: 10px;
   font-size: 0.9rem;
@@ -1709,8 +1709,8 @@ onMounted(async () => {
 }
 
 .pagination-btn:hover:not(:disabled) {
-  background: linear-gradient(135deg, rgba(16, 185, 129, 0.3) 0%, rgba(16, 185, 129, 0.2) 100%);
-  border-color: rgba(16, 185, 129, 0.5);
+  background: linear-gradient(135deg, #bbf7d0 0%, #dcfce7 100%);
+  border-color: rgba(22, 163, 74, 0.5);
   transform: translateY(-2px);
 }
 
@@ -1730,11 +1730,11 @@ onMounted(async () => {
   gap: 0.25rem;
   font-size: 0.95rem;
   font-weight: 600;
-  color: #cbd5e1;
+  color: #374151;
 }
 
 .page-current {
-  color: #10b981;
+  color: #16a34a;
   font-size: 1.25rem;
 }
 
@@ -2112,24 +2112,24 @@ onMounted(async () => {
   gap: 0.5rem;
   font-size: 0.85rem;
   font-weight: 600;
-  color: #e2e8f0;
+  color: #1e3a2f;
   margin-bottom: 0.5rem;
 }
 
 .label-icon {
   width: 16px;
   height: 16px;
-  color: #10b981;
+  color: #16a34a;
 }
 
 .form-input,
 .form-select {
   width: 100%;
-  background: rgba(15, 23, 42, 0.6);
-  border: 1px solid rgba(148, 163, 184, 0.2);
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(22, 163, 74, 0.3);
   border-radius: 10px;
   padding: 0.75rem 1rem;
-  color: #e2e8f0;
+  color: #1e3a2f;
   font-size: 0.9rem;
   transition: all 0.3s ease;
   box-sizing: border-box;
@@ -2142,9 +2142,9 @@ onMounted(async () => {
 .form-input:focus,
 .form-select:focus {
   outline: none;
-  border-color: #10b981;
-  background: rgba(15, 23, 42, 0.8);
-  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+  border-color: #16a34a;
+  background: white;
+  box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.15);
 }
 
 .form-select {
@@ -2158,8 +2158,8 @@ onMounted(async () => {
 }
 
 .form-select option {
-  background: #1e293b;
-  color: #e2e8f0;
+  background: white;
+  color: #1e3a2f;
 }
 
 .password-wrapper {
@@ -2406,14 +2406,14 @@ onMounted(async () => {
   gap: 0.5rem;
   font-size: 0.85rem;
   font-weight: 600;
-  color: #e2e8f0;
+  color: #1e3a2f;
   margin-bottom: 0.5rem;
 }
 
 .input-icon {
   width: 16px;
   height: 16px;
-  color: #84cc16;
+  color: #16a34a;
 }
 
 .input-wrapper,
@@ -2433,11 +2433,11 @@ onMounted(async () => {
 .form-input,
 .form-select {
   width: 100%;
-  background: rgba(15, 23, 42, 0.6);
-  border: 1px solid rgba(148, 163, 184, 0.2);
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(22, 163, 74, 0.3);
   border-radius: 10px;
   padding: 0.75rem 1rem 0.75rem 2.5rem;
-  color: #e2e8f0;
+  color: #1e3a2f;
   font-size: 0.9rem;
   transition: all 0.3s ease;
 }
@@ -2449,9 +2449,9 @@ onMounted(async () => {
 .form-input:focus,
 .form-select:focus {
   outline: none;
-  border-color: #84cc16;
-  background: rgba(15, 23, 42, 0.8);
-  box-shadow: 0 0 0 3px rgba(132, 204, 22, 0.1);
+  border-color: #16a34a;
+  background: white;
+  box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.15);
 }
 
 .form-select {
@@ -2465,8 +2465,8 @@ onMounted(async () => {
 }
 
 .form-select option {
-  background: #1e293b;
-  color: #e2e8f0;
+  background: white;
+  color: #1e3a2f;
 }
 
 .form-select:disabled {
@@ -2511,21 +2511,21 @@ onMounted(async () => {
 .btn-guardar {
   flex: 1;
   padding: 0.75rem 1rem;
-  background: linear-gradient(135deg, #84cc16, #65a30d);
-  border: 1px solid rgba(132, 204, 22, 0.5);
+  background: linear-gradient(135deg, #16a34a, #15803d);
+  border: 1px solid rgba(22, 163, 74, 0.5);
   border-radius: 8px;
-  color: #0f172a;
+  color: white;
   font-weight: 700;
   cursor: pointer;
   transition: all 0.3s ease;
   font-size: 0.9rem;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-  box-shadow: 0 4px 12px rgba(132, 204, 22, 0.2);
+  box-shadow: 0 4px 12px rgba(22, 163, 74, 0.2);
 }
 
 .btn-guardar:hover:not(:disabled) {
-  background: linear-gradient(135deg, #a3e635, #84cc16);
-  box-shadow: 0 6px 16px rgba(132, 204, 22, 0.3);
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+  box-shadow: 0 6px 16px rgba(22, 163, 74, 0.3);
   transform: translateY(-2px);
 }
 
@@ -2542,8 +2542,8 @@ onMounted(async () => {
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  border: 1.5px solid rgba(148, 163, 184, 0.4);
-  background: rgba(15, 23, 42, 0.7);
+  border: 1.5px solid rgba(22, 163, 74, 0.3);
+  background: rgba(255, 255, 255, 0.9);
   cursor: pointer;
   transition: all 0.3s ease;
   flex-shrink: 0;
@@ -3066,9 +3066,9 @@ onMounted(async () => {
   flex-direction: column;
   gap: 0.75rem;
   padding: 1rem;
-  background: rgba(15, 23, 42, 0.5);
+  background: rgba(240, 253, 244, 0.8);
   border-radius: 12px;
-  border: 1px solid rgba(16, 185, 129, 0.15);
+  border: 1px solid rgba(22, 163, 74, 0.2);
 }
 
 :deep(.swal-success-item) {
@@ -3076,20 +3076,20 @@ onMounted(async () => {
   justify-content: space-between;
   align-items: center;
   padding: 0.6rem 0.8rem;
-  background: rgba(30, 41, 59, 0.6);
+  background: rgba(220, 252, 231, 0.8);
   border-radius: 8px;
-  border: 1px solid rgba(71, 85, 105, 0.3);
+  border: 1px solid rgba(22, 163, 74, 0.2);
 }
 
 :deep(.swal-success-label) {
   font-size: 0.85rem;
-  color: #94a3b8;
+  color: #64748b;
   font-weight: 500;
 }
 
 :deep(.swal-success-value) {
   font-size: 0.9rem;
-  color: #e2e8f0;
+  color: #1e3a2f;
   font-weight: 600;
   text-align: right;
   max-width: 60%;
@@ -3099,10 +3099,10 @@ onMounted(async () => {
 :deep(.swal-success-badge) {
   font-size: 0.75rem;
   padding: 0.3rem 0.75rem;
-  background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(16, 185, 129, 0.1));
-  border: 1px solid rgba(16, 185, 129, 0.4);
+  background: linear-gradient(135deg, rgba(22, 163, 74, 0.2), rgba(22, 163, 74, 0.1));
+  border: 1px solid rgba(22, 163, 74, 0.4);
   border-radius: 20px;
-  color: #34d399;
+  color: #16a34a;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.5px;

@@ -656,7 +656,7 @@ onMounted(() => {
 .panel-title {
   font-size: 0.9rem;
   font-weight: 700;
-  color: #e2e8f0;
+  color: #1e3a2f;
   margin-bottom: 1rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -674,8 +674,8 @@ onMounted(() => {
   align-items: center;
   gap: 0.75rem;
   padding: 0.75rem;
-  background: rgba(71, 85, 105, 0.4);
-  border: 1px solid rgba(148, 163, 184, 0.2);
+  background: rgba(240, 253, 244, 0.8);
+  border: 1px solid rgba(22, 163, 74, 0.2);
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -683,20 +683,20 @@ onMounted(() => {
 }
 
 .layer-checkbox:hover {
-  background: rgba(71, 85, 105, 0.6);
-  border-color: rgba(148, 163, 184, 0.4);
+  background: rgba(220, 252, 231, 0.9);
+  border-color: rgba(22, 163, 74, 0.4);
 }
 
 .layer-checkbox.layer-active {
-  background: rgba(16, 185, 129, 0.2);
-  border-color: rgba(16, 185, 129, 0.5);
+  background: rgba(22, 163, 74, 0.15);
+  border-color: rgba(22, 163, 74, 0.5);
 }
 
 .checkbox-input {
   width: 18px;
   height: 18px;
   cursor: pointer;
-  accent-color: #10b981;
+  accent-color: #16a34a;
 }
 
 .checkbox-circle {
@@ -704,13 +704,13 @@ onMounted(() => {
   height: 14px;
   border-radius: 50%;
   flex-shrink: 0;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
 .checkbox-label {
   font-size: 0.9rem;
   font-weight: 500;
-  color: #cbd5e1;
+  color: #374151;
 }
 
 .panel-divider {
@@ -741,19 +741,19 @@ onMounted(() => {
   bottom: 1.5rem;
   right: 1.5rem;
   z-index: 40;
-  background: linear-gradient(135deg, rgba(30, 41, 59, 0.95) 0%, rgba(15, 23, 42, 0.95) 100%);
-  border: 1px solid rgba(148, 163, 184, 0.2);
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(22, 163, 74, 0.3);
   border-radius: 12px;
   padding: 1rem;
   backdrop-filter: blur(12px);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 8px 32px rgba(22, 163, 74, 0.15);
   max-width: 280px;
 }
 
 .legend-title {
   font-size: 0.9rem;
   font-weight: 700;
-  color: #e2e8f0;
+  color: #1e3a2f;
   margin-bottom: 0.75rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -770,7 +770,7 @@ onMounted(() => {
   align-items: center;
   gap: 0.75rem;
   font-size: 0.875rem;
-  color: #cbd5e1;
+  color: #374151;
 }
 
 .legend-marker {
@@ -785,26 +785,26 @@ onMounted(() => {
 /* ========== POPUP STYLES ========== */
 :deep(.leaflet-popup-content-wrapper) {
   border-radius: 10px;
-  background: rgba(15, 23, 42, 0.98);
-  border: 1px solid rgba(148, 163, 184, 0.2);
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+  background: rgba(255, 255, 255, 0.98);
+  border: 1px solid rgba(22, 163, 74, 0.3);
+  box-shadow: 0 10px 40px rgba(22, 163, 74, 0.15);
   backdrop-filter: blur(10px);
 }
 
 :deep(.leaflet-popup-tip) {
-  border-top-color: rgba(15, 23, 42, 0.98);
+  border-top-color: rgba(255, 255, 255, 0.98);
 }
 
 :deep(.leaflet-popup-close-button) {
-  color: #cbd5e1;
+  color: #64748b;
 }
 
 :deep(.leaflet-popup-close-button:hover) {
-  color: #10b981;
+  color: #16a34a;
 }
 
 .popup-custom {
-  color: #cbd5e1;
+  color: #374151;
 }
 
 .popup-content {
@@ -815,14 +815,14 @@ onMounted(() => {
 .popup-type {
   font-size: 0.95rem;
   font-weight: 600;
-  color: #10b981;
+  color: #16a34a;
   display: block;
   margin-bottom: 0.5rem;
 }
 
 .popup-name {
   font-size: 0.85rem;
-  color: #e2e8f0;
+  color: #1e3a2f;
   display: block;
 }
 
@@ -968,16 +968,16 @@ onMounted(() => {
 }
 
 :deep(.leaflet-control-attribution) {
-  background: rgba(15, 23, 42, 0.9) !important;
-  color: #94a3b8 !important;
+  background: rgba(255, 255, 255, 0.9) !important;
+  color: #64748b !important;
   font-size: 0.7rem;
   backdrop-filter: blur(10px);
   border: none;
-  border-top: 1px solid rgba(148, 163, 184, 0.1);
+  border-top: 1px solid rgba(22, 163, 74, 0.2);
 }
 
 :deep(.leaflet-control-attribution a) {
-  color: #10b981 !important;
+  color: #16a34a !important;
   text-decoration: none;
 }
 
@@ -987,7 +987,7 @@ onMounted(() => {
 
 /* ========== ESTILOS POPUP SEMBRADORES ========== */
 .popup-sembrador {
-  color: #cbd5e1;
+  color: #374151;
 }
 
 .popup-content-sembrador {
@@ -1030,12 +1030,12 @@ onMounted(() => {
 
 .popup-label {
   font-weight: 600;
-  color: #cbd5e1;
+  color: #64748b;
   white-space: nowrap;
 }
 
 .popup-value {
-  color: #e2e8f0;
+  color: #1e3a2f;
   text-align: right;
   word-break: break-word;
 }
@@ -1063,7 +1063,7 @@ onMounted(() => {
   gap: 0.5rem;
   cursor: pointer;
   font-size: 0.85rem;
-  color: #cbd5e1;
+  color: #374151;
   user-select: none;
 }
 
@@ -1071,11 +1071,11 @@ onMounted(() => {
   width: 16px;
   height: 16px;
   cursor: pointer;
-  accent-color: #10b981;
+  accent-color: #16a34a;
 }
 
 .legend-checkbox:hover {
-  color: #e2e8f0;
+  color: #1e3a2f;
 }
 
 @media (max-width: 480px) {

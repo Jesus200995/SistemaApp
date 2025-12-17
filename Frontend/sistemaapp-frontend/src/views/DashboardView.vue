@@ -748,8 +748,8 @@ const getUsuariosDesc = (): string => {
 /* ========== PROFILE LABEL ========== */
 .profile-label {
   display: inline-block;
-  background: linear-gradient(90deg, #10b981 0%, #84cc16 100%);
-  color: #0f172a;
+  background: linear-gradient(90deg, #16a34a 0%, #15803d 100%);
+  color: white;
   padding: 0.35rem 1rem;
   border-radius: 6px 6px 0 0;
   font-size: 0.7rem;
@@ -759,7 +759,7 @@ const getUsuariosDesc = (): string => {
   margin-bottom: 0;
   margin-left: 0.5rem;
   text-transform: none;
-  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25);
+  box-shadow: 0 4px 12px rgba(22, 163, 74, 0.25);
 }
 
 /* ========== PROFILE CARD ========== */
@@ -1291,25 +1291,25 @@ const getUsuariosDesc = (): string => {
   font-size: 1rem;
   font-weight: 600;
   margin: 0;
-  color: #e2e8f0;
+  color: #1e3a2f;
   transition: color 0.3s ease;
 }
 
 .specialized-card:hover .specialized-title {
-  color: #10b981;
+  color: #16a34a;
 }
 
 .specialized-desc {
   position: relative;
   z-index: 1;
   font-size: 0.75rem;
-  color: #94a3b8;
+  color: #64748b;
   margin: 0;
   transition: color 0.3s ease;
 }
 
 .specialized-card:hover .specialized-desc {
-  color: #cbd5e1;
+  color: #374151;
 }
 
 .card-arrow {
@@ -1317,7 +1317,7 @@ const getUsuariosDesc = (): string => {
   bottom: 1rem;
   right: 1.5rem;
   font-size: 1.25rem;
-  color: #10b981;
+  color: #16a34a;
   opacity: 0;
   transform: translateX(-8px);
   transition: all 0.3s ease;
@@ -1338,8 +1338,8 @@ const getUsuariosDesc = (): string => {
 }
 
 .stat-card {
-  background: rgba(30, 41, 59, 0.6);
-  border: 1px solid rgba(148, 163, 184, 0.2);
+  background: rgba(240, 253, 244, 0.8);
+  border: 1px solid rgba(22, 163, 74, 0.2);
   border-radius: 12px;
   padding: 0.8rem 0.6rem;
   text-align: center;
@@ -1348,7 +1348,7 @@ const getUsuariosDesc = (): string => {
 
 .stat-card:hover {
   transform: translateY(-4px);
-  border-color: rgba(16, 185, 129, 0.3);
+  border-color: rgba(22, 163, 74, 0.4);
 }
 
 .stat-icon {
@@ -1694,7 +1694,7 @@ const getUsuariosDesc = (): string => {
   align-items: center;
   justify-content: center;
   padding: 2rem 1rem;
-  color: #cbd5e1;
+  color: #64748b;
   text-align: center;
 }
 
@@ -1736,17 +1736,17 @@ const getUsuariosDesc = (): string => {
   align-items: flex-start;
   gap: 0.8rem;
   padding: 0.9rem;
-  background: rgba(30, 41, 59, 0.5);
+  background: rgba(255, 255, 255, 0.9);
   border-radius: 12px;
-  border: 1px solid rgba(148, 163, 184, 0.15);
+  border: 1px solid rgba(22, 163, 74, 0.2);
   transition: all 0.3s ease;
   position: relative;
 }
 
 .solicitud-notif-card:hover {
-  background: rgba(30, 41, 59, 0.7);
+  background: white;
   transform: translateX(4px);
-  border-color: rgba(132, 204, 22, 0.3);
+  border-color: rgba(22, 163, 74, 0.4);
 }
 
 .solicitud-notif-card.sol-pendiente {
@@ -1842,7 +1842,7 @@ const getUsuariosDesc = (): string => {
 }
 
 .sol-descripcion {
-  color: #e2e8f0;
+  color: #374151;
   font-size: 0.8rem;
   line-height: 1.4;
   margin: 0 0 0.5rem 0;
@@ -1940,18 +1940,18 @@ const getUsuariosDesc = (): string => {
   display: flex;
   gap: 0.75rem;
   padding: 0.8rem;
-  background: rgba(30, 41, 59, 0.4);
+  background: rgba(255, 255, 255, 0.9);
   border-radius: 10px;
   border-left: 3px solid;
   transition: all 0.3s ease;
 }
 
 .notification-card.notif-unread {
-  background: rgba(16, 185, 129, 0.05);
+  background: rgba(240, 253, 244, 0.8);
 }
 
 .notification-card:hover {
-  background: rgba(30, 41, 59, 0.6);
+  background: white;
   transform: translateX(4px);
 }
 
@@ -1972,7 +1972,7 @@ const getUsuariosDesc = (): string => {
 }
 
 .notif-title {
-  color: #f1f5f9;
+  color: #1e3a2f;
   font-weight: 600;
   font-size: 0.85rem;
   margin: 0 0 0.2rem 0;
@@ -1980,7 +1980,7 @@ const getUsuariosDesc = (): string => {
 }
 
 .notif-message {
-  color: #cbd5e1;
+  color: #374151;
   font-size: 0.8rem;
   margin: 0 0 0.4rem 0;
   line-height: 1.3;

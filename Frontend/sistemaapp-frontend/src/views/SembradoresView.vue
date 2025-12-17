@@ -730,8 +730,8 @@ const crearSembrador = async () => {
         confirmButton: 'swal-success-confirm',
         icon: 'swal-success-icon'
       },
-      background: 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)',
-      color: '#e2e8f0',
+      background: 'white',
+      color: '#1e3a2f',
       showClass: {
         popup: 'animate__animated animate__fadeInUp animate__faster'
       },
@@ -1512,8 +1512,8 @@ onMounted(getSembradores)
 .action-btn {
   width: 36px;
   height: 36px;
-  border: 1px solid rgba(148, 163, 184, 0.2);
-  background: rgba(15, 23, 42, 0.5);
+  border: 1px solid rgba(22, 163, 74, 0.3);
+  background: rgba(255, 255, 255, 0.9);
   border-radius: 8px;
   display: flex;
   align-items: center;
@@ -1886,8 +1886,8 @@ onMounted(getSembradores)
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  border: 1px solid rgba(148, 163, 184, 0.3);
-  background: rgba(15, 23, 42, 0.5);
+  border: 1px solid rgba(22, 163, 74, 0.3);
+  background: rgba(255, 255, 255, 0.9);
   cursor: pointer;
   transition: all 0.3s ease;
   flex-shrink: 0;
@@ -1898,8 +1898,8 @@ onMounted(getSembradores)
 }
 
 .edit-btn:hover {
-  background: rgba(16, 185, 129, 0.15);
-  border-color: rgba(16, 185, 129, 0.5);
+  background: rgba(22, 163, 74, 0.15);
+  border-color: rgba(22, 163, 74, 0.5);
 }
 
 .delete-btn:hover {
@@ -1913,7 +1913,7 @@ onMounted(getSembradores)
 }
 
 .edit-btn:hover .action-icon {
-  color: #10b981;
+  color: #16a34a;
 }
 
 .delete-btn:hover .action-icon {
@@ -1926,7 +1926,7 @@ onMounted(getSembradores)
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.6);
+  background: rgba(0, 0, 0, 0.4);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1937,10 +1937,10 @@ onMounted(getSembradores)
 }
 
 .modal-edicion {
-  background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
-  border: 1px solid rgba(132, 204, 22, 0.2);
+  background: white;
+  border: 1px solid rgba(22, 163, 74, 0.3);
   border-radius: 16px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+  box-shadow: 0 20px 60px rgba(22, 163, 74, 0.15);
   backdrop-filter: blur(12px);
   width: 100%;
   max-width: 600px;
@@ -2298,9 +2298,9 @@ onMounted(getSembradores)
   flex-direction: column;
   gap: 0.75rem;
   padding: 1rem;
-  background: rgba(15, 23, 42, 0.5);
+  background: rgba(240, 253, 244, 0.8);
   border-radius: 12px;
-  border: 1px solid rgba(16, 185, 129, 0.15);
+  border: 1px solid rgba(22, 163, 74, 0.2);
 }
 
 :deep(.swal-success-item) {
@@ -2308,20 +2308,20 @@ onMounted(getSembradores)
   justify-content: space-between;
   align-items: center;
   padding: 0.6rem 0.8rem;
-  background: rgba(30, 41, 59, 0.6);
+  background: rgba(220, 252, 231, 0.8);
   border-radius: 8px;
-  border: 1px solid rgba(71, 85, 105, 0.3);
+  border: 1px solid rgba(22, 163, 74, 0.2);
 }
 
 :deep(.swal-success-label) {
   font-size: 0.85rem;
-  color: #94a3b8;
+  color: #64748b;
   font-weight: 500;
 }
 
 :deep(.swal-success-value) {
   font-size: 0.9rem;
-  color: #e2e8f0;
+  color: #1e3a2f;
   font-weight: 600;
   text-align: right;
   max-width: 60%;

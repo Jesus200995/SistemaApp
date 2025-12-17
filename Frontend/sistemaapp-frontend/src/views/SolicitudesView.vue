@@ -1415,7 +1415,7 @@ onMounted(async () => {
   display: inline-block;
   vertical-align: middle;
   margin-right: 0.35rem;
-  color: #84cc16;
+  color: #16a34a;
 }
 
 .form-textarea {
@@ -1425,12 +1425,12 @@ onMounted(async () => {
 
 .form-hint {
   font-size: 0.75rem;
-  color: #cbd5e1;
+  color: #64748b;
   margin-top: 0.35rem;
 }
 
 .hint-loading {
-  color: #94a3b8;
+  color: #64748b;
 }
 
 .hint-error {
@@ -1438,7 +1438,7 @@ onMounted(async () => {
 }
 
 .hint-success {
-  color: #10b981;
+  color: #16a34a;
 }
 
 .hint-info {
@@ -1625,11 +1625,11 @@ onMounted(async () => {
 }
 
 .usuario-seleccionado .check-icon {
-  color: #10b981;
+  color: #16a34a;
 }
 
 .usuario-seleccionado strong {
-  color: #f1f5f9;
+  color: #1e3a2f;
 }
 
 .btn-limpiar {
@@ -1702,10 +1702,10 @@ onMounted(async () => {
 
 .tabs-wrapper {
   display: flex;
-  background: rgba(30, 41, 59, 0.5);
+  background: rgba(255, 255, 255, 0.9);
   border-radius: 12px;
   padding: 4px;
-  border: 1px solid rgba(148, 163, 184, 0.15);
+  border: 1px solid rgba(22, 163, 74, 0.2);
 }
 
 .tab-btn {
@@ -1715,7 +1715,7 @@ onMounted(async () => {
   padding: 0.65rem 1.25rem;
   font-size: 0.85rem;
   font-weight: 600;
-  color: #94a3b8;
+  color: #64748b;
   background: transparent;
   border: none;
   border-radius: 8px;
@@ -1725,8 +1725,8 @@ onMounted(async () => {
 }
 
 .tab-btn:hover {
-  color: #e2e8f0;
-  background: rgba(148, 163, 184, 0.1);
+  color: #1e3a2f;
+  background: rgba(22, 163, 74, 0.1);
 }
 
 .tab-btn.active {
@@ -1795,11 +1795,11 @@ onMounted(async () => {
 .solicitud-card-pending {
   position: relative;
   background: linear-gradient(90deg, 
-    rgba(30, 41, 59, 0.85) 0%, 
-    rgba(248, 113, 113, 0.08) 25%, 
-    rgba(239, 68, 68, 0.06) 50%, 
-    rgba(248, 113, 113, 0.08) 75%, 
-    rgba(30, 41, 59, 0.85) 100%
+    rgba(255, 255, 255, 0.95) 0%, 
+    rgba(254, 202, 202, 0.2) 25%, 
+    rgba(254, 202, 202, 0.15) 50%, 
+    rgba(254, 202, 202, 0.2) 75%, 
+    rgba(255, 255, 255, 0.95) 100%
   );
   background-size: 200% 100%;
   border-radius: 16px;
@@ -1808,7 +1808,7 @@ onMounted(async () => {
   border: 1px solid rgba(248, 113, 113, 0.3);
   border-left: 4px solid #f87171;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
   overflow: visible;
   margin-top: 10px;
   animation: cardShimmer 5s ease-in-out infinite;
@@ -1851,10 +1851,10 @@ onMounted(async () => {
 
 .solicitud-card-pending:hover {
   transform: translateY(-4px);
-  box-shadow: 0 8px 25px rgba(248, 113, 113, 0.2);
+  box-shadow: 0 8px 25px rgba(248, 113, 113, 0.15);
   border-color: rgba(248, 113, 113, 0.5);
   animation-play-state: paused;
-  background: linear-gradient(135deg, rgba(248, 113, 113, 0.12), rgba(30, 41, 59, 0.85), rgba(15, 23, 42, 0.9));
+  background: linear-gradient(135deg, rgba(254, 202, 202, 0.3), rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.98));
   background-size: 100% 100%;
 }
 
@@ -1941,7 +1941,7 @@ onMounted(async () => {
 .user-name {
   font-size: 0.9rem;
   font-weight: 600;
-  color: #f1f5f9;
+  color: #1e3a2f;
 }
 
 .user-rol {
@@ -1982,7 +1982,7 @@ onMounted(async () => {
 
 .card-pending-descripcion {
   font-size: 0.85rem;
-  color: #cbd5e1;
+  color: #374151;
   line-height: 1.5;
   margin: 0;
 }
@@ -2048,7 +2048,7 @@ onMounted(async () => {
 .section-title {
   font-size: 1rem;
   font-weight: 700;
-  color: #f1f5f9;
+  color: #1e3a2f;
   margin: 0;
 }
 
@@ -2065,7 +2065,7 @@ onMounted(async () => {
 
 .stat-label {
   font-size: 0.65rem;
-  color: #cbd5e1;
+  color: #64748b;
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
@@ -2073,7 +2073,7 @@ onMounted(async () => {
 .stat-value {
   font-size: 1.1rem;
   font-weight: 700;
-  color: #f1f5f9;
+  color: #1e3a2f;
 }
 
 .stat-value.pending {
@@ -2085,13 +2085,13 @@ onMounted(async () => {
 }
 
 .stat-value.approved {
-  color: #10b981;
+  color: #16a34a;
 }
 
 /* ========== TABLE ========== */
 .solicitudes-table-wrapper {
-  background: rgba(30, 41, 59, 0.5);
-  border: 1px solid rgba(148, 163, 184, 0.15);
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(22, 163, 74, 0.2);
   border-radius: 12px;
   backdrop-filter: blur(10px);
   overflow: hidden;
@@ -2111,8 +2111,8 @@ onMounted(async () => {
 }
 
 .solicitudes-table thead {
-  background: rgba(16, 185, 129, 0.12);
-  border-bottom: 2px solid rgba(16, 185, 129, 0.2);
+  background: linear-gradient(135deg, #dcfce7 0%, #f0fdf4 100%);
+  border-bottom: 2px solid rgba(22, 163, 74, 0.3);
 }
 
 .solicitudes-table th {
@@ -2140,7 +2140,7 @@ onMounted(async () => {
 
 .solicitudes-table td {
   padding: 0.85rem;
-  color: #e2e8f0;
+  color: #374151;
 }
 
 /* ========== CELDA SOLICITANTE ========== */
@@ -2157,7 +2157,7 @@ onMounted(async () => {
 
 .solicitante-nombre {
   font-weight: 600;
-  color: #f1f5f9;
+  color: #1e3a2f;
   font-size: 0.85rem;
 }
 
@@ -2252,7 +2252,7 @@ onMounted(async () => {
 
 .badge-gray {
   background: rgba(148, 163, 184, 0.15);
-  color: #cbd5e1;
+  color: #64748b;
 }
 
 /* ========== STATUS BADGES ========== */
@@ -2458,7 +2458,7 @@ onMounted(async () => {
 
 .card-descripcion {
   font-size: 0.85rem;
-  color: #cbd5e1;
+  color: #374151;
   margin: 0 0 0.75rem 0;
   line-height: 1.4;
 }
@@ -2817,8 +2817,8 @@ onMounted(async () => {
   align-items: center;
   justify-content: center;
   padding: 2rem 1.5rem;
-  background: rgba(30, 41, 59, 0.5);
-  border: 1px dashed rgba(148, 163, 184, 0.2);
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px dashed rgba(22, 163, 74, 0.3);
   border-radius: 12px;
   text-align: center;
 }
@@ -2826,7 +2826,7 @@ onMounted(async () => {
 .empty-icon {
   width: 36px;
   height: 36px;
-  color: #10b981;
+  color: #16a34a;
   margin-bottom: 0.75rem;
   opacity: 0.8;
 }
@@ -2834,13 +2834,13 @@ onMounted(async () => {
 .empty-title {
   font-size: 0.9rem;
   font-weight: 600;
-  color: #f1f5f9;
+  color: #1e3a2f;
   margin: 0 0 0.35rem 0;
 }
 
 .empty-text {
   font-size: 0.8rem;
-  color: #cbd5e1;
+  color: #64748b;
   margin: 0;
 }
 
@@ -2850,15 +2850,15 @@ onMounted(async () => {
   z-index: 5;
   text-align: center;
   padding: 1.25rem;
-  border-top: 1px solid rgba(148, 163, 184, 0.15);
-  background: rgba(15, 23, 42, 0.6);
+  border-top: 1px solid rgba(22, 163, 74, 0.2);
+  background: rgba(255, 255, 255, 0.9);
   backdrop-filter: blur(10px);
   font-size: 0.8rem;
-  color: #cbd5e1;
+  color: #64748b;
 }
 
 .footer-highlight {
-  color: #10b981;
+  color: #16a34a;
   font-weight: 700;
 }
 
