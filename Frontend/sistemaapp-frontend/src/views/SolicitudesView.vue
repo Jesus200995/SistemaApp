@@ -1794,101 +1794,81 @@ onMounted(async () => {
 
 .solicitud-card-pending {
   position: relative;
-  background: linear-gradient(90deg, 
-    rgba(255, 255, 255, 0.95) 0%, 
-    rgba(254, 202, 202, 0.2) 25%, 
-    rgba(254, 202, 202, 0.15) 50%, 
-    rgba(254, 202, 202, 0.2) 75%, 
-    rgba(255, 255, 255, 0.95) 100%
-  );
-  background-size: 200% 100%;
-  border-radius: 16px;
-  padding: 1.25rem;
-  padding-top: 2.5rem; /* Espacio para la barra superior */
-  border: 1px solid rgba(248, 113, 113, 0.3);
-  border-left: 4px solid #f87171;
+  background: white;
+  border-radius: 20px;
+  padding: 1.5rem;
+  padding-top: 2.75rem;
+  border: 1.5px solid rgba(239, 68, 68, 0.25);
+  border-left: 5px solid #ef4444;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  box-shadow: 
+    0 4px 20px rgba(239, 68, 68, 0.08),
+    0 1px 3px rgba(0, 0, 0, 0.05);
   overflow: visible;
-  margin-top: 10px;
-  animation: cardShimmer 5s ease-in-out infinite;
+  margin-top: 12px;
 }
 
 /* Barra superior PENDIENTE */
 .card-pending-topbar {
   position: absolute;
   top: 0;
-  left: 0;
+  left: -5px;
   right: 0;
-  height: 24px;
-  background: linear-gradient(90deg, rgba(248, 113, 113, 0.3) 0%, rgba(248, 113, 113, 0.15) 50%, rgba(248, 113, 113, 0.3) 100%);
-  border-radius: 16px 16px 0 0;
+  height: 28px;
+  background: linear-gradient(135deg, #fef2f2 0%, #fecaca 50%, #fef2f2 100%);
+  border-radius: 18px 18px 0 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-bottom: 1px solid rgba(248, 113, 113, 0.25);
+  border-bottom: 1px solid rgba(239, 68, 68, 0.3);
 }
 
 .topbar-text {
-  font-size: 0.65rem;
+  font-size: 0.7rem;
   font-weight: 700;
-  color: #f87171;
-  letter-spacing: 2px;
+  color: #dc2626;
+  letter-spacing: 1.5px;
   text-transform: uppercase;
 }
 
-@keyframes cardShimmer {
-  0% { 
-    background-position: 100% 0;
-  }
-  50% { 
-    background-position: 0% 0;
-  }
-  100% { 
-    background-position: 100% 0;
-  }
-}
-
 .solicitud-card-pending:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 8px 25px rgba(248, 113, 113, 0.15);
-  border-color: rgba(248, 113, 113, 0.5);
-  animation-play-state: paused;
-  background: linear-gradient(135deg, rgba(254, 202, 202, 0.3), rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.98));
-  background-size: 100% 100%;
+  transform: translateY(-6px);
+  box-shadow: 
+    0 12px 35px rgba(239, 68, 68, 0.15),
+    0 4px 15px rgba(0, 0, 0, 0.08);
+  border-color: rgba(239, 68, 68, 0.4);
+  background: linear-gradient(135deg, #fef2f2 0%, white 100%);
 }
 
 .solicitud-card-pending:hover .card-bell-icon {
   animation: bellShake 0.8s ease-in-out infinite;
+  transform: scale(1.1);
 }
 
-/* Campanita animada - Círculo rojo vidrio líquido pequeño */
+/* Campanita animada - Círculo rojo elegante */
 .card-bell-icon {
   position: absolute;
   top: -10px;
   right: -6px;
-  width: 26px;
-  height: 26px;
+  width: 30px;
+  height: 30px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: radial-gradient(ellipse at 30% 30%, rgba(252, 165, 165, 0.6), rgba(248, 113, 113, 0.4) 50%, rgba(239, 68, 68, 0.3));
-  border: 1.5px solid rgba(248, 113, 113, 0.6);
-  backdrop-filter: blur(12px);
+  background: linear-gradient(135deg, #f87171 0%, #ef4444 100%);
+  border: 2.5px solid white;
   box-shadow: 
-    0 3px 12px rgba(248, 113, 113, 0.4),
-    0 0 15px rgba(248, 113, 113, 0.2),
-    inset 0 1px 3px rgba(255, 255, 255, 0.3),
-    inset 0 -1px 3px rgba(0, 0, 0, 0.1);
+    0 4px 15px rgba(239, 68, 68, 0.4),
+    0 2px 8px rgba(0, 0, 0, 0.1);
   color: white;
-  animation: bellShake 2s ease-in-out infinite;
   z-index: 10;
 }
 
 .card-bell-icon svg {
-  width: 14px;
-  height: 14px;
+  width: 15px;
+  height: 15px;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.2));
 }
 
 @keyframes bellShake {
@@ -1917,19 +1897,18 @@ onMounted(async () => {
 }
 
 .user-avatar {
-  width: 42px;
-  height: 42px;
+  width: 48px;
+  height: 48px;
   border-radius: 50%;
-  background: transparent;
-  border: 2px solid #00ff88;
+  background: linear-gradient(135deg, #e0e7ff 0%, #c7d2fe 100%);
+  border: 2.5px solid #6366f1;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.85rem;
+  font-size: 0.95rem;
   font-weight: 700;
-  color: #00ff88;
-  box-shadow: 0 0 15px rgba(0, 255, 136, 0.4), inset 0 0 10px rgba(0, 255, 136, 0.1);
-  text-shadow: 0 0 8px rgba(0, 255, 136, 0.6);
+  color: #4f46e5;
+  box-shadow: 0 3px 12px rgba(99, 102, 241, 0.25);
 }
 
 .user-details {
@@ -1947,14 +1926,13 @@ onMounted(async () => {
 .user-rol {
   font-size: 0.7rem;
   font-weight: 600;
-  padding: 2px 8px;
-  border-radius: 4px;
+  padding: 3px 10px;
+  border-radius: 12px;
   display: inline-block;
   width: fit-content;
-  background: rgba(0, 255, 136, 0.1);
-  color: #00ff88;
-  border: 1px solid rgba(0, 255, 136, 0.3);
-  text-shadow: 0 0 8px rgba(0, 255, 136, 0.5);
+  background: linear-gradient(135deg, #e0e7ff 0%, #c7d2fe 100%);
+  color: #4f46e5;
+  border: 1px solid rgba(99, 102, 241, 0.3);
 }
 
 .status-pendiente {
@@ -1964,10 +1942,10 @@ onMounted(async () => {
   font-size: 0.7rem;
   font-weight: 600;
   padding: 4px 10px;
-  background: rgba(248, 113, 113, 0.15);
-  color: #f87171;
-  border-radius: 6px;
-  border: 1px solid rgba(248, 113, 113, 0.3);
+  background: linear-gradient(135deg, #fef2f2 0%, #fecaca 100%);
+  color: #dc2626;
+  border-radius: 8px;
+  border: 1px solid rgba(239, 68, 68, 0.35);
 }
 
 .card-pending-body {
@@ -1991,42 +1969,46 @@ onMounted(async () => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding-top: 1rem;
-  border-top: 1px solid rgba(148, 163, 184, 0.1);
+  padding-top: 1.25rem;
+  margin-top: 0.5rem;
+  border-top: 1px solid rgba(239, 68, 68, 0.15);
 }
 
 .card-pending-fecha {
   display: flex;
   align-items: center;
-  gap: 0.4rem;
-  font-size: 0.75rem;
-  color: #94a3b8;
+  gap: 0.5rem;
+  font-size: 0.8rem;
+  color: #64748b;
+  background: rgba(241, 245, 249, 0.8);
+  padding: 0.4rem 0.8rem;
+  border-radius: 8px;
 }
 
 .btn-ver-completo {
   display: flex;
   align-items: center;
-  gap: 0.4rem;
-  padding: 0.5rem 1rem;
+  gap: 0.5rem;
+  padding: 0.6rem 1.25rem;
   font-size: 0.8rem;
   font-weight: 600;
-  color: #93c5fd;
-  background: rgba(59, 130, 246, 0.2);
-  border: 1.5px solid rgba(59, 130, 246, 0.4);
-  border-radius: 10px;
+  color: white;
+  background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+  border: none;
+  border-radius: 12px;
   cursor: pointer;
   transition: all 0.3s ease;
+  box-shadow: 0 3px 10px rgba(22, 163, 74, 0.25);
 }
 
 .btn-ver-completo:hover {
-  transform: translateY(-2px);
-  background: rgba(59, 130, 246, 0.35);
-  border-color: rgba(96, 165, 250, 0.6);
-  color: #bfdbfe;
+  transform: translateY(-3px);
+  background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%);
+  box-shadow: 0 6px 20px rgba(22, 163, 74, 0.35);
 }
 
 .btn-ver-completo:active {
-  transform: scale(0.98);
+  transform: scale(0.97);
 }
 
 /* Empty state icon success */
