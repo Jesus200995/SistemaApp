@@ -1900,15 +1900,15 @@ onMounted(async () => {
   width: 48px;
   height: 48px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #e0e7ff 0%, #c7d2fe 100%);
-  border: 2.5px solid #6366f1;
+  background: transparent;
+  border: 2.5px solid #166534;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 0.95rem;
   font-weight: 700;
-  color: #4f46e5;
-  box-shadow: 0 3px 12px rgba(99, 102, 241, 0.25);
+  color: #166534;
+  box-shadow: none;
 }
 
 .user-details {
@@ -1925,14 +1925,14 @@ onMounted(async () => {
 
 .user-rol {
   font-size: 0.7rem;
-  font-weight: 600;
-  padding: 3px 10px;
+  font-weight: 700;
+  padding: 4px 12px;
   border-radius: 12px;
   display: inline-block;
   width: fit-content;
-  background: linear-gradient(135deg, #e0e7ff 0%, #c7d2fe 100%);
-  color: #4f46e5;
-  border: 1px solid rgba(99, 102, 241, 0.3);
+  background: #15803d;
+  color: #ffffff;
+  border: none;
 }
 
 .status-pendiente {
@@ -2161,10 +2161,10 @@ onMounted(async () => {
 .rol-territorial,
 .rol-facilitador,
 .rol-tecnico {
-  background: rgba(0, 255, 136, 0.1);
-  color: #00ff88;
-  border: 1px solid rgba(0, 255, 136, 0.3);
-  text-shadow: 0 0 8px rgba(0, 255, 136, 0.5);
+  background: #15803d;
+  color: #ffffff;
+  border: none;
+  text-shadow: none;
 }
 
 .cell-tipo {
