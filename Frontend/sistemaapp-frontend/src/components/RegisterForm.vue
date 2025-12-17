@@ -237,7 +237,7 @@ const verTerminos = () => {
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.7);
+  background: rgba(22, 163, 74, 0.2);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -281,8 +281,8 @@ const verTerminos = () => {
   justify-content: space-between;
   align-items: center;
   padding: 1.5rem;
-  border-bottom: 1px solid #e0e0e0;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-bottom: 1px solid rgba(22, 163, 74, 0.2);
+  background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
   color: white;
   border-radius: 12px 12px 0 0;
 }
@@ -345,8 +345,8 @@ const verTerminos = () => {
 .form-group input:focus,
 .form-group select:focus {
   outline: none;
-  border-color: #667eea;
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  border-color: #16a34a;
+  box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.1);
 }
 
 .form-group.checkbox {
@@ -369,7 +369,7 @@ const verTerminos = () => {
 }
 
 .form-group.checkbox a {
-  color: #667eea;
+  color: #16a34a;
   text-decoration: none;
   font-weight: 500;
 }
@@ -407,13 +407,13 @@ const verTerminos = () => {
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
   color: white;
 }
 
 .btn-primary:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 8px 16px rgba(102, 126, 234, 0.4);
+  box-shadow: 0 8px 16px rgba(22, 163, 74, 0.4);
 }
 
 .btn-primary:disabled {
@@ -443,7 +443,7 @@ const verTerminos = () => {
 .success-icon {
   width: 60px;
   height: 60px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
   color: white;
   border-radius: 50%;
   display: flex;

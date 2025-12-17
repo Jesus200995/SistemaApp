@@ -1028,7 +1028,7 @@ onMounted(async () => {
 .usuarios-container {
   height: 100vh;
   width: 100vw;
-  background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+  background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 50%, #f0fdf4 100%);
   position: relative;
   overflow: hidden;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -1047,9 +1047,9 @@ onMounted(async () => {
 
 .blob {
   position: absolute;
-  opacity: 0.1;
+  opacity: 0.3;
   filter: blur(100px);
-  mix-blend-mode: screen;
+  mix-blend-mode: multiply;
 }
 
 .blob-1 {
@@ -1098,11 +1098,11 @@ onMounted(async () => {
   left: 0;
   right: 0;
   z-index: 10;
-  background: rgba(132, 204, 22, 0.12);
-  border-bottom: 1px solid rgba(132, 204, 22, 0.1);
+  background: rgba(255, 255, 255, 0.9);
+  border-bottom: 1px solid rgba(22, 163, 74, 0.2);
   backdrop-filter: blur(12px);
   padding: 1rem 1.2rem;
-  box-shadow: 0 4px 20px rgba(132, 204, 22, 0.1);
+  box-shadow: 0 4px 20px rgba(22, 163, 74, 0.1);
   width: 100%;
   box-sizing: border-box;
 }
@@ -1131,21 +1131,21 @@ onMounted(async () => {
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background: rgba(132, 204, 22, 0.1);
-  border: 1.5px solid rgba(132, 204, 22, 0.4);
+  background: rgba(255, 255, 255, 0.9);
+  border: 1.5px solid rgba(22, 163, 74, 0.4);
   cursor: pointer;
   text-decoration: none;
   transition: all 0.3s ease;
-  color: #84cc16;
+  color: #16a34a;
   backdrop-filter: blur(10px);
   flex-shrink: 0;
 }
 
 .back-button:hover {
-  background: rgba(132, 204, 22, 0.2);
+  background: rgba(22, 163, 74, 0.1);
   transform: translateX(-4px);
-  box-shadow: 0 4px 15px rgba(132, 204, 22, 0.3);
-  border-color: rgba(132, 204, 22, 0.6);
+  box-shadow: 0 4px 15px rgba(22, 163, 74, 0.3);
+  border-color: rgba(22, 163, 74, 0.6);
 }
 
 .back-button:active {
@@ -1172,7 +1172,7 @@ onMounted(async () => {
 .icon-stat {
   width: 20px;
   height: 20px;
-  color: #84cc16;
+  color: #16a34a;
   stroke-width: 2;
 }
 
@@ -1184,14 +1184,13 @@ onMounted(async () => {
 .header-title {
   font-size: 0.95rem;
   font-weight: 700;
-  color: #84cc16;
+  color: #15803d;
   margin: 0;
-  text-shadow: 0 0 8px rgba(132, 204, 22, 0.4);
 }
 
 .header-subtitle {
   font-size: 0.75rem;
-  color: #cbd5e1;
+  color: #64748b;
   margin: 0;
   margin-top: 0.2rem;
 }
@@ -2014,7 +2013,7 @@ onMounted(async () => {
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.7);
+  background: rgba(22, 163, 74, 0.2);
   backdrop-filter: blur(4px);
   display: flex;
   align-items: center;
@@ -2025,29 +2024,29 @@ onMounted(async () => {
 
 /* ========== MODAL CREAR USUARIO ========== */
 .modal-crear-usuario {
-  background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
-  border: 1px solid rgba(16, 185, 129, 0.3);
+  background: white;
+  border: 1px solid rgba(22, 163, 74, 0.2);
   border-radius: 20px;
   padding: 0;
   max-width: 450px;
   width: 100%;
   max-height: 90vh;
   overflow-y: auto;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 20px 60px rgba(22, 163, 74, 0.15);
 }
 
 .modal-header {
   position: relative;
   padding: 1.5rem 1.5rem 1rem;
   text-align: center;
-  border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+  border-bottom: 1px solid rgba(22, 163, 74, 0.1);
 }
 
 .modal-icon {
   width: 60px;
   height: 60px;
-  background: linear-gradient(135deg, rgba(16, 185, 129, 0.2) 0%, rgba(16, 185, 129, 0.1) 100%);
-  border: 2px solid #10b981;
+  background: linear-gradient(135deg, rgba(22, 163, 74, 0.2) 0%, rgba(22, 163, 74, 0.1) 100%);
+  border: 2px solid #16a34a;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -2058,19 +2057,19 @@ onMounted(async () => {
 .modal-icon-svg {
   width: 28px;
   height: 28px;
-  color: #10b981;
+  color: #16a34a;
 }
 
 .modal-title {
   font-size: 1.25rem;
   font-weight: 700;
-  color: #f1f5f9;
+  color: #1e3a2f;
   margin: 0 0 0.5rem;
 }
 
 .modal-subtitle {
   font-size: 0.85rem;
-  color: #94a3b8;
+  color: #64748b;
   margin: 0;
   line-height: 1.4;
 }
@@ -2317,10 +2316,10 @@ onMounted(async () => {
 }
 
 .modal-edicion {
-  background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
-  border: 1px solid rgba(132, 204, 22, 0.2);
+  background: white;
+  border: 1px solid rgba(22, 163, 74, 0.2);
   border-radius: 16px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+  box-shadow: 0 20px 60px rgba(22, 163, 74, 0.15);
   backdrop-filter: blur(12px);
   width: 100%;
   max-width: 600px;
@@ -2346,16 +2345,15 @@ onMounted(async () => {
   align-items: center;
   justify-content: space-between;
   padding: 1.5rem;
-  border-bottom: 1px solid rgba(132, 204, 22, 0.1);
-  background: rgba(132, 204, 22, 0.05);
+  border-bottom: 1px solid rgba(22, 163, 74, 0.1);
+  background: rgba(22, 163, 74, 0.05);
   border-radius: 16px 16px 0 0;
 }
 
 .modal-title {
   font-size: 1.3rem;
   font-weight: 700;
-  color: #84cc16;
-  text-shadow: 0 0 8px rgba(132, 204, 22, 0.3);
+  color: #15803d;
   margin: 0;
 }
 
@@ -2883,22 +2881,21 @@ onMounted(async () => {
 
 /* ========== SWEETALERT MODAL DELETE ========== */
 :deep(.swal-delete-popup) {
-  background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%) !important;
+  background: white !important;
   border: 1.5px solid rgba(239, 68, 68, 0.3) !important;
   border-radius: 16px !important;
-  box-shadow: 0 20px 60px rgba(239, 68, 68, 0.2) !important;
+  box-shadow: 0 20px 60px rgba(239, 68, 68, 0.15) !important;
   backdrop-filter: blur(12px) !important;
 }
 
 :deep(.swal-delete-title) {
-  color: #fca5a5 !important;
+  color: #dc2626 !important;
   font-size: 1.4rem !important;
   font-weight: 700 !important;
-  text-shadow: 0 0 8px rgba(239, 68, 68, 0.3) !important;
 }
 
 :deep(.swal-delete-html) {
-  color: #cbd5e1 !important;
+  color: #374151 !important;
   font-size: 0.95rem !important;
 }
 
@@ -2925,7 +2922,7 @@ onMounted(async () => {
 :deep(.swal-delete-cancel) {
   background: rgba(107, 114, 128, 0.1) !important;
   border: 1px solid rgba(107, 114, 128, 0.3) !important;
-  color: #d1d5db !important;
+  color: #374151 !important;
   font-weight: 600 !important;
   transition: all 0.3s ease !important;
 }

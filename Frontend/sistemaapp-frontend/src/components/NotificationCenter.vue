@@ -265,22 +265,22 @@ onUnmounted(() => {
 
 .notification-bell {
   position: relative;
-  background: rgba(15, 23, 42, 0.6);
-  border: 1px solid rgba(148, 163, 184, 0.2);
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(22, 163, 74, 0.2);
   border-radius: 8px;
   padding: 0.625rem;
   cursor: pointer;
   transition: all 0.3s ease;
-  color: #f1f5f9;
+  color: #1e3a2f;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
 .notification-bell:hover {
-  background: rgba(30, 41, 59, 0.8);
-  border-color: rgba(148, 163, 184, 0.4);
-  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.1);
+  background: white;
+  border-color: rgba(22, 163, 74, 0.4);
+  box-shadow: 0 4px 12px rgba(22, 163, 74, 0.15);
 }
 
 .notification-badge {
@@ -298,7 +298,7 @@ onUnmounted(() => {
   font-size: 0.75rem;
   font-weight: 700;
   box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
-  border: 2px solid rgba(15, 23, 42, 0.9);
+  border: 2px solid white;
 }
 
 .notification-dropdown {
@@ -307,10 +307,10 @@ onUnmounted(() => {
   right: 0;
   width: 400px;
   max-height: 600px;
-  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-  border: 1px solid rgba(148, 163, 184, 0.2);
+  background: white;
+  border: 1px solid rgba(22, 163, 74, 0.2);
   border-radius: 12px;
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 12px 40px rgba(22, 163, 74, 0.15);
   backdrop-filter: blur(10px);
   z-index: 1000;
   margin-top: 0.5rem;
@@ -335,12 +335,12 @@ onUnmounted(() => {
   justify-content: space-between;
   align-items: center;
   padding: 1rem;
-  border-bottom: 1px solid rgba(148, 163, 184, 0.1);
-  background: rgba(30, 41, 59, 0.5);
+  border-bottom: 1px solid rgba(22, 163, 74, 0.1);
+  background: rgba(22, 163, 74, 0.05);
 }
 
 .notification-header h3 {
-  color: #f1f5f9;
+  color: #1e3a2f;
   font-size: 1.125rem;
   font-weight: 600;
   margin: 0;
@@ -349,14 +349,14 @@ onUnmounted(() => {
 .close-btn {
   background: none;
   border: none;
-  color: #cbd5e1;
+  color: #64748b;
   cursor: pointer;
   transition: color 0.2s;
   padding: 0;
 }
 
 .close-btn:hover {
-  color: #f1f5f9;
+  color: #1e3a2f;
 }
 
 .notification-list {
@@ -371,17 +371,17 @@ onUnmounted(() => {
 }
 
 .notification-list::-webkit-scrollbar-track {
-  background: rgba(15, 23, 42, 0.5);
+  background: rgba(22, 163, 74, 0.05);
   border-radius: 3px;
 }
 
 .notification-list::-webkit-scrollbar-thumb {
-  background: rgba(148, 163, 184, 0.3);
+  background: rgba(22, 163, 74, 0.2);
   border-radius: 3px;
 }
 
 .notification-list::-webkit-scrollbar-thumb:hover {
-  background: rgba(148, 163, 184, 0.5);
+  background: rgba(22, 163, 74, 0.3);
 }
 
 .empty-state {
@@ -390,7 +390,7 @@ onUnmounted(() => {
   align-items: center;
   justify-content: center;
   padding: 2rem 1rem;
-  color: #cbd5e1;
+  color: #64748b;
   text-align: center;
 }
 
@@ -403,7 +403,7 @@ onUnmounted(() => {
   display: flex;
   gap: 1rem;
   padding: 1rem;
-  background: rgba(30, 41, 59, 0.4);
+  background: #f8fafc;
   margin-bottom: 0.5rem;
   border-radius: 8px;
   border-left: 3px solid;
@@ -411,16 +411,16 @@ onUnmounted(() => {
 }
 
 .notification-item:not(.leida) {
-  background: rgba(16, 185, 129, 0.05);
+  background: rgba(22, 163, 74, 0.08);
 }
 
 .notification-item.leida {
-  background: rgba(241, 245, 249, 0.05);
+  background: #f8fafc;
   opacity: 0.9;
 }
 
 .notification-item:hover {
-  background: rgba(30, 41, 59, 0.7);
+  background: rgba(22, 163, 74, 0.12);
 }
 
 .notification-icon {
@@ -440,7 +440,7 @@ onUnmounted(() => {
 }
 
 .notification-title {
-  color: #f1f5f9;
+  color: #1e3a2f;
   font-weight: 600;
   font-size: 0.95rem;
   margin: 0 0 0.25rem 0;
@@ -448,7 +448,7 @@ onUnmounted(() => {
 }
 
 .notification-message {
-  color: #cbd5e1;
+  color: #374151;
   font-size: 0.875rem;
   margin: 0 0 0.5rem 0;
   line-height: 1.4;
@@ -456,7 +456,7 @@ onUnmounted(() => {
 }
 
 .notification-time {
-  color: #94a3b8;
+  color: #64748b;
   font-size: 0.75rem;
   margin: 0;
 }
@@ -464,7 +464,7 @@ onUnmounted(() => {
 .delete-btn {
   background: none;
   border: none;
-  color: #94a3b8;
+  color: #64748b;
   cursor: pointer;
   padding: 0.25rem;
   transition: all 0.2s;

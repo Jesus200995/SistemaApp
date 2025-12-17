@@ -545,8 +545,8 @@ const getUsuariosDesc = (): string => {
   width: 100%;
   display: flex;
   flex-direction: column;
-  background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
-  color: #fff;
+  background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 50%, #f0fdf4 100%);
+  color: #1e3a2f;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   margin: 0;
   padding: 0;
@@ -568,10 +568,10 @@ const getUsuariosDesc = (): string => {
   right: 0;
   z-index: 100;
   backdrop-filter: blur(12px);
-  background: rgba(132, 204, 22, 0.12);
-  border-bottom: 1px solid rgba(132, 204, 22, 0.1);
+  background: rgba(255, 255, 255, 0.9);
+  border-bottom: 1px solid rgba(22, 163, 74, 0.15);
   padding: 0;
-  box-shadow: 0 4px 20px rgba(132, 204, 22, 0.1);
+  box-shadow: 0 4px 20px rgba(22, 163, 74, 0.1);
   width: 100%;
   height: 62px;
   box-sizing: border-box;
@@ -618,10 +618,10 @@ const getUsuariosDesc = (): string => {
   font-size: 1.3rem;
   font-weight: 600;
   letter-spacing: -0.5px;
-  color: #ffffff;
+  color: #15803d;
   margin: 0;
   font-family: 'Segoe UI', 'Trebuchet MS', sans-serif;
-  text-shadow: 0 0 10px rgba(132, 204, 22, 0.4);
+  text-shadow: none;
 }
 
 @keyframes gradient-flow {
@@ -638,7 +638,7 @@ const getUsuariosDesc = (): string => {
 
 .logo-text p {
   font-size: 0.7rem;
-  color: #84cc16;
+  color: #16a34a;
   margin: 0.02rem 0 0 0;
   font-weight: 600;
   letter-spacing: 0.05em;
@@ -646,7 +646,7 @@ const getUsuariosDesc = (): string => {
   font-family: 'Segoe UI', sans-serif;
   animation: subtitle-fade-in 1s ease-out 0.2s forwards;
   opacity: 1;
-  text-shadow: 0 0 8px rgba(132, 204, 22, 0.5);
+  text-shadow: none;
   line-height: 1;
 }
 
@@ -764,21 +764,21 @@ const getUsuariosDesc = (): string => {
 
 /* ========== PROFILE CARD ========== */
 .profile-card {
-  background: rgba(132, 204, 22, 0.08);
-  border: 1.5px solid rgba(132, 204, 22, 0.3);
+  background: rgba(255, 255, 255, 0.9);
+  border: 1.5px solid rgba(22, 163, 74, 0.25);
   border-radius: 20px;
   padding: 1rem 0.8rem;
   backdrop-filter: blur(10px);
   text-align: left;
   margin-bottom: 1rem;
-  box-shadow: 0 8px 32px rgba(132, 204, 22, 0.1);
+  box-shadow: 0 8px 32px rgba(22, 163, 74, 0.1);
   transition: all 0.3s ease;
   margin-top: -2px;
 }
 
 .profile-card:hover {
-  border-color: rgba(132, 204, 22, 0.5);
-  box-shadow: 0 12px 48px rgba(132, 204, 22, 0.2);
+  border-color: rgba(22, 163, 74, 0.4);
+  box-shadow: 0 12px 48px rgba(22, 163, 74, 0.15);
 }
 
 /* ===== NEW PROFILE HEADER LAYOUT ===== */
@@ -794,18 +794,18 @@ const getUsuariosDesc = (): string => {
   width: 60px;
   height: 60px;
   border-radius: 50%;
-  border: 2.5px solid #84cc16;
+  border: 2.5px solid #16a34a;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 1.4rem;
   font-weight: 700;
-  color: #84cc16;
-  text-shadow: 0 0 10px rgba(132, 204, 22, 0.6);
-  background: transparent;
+  color: #16a34a;
+  text-shadow: none;
+  background: rgba(22, 163, 74, 0.1);
   box-shadow: 
-    inset 0 0 10px rgba(132, 204, 22, 0.2),
-    0 0 15px rgba(132, 204, 22, 0.3);
+    inset 0 0 10px rgba(22, 163, 74, 0.1),
+    0 0 15px rgba(22, 163, 74, 0.2);
 }
 
 .user-info-section {
@@ -815,24 +815,24 @@ const getUsuariosDesc = (): string => {
 .user-full-name {
   font-size: 1.2rem;
   font-weight: 700;
-  color: #ffffff;
+  color: #15803d;
   margin-bottom: 0.3rem;
 }
 
 .role-badge {
   display: inline-block;
   padding: 0.25rem 0.8rem;
-  border: 1.5px solid #84cc16;
+  border: 1.5px solid #16a34a;
   border-radius: 6px;
   font-size: 0.85rem;
   font-weight: 600;
-  color: #84cc16;
+  color: #16a34a;
   margin-bottom: 0.3rem;
 }
 
 .user-email {
   font-size: 0.85rem;
-  color: #cbd5e1;
+  color: #166534;
   font-style: italic;
   margin: 0;
 }
@@ -907,7 +907,7 @@ const getUsuariosDesc = (): string => {
   font-size: 0.95rem;
   font-weight: 600;
   margin-bottom: 0.8rem;
-  color: #ffffff;
+  color: #15803d;
   text-align: center;
   position: relative;
   display: flex;
@@ -922,7 +922,7 @@ const getUsuariosDesc = (): string => {
   content: '';
   flex: 1;
   height: 1px;
-  background: linear-gradient(to right, transparent, rgba(132, 204, 22, 0.5), transparent);
+  background: linear-gradient(to right, transparent, rgba(22, 163, 74, 0.4), transparent);
   animation: greenLightPass 3s ease-in-out infinite;
 }
 
@@ -969,8 +969,8 @@ const getUsuariosDesc = (): string => {
 
 .action-card {
   position: relative;
-  background: transparent;
-  border: 2px solid rgba(132, 204, 22, 0.3);
+  background: rgba(255, 255, 255, 0.9);
+  border: 2px solid rgba(22, 163, 74, 0.25);
   border-radius: 20px;
   padding: 1rem;
   cursor: pointer;
@@ -1007,9 +1007,9 @@ const getUsuariosDesc = (): string => {
 
 .action-card:hover {
   transform: translateY(-8px);
-  border-color: #84cc16;
-  background: rgba(132, 204, 22, 0.08);
-  box-shadow: 0 12px 32px rgba(132, 204, 22, 0.25), inset 0 0 20px rgba(132, 204, 22, 0.1);
+  border-color: #16a34a;
+  background: rgba(22, 163, 74, 0.08);
+  box-shadow: 0 12px 32px rgba(22, 163, 74, 0.2), inset 0 0 20px rgba(22, 163, 74, 0.05);
 }
 
 .action-card:active {
@@ -1020,39 +1020,39 @@ const getUsuariosDesc = (): string => {
   width: 48px;
   height: 48px;
   background: transparent;
-  border: 2.5px solid #84cc16;
+  border: 2.5px solid #16a34a;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 0 15px rgba(132, 204, 22, 0.4);
+  box-shadow: 0 0 15px rgba(22, 163, 74, 0.3);
   transition: all 0.3s ease;
 }
 
 .action-card:hover .action-icon-wrapper {
   transform: scale(1.15) rotate(5deg);
-  box-shadow: 0 0 25px rgba(132, 204, 22, 0.6);
-  background: rgba(132, 204, 22, 0.1);
+  box-shadow: 0 0 25px rgba(22, 163, 74, 0.4);
+  background: rgba(22, 163, 74, 0.1);
 }
 
 .action-icon {
   width: 24px;
   height: 24px;
-  color: #84cc16;
-  text-shadow: 0 0 10px rgba(132, 204, 22, 0.6);
+  color: #16a34a;
+  text-shadow: none;
 }
 
 .action-title {
   font-size: 0.75rem;
   font-weight: 600;
-  color: #e2e8f0;
+  color: #166534;
   text-align: center;
   transition: color 0.3s ease;
   letter-spacing: 0.5px;
 }
 
 .action-card:hover .action-title {
-  color: #84cc16;
+  color: #15803d;
 }
 
 /* ========== SPECIALIZED MODULES SECTION ========== */
@@ -1387,15 +1387,15 @@ const getUsuariosDesc = (): string => {
 
 /* ========== NOTIFICATIONS SECTION (Solicitudes Recientes) ========== */
 .notifications-section {
-  background: rgba(132, 204, 22, 0.06);
-  border: 1.5px solid rgba(132, 204, 22, 0.25);
+  background: rgba(255, 255, 255, 0.9);
+  border: 1.5px solid rgba(22, 163, 74, 0.2);
   border-radius: 16px;
   padding: 1.2rem;
   margin-bottom: 1rem;
   backdrop-filter: blur(12px);
   box-shadow: 
-    0 8px 32px rgba(132, 204, 22, 0.08),
-    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    0 8px 32px rgba(22, 163, 74, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5);
 }
 
 .notifications-header {
@@ -1454,7 +1454,7 @@ const getUsuariosDesc = (): string => {
   gap: 0.8rem;
   padding: 0.9rem;
   padding-right: 55px; /* Espacio para el botón semicírculo */
-  background: rgba(30, 41, 59, 0.6);
+  background: rgba(255, 255, 255, 0.95);
   border-radius: 12px;
   border: 1px solid rgba(239, 68, 68, 0.2);
   transition: all 0.3s ease;
@@ -1495,7 +1495,7 @@ const getUsuariosDesc = (): string => {
   flex-direction: column;
   gap: 0.25rem;
   padding-left: 0.8rem;
-  border-left: 1px solid rgba(148, 163, 184, 0.2);
+  border-left: 1px solid rgba(22, 163, 74, 0.2);
 }
 
 /* Icono de solicitud a la izquierda */
@@ -1547,7 +1547,7 @@ const getUsuariosDesc = (): string => {
 .notif-user-name {
   font-size: 0.75rem;
   font-weight: 500;
-  color: #cbd5e1;
+  color: #15803d;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -1555,7 +1555,7 @@ const getUsuariosDesc = (): string => {
 
 .notif-user-rol {
   font-size: 0.65rem;
-  color: #94a3b8;
+  color: #166534;
   font-style: italic;
 }
 
@@ -1997,15 +1997,15 @@ const getUsuariosDesc = (): string => {
 .dashboard-footer {
   text-align: center;
   padding: 0.8rem;
-  border-top: 1px solid rgba(148, 163, 184, 0.1);
-  background: rgba(15, 23, 42, 0.5);
+  border-top: 1px solid rgba(22, 163, 74, 0.1);
+  background: rgba(255, 255, 255, 0.9);
   backdrop-filter: blur(10px);
   font-size: 0.7rem;
-  color: #94a3b8;
+  color: #166534;
 }
 
 .footer-highlight {
-  color: #10b981;
+  color: #15803d;
   font-weight: 600;
 }
 

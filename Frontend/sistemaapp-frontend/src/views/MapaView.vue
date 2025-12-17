@@ -437,7 +437,7 @@ onMounted(() => {
   width: 100vw;
   display: flex;
   flex-direction: column;
-  background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+  background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 50%, #f0fdf4 100%);
   position: relative;
   overflow: hidden;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
@@ -456,9 +456,9 @@ onMounted(() => {
 
 .blob {
   position: absolute;
-  opacity: 0.08;
+  opacity: 0.3;
   filter: blur(120px);
-  mix-blend-mode: screen;
+  mix-blend-mode: multiply;
   border-radius: 50%;
 }
 
@@ -498,11 +498,11 @@ onMounted(() => {
 .header-mapa {
   position: relative;
   z-index: 30;
-  background: rgba(132, 204, 22, 0.12);
-  border-bottom: 1px solid rgba(132, 204, 22, 0.1);
+  background: rgba(255, 255, 255, 0.9);
+  border-bottom: 1px solid rgba(22, 163, 74, 0.2);
   backdrop-filter: blur(12px);
   padding: 1rem 1.2rem;
-  box-shadow: 0 4px 20px rgba(132, 204, 22, 0.1);
+  box-shadow: 0 4px 20px rgba(22, 163, 74, 0.1);
   width: 100%;
 }
 
@@ -530,21 +530,21 @@ onMounted(() => {
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background: rgba(132, 204, 22, 0.1);
-  border: 1.5px solid rgba(132, 204, 22, 0.4);
+  background: rgba(255, 255, 255, 0.9);
+  border: 1.5px solid rgba(22, 163, 74, 0.4);
   cursor: pointer;
   text-decoration: none;
   transition: all 0.3s ease;
-  color: #84cc16;
+  color: #16a34a;
   backdrop-filter: blur(10px);
   flex-shrink: 0;
 }
 
 .back-button:hover {
-  background: rgba(132, 204, 22, 0.2);
+  background: rgba(22, 163, 74, 0.1);
   transform: translateX(-4px);
-  box-shadow: 0 4px 15px rgba(132, 204, 22, 0.3);
-  border-color: rgba(132, 204, 22, 0.6);
+  box-shadow: 0 4px 15px rgba(22, 163, 74, 0.3);
+  border-color: rgba(22, 163, 74, 0.6);
 }
 
 .back-button:active {
@@ -571,7 +571,7 @@ onMounted(() => {
 .icon-header {
   width: 20px;
   height: 20px;
-  color: #84cc16;
+  color: #16a34a;
   stroke-width: 2;
 }
 
@@ -584,9 +584,8 @@ onMounted(() => {
 .header-title {
   font-size: 0.95rem;
   font-weight: 700;
-  color: #84cc16;
+  color: #15803d;
   margin: 0;
-  text-shadow: 0 0 8px rgba(132, 204, 22, 0.4);
   background: none;
   -webkit-background-clip: unset;
   -webkit-text-fill-color: unset;
@@ -596,7 +595,7 @@ onMounted(() => {
 .header-text p,
 .header-subtitle {
   font-size: 0.75rem;
-  color: #cbd5e1;
+  color: #64748b;
   margin: 0;
   margin-top: 0.2rem;
 }
@@ -605,9 +604,9 @@ onMounted(() => {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  background: rgba(132, 204, 22, 0.1);
-  color: #84cc16;
-  border: 1.5px solid rgba(132, 204, 22, 0.4);
+  background: rgba(255, 255, 255, 0.9);
+  color: #16a34a;
+  border: 1.5px solid rgba(22, 163, 74, 0.4);
   border-radius: 20px;
   padding: 0.5rem 1rem;
   font-size: 0.8rem;
@@ -619,9 +618,9 @@ onMounted(() => {
 }
 
 .btn-location:hover {
-  background: rgba(132, 204, 22, 0.2);
-  box-shadow: 0 4px 15px rgba(132, 204, 22, 0.3);
-  border-color: rgba(132, 204, 22, 0.6);
+  background: rgba(22, 163, 74, 0.1);
+  box-shadow: 0 4px 15px rgba(22, 163, 74, 0.3);
+  border-color: rgba(22, 163, 74, 0.6);
 }
 
 .btn-location:active {
@@ -642,12 +641,12 @@ onMounted(() => {
   max-height: calc(100vh - 80px);
   z-index: 20;
   backdrop-filter: blur(10px);
-  background: rgba(15, 23, 42, 0.95);
-  border-right: 1px solid rgba(148, 163, 184, 0.15);
-  border-bottom: 1px solid rgba(148, 163, 184, 0.15);
+  background: rgba(255, 255, 255, 0.95);
+  border-right: 1px solid rgba(22, 163, 74, 0.15);
+  border-bottom: 1px solid rgba(22, 163, 74, 0.15);
   border-radius: 0 0 16px 0;
   overflow-y: auto;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 8px 32px rgba(22, 163, 74, 0.15);
 }
 
 .panel-wrapper {

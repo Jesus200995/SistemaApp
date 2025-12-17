@@ -790,31 +790,31 @@ onMounted(async () => {
 </script>
 
 <style scoped>
-/* Forzar esquema de color oscuro siempre */
+/* Forzar esquema de color claro siempre */
 :root {
-  --color-primary: #10b981;
-  --color-primary-dark: #059669;
-  --color-bg: #0f172a;
-  --color-bg-dark: #0a0f1e;
-  --color-card: #1e293b;
-  --color-input: #1a2332;
-  --color-border: #334155;
-  --color-text: #f1f5f9;
-  --color-text-sec: #cbd5e1;
-  --color-text-dim: #94a3b8;
-  color-scheme: dark;
+  --color-primary: #16a34a;
+  --color-primary-dark: #15803d;
+  --color-bg: #f0fdf4;
+  --color-bg-dark: #dcfce7;
+  --color-card: #ffffff;
+  --color-input: #ffffff;
+  --color-border: rgba(22, 163, 74, 0.2);
+  --color-text: #1e3a2f;
+  --color-text-sec: #374151;
+  --color-text-dim: #64748b;
+  color-scheme: light;
 }
 
 /* Forzar colores en toda la vista */
 .seguimiento-container,
 .seguimiento-container * {
-  color-scheme: dark;
+  color-scheme: light;
 }
 
 .seguimiento-container {
   min-height: 100vh;
   width: 100%;
-  background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+  background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 50%, #f0fdf4 100%);
   position: relative;
   overflow-x: hidden;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
@@ -831,9 +831,9 @@ onMounted(async () => {
 
 .blob {
   position: absolute;
-  opacity: 0.08;
+  opacity: 0.3;
   filter: blur(120px);
-  mix-blend-mode: screen;
+  mix-blend-mode: multiply;
   border-radius: 50%;
 }
 
@@ -874,11 +874,11 @@ onMounted(async () => {
 .header-seguimiento {
   position: relative;
   z-index: 10;
-  background: rgba(132, 204, 22, 0.12);
-  border-bottom: 1px solid rgba(132, 204, 22, 0.1);
+  background: rgba(255, 255, 255, 0.9);
+  border-bottom: 1px solid rgba(22, 163, 74, 0.2);
   backdrop-filter: blur(12px);
   padding: 1rem 1.2rem;
-  box-shadow: 0 4px 20px rgba(132, 204, 22, 0.1);
+  box-shadow: 0 4px 20px rgba(22, 163, 74, 0.1);
   width: 100%;
 }
 
@@ -906,21 +906,21 @@ onMounted(async () => {
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background: rgba(132, 204, 22, 0.1);
-  border: 1.5px solid rgba(132, 204, 22, 0.4);
+  background: rgba(255, 255, 255, 0.9);
+  border: 1.5px solid rgba(22, 163, 74, 0.4);
   cursor: pointer;
   text-decoration: none;
   transition: all 0.3s ease;
-  color: #84cc16;
+  color: #16a34a;
   backdrop-filter: blur(10px);
   flex-shrink: 0;
 }
 
 .back-button:hover {
-  background: rgba(132, 204, 22, 0.2);
+  background: rgba(22, 163, 74, 0.1);
   transform: translateX(-4px);
-  box-shadow: 0 4px 15px rgba(132, 204, 22, 0.3);
-  border-color: rgba(132, 204, 22, 0.6);
+  box-shadow: 0 4px 15px rgba(22, 163, 74, 0.3);
+  border-color: rgba(22, 163, 74, 0.6);
 }
 
 .back-icon {
@@ -943,7 +943,7 @@ onMounted(async () => {
 .icon-stat {
   width: 20px;
   height: 20px;
-  color: #84cc16;
+  color: #16a34a;
   stroke-width: 2;
 }
 
@@ -955,14 +955,13 @@ onMounted(async () => {
 .header-title {
   font-size: 0.95rem;
   font-weight: 700;
-  color: #84cc16;
+  color: #15803d;
   margin: 0;
-  text-shadow: 0 0 8px rgba(132, 204, 22, 0.4);
 }
 
 .header-subtitle {
   font-size: 0.75rem;
-  color: #cbd5e1;
+  color: #64748b;
   margin: 0;
   margin-top: 0.2rem;
 }
@@ -2424,7 +2423,7 @@ onMounted(async () => {
 .success-modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.6);
+  background: rgba(22, 163, 74, 0.2);
   backdrop-filter: blur(8px);
   display: flex;
   align-items: center;
@@ -2434,17 +2433,17 @@ onMounted(async () => {
 }
 
 .success-modal {
-  background: linear-gradient(145deg, #1e293b 0%, #0f172a 100%);
-  border: 1px solid rgba(16, 185, 129, 0.3);
+  background: white;
+  border: 1px solid rgba(22, 163, 74, 0.3);
   border-radius: 20px;
   padding: 2rem 2.5rem;
   text-align: center;
   max-width: 320px;
   width: 100%;
   box-shadow: 
-    0 25px 50px -12px rgba(0, 0, 0, 0.5),
-    0 0 40px rgba(16, 185, 129, 0.15),
-    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    0 25px 50px -12px rgba(22, 163, 74, 0.2),
+    0 0 40px rgba(22, 163, 74, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5);
   animation: modal-pop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
@@ -2463,7 +2462,7 @@ onMounted(async () => {
   width: 70px;
   height: 70px;
   margin: 0 auto 1.25rem;
-  background: linear-gradient(135deg, rgba(16, 185, 129, 0.2) 0%, rgba(16, 185, 129, 0.05) 100%);
+  background: linear-gradient(135deg, rgba(22, 163, 74, 0.2) 0%, rgba(22, 163, 74, 0.05) 100%);
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -2476,7 +2475,7 @@ onMounted(async () => {
   position: absolute;
   inset: -3px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #10b981, #059669);
+  background: linear-gradient(135deg, #16a34a, #15803d);
   opacity: 0.3;
   animation: pulse-ring 1.5s ease-out infinite;
 }
@@ -2495,7 +2494,7 @@ onMounted(async () => {
 .success-check {
   width: 40px;
   height: 40px;
-  color: #10b981;
+  color: #16a34a;
   position: relative;
   z-index: 1;
 }
@@ -2527,14 +2526,14 @@ onMounted(async () => {
 .success-modal-title {
   font-size: 1.35rem;
   font-weight: 700;
-  color: #f1f5f9;
+  color: #1e3a2f;
   margin-bottom: 0.5rem;
   letter-spacing: -0.02em;
 }
 
 .success-modal-text {
   font-size: 0.9rem;
-  color: #94a3b8;
+  color: #64748b;
   margin-bottom: 1.5rem;
   line-height: 1.5;
 }
@@ -2542,14 +2541,14 @@ onMounted(async () => {
 .success-modal-progress {
   width: 100%;
   height: 4px;
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(22, 163, 74, 0.15);
   border-radius: 2px;
   overflow: hidden;
 }
 
 .success-progress-bar {
   height: 100%;
-  background: linear-gradient(90deg, #10b981, #84cc16);
+  background: linear-gradient(90deg, #16a34a, #15803d);
   border-radius: 2px;
   animation: progress-shrink 2s linear forwards;
 }

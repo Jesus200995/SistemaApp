@@ -413,7 +413,7 @@ const showTerms = () => {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+  background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 50%, #f0fdf4 100%);
   position: relative;
   overflow-y: auto;
   overflow-x: hidden;
@@ -431,15 +431,15 @@ const showTerms = () => {
 
 .blob {
   position: absolute;
-  opacity: 0.1;
+  opacity: 0.3;
   filter: blur(100px);
-  mix-blend-mode: screen;
+  mix-blend-mode: multiply;
 }
 
 .blob-1 {
   width: 500px;
   height: 500px;
-  background: linear-gradient(135deg, #10b981, #06b6d4);
+  background: linear-gradient(135deg, #bbf7d0, #86efac);
   border-radius: 50%;
   top: -200px;
   left: -200px;
@@ -449,7 +449,7 @@ const showTerms = () => {
 .blob-2 {
   width: 400px;
   height: 400px;
-  background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+  background: linear-gradient(135deg, #a7f3d0, #6ee7b7);
   border-radius: 50%;
   top: 50%;
   right: -150px;
@@ -459,7 +459,7 @@ const showTerms = () => {
 .blob-3 {
   width: 300px;
   height: 300px;
-  background: linear-gradient(135deg, #ec4899, #f59e0b);
+  background: linear-gradient(135deg, #bbf7d0, #34d399);
   border-radius: 50%;
   bottom: -100px;
   left: 50%;
@@ -605,7 +605,7 @@ const showTerms = () => {
 .app-title {
   font-size: 1.15rem;
   font-weight: 700;
-  background: linear-gradient(135deg, #10b981, #6ee7b7);
+  background: linear-gradient(135deg, #15803d, #166534);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -616,7 +616,7 @@ const showTerms = () => {
 
 .app-subtitle {
   font-size: 0.75rem;
-  color: #cbd5e1;
+  color: #166534;
   font-weight: 400;
   letter-spacing: 0.01em;
 }
@@ -624,19 +624,19 @@ const showTerms = () => {
 /* ========== REGISTER CARD ========== */
 .register-card {
   width: 100%;
-  background: linear-gradient(135deg, rgba(30, 41, 59, 0.85) 0%, rgba(15, 23, 42, 0.85) 100%);
-  border: 1px solid rgba(148, 163, 184, 0.25);
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(22, 163, 74, 0.2);
   border-radius: 20px;
   padding: 0.9rem 0.7rem;
   backdrop-filter: blur(10px);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), 0 0 1px rgba(16, 185, 129, 0.1);
+  box-shadow: 0 8px 32px rgba(22, 163, 74, 0.1), 0 0 1px rgba(16, 185, 129, 0.2);
   margin-bottom: 0.5rem;
 }
 
 .register-title {
   font-size: 1.2rem;
   font-weight: 700;
-  color: #f1f5f9;
+  color: #15803d;
   margin-bottom: 0.25rem;
   text-align: center;
   letter-spacing: -0.01em;
@@ -644,7 +644,7 @@ const showTerms = () => {
 
 .register-subtitle {
   font-size: 0.75rem;
-  color: #cbd5e1;
+  color: #166534;
   text-align: center;
   margin-bottom: 1rem;
   font-weight: 400;
@@ -666,7 +666,7 @@ const showTerms = () => {
 .form-label {
   font-size: 0.7rem;
   font-weight: 600;
-  color: #cbd5e1;
+  color: #15803d;
   text-transform: uppercase;
   letter-spacing: 0.08em;
 }
@@ -688,25 +688,25 @@ const showTerms = () => {
 
 .form-input {
   width: 100%;
-  background: rgba(15, 23, 42, 0.6);
-  border: 1.5px solid rgba(148, 163, 184, 0.25);
+  background: rgba(255, 255, 255, 0.95);
+  border: 1.5px solid rgba(22, 163, 74, 0.3);
   border-radius: 10px;
   padding: 0.55rem 0.8rem 0.55rem 2.2rem;
-  color: #e2e8f0;
+  color: #1e3a2f;
   font-size: 0.75rem;
   font-family: 'Inter', 'Segoe UI', sans-serif;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .form-input::placeholder {
-  color: #64748b;
+  color: #6b7280;
 }
 
 .form-input:focus {
   outline: none;
-  border-color: #10b981;
-  background: rgba(15, 23, 42, 0.8);
-  box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.15);
+  border-color: #16a34a;
+  background: #ffffff;
+  box-shadow: 0 0 0 4px rgba(22, 163, 74, 0.15);
 }
 
 /* ========== SELECT ========== */
@@ -728,17 +728,17 @@ const showTerms = () => {
 
 .form-select {
   width: 100%;
-  background: rgba(15, 23, 42, 0.6);
-  border: 1.5px solid rgba(148, 163, 184, 0.25);
+  background: rgba(255, 255, 255, 0.95);
+  border: 1.5px solid rgba(22, 163, 74, 0.3);
   border-radius: 12px;
   padding: 0.6rem 0.9rem 0.6rem 2.4rem;
-  color: #e2e8f0;
+  color: #1e3a2f;
   font-size: 0.8rem;
   font-family: 'Inter', 'Segoe UI', sans-serif;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   cursor: pointer;
   appearance: none;
-  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2315803d' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
   background-repeat: no-repeat;
   background-position: right 0.75rem center;
   background-size: 1.5em 1.5em;
@@ -747,19 +747,19 @@ const showTerms = () => {
 
 .form-select:focus {
   outline: none;
-  border-color: #10b981;
-  background-color: rgba(15, 23, 42, 0.8);
-  box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.15);
+  border-color: #16a34a;
+  background-color: #ffffff;
+  box-shadow: 0 0 0 4px rgba(22, 163, 74, 0.15);
 }
 
 .form-select option {
-  background-color: #1e293b;
-  color: #e2e8f0;
+  background-color: #ffffff;
+  color: #1e3a2f;
 }
 
 .rol-hint {
   font-size: 0.65rem;
-  color: #94a3b8;
+  color: #166534;
   margin-top: 0.4rem;
   font-style: italic;
   line-height: 1.3;
@@ -767,7 +767,7 @@ const showTerms = () => {
 
 .field-hint {
   font-size: 0.65rem;
-  color: #94a3b8;
+  color: #166534;
   margin-top: 0.3rem;
   font-style: italic;
 }
@@ -797,7 +797,7 @@ const showTerms = () => {
 
 .terms-label {
   font-size: 0.75rem;
-  color: #cbd5e1;
+  color: #166534;
   cursor: pointer;
   line-height: 1.4;
   font-weight: 500;
@@ -907,7 +907,7 @@ const showTerms = () => {
 .divider {
   position: relative;
   height: 1px;
-  background: rgba(148, 163, 184, 0.2);
+  background: rgba(22, 163, 74, 0.2);
   margin: 1.75rem 0;
   display: flex;
   align-items: center;
@@ -915,9 +915,9 @@ const showTerms = () => {
 }
 
 .divider span {
-  background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+  background: rgba(255, 255, 255, 0.9);
   padding: 0 0.75rem;
-  color: #64748b;
+  color: #166534;
   font-size: 0.8rem;
   font-weight: 500;
 }
@@ -927,9 +927,9 @@ const showTerms = () => {
   width: 100%;
   display: block;
   text-align: center;
-  background: rgba(148, 163, 184, 0.08);
-  color: #6ee7b7;
-  border: 1.5px solid rgba(16, 185, 129, 0.3);
+  background: rgba(22, 163, 74, 0.08);
+  color: #15803d;
+  border: 1.5px solid rgba(22, 163, 74, 0.4);
   border-radius: 12px;
   padding: 0.65rem 1.2rem;
   font-size: 0.8rem;
@@ -942,9 +942,9 @@ const showTerms = () => {
 }
 
 .login-link:hover {
-  background: rgba(16, 185, 129, 0.15);
-  border-color: rgba(16, 185, 129, 0.6);
-  color: #10b981;
+  background: rgba(22, 163, 74, 0.15);
+  border-color: rgba(22, 163, 74, 0.7);
+  color: #166534;
   transform: translateY(-1px);
 }
 
@@ -956,14 +956,14 @@ const showTerms = () => {
 .register-footer {
   text-align: center;
   font-size: 0.65rem;
-  color: #475569;
+  color: #166534;
   margin-top: 0.7rem;
   font-weight: 500;
   letter-spacing: 0.01em;
 }
 
 .footer-highlight {
-  color: #10b981;
+  color: #15803d;
   font-weight: 700;
 }
 

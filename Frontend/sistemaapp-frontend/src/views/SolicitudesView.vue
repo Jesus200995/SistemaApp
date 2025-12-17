@@ -1034,15 +1034,15 @@ onMounted(async () => {
 <style scoped>
 /* ========== VARIABLES ========== */
 :root {
-  --color-primary: #10b981;
-  --color-primary-dark: #059669;
-  --color-bg-primary: #0f172a;
-  --color-bg-secondary: #1e293b;
-  --color-bg-tertiary: #111827;
-  --color-text-primary: #f1f5f9;
-  --color-text-secondary: #cbd5e1;
-  --color-text-dim: #94a3b8;
-  --color-border: rgba(148, 163, 184, 0.1);
+  --color-primary: #16a34a;
+  --color-primary-dark: #15803d;
+  --color-bg-primary: #f0fdf4;
+  --color-bg-secondary: #dcfce7;
+  --color-bg-tertiary: #f0fdf4;
+  --color-text-primary: #1e3a2f;
+  --color-text-secondary: #374151;
+  --color-text-dim: #64748b;
+  --color-border: rgba(22, 163, 74, 0.15);
   --color-blue: #3b82f6;
   --color-red: #ef4444;
   --color-yellow: #f59e0b;
@@ -1053,7 +1053,7 @@ onMounted(async () => {
 .solicitudes-container {
   min-height: 100vh;
   width: 100%;
-  background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+  background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 50%, #f0fdf4 100%);
   position: relative;
   overflow-x: hidden;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
@@ -1072,9 +1072,9 @@ onMounted(async () => {
 
 .blob {
   position: absolute;
-  opacity: 0.08;
+  opacity: 0.3;
   filter: blur(120px);
-  mix-blend-mode: screen;
+  mix-blend-mode: multiply;
   border-radius: 50%;
 }
 
@@ -1115,11 +1115,11 @@ onMounted(async () => {
 .solicitudes-header {
   position: relative;
   z-index: 10;
-  background: rgba(132, 204, 22, 0.12);
-  border-bottom: 1px solid rgba(132, 204, 22, 0.1);
+  background: rgba(255, 255, 255, 0.9);
+  border-bottom: 1px solid rgba(22, 163, 74, 0.2);
   backdrop-filter: blur(12px);
   padding: 1rem 1.2rem;
-  box-shadow: 0 4px 20px rgba(132, 204, 22, 0.1);
+  box-shadow: 0 4px 20px rgba(22, 163, 74, 0.1);
   width: 100%;
 }
 
@@ -1147,21 +1147,21 @@ onMounted(async () => {
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background: rgba(132, 204, 22, 0.1);
-  border: 1.5px solid rgba(132, 204, 22, 0.4);
+  background: rgba(255, 255, 255, 0.9);
+  border: 1.5px solid rgba(22, 163, 74, 0.4);
   cursor: pointer;
   text-decoration: none;
   transition: all 0.3s ease;
-  color: #84cc16;
+  color: #16a34a;
   backdrop-filter: blur(10px);
   flex-shrink: 0;
 }
 
 .back-button:hover {
-  background: rgba(132, 204, 22, 0.2);
+  background: rgba(22, 163, 74, 0.1);
   transform: translateX(-4px);
-  box-shadow: 0 4px 15px rgba(132, 204, 22, 0.3);
-  border-color: rgba(132, 204, 22, 0.6);
+  box-shadow: 0 4px 15px rgba(22, 163, 74, 0.3);
+  border-color: rgba(22, 163, 74, 0.6);
 }
 
 .back-icon {
@@ -1184,7 +1184,7 @@ onMounted(async () => {
 .icon-stat {
   width: 20px;
   height: 20px;
-  color: #84cc16;
+  color: #16a34a;
   stroke-width: 2;
 }
 
@@ -1196,14 +1196,13 @@ onMounted(async () => {
 .header-title {
   font-size: 0.95rem;
   font-weight: 700;
-  color: #84cc16;
+  color: #15803d;
   margin: 0;
-  text-shadow: 0 0 8px rgba(132, 204, 22, 0.4);
 }
 
 .header-subtitle {
   font-size: 0.75rem;
-  color: #cbd5e1;
+  color: #64748b;
   margin: 0;
   margin-top: 0.2rem;
 }
@@ -1268,12 +1267,12 @@ onMounted(async () => {
 }
 
 .form-card {
-  background: rgba(30, 41, 59, 0.5);
-  border: 1px solid var(--color-border);
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(22, 163, 74, 0.2);
   border-radius: 16px;
   padding: 2rem;
   backdrop-filter: blur(10px);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 8px 32px rgba(22, 163, 74, 0.1);
 }
 
 .form-header {
@@ -1285,14 +1284,13 @@ onMounted(async () => {
 .form-title {
   font-size: 1.15rem;
   font-weight: 700;
-  color: #84cc16;
+  color: #15803d;
   margin: 0 0 0.3rem 0;
-  text-shadow: 0 0 8px rgba(132, 204, 22, 0.3);
 }
 
 .form-subtitle {
   font-size: 0.8rem;
-  color: #cbd5e1;
+  color: #64748b;
   margin: 0;
 }
 
@@ -1318,7 +1316,7 @@ onMounted(async () => {
 .form-label {
   font-size: 0.8rem;
   font-weight: 600;
-  color: #e2e8f0;
+  color: #374151;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   margin-bottom: 0.5rem;
@@ -1327,11 +1325,11 @@ onMounted(async () => {
 .form-select,
 .form-input,
 .form-textarea {
-  background: rgba(15, 23, 42, 0.5);
-  border: 1px solid rgba(148, 163, 184, 0.3);
+  background: white;
+  border: 1px solid rgba(22, 163, 74, 0.3);
   border-radius: 8px;
   padding: 0.75rem 1rem;
-  color: #f1f5f9;
+  color: #1e3a2f;
   font-size: 0.9rem;
   font-family: inherit;
   transition: all 0.3s ease;
@@ -1343,9 +1341,9 @@ onMounted(async () => {
 .form-input:focus,
 .form-textarea:focus {
   outline: none;
-  border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
-  background: rgba(15, 23, 42, 0.7);
+  border-color: #16a34a;
+  box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.1);
+  background: white;
 }
 
 .form-input {
@@ -1366,7 +1364,7 @@ onMounted(async () => {
 }
 
 .form-select:hover {
-  border-color: rgba(16, 185, 129, 0.5);
+  border-color: rgba(22, 163, 74, 0.5);
 }
 
 /* ========== SELECT MEJORADO ========== */
@@ -1375,15 +1373,15 @@ onMounted(async () => {
 }
 
 .form-select optgroup {
-  background: #1e293b;
-  color: #84cc16;
+  background: #f0fdf4;
+  color: #15803d;
   font-weight: 600;
   padding: 0.5rem;
 }
 
 .form-select option {
-  background: #0f172a;
-  color: #f1f5f9;
+  background: white;
+  color: #1e3a2f;
   padding: 0.5rem;
 }
 
@@ -1450,8 +1448,8 @@ onMounted(async () => {
 /* ========== SELECTOR DE PERSONA EN DOS PASOS ========== */
 .persona-selector {
   margin-top: 0.75rem;
-  background: rgba(15, 23, 42, 0.6);
-  border: 1px solid rgba(148, 163, 184, 0.2);
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(22, 163, 74, 0.2);
   border-radius: 12px;
   padding: 0.75rem;
 }
@@ -1472,18 +1470,18 @@ onMounted(async () => {
 .search-input {
   width: 100%;
   padding: 0.6rem 2.5rem 0.6rem 2.5rem;
-  background: rgba(30, 41, 59, 0.8);
-  border: 1px solid rgba(148, 163, 184, 0.2);
+  background: white;
+  border: 1px solid rgba(22, 163, 74, 0.3);
   border-radius: 8px;
-  color: #f1f5f9;
+  color: #1e3a2f;
   font-size: 0.85rem;
   transition: all 0.3s ease;
 }
 
 .search-input:focus {
   outline: none;
-  border-color: rgba(16, 185, 129, 0.5);
-  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+  border-color: rgba(22, 163, 74, 0.5);
+  box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.1);
 }
 
 .search-input::placeholder {
@@ -1525,12 +1523,12 @@ onMounted(async () => {
 }
 
 .personas-list::-webkit-scrollbar-track {
-  background: rgba(30, 41, 59, 0.5);
+  background: rgba(22, 163, 74, 0.1);
   border-radius: 3px;
 }
 
 .personas-list::-webkit-scrollbar-thumb {
-  background: rgba(16, 185, 129, 0.4);
+  background: rgba(22, 163, 74, 0.4);
   border-radius: 3px;
 }
 
@@ -1539,21 +1537,21 @@ onMounted(async () => {
   align-items: center;
   gap: 0.75rem;
   padding: 0.6rem 0.75rem;
-  background: rgba(30, 41, 59, 0.5);
-  border: 1px solid rgba(148, 163, 184, 0.15);
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(22, 163, 74, 0.15);
   border-radius: 10px;
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
 .persona-item:hover {
-  background: rgba(16, 185, 129, 0.1);
-  border-color: rgba(16, 185, 129, 0.3);
+  background: rgba(22, 163, 74, 0.1);
+  border-color: rgba(22, 163, 74, 0.3);
 }
 
 .persona-item.selected {
-  background: rgba(16, 185, 129, 0.15);
-  border-color: rgba(16, 185, 129, 0.5);
+  background: rgba(22, 163, 74, 0.15);
+  border-color: rgba(22, 163, 74, 0.5);
 }
 
 .persona-avatar {
@@ -1561,13 +1559,13 @@ onMounted(async () => {
   height: 36px;
   border-radius: 50%;
   background: transparent;
-  border: 2px solid #00ff88;
+  border: 2px solid #16a34a;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 0.75rem;
   font-weight: 700;
-  color: #00ff88;
+  color: #16a34a;
   flex-shrink: 0;
 }
 
@@ -1582,7 +1580,7 @@ onMounted(async () => {
 .persona-nombre {
   font-size: 0.85rem;
   font-weight: 600;
-  color: #f1f5f9;
+  color: #1e3a2f;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -2399,16 +2397,17 @@ onMounted(async () => {
 }
 
 .solicitud-card {
-  background: linear-gradient(135deg, rgba(30, 41, 59, 0.7), rgba(15, 23, 42, 0.8));
+  background: rgba(255, 255, 255, 0.9);
   border-radius: 12px;
   padding: 1rem;
-  border: 1px solid rgba(148, 163, 184, 0.15);
+  border: 1px solid rgba(22, 163, 74, 0.15);
   transition: all 0.3s ease;
 }
 
 .solicitud-card:hover {
-  border-color: rgba(16, 185, 129, 0.3);
+  border-color: rgba(22, 163, 74, 0.3);
   transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(22, 163, 74, 0.1);
 }
 
 .solicitud-card.card-pending {
@@ -2430,7 +2429,7 @@ onMounted(async () => {
 
 .solicitante-nombre-card {
   font-weight: 600;
-  color: #f1f5f9;
+  color: #1e3a2f;
   font-size: 0.9rem;
 }
 
@@ -2498,7 +2497,7 @@ onMounted(async () => {
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.85);
+  background: rgba(22, 163, 74, 0.2);
   backdrop-filter: blur(8px);
   display: flex;
   align-items: center;
@@ -2508,15 +2507,15 @@ onMounted(async () => {
 }
 
 .modal-detalle {
-  background: linear-gradient(135deg, #1e293b, #0f172a);
+  background: white;
   border-radius: 16px;
-  border: 1px solid rgba(16, 185, 129, 0.2);
+  border: 1px solid rgba(22, 163, 74, 0.2);
   width: 100%;
   max-width: 500px;
   max-height: 90vh;
   overflow-y: auto;
   position: relative;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 20px 60px rgba(22, 163, 74, 0.15);
 }
 
 .modal-close {
@@ -2547,18 +2546,18 @@ onMounted(async () => {
   align-items: center;
   gap: 1rem;
   padding: 1.5rem;
-  border-bottom: 1px solid rgba(148, 163, 184, 0.15);
+  border-bottom: 1px solid rgba(22, 163, 74, 0.15);
 }
 
 .modal-icon-wrapper {
   width: 48px;
   height: 48px;
   border-radius: 12px;
-  background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(5, 150, 105, 0.2));
+  background: linear-gradient(135deg, rgba(22, 163, 74, 0.2), rgba(21, 128, 61, 0.2));
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #10b981;
+  color: #16a34a;
 }
 
 .modal-title-group {
@@ -2570,7 +2569,7 @@ onMounted(async () => {
 .modal-title {
   font-size: 1.1rem;
   font-weight: 700;
-  color: #f1f5f9;
+  color: #1e3a2f;
   margin: 0;
 }
 
@@ -2599,35 +2598,35 @@ onMounted(async () => {
   gap: 0.5rem;
   font-size: 0.75rem;
   font-weight: 600;
-  color: #94a3b8;
+  color: #64748b;
   margin: 0 0 0.5rem 0;
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
 
 .detalle-label svg {
-  color: #10b981;
+  color: #16a34a;
 }
 
 .detalle-value {
   font-size: 0.9rem;
-  color: #f1f5f9;
+  color: #1e3a2f;
   margin: 0;
 }
 
 .detalle-user-info {
-  background: rgba(30, 41, 59, 0.5);
+  background: rgba(22, 163, 74, 0.05);
   border-radius: 8px;
   padding: 0.75rem;
-  border: 1px solid rgba(148, 163, 184, 0.1);
+  border: 1px solid rgba(22, 163, 74, 0.1);
 }
 
 /* Card de usuario en el modal */
 .detalle-user-card {
-  background: linear-gradient(135deg, rgba(30, 41, 59, 0.7), rgba(15, 23, 42, 0.8));
+  background: rgba(255, 255, 255, 0.9);
   border-radius: 10px;
   padding: 1rem;
-  border: 1px solid rgba(148, 163, 184, 0.15);
+  border: 1px solid rgba(22, 163, 74, 0.15);
 }
 
 .user-card-row {
@@ -2635,7 +2634,7 @@ onMounted(async () => {
   justify-content: space-between;
   align-items: center;
   padding: 0.5rem 0;
-  border-bottom: 1px solid rgba(148, 163, 184, 0.08);
+  border-bottom: 1px solid rgba(22, 163, 74, 0.08);
 }
 
 .user-card-row:last-child {
@@ -2644,13 +2643,13 @@ onMounted(async () => {
 
 .user-card-label {
   font-size: 0.8rem;
-  color: #94a3b8;
+  color: #64748b;
   font-weight: 500;
 }
 
 .user-card-value {
   font-size: 0.85rem;
-  color: #f1f5f9;
+  color: #1e3a2f;
   font-weight: 500;
   text-align: right;
 }
@@ -2659,10 +2658,9 @@ onMounted(async () => {
   padding: 0.2rem 0.6rem;
   border-radius: 4px;
   font-size: 0.75rem;
-  background: rgba(0, 255, 136, 0.1);
-  color: #00ff88;
-  border: 1px solid rgba(0, 255, 136, 0.3);
-  text-shadow: 0 0 8px rgba(0, 255, 136, 0.5);
+  background: rgba(22, 163, 74, 0.1);
+  color: #16a34a;
+  border: 1px solid rgba(22, 163, 74, 0.3);
 }
 
 .user-card-value.email {
@@ -2681,15 +2679,15 @@ onMounted(async () => {
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  background: rgba(30, 41, 59, 0.5);
+  background: rgba(22, 163, 74, 0.05);
   border-radius: 8px;
   padding: 0.75rem 1rem;
-  border: 1px solid rgba(148, 163, 184, 0.1);
+  border: 1px solid rgba(22, 163, 74, 0.1);
 }
 
 .dest-nombre {
   font-size: 0.9rem;
-  color: #f1f5f9;
+  color: #1e3a2f;
   font-weight: 500;
 }
 
@@ -2698,28 +2696,27 @@ onMounted(async () => {
   font-weight: 600;
   padding: 0.15rem 0.5rem;
   border-radius: 4px;
-  background: rgba(0, 255, 136, 0.1);
-  color: #00ff88;
-  border: 1px solid rgba(0, 255, 136, 0.3);
-  text-shadow: 0 0 8px rgba(0, 255, 136, 0.5);
+  background: rgba(22, 163, 74, 0.1);
+  color: #16a34a;
+  border: 1px solid rgba(22, 163, 74, 0.3);
 }
 
 .user-name {
   font-size: 0.9rem;
-  color: #f1f5f9;
+  color: #1e3a2f;
   margin: 0;
   font-weight: 500;
 }
 
 .detalle-descripcion {
   font-size: 0.9rem;
-  color: #e2e8f0;
+  color: #374151;
   line-height: 1.6;
   margin: 0;
-  background: rgba(30, 41, 59, 0.5);
+  background: rgba(22, 163, 74, 0.05);
   border-radius: 8px;
   padding: 1rem;
-  border: 1px solid rgba(148, 163, 184, 0.1);
+  border: 1px solid rgba(22, 163, 74, 0.1);
 }
 
 /* ========== ACCIONES DEL MODAL ========== */
@@ -2728,8 +2725,8 @@ onMounted(async () => {
   flex-direction: column;
   gap: 0.75rem;
   padding: 1.25rem 1.5rem;
-  border-top: 1px solid rgba(148, 163, 184, 0.15);
-  background: rgba(15, 23, 42, 0.5);
+  border-top: 1px solid rgba(22, 163, 74, 0.15);
+  background: rgba(240, 253, 244, 0.5);
 }
 
 .btn-modal {
@@ -2776,7 +2773,7 @@ onMounted(async () => {
 .modal-processed {
   padding: 1.25rem 1.5rem;
   text-align: center;
-  border-top: 1px solid rgba(148, 163, 184, 0.15);
+  border-top: 1px solid rgba(22, 163, 74, 0.15);
 }
 
 .processed-text {

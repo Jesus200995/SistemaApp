@@ -74,10 +74,10 @@ const dismiss = () => {
 /* ========== BANNER DE INSTALACIÓN ========== */
 .install-banner {
   pointer-events: all;
-  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
   backdrop-filter: blur(10px);
   border-top: 1px solid rgba(255, 255, 255, 0.2);
-  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 -4px 20px rgba(22, 163, 74, 0.15);
   animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -127,7 +127,7 @@ const dismiss = () => {
 .install-btn {
   flex-shrink: 0;
   background: white;
-  color: #10b981;
+  color: #16a34a;
   border: none;
   padding: 0.5rem 1rem;
   border-radius: 6px;
@@ -135,7 +135,7 @@ const dismiss = () => {
   font-size: 0.875rem;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 2px 8px rgba(22, 163, 74, 0.2);
 }
 
 .install-btn:hover {
@@ -187,7 +187,7 @@ const dismiss = () => {
   right: 20px;
   width: 56px;
   height: 56px;
-  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
   color: white;
   border: none;
   border-radius: 50%;
@@ -195,7 +195,7 @@ const dismiss = () => {
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  box-shadow: 0 4px 16px rgba(16, 185, 129, 0.4);
+  box-shadow: 0 4px 16px rgba(22, 163, 74, 0.4);
   transition: all 0.3s ease;
   animation: fadeInScale 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   z-index: 99;
@@ -214,7 +214,7 @@ const dismiss = () => {
 
 .install-fab:hover {
   transform: scale(1.1);
-  box-shadow: 0 6px 24px rgba(16, 185, 129, 0.5);
+  box-shadow: 0 6px 24px rgba(22, 163, 74, 0.5);
 }
 
 .install-fab:active {

@@ -176,21 +176,21 @@ const formatRole = (role: string): string => {
   justify-content: center;
   width: 40px;
   height: 40px;
-  background: rgba(15, 23, 42, 0.9);
-  border: 1.5px solid rgba(132, 204, 22, 0.5);
+  background: rgba(255, 255, 255, 0.95);
+  border: 1.5px solid rgba(22, 163, 74, 0.4);
   border-radius: 50%;
-  color: #84cc16;
+  color: #16a34a;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
   backdrop-filter: blur(10px);
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 2px 12px rgba(22, 163, 74, 0.15);
 }
 
 .hamburger-btn:hover {
-  background: rgba(132, 204, 22, 0.2);
-  border-color: rgba(132, 204, 22, 0.7);
+  background: rgba(22, 163, 74, 0.1);
+  border-color: rgba(22, 163, 74, 0.6);
   transform: scale(1.05);
-  box-shadow: 0 4px 16px rgba(132, 204, 22, 0.3);
+  box-shadow: 0 4px 16px rgba(22, 163, 74, 0.25);
 }
 
 .hamburger-btn:active {
@@ -198,10 +198,10 @@ const formatRole = (role: string): string => {
 }
 
 .hamburger-btn.menu-active {
-  background: linear-gradient(135deg, #10b981 0%, #84cc16 100%);
-  color: #0f172a;
+  background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
+  color: #ffffff;
   border-color: transparent;
-  box-shadow: 0 4px 20px rgba(132, 204, 22, 0.4);
+  box-shadow: 0 4px 20px rgba(22, 163, 74, 0.3);
 }
 
 /* ========== OVERLAY ========== */
@@ -211,7 +211,7 @@ const formatRole = (role: string): string => {
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.3);
+  background: rgba(22, 163, 74, 0.1);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   z-index: 998;
@@ -233,20 +233,20 @@ const formatRole = (role: string): string => {
   height: 100vh;
   background: linear-gradient(
     135deg,
-    rgba(15, 23, 42, 0.65) 0%,
-    rgba(30, 41, 59, 0.55) 50%,
-    rgba(15, 23, 42, 0.65) 100%
+    rgba(255, 255, 255, 0.98) 0%,
+    rgba(240, 253, 244, 0.95) 50%,
+    rgba(255, 255, 255, 0.98) 100%
   );
-  border-left: 1px solid rgba(132, 204, 22, 0.25);
+  border-left: 1px solid rgba(22, 163, 74, 0.2);
   backdrop-filter: blur(24px) saturate(180%);
   -webkit-backdrop-filter: blur(24px) saturate(180%);
   z-index: 999;
   display: flex;
   flex-direction: column;
   box-shadow: 
-    -8px 0 32px rgba(0, 0, 0, 0.3),
-    inset 1px 0 0 rgba(255, 255, 255, 0.05),
-    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    -8px 0 32px rgba(22, 163, 74, 0.15),
+    inset 1px 0 0 rgba(255, 255, 255, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5);
   overflow: hidden;
 }
 
@@ -265,8 +265,8 @@ const formatRole = (role: string): string => {
 .menu-header {
   padding: 1.25rem 1rem;
   padding-top: 1.5rem;
-  background: linear-gradient(135deg, rgba(132, 204, 22, 0.08) 0%, rgba(16, 185, 129, 0.05) 100%);
-  border-bottom: 1px solid rgba(132, 204, 22, 0.15);
+  background: linear-gradient(135deg, rgba(22, 163, 74, 0.08) 0%, rgba(16, 185, 129, 0.05) 100%);
+  border-bottom: 1px solid rgba(22, 163, 74, 0.15);
   position: relative;
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
@@ -279,7 +279,7 @@ const formatRole = (role: string): string => {
   left: 0;
   right: 0;
   height: 3px;
-  background: linear-gradient(90deg, #10b981 0%, #84cc16 50%, #10b981 100%);
+  background: linear-gradient(90deg, #16a34a 0%, #15803d 50%, #16a34a 100%);
   background-size: 200% 100%;
   animation: shimmer 3s ease infinite;
 }
@@ -299,15 +299,15 @@ const formatRole = (role: string): string => {
   width: 48px;
   height: 48px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #10b981 0%, #84cc16 100%);
+  background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 1.1rem;
   font-weight: 700;
-  color: #0f172a;
+  color: #ffffff;
   flex-shrink: 0;
-  box-shadow: 0 4px 16px rgba(132, 204, 22, 0.3);
+  box-shadow: 0 4px 16px rgba(22, 163, 74, 0.25);
 }
 
 .menu-user-details {
@@ -320,7 +320,7 @@ const formatRole = (role: string): string => {
 .menu-user-name {
   font-size: 1rem;
   font-weight: 600;
-  color: #ffffff;
+  color: #15803d;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -328,7 +328,7 @@ const formatRole = (role: string): string => {
 
 .menu-user-role {
   font-size: 0.75rem;
-  color: #84cc16;
+  color: #16a34a;
   font-weight: 500;
   text-transform: capitalize;
 }
@@ -336,7 +336,7 @@ const formatRole = (role: string): string => {
 /* ========== DIVIDER ========== */
 .menu-divider {
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(132, 204, 22, 0.3), transparent);
+  background: linear-gradient(90deg, transparent, rgba(22, 163, 74, 0.25), transparent);
   margin: 0.5rem 1rem;
 }
 
@@ -362,16 +362,16 @@ const formatRole = (role: string): string => {
 }
 
 .menu-item:hover {
-  background: rgba(132, 204, 22, 0.12);
+  background: rgba(22, 163, 74, 0.1);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   box-shadow: 
-    inset 0 0 0 1px rgba(132, 204, 22, 0.15),
-    0 2px 8px rgba(0, 0, 0, 0.1);
+    inset 0 0 0 1px rgba(22, 163, 74, 0.12),
+    0 2px 8px rgba(22, 163, 74, 0.08);
 }
 
 .menu-item:active {
-  background: rgba(132, 204, 22, 0.2);
+  background: rgba(22, 163, 74, 0.15);
 }
 
 .menu-item::before {
@@ -382,7 +382,7 @@ const formatRole = (role: string): string => {
   transform: translateY(-50%);
   width: 3px;
   height: 0;
-  background: linear-gradient(180deg, #10b981 0%, #84cc16 100%);
+  background: linear-gradient(180deg, #16a34a 0%, #15803d 100%);
   border-radius: 0 3px 3px 0;
   transition: height 0.25s ease;
 }
@@ -392,24 +392,24 @@ const formatRole = (role: string): string => {
 }
 
 .menu-item-icon {
-  color: #84cc16;
+  color: #16a34a;
   flex-shrink: 0;
 }
 
 .menu-item-text {
   flex: 1;
   font-size: 0.9rem;
-  color: #e2e8f0;
+  color: #166534;
   font-weight: 500;
 }
 
 .menu-item-arrow {
-  color: rgba(148, 163, 184, 0.5);
+  color: rgba(22, 101, 52, 0.4);
   transition: all 0.25s ease;
 }
 
 .menu-item:hover .menu-item-arrow {
-  color: #84cc16;
+  color: #16a34a;
   transform: translateX(3px);
 }
 

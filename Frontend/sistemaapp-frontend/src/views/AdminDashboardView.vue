@@ -376,18 +376,18 @@ onMounted(async () => {
 <style scoped>
 /* ========== VARIABLES ========== */
 :root {
-  --color-primary: #10b981;
+  --color-primary: #16a34a;
   --color-secondary: #f59e0b;
   --color-info: #3b82f6;
   --color-warning: #ef4444;
   --color-accent: #8b5cf6;
-  --bg-dark: #0f172a;
-  --bg-card: #1e293b;
-  --text-primary: #f1f5f9;
-  --text-secondary: #cbd5e1;
-  --text-muted: #94a3b8;
-  --border-light: rgba(148, 163, 184, 0.1);
-  --border-accent: rgba(16, 185, 129, 0.2);
+  --bg-dark: #f0fdf4;
+  --bg-card: rgba(255, 255, 255, 0.9);
+  --text-primary: #1e3a2f;
+  --text-secondary: #374151;
+  --text-muted: #64748b;
+  --border-light: rgba(22, 163, 74, 0.1);
+  --border-accent: rgba(22, 163, 74, 0.2);
 }
 
 /* ========== ANIMACIONES ========== */
@@ -430,7 +430,7 @@ onMounted(async () => {
 .admin-container {
   position: relative;
   min-height: 100vh;
-  background: linear-gradient(135deg, var(--bg-dark) 0%, #1a2742 100%);
+  background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
   overflow-x: hidden;
 }
 
@@ -448,14 +448,15 @@ onMounted(async () => {
 .blob {
   position: absolute;
   border-radius: 50%;
-  opacity: 0.08;
+  opacity: 0.3;
   animation: blob 8s infinite;
+  mix-blend-mode: multiply;
 }
 
 .blob-1 {
   width: 300px;
   height: 300px;
-  background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+  background: linear-gradient(135deg, #16a34a, #15803d);
   top: -50px;
   left: -50px;
   animation-delay: 0s;
@@ -464,7 +465,7 @@ onMounted(async () => {
 .blob-2 {
   width: 250px;
   height: 250px;
-  background: linear-gradient(135deg, var(--color-info), var(--color-accent));
+  background: linear-gradient(135deg, #22c55e, #16a34a);
   bottom: 10%;
   right: 10%;
   animation-delay: 4s;
@@ -473,7 +474,7 @@ onMounted(async () => {
 .blob-3 {
   width: 200px;
   height: 200px;
-  background: linear-gradient(135deg, var(--color-secondary), var(--color-warning));
+  background: linear-gradient(135deg, #86efac, #4ade80);
   top: 50%;
   right: 5%;
   animation-delay: 2s;
@@ -484,10 +485,10 @@ onMounted(async () => {
   position: relative;
   z-index: 10;
   padding: 1rem 1.2rem;
-  background: rgba(132, 204, 22, 0.12);
+  background: rgba(255, 255, 255, 0.9);
   backdrop-filter: blur(12px);
-  border-bottom: 1px solid rgba(132, 204, 22, 0.1);
-  box-shadow: 0 4px 20px rgba(132, 204, 22, 0.1);
+  border-bottom: 1px solid rgba(22, 163, 74, 0.2);
+  box-shadow: 0 4px 20px rgba(22, 163, 74, 0.1);
   width: 100%;
 }
 
@@ -510,25 +511,25 @@ onMounted(async () => {
 .back-button {
   width: 40px;
   height: 40px;
-  border: 1.5px solid rgba(132, 204, 22, 0.4);
-  background: rgba(132, 204, 22, 0.1);
+  border: 1.5px solid rgba(22, 163, 74, 0.4);
+  background: rgba(22, 163, 74, 0.1);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   transition: all 0.3s ease;
-  color: #84cc16;
+  color: #16a34a;
   text-decoration: none;
   backdrop-filter: blur(10px);
   flex-shrink: 0;
 }
 
 .back-button:hover {
-  background: rgba(132, 204, 22, 0.2);
-  border-color: rgba(132, 204, 22, 0.6);
-  color: #84cc16;
-  box-shadow: 0 4px 15px rgba(132, 204, 22, 0.3);
+  background: rgba(22, 163, 74, 0.2);
+  border-color: rgba(22, 163, 74, 0.6);
+  color: #16a34a;
+  box-shadow: 0 4px 15px rgba(22, 163, 74, 0.3);
   transform: translateX(-4px);
 }
 
@@ -551,7 +552,7 @@ onMounted(async () => {
 .icon-stat {
   width: 20px;
   height: 20px;
-  color: #84cc16;
+  color: #16a34a;
   stroke-width: 2;
 }
 
@@ -563,14 +564,14 @@ onMounted(async () => {
 .header-title {
   font-size: 0.95rem;
   font-weight: 700;
-  color: #84cc16;
+  color: #16a34a;
   margin: 0;
-  text-shadow: 0 0 8px rgba(132, 204, 22, 0.4);
+  text-shadow: none;
 }
 
 .header-subtitle {
   font-size: 0.75rem;
-  color: #cbd5e1;
+  color: #64748b;
   margin: 0;
   margin-top: 0.2rem;
 }
@@ -628,23 +629,23 @@ onMounted(async () => {
 .stats-section,
 .solicitudes-section,
 .notifications-section {
-  background: linear-gradient(135deg, rgba(30, 41, 59, 0.6), rgba(15, 23, 42, 0.3));
+  background: rgba(255, 255, 255, 0.9);
   border: 1px solid var(--border-light);
   border-radius: 16px;
   padding: 2rem;
   backdrop-filter: blur(10px);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 8px 32px rgba(22, 163, 74, 0.1);
 }
 
 .section-title {
   font-size: 1.2rem;
   font-weight: 700;
-  color: #84cc16;
+  color: #16a34a;
   display: flex;
   align-items: center;
   gap: 1rem;
   margin: 0 0 1rem 0;
-  text-shadow: 0 0 8px rgba(132, 204, 22, 0.3);
+  text-shadow: none;
 }
 
 .count-badge {
@@ -653,7 +654,7 @@ onMounted(async () => {
   justify-content: center;
   width: 32px;
   height: 32px;
-  background: linear-gradient(135deg, var(--color-primary), #059669);
+  background: linear-gradient(135deg, #16a34a, #15803d);
   color: white;
   border-radius: 8px;
   font-weight: 700;
@@ -678,8 +679,8 @@ onMounted(async () => {
 }
 
 .stat-card {
-  background: rgba(15, 23, 42, 0.4);
-  border: 1px solid var(--border-light);
+  background: white;
+  border: 1px solid rgba(22, 163, 74, 0.15);
   border-radius: 12px;
   padding: 1.5rem;
   transition: all 0.3s ease;
@@ -691,8 +692,9 @@ onMounted(async () => {
 
 .stat-card:hover {
   transform: translateY(-4px);
-  background: rgba(15, 23, 42, 0.6);
-  border-color: rgba(16, 185, 129, 0.3);
+  background: white;
+  border-color: rgba(22, 163, 74, 0.3);
+  box-shadow: 0 8px 25px rgba(22, 163, 74, 0.15);
 }
 
 .stat-icon {
@@ -746,7 +748,7 @@ onMounted(async () => {
 }
 
 .table-header-row {
-  background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(16, 185, 129, 0.05));
+  background: linear-gradient(135deg, rgba(22, 163, 74, 0.1), rgba(22, 163, 74, 0.05));
   border-bottom: 2px solid var(--border-accent);
 }
 
@@ -766,7 +768,7 @@ onMounted(async () => {
 }
 
 .table-body-row:hover {
-  background: rgba(16, 185, 129, 0.05);
+  background: rgba(22, 163, 74, 0.05);
 }
 
 .table-cell {
@@ -799,20 +801,20 @@ onMounted(async () => {
 }
 
 .tipo-solicitud {
-  background: rgba(59, 130, 246, 0.2);
-  color: #60a5fa;
+  background: rgba(59, 130, 246, 0.15);
+  color: #2563eb;
   border: 1px solid rgba(59, 130, 246, 0.3);
 }
 
 .tipo-reclamo {
-  background: rgba(239, 68, 68, 0.2);
-  color: #fca5a5;
+  background: rgba(239, 68, 68, 0.15);
+  color: #dc2626;
   border: 1px solid rgba(239, 68, 68, 0.3);
 }
 
 .tipo-reporteSeguimiento {
-  background: rgba(245, 158, 11, 0.2);
-  color: #fcd34d;
+  background: rgba(245, 158, 11, 0.15);
+  color: #d97706;
   border: 1px solid rgba(245, 158, 11, 0.3);
 }
 
@@ -827,8 +829,8 @@ onMounted(async () => {
 }
 
 .estado-pendiente {
-  background: rgba(245, 158, 11, 0.2);
-  color: #fcd34d;
+  background: rgba(245, 158, 11, 0.15);
+  color: #d97706;
   border: 1px solid rgba(245, 158, 11, 0.3);
 }
 
@@ -845,13 +847,13 @@ onMounted(async () => {
 .empty-icon {
   width: 80px;
   height: 80px;
-  background: rgba(16, 185, 129, 0.1);
+  background: rgba(22, 163, 74, 0.1);
   border-radius: 16px;
   display: flex;
   align-items: center;
   justify-content: center;
   margin-bottom: 1rem;
-  color: var(--color-primary);
+  color: #16a34a;
 }
 
 .empty-icon svg {
@@ -882,18 +884,19 @@ onMounted(async () => {
   display: flex;
   gap: 1rem;
   padding: 1rem;
-  background: rgba(15, 23, 42, 0.4);
+  background: white;
   border-radius: 12px;
   border-left: 4px solid;
   transition: all 0.3s ease;
+  border: 1px solid rgba(22, 163, 74, 0.1);
 }
 
 .notification-item.notif-unread {
-  background: rgba(16, 185, 129, 0.05);
+  background: rgba(22, 163, 74, 0.05);
 }
 
 .notification-item:hover {
-  background: rgba(30, 41, 59, 0.6);
+  background: rgba(22, 163, 74, 0.08);
   transform: translateX(4px);
 }
 
@@ -901,7 +904,7 @@ onMounted(async () => {
   width: 40px;
   height: 40px;
   border-radius: 8px;
-  background: rgba(16, 185, 129, 0.1);
+  background: rgba(22, 163, 74, 0.1);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -911,7 +914,7 @@ onMounted(async () => {
 .notif-icon svg {
   width: 20px;
   height: 20px;
-  color: var(--color-primary);
+  color: #16a34a;
 }
 
 .notif-body {

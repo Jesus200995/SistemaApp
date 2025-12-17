@@ -366,22 +366,22 @@ onMounted(() => {
 
 <style scoped>
 :root {
-  --color-primary: #10b981;
-  --color-primary-dark: #059669;
-  --color-bg: #0f172a;
-  --color-bg-dark: #0a0f1e;
-  --color-card: #1e293b;
-  --color-input: #1a2332;
-  --color-border: #334155;
-  --color-text: #f1f5f9;
-  --color-text-sec: #cbd5e1;
-  --color-text-dim: #94a3b8;
+  --color-primary: #16a34a;
+  --color-primary-dark: #15803d;
+  --color-bg: #f0fdf4;
+  --color-bg-dark: #dcfce7;
+  --color-card: rgba(255, 255, 255, 0.9);
+  --color-input: #f8fafc;
+  --color-border: #bbf7d0;
+  --color-text: #1e3a2f;
+  --color-text-sec: #374151;
+  --color-text-dim: #64748b;
 }
 
 .estadisticas-container {
   min-height: 100vh;
   width: 100%;
-  background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+  background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 50%, #f0fdf4 100%);
   position: relative;
   overflow-x: hidden;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
@@ -398,16 +398,16 @@ onMounted(() => {
 
 .blob {
   position: absolute;
-  opacity: 0.08;
+  opacity: 0.3;
   filter: blur(120px);
-  mix-blend-mode: screen;
+  mix-blend-mode: multiply;
   border-radius: 50%;
 }
 
 .blob-1 {
   width: 600px;
   height: 600px;
-  background: linear-gradient(135deg, #10b981, #06b6d4);
+  background: linear-gradient(135deg, #16a34a, #15803d);
   top: -300px;
   left: -300px;
   animation: float 8s ease-in-out infinite;
@@ -416,7 +416,7 @@ onMounted(() => {
 .blob-2 {
   width: 500px;
   height: 500px;
-  background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+  background: linear-gradient(135deg, #22c55e, #16a34a);
   top: 50%;
   right: -250px;
   animation: float 10s ease-in-out infinite reverse;
@@ -425,7 +425,7 @@ onMounted(() => {
 .blob-3 {
   width: 400px;
   height: 400px;
-  background: linear-gradient(135deg, #ec4899, #f59e0b);
+  background: linear-gradient(135deg, #86efac, #4ade80);
   bottom: -200px;
   left: 50%;
   animation: float 12s ease-in-out infinite;
@@ -441,11 +441,11 @@ onMounted(() => {
 .header-estadisticas {
   position: relative;
   z-index: 10;
-  background: rgba(132, 204, 22, 0.12);
-  border-bottom: 1px solid rgba(132, 204, 22, 0.1);
+  background: rgba(255, 255, 255, 0.9);
+  border-bottom: 1px solid rgba(22, 163, 74, 0.2);
   backdrop-filter: blur(12px);
   padding: 1rem 1.2rem;
-  box-shadow: 0 4px 20px rgba(132, 204, 22, 0.1);
+  box-shadow: 0 4px 20px rgba(22, 163, 74, 0.1);
   width: 100%;
 }
 
@@ -473,21 +473,21 @@ onMounted(() => {
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background: rgba(132, 204, 22, 0.1);
-  border: 1.5px solid rgba(132, 204, 22, 0.4);
+  background: rgba(22, 163, 74, 0.1);
+  border: 1.5px solid rgba(22, 163, 74, 0.4);
   cursor: pointer;
   text-decoration: none;
   transition: all 0.3s ease;
-  color: #84cc16;
+  color: #16a34a;
   backdrop-filter: blur(10px);
   flex-shrink: 0;
 }
 
 .back-button:hover {
-  background: rgba(132, 204, 22, 0.2);
+  background: rgba(22, 163, 74, 0.2);
   transform: translateX(-4px);
-  box-shadow: 0 4px 15px rgba(132, 204, 22, 0.3);
-  border-color: rgba(132, 204, 22, 0.6);
+  box-shadow: 0 4px 15px rgba(22, 163, 74, 0.3);
+  border-color: rgba(22, 163, 74, 0.6);
 }
 
 .back-button:active {
@@ -518,7 +518,7 @@ onMounted(() => {
 .icon-stat {
   width: 20px;
   height: 20px;
-  color: #84cc16;
+  color: #16a34a;
   stroke-width: 2;
 }
 
@@ -541,14 +541,14 @@ onMounted(() => {
 .header-title {
   font-size: 0.95rem;
   font-weight: 700;
-  color: #84cc16;
+  color: #16a34a;
   margin: 0;
-  text-shadow: 0 0 8px rgba(132, 204, 22, 0.4);
+  text-shadow: none;
 }
 
 .header-subtitle {
   font-size: 0.75rem;
-  color: #cbd5e1;
+  color: #64748b;
   margin: 0;
   margin-top: 0.2rem;
 }
@@ -620,8 +620,8 @@ onMounted(() => {
 }
 
 .stat-card {
-  background: rgba(30, 41, 59, 0.5);
-  border: 1px solid rgba(148, 163, 184, 0.1);
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(22, 163, 74, 0.15);
   border-radius: 16px;
   padding: 1rem 0.9rem;
   backdrop-filter: blur(10px);
@@ -633,10 +633,10 @@ onMounted(() => {
 }
 
 .stat-card:hover {
-  border-color: rgba(16, 185, 129, 0.3);
-  background: rgba(30, 41, 59, 0.7);
+  border-color: rgba(22, 163, 74, 0.3);
+  background: white;
   transform: translateY(-4px);
-  box-shadow: 0 12px 24px rgba(16, 185, 129, 0.15);
+  box-shadow: 0 12px 24px rgba(22, 163, 74, 0.15);
 }
 
 .stat-icon-wrapper {
@@ -652,13 +652,13 @@ onMounted(() => {
 .stat-icon {
   width: 24px;
   height: 24px;
-  color: #10b981;
+  color: #16a34a;
   stroke-width: 2;
 }
 
 .stat-card-1 .stat-icon-wrapper {
-  background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(34, 197, 94, 0.15));
-  border: 1px solid rgba(16, 185, 129, 0.3);
+  background: linear-gradient(135deg, rgba(22, 163, 74, 0.2), rgba(21, 128, 61, 0.15));
+  border: 1px solid rgba(22, 163, 74, 0.3);
 }
 
 .stat-card-2 .stat-icon-wrapper {
@@ -677,7 +677,7 @@ onMounted(() => {
 
 .stat-label {
   font-size: 0.7rem;
-  color: #cbd5e1;
+  color: #64748b;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   margin: 0;
@@ -686,7 +686,7 @@ onMounted(() => {
 .stat-value {
   font-size: 1.5rem;
   font-weight: 700;
-  color: #f1f5f9;
+  color: #1e3a2f;
   margin: 0;
 }
 
@@ -698,8 +698,8 @@ onMounted(() => {
 .badge-success {
   display: inline-block;
   padding: 0.2rem 0.5rem;
-  background: rgba(16, 185, 129, 0.2);
-  color: #10b981;
+  background: rgba(22, 163, 74, 0.15);
+  color: #16a34a;
   border-radius: 20px;
   font-weight: 600;
   font-size: 0.65rem;
@@ -721,21 +721,21 @@ onMounted(() => {
 
 .progress-bar-mini {
   height: 6px;
-  background: rgba(148, 163, 184, 0.2);
+  background: rgba(22, 163, 74, 0.15);
   border-radius: 3px;
   overflow: hidden;
 }
 
 .progress-fill-mini {
   height: 100%;
-  background: linear-gradient(90deg, #10b981, #059669);
+  background: linear-gradient(90deg, #16a34a, #15803d);
   transition: width 0.3s ease;
 }
 
 /* ========== CHART SECTION ========== */
 .chart-section {
-  background: rgba(30, 41, 59, 0.5);
-  border: 1px solid rgba(148, 163, 184, 0.1);
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(22, 163, 74, 0.15);
   border-radius: 16px;
   padding: 2rem;
   backdrop-filter: blur(10px);
@@ -744,7 +744,7 @@ onMounted(() => {
 .chart-header {
   margin-bottom: 1.5rem;
   padding-bottom: 1rem;
-  border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+  border-bottom: 1px solid rgba(22, 163, 74, 0.1);
 }
 
 .chart-title-wrapper {
@@ -756,7 +756,7 @@ onMounted(() => {
 .chart-title-icon {
   width: 24px;
   height: 24px;
-  color: #10b981;
+  color: #16a34a;
   stroke-width: 2;
   flex-shrink: 0;
 }
@@ -764,13 +764,13 @@ onMounted(() => {
 .chart-title {
   font-size: 1.1rem;
   font-weight: 700;
-  color: #f1f5f9;
+  color: #1e3a2f;
   margin: 0 0 0.25rem 0;
 }
 
 .chart-subtitle {
   font-size: 0.75rem;
-  color: #cbd5e1;
+  color: #64748b;
   margin: 0;
 }
 
@@ -793,27 +793,27 @@ onMounted(() => {
 .empty-icon {
   width: 40px;
   height: 40px;
-  color: #10b981;
+  color: #16a34a;
   stroke-width: 2;
   margin: 0 auto 0.75rem;
 }
 
 .empty-text {
   font-size: 0.9rem;
-  color: #f1f5f9;
+  color: #1e3a2f;
   margin: 0 0 0.35rem 0;
 }
 
 .empty-subtext {
   font-size: 0.8rem;
-  color: #cbd5e1;
+  color: #64748b;
   margin: 0;
 }
 
 /* ========== TABLE SECTION ========== */
 .table-section {
-  background: rgba(30, 41, 59, 0.5);
-  border: 1px solid rgba(148, 163, 184, 0.1);
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(22, 163, 74, 0.15);
   border-radius: 16px;
   padding: 2rem;
   backdrop-filter: blur(10px);
@@ -822,7 +822,7 @@ onMounted(() => {
 .table-header {
   margin-bottom: 1.5rem;
   padding-bottom: 1rem;
-  border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+  border-bottom: 1px solid rgba(22, 163, 74, 0.1);
 }
 
 .table-title-wrapper {
@@ -834,7 +834,7 @@ onMounted(() => {
 .table-title-icon {
   width: 24px;
   height: 24px;
-  color: #10b981;
+  color: #16a34a;
   stroke-width: 2;
   flex-shrink: 0;
 }
@@ -842,14 +842,14 @@ onMounted(() => {
 .table-title {
   font-size: 1.1rem;
   font-weight: 700;
-  color: #f1f5f9;
+  color: #1e3a2f;
   margin: 0;
 }
 
 .table-wrapper {
   overflow-x: auto;
   border-radius: 8px;
-  border: 1px solid rgba(148, 163, 184, 0.1);
+  border: 1px solid rgba(22, 163, 74, 0.15);
 }
 
 .cultivos-table {
@@ -858,14 +858,14 @@ onMounted(() => {
 }
 
 .cultivos-table thead {
-  background: rgba(16, 185, 129, 0.15);
-  border-bottom: 2px solid rgba(16, 185, 129, 0.3);
+  background: rgba(22, 163, 74, 0.1);
+  border-bottom: 2px solid rgba(22, 163, 74, 0.2);
 }
 
 .cultivos-table th {
   padding: 1rem;
   text-align: left;
-  color: #10b981;
+  color: #16a34a;
   font-weight: 600;
   font-size: 0.9rem;
   text-transform: uppercase;
@@ -873,17 +873,17 @@ onMounted(() => {
 }
 
 .cultivos-table tbody tr {
-  border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+  border-bottom: 1px solid rgba(22, 163, 74, 0.1);
   transition: background-color 0.2s ease;
 }
 
 .cultivos-table tbody tr:hover {
-  background-color: rgba(16, 185, 129, 0.05);
+  background-color: rgba(22, 163, 74, 0.05);
 }
 
 .table-row td {
   padding: 1rem;
-  color: #e2e8f0;
+  color: #374151;
 }
 
 .cultivo-name {
@@ -893,10 +893,10 @@ onMounted(() => {
 .cultivo-badge {
   display: inline-block;
   padding: 0.4rem 0.75rem;
-  background: rgba(16, 185, 129, 0.15);
-  border-left: 3px solid #10b981;
+  background: rgba(22, 163, 74, 0.1);
+  border-left: 3px solid #16a34a;
   border-radius: 4px;
-  color: #f1f5f9;
+  color: #1e3a2f;
   font-weight: 500;
 }
 
@@ -907,15 +907,15 @@ onMounted(() => {
 .cantidad-badge {
   display: inline-block;
   padding: 0.4rem 0.75rem;
-  background: rgba(59, 130, 246, 0.2);
-  color: #93c5fd;
+  background: rgba(59, 130, 246, 0.15);
+  color: #2563eb;
   border-radius: 6px;
   font-weight: 600;
 }
 
 .cultivo-porcentaje {
   min-width: 100px;
-  color: #f1f5f9;
+  color: #1e3a2f;
   font-weight: 600;
 }
 
@@ -926,7 +926,7 @@ onMounted(() => {
 .bar-container {
   width: 100%;
   height: 24px;
-  background: rgba(148, 163, 184, 0.1);
+  background: rgba(22, 163, 74, 0.1);
   border-radius: 4px;
   overflow: hidden;
 }
@@ -940,7 +940,7 @@ onMounted(() => {
 .empty-table {
   text-align: center;
   padding: 1.5rem;
-  color: #cbd5e1;
+  color: #64748b;
   font-size: 0.85rem;
   font-weight: 500;
 }
@@ -951,8 +951,8 @@ onMounted(() => {
 }
 
 .summary-card {
-  background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(6, 182, 212, 0.05));
-  border: 1px solid rgba(16, 185, 129, 0.2);
+  background: linear-gradient(135deg, rgba(22, 163, 74, 0.08), rgba(21, 128, 61, 0.04));
+  border: 1px solid rgba(22, 163, 74, 0.2);
   border-radius: 16px;
   padding: 1.25rem;
   backdrop-filter: blur(10px);
@@ -961,7 +961,7 @@ onMounted(() => {
 .summary-header {
   margin-bottom: 1rem;
   padding-bottom: 0.75rem;
-  border-bottom: 1px solid rgba(16, 185, 129, 0.2);
+  border-bottom: 1px solid rgba(22, 163, 74, 0.15);
 }
 
 .summary-title-wrapper {
@@ -973,7 +973,7 @@ onMounted(() => {
 .summary-title-icon {
   width: 24px;
   height: 24px;
-  color: #10b981;
+  color: #16a34a;
   stroke-width: 2;
   flex-shrink: 0;
 }
@@ -981,7 +981,7 @@ onMounted(() => {
 .summary-title {
   font-size: 1rem;
   font-weight: 700;
-  color: #f1f5f9;
+  color: #1e3a2f;
   margin: 0;
 }
 
@@ -1000,20 +1000,20 @@ onMounted(() => {
 .summary-item-icon {
   width: 18px;
   height: 18px;
-  color: #10b981;
+  color: #16a34a;
   stroke-width: 2;
   flex-shrink: 0;
   margin-top: 0.1rem;
 }
 
 .summary-text {
-  color: #e2e8f0;
+  color: #374151;
   line-height: 1.5;
   font-size: 0.8rem;
 }
 
 .summary-text strong {
-  color: #10b981;
+  color: #16a34a;
   font-weight: 700;
 }
 
@@ -1023,15 +1023,15 @@ onMounted(() => {
   z-index: 5;
   text-align: center;
   padding: 1.5rem;
-  border-top: 1px solid rgba(148, 163, 184, 0.2);
-  background: rgba(15, 23, 42, 0.6);
+  border-top: 1px solid rgba(22, 163, 74, 0.15);
+  background: rgba(255, 255, 255, 0.8);
   backdrop-filter: blur(10px);
   font-size: 0.9rem;
-  color: #cbd5e1;
+  color: #64748b;
 }
 
 .footer-highlight {
-  color: #10b981;
+  color: #16a34a;
   font-weight: 700;
 }
 

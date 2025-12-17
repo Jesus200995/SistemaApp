@@ -891,7 +891,7 @@ onMounted(getSembradores)
 .sembradores-container {
   min-height: 100vh;
   width: 100%;
-  background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+  background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 50%, #f0fdf4 100%);
   position: relative;
   overflow-x: hidden;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
@@ -908,9 +908,9 @@ onMounted(getSembradores)
 
 .blob {
   position: absolute;
-  opacity: 0.08;
+  opacity: 0.3;
   filter: blur(120px);
-  mix-blend-mode: screen;
+  mix-blend-mode: multiply;
   border-radius: 50%;
 }
 
@@ -961,11 +961,11 @@ onMounted(getSembradores)
 .header-sembradores {
   position: relative;
   z-index: 10;
-  background: rgba(132, 204, 22, 0.12);
-  border-bottom: 1px solid rgba(132, 204, 22, 0.1);
+  background: rgba(255, 255, 255, 0.9);
+  border-bottom: 1px solid rgba(22, 163, 74, 0.2);
   backdrop-filter: blur(12px);
   padding: 1rem 1.2rem;
-  box-shadow: 0 4px 20px rgba(132, 204, 22, 0.1);
+  box-shadow: 0 4px 20px rgba(22, 163, 74, 0.1);
   width: 100%;
 }
 
@@ -993,21 +993,21 @@ onMounted(getSembradores)
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background: rgba(132, 204, 22, 0.1);
-  border: 1.5px solid rgba(132, 204, 22, 0.4);
+  background: rgba(255, 255, 255, 0.9);
+  border: 1.5px solid rgba(22, 163, 74, 0.4);
   cursor: pointer;
   text-decoration: none;
   transition: all 0.3s ease;
-  color: #84cc16;
+  color: #16a34a;
   backdrop-filter: blur(10px);
   flex-shrink: 0;
 }
 
 .back-button:hover {
-  background: rgba(132, 204, 22, 0.2);
+  background: rgba(22, 163, 74, 0.1);
   transform: translateX(-4px);
-  box-shadow: 0 4px 15px rgba(132, 204, 22, 0.3);
-  border-color: rgba(132, 204, 22, 0.6);
+  box-shadow: 0 4px 15px rgba(22, 163, 74, 0.3);
+  border-color: rgba(22, 163, 74, 0.6);
 }
 
 .back-icon {
@@ -1030,7 +1030,7 @@ onMounted(getSembradores)
 .icon-stat {
   width: 20px;
   height: 20px;
-  color: #84cc16;
+  color: #16a34a;
   stroke-width: 2;
 }
 
@@ -1042,14 +1042,13 @@ onMounted(getSembradores)
 .header-title {
   font-size: 0.95rem;
   font-weight: 700;
-  color: #84cc16;
+  color: #15803d;
   margin: 0;
-  text-shadow: 0 0 8px rgba(132, 204, 22, 0.4);
 }
 
 .header-subtitle {
   font-size: 0.75rem;
-  color: #cbd5e1;
+  color: #64748b;
   margin: 0;
   margin-top: 0.2rem;
 }
@@ -1106,12 +1105,12 @@ onMounted(getSembradores)
 
 /* ========== FORM SECTION ========== */
 .form-section {
-  background: linear-gradient(135deg, rgba(30, 41, 59, 0.8) 0%, rgba(15, 23, 42, 0.8) 100%);
-  border: 1px solid rgba(148, 163, 184, 0.2);
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(22, 163, 74, 0.2);
   border-radius: 16px;
   padding: 1.25rem;
   backdrop-filter: blur(10px);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 8px 32px rgba(22, 163, 74, 0.1);
 }
 
 .form-header {
@@ -1121,14 +1120,13 @@ onMounted(getSembradores)
 .form-title {
   font-size: 0.95rem;
   font-weight: 700;
-  color: #84cc16;
+  color: #15803d;
   margin-bottom: 0.2rem;
-  text-shadow: 0 0 8px rgba(132, 204, 22, 0.3);
 }
 
 .form-subtitle {
   font-size: 0.7rem;
-  color: #cbd5e1;
+  color: #64748b;
 }
 
 .sembrador-form {
@@ -1152,7 +1150,7 @@ onMounted(getSembradores)
 .form-label {
   font-size: 0.65rem;
   font-weight: 600;
-  color: #e2e8f0;
+  color: #374151;
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
@@ -1182,17 +1180,17 @@ onMounted(getSembradores)
   left: 10px;
   width: 14px;
   height: 14px;
-  color: #10b981;
+  color: #16a34a;
   pointer-events: none;
 }
 
 .form-input {
   width: 100%;
-  background: rgba(15, 23, 42, 0.5);
-  border: 1px solid rgba(148, 163, 184, 0.2);
+  background: white;
+  border: 1px solid rgba(22, 163, 74, 0.3);
   border-radius: 8px;
   padding: 0.5rem 0.75rem 0.5rem 2rem;
-  color: #e2e8f0;
+  color: #1e3a2f;
   font-size: 0.8rem;
   transition: all 0.3s ease;
 }
@@ -1204,9 +1202,9 @@ onMounted(getSembradores)
 
 .form-input:focus {
   outline: none;
-  border-color: #10b981;
-  background: rgba(15, 23, 42, 0.7);
-  box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.1);
+  border-color: #16a34a;
+  background: white;
+  box-shadow: 0 0 0 2px rgba(22, 163, 74, 0.1);
 }
 
 /* ========== SELECT WRAPPER ========== */
@@ -1221,23 +1219,23 @@ onMounted(getSembradores)
   left: 0.6rem;
   width: 14px;
   height: 14px;
-  color: #10b981;
+  color: #16a34a;
   pointer-events: none;
   z-index: 1;
 }
 
 .form-select {
   width: 100%;
-  background: rgba(15, 23, 42, 0.5);
-  border: 1px solid rgba(148, 163, 184, 0.2);
+  background: white;
+  border: 1px solid rgba(22, 163, 74, 0.3);
   border-radius: 8px;
   padding: 0.5rem 2rem 0.5rem 2rem;
-  color: #e2e8f0;
+  color: #1e3a2f;
   font-size: 0.8rem;
   transition: all 0.3s ease;
   cursor: pointer;
   appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2394a3b8'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2316a34a'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 0.6rem center;
   background-size: 1rem;
@@ -1245,14 +1243,14 @@ onMounted(getSembradores)
 
 .form-select:focus {
   outline: none;
-  border-color: #10b981;
-  background-color: rgba(15, 23, 42, 0.7);
-  box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.1);
+  border-color: #16a34a;
+  background-color: white;
+  box-shadow: 0 0 0 2px rgba(22, 163, 74, 0.1);
 }
 
 .form-select option {
-  background: #1e293b;
-  color: #e2e8f0;
+  background: white;
+  color: #1e3a2f;
 }
 
 /* ========== SUBMIT BUTTON ========== */
@@ -1261,7 +1259,7 @@ onMounted(getSembradores)
   align-items: center;
   justify-content: center;
   gap: 0.4rem;
-  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
   color: white;
   border: none;
   border-radius: 8px;
@@ -1270,13 +1268,13 @@ onMounted(getSembradores)
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+  box-shadow: 0 4px 12px rgba(22, 163, 74, 0.3);
   margin-top: 0.5rem;
 }
 
 .submit-btn:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+  box-shadow: 0 6px 20px rgba(22, 163, 74, 0.4);
 }
 
 .submit-btn:active:not(:disabled) {
@@ -1299,12 +1297,12 @@ onMounted(getSembradores)
 
 /* ========== LIST SECTION ========== */
 .list-section {
-  background: linear-gradient(135deg, rgba(30, 41, 59, 0.8) 0%, rgba(15, 23, 42, 0.8) 100%);
-  border: 1px solid rgba(148, 163, 184, 0.2);
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(22, 163, 74, 0.2);
   border-radius: 16px;
   padding: 1.25rem;
   backdrop-filter: blur(10px);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 8px 32px rgba(22, 163, 74, 0.1);
 }
 
 .list-header {
@@ -1314,7 +1312,7 @@ onMounted(getSembradores)
 .list-title {
   font-size: 0.95rem;
   font-weight: 700;
-  color: #f1f5f9;
+  color: #1e3a2f;
   display: flex;
   align-items: center;
   gap: 0.6rem;
@@ -1327,7 +1325,7 @@ onMounted(getSembradores)
   justify-content: center;
   width: 24px;
   height: 24px;
-  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
   color: white;
   border-radius: 6px;
   font-weight: 700;
@@ -1336,7 +1334,7 @@ onMounted(getSembradores)
 
 .list-subtitle {
   font-size: 0.75rem;
-  color: #cbd5e1;
+  color: #64748b;
 }
 
 /* ========== EMPTY STATE ========== */
@@ -1352,13 +1350,13 @@ onMounted(getSembradores)
 .empty-icon {
   width: 50px;
   height: 50px;
-  background: rgba(16, 185, 129, 0.15);
+  background: rgba(22, 163, 74, 0.15);
   border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
   margin-bottom: 0.6rem;
-  color: #10b981;
+  color: #16a34a;
 }
 
 .empty-icon svg {
@@ -1369,13 +1367,13 @@ onMounted(getSembradores)
 .empty-title {
   font-size: 0.9rem;
   font-weight: 600;
-  color: #f1f5f9;
+  color: #1e3a2f;
   margin-bottom: 0.3rem;
 }
 
 .empty-text {
   font-size: 0.75rem;
-  color: #cbd5e1;
+  color: #64748b;
 }
 
 /* ========== TABLE ========== */
@@ -1394,8 +1392,8 @@ onMounted(getSembradores)
 }
 
 .table-header-row {
-  background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(16, 185, 129, 0.05) 100%);
-  border-bottom: 2px solid rgba(16, 185, 129, 0.2);
+  background: linear-gradient(135deg, rgba(22, 163, 74, 0.1) 0%, rgba(22, 163, 74, 0.05) 100%);
+  border-bottom: 2px solid rgba(22, 163, 74, 0.2);
 }
 
 .table-header-cell {
@@ -1403,23 +1401,23 @@ onMounted(getSembradores)
   text-align: left;
   font-size: 0.875rem;
   font-weight: 600;
-  color: #cbd5e1;
+  color: #64748b;
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
 
 .table-body-row {
-  border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+  border-bottom: 1px solid rgba(22, 163, 74, 0.1);
   transition: all 0.3s ease;
 }
 
 .table-body-row:hover {
-  background: rgba(16, 185, 129, 0.05);
+  background: rgba(22, 163, 74, 0.05);
 }
 
 .table-cell {
   padding: 1rem;
-  color: #e2e8f0;
+  color: #1e3a2f;
   font-size: 0.9rem;
 }
 
@@ -1432,7 +1430,7 @@ onMounted(getSembradores)
 .cell-icon {
   width: 32px;
   height: 32px;
-  background: rgba(16, 185, 129, 0.1);
+  background: rgba(22, 163, 74, 0.1);
   border-radius: 8px;
   display: flex;
   align-items: center;
@@ -1443,7 +1441,7 @@ onMounted(getSembradores)
 .icon-small {
   width: 16px;
   height: 16px;
-  color: #10b981;
+  color: #16a34a;
 }
 
 .cell-text {
@@ -1454,25 +1452,25 @@ onMounted(getSembradores)
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  color: #cbd5e1;
+  color: #64748b;
 }
 
 .icon-tiny {
   width: 14px;
   height: 14px;
-  color: #10b981;
+  color: #16a34a;
   flex-shrink: 0;
 }
 
 .cell-badge {
   display: inline-block;
-  background: linear-gradient(135deg, rgba(16, 185, 129, 0.2) 0%, rgba(16, 185, 129, 0.1) 100%);
-  color: #a7f3d0;
+  background: linear-gradient(135deg, rgba(22, 163, 74, 0.2) 0%, rgba(22, 163, 74, 0.1) 100%);
+  color: #15803d;
   padding: 0.375rem 0.75rem;
   border-radius: 6px;
   font-weight: 500;
   font-size: 0.875rem;
-  border: 1px solid rgba(16, 185, 129, 0.3);
+  border: 1px solid rgba(22, 163, 74, 0.3);
 }
 
 .territorio-badge {
@@ -1745,7 +1743,7 @@ onMounted(getSembradores)
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.6);
+  background: rgba(22, 163, 74, 0.2);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1756,10 +1754,10 @@ onMounted(getSembradores)
 }
 
 .modal-edicion {
-  background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
-  border: 1px solid rgba(132, 204, 22, 0.2);
+  background: white;
+  border: 1px solid rgba(22, 163, 74, 0.2);
   border-radius: 16px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+  box-shadow: 0 20px 60px rgba(22, 163, 74, 0.15);
   backdrop-filter: blur(12px);
   width: 100%;
   max-width: 600px;
@@ -1784,16 +1782,15 @@ onMounted(getSembradores)
   align-items: center;
   justify-content: space-between;
   padding: 1.5rem;
-  border-bottom: 1px solid rgba(132, 204, 22, 0.1);
-  background: rgba(132, 204, 22, 0.05);
+  border-bottom: 1px solid rgba(22, 163, 74, 0.1);
+  background: rgba(22, 163, 74, 0.05);
   border-radius: 16px 16px 0 0;
 }
 
 .modal-title {
   font-size: 1.3rem;
   font-weight: 700;
-  color: #84cc16;
-  text-shadow: 0 0 8px rgba(132, 204, 22, 0.3);
+  color: #15803d;
   margin: 0;
 }
 

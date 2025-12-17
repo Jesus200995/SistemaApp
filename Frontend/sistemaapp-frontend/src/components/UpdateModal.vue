@@ -7,7 +7,7 @@
           <svg viewBox="0 0 24 24" class="spinner">
             <path
               d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm3.5-9c.83 0 1.5-.67 1.5-1.5S16.33 8 15.5 8 14 8.67 14 9.5s.67 1.5 1.5 1.5zm-7 0c.83 0 1.5-.67 1.5-1.5S9.33 8 8.5 8 7 8.67 7 9.5 7.67 11 8.5 11zm3.5 6.5c2.33 0 4.31-1.46 5.11-3.5H6.89c.8 2.04 2.78 3.5 5.11 3.5z"
-              fill="#10b981"
+              fill="#16a34a"
             />
           </svg>
         </div>
@@ -123,7 +123,7 @@ onUnmounted(() => {
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(15, 23, 42, 0.95);
+  background: rgba(22, 163, 74, 0.15);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -132,14 +132,14 @@ onUnmounted(() => {
 }
 
 .update-modal {
-  background: linear-gradient(135deg, rgba(30, 41, 59, 0.95) 0%, rgba(15, 23, 42, 0.95) 100%);
-  border: 1px solid rgba(16, 185, 129, 0.3);
+  background: white;
+  border: 1px solid rgba(22, 163, 74, 0.3);
   border-radius: 20px;
   padding: 2rem 1.5rem;
   max-width: 320px;
   width: 90%;
   text-align: center;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5), 0 0 1px rgba(16, 185, 129, 0.2);
+  box-shadow: 0 20px 60px rgba(22, 163, 74, 0.2), 0 0 1px rgba(22, 163, 74, 0.2);
   backdrop-filter: blur(10px);
   animation: slideUp 0.4s ease-out;
 }
@@ -179,14 +179,14 @@ onUnmounted(() => {
 .update-title {
   font-size: 1.3rem;
   font-weight: 700;
-  color: #22c55e;
+  color: #16a34a;
   margin: 1rem 0 0.5rem 0;
   letter-spacing: -0.01em;
 }
 
 .update-message {
   font-size: 0.95rem;
-  color: #cbd5e1;
+  color: #374151;
   margin: 0.5rem 0 1rem 0;
   line-height: 1.5;
 }
@@ -194,7 +194,7 @@ onUnmounted(() => {
 .progress-bar {
   width: 100%;
   height: 6px;
-  background: rgba(148, 163, 184, 0.2);
+  background: rgba(22, 163, 74, 0.15);
   border-radius: 10px;
   overflow: hidden;
   margin: 1rem 0;
@@ -202,7 +202,7 @@ onUnmounted(() => {
 
 .progress-fill {
   height: 100%;
-  background: linear-gradient(90deg, #10b981, #22c55e);
+  background: linear-gradient(90deg, #16a34a, #15803d);
   border-radius: 10px;
   animation: progressAnimation 2s ease-in-out infinite;
 }
@@ -221,7 +221,7 @@ onUnmounted(() => {
 
 .update-info {
   font-size: 0.85rem;
-  color: #94a3b8;
+  color: #64748b;
   margin: 0.75rem 0 1rem 0;
 }
 
@@ -233,7 +233,7 @@ onUnmounted(() => {
 
 .update-button {
   flex: 1;
-  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
   color: white;
   border: none;
   border-radius: 10px;
@@ -242,12 +242,12 @@ onUnmounted(() => {
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 4px 15px rgba(16, 185, 129, 0.35);
+  box-shadow: 0 4px 15px rgba(22, 163, 74, 0.35);
 }
 
 .update-button:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(16, 185, 129, 0.45);
+  box-shadow: 0 6px 20px rgba(22, 163, 74, 0.45);
 }
 
 .update-button:active {

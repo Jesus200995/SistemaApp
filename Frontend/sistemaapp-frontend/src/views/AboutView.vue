@@ -193,8 +193,8 @@ const goBack = () => {
   width: 100vw;
   display: flex;
   flex-direction: column;
-  background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
-  color: #e2e8f0;
+  background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 50%, #f0fdf4 100%);
+  color: #1e3a2f;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   position: relative;
   overflow-x: hidden;
@@ -212,14 +212,15 @@ const goBack = () => {
 .blob {
   position: absolute;
   border-radius: 50%;
-  opacity: 0.15;
+  opacity: 0.3;
   filter: blur(40px);
+  mix-blend-mode: multiply;
 }
 
 .blob-1 {
   width: 300px;
   height: 300px;
-  background: linear-gradient(135deg, #10b981, #06b6d4);
+  background: linear-gradient(135deg, #16a34a, #15803d);
   top: -100px;
   left: -100px;
   animation: float 8s ease-in-out infinite;
@@ -228,7 +229,7 @@ const goBack = () => {
 .blob-2 {
   width: 250px;
   height: 250px;
-  background: linear-gradient(135deg, #8b5cf6, #10b981);
+  background: linear-gradient(135deg, #22c55e, #16a34a);
   bottom: -50px;
   right: -50px;
   animation: float 10s ease-in-out infinite reverse;
@@ -237,7 +238,7 @@ const goBack = () => {
 .blob-3 {
   width: 200px;
   height: 200px;
-  background: linear-gradient(135deg, #06b6d4, #f59e0b);
+  background: linear-gradient(135deg, #86efac, #4ade80);
   top: 50%;
   right: 10%;
   animation: float 9s ease-in-out infinite;
@@ -259,19 +260,19 @@ const goBack = () => {
   align-items: center;
   gap: 1rem;
   padding: 1.5rem;
-  background: rgba(15, 23, 42, 0.8);
+  background: rgba(255, 255, 255, 0.9);
   backdrop-filter: blur(12px);
-  border-bottom: 1px solid rgba(148, 163, 184, 0.1);
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+  border-bottom: 1px solid rgba(22, 163, 74, 0.2);
+  box-shadow: 0 4px 30px rgba(22, 163, 74, 0.1);
 }
 
 .back-button {
   width: 44px;
   height: 44px;
   border-radius: 10px;
-  background: rgba(16, 185, 129, 0.1);
-  border: 1px solid rgba(16, 185, 129, 0.3);
-  color: #10b981;
+  background: rgba(22, 163, 74, 0.1);
+  border: 1px solid rgba(22, 163, 74, 0.3);
+  color: #16a34a;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -282,7 +283,7 @@ const goBack = () => {
 
 .back-button:hover {
   transform: translateX(-4px);
-  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25);
+  box-shadow: 0 4px 12px rgba(22, 163, 74, 0.25);
 }
 
 .back-icon {
@@ -293,7 +294,7 @@ const goBack = () => {
 .page-title {
   font-size: 1.75rem;
   font-weight: 700;
-  background: linear-gradient(135deg, #10b981, #6ee7b7);
+  background: linear-gradient(135deg, #16a34a, #15803d);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -320,9 +321,9 @@ const goBack = () => {
   text-align: center;
   margin-bottom: 3rem;
   padding: 2rem;
-  background: linear-gradient(135deg, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.8));
+  background: rgba(255, 255, 255, 0.9);
   border-radius: 24px;
-  border: 1px solid rgba(148, 163, 184, 0.2);
+  border: 1px solid rgba(22, 163, 74, 0.2);
   backdrop-filter: blur(10px);
 }
 
@@ -339,7 +340,7 @@ const goBack = () => {
 .logo-glow {
   position: absolute;
   inset: -15px;
-  background: linear-gradient(135deg, #10b981, #06b6d4);
+  background: linear-gradient(135deg, #16a34a, #15803d);
   border-radius: 50%;
   opacity: 0.2;
   animation: glow-pulse 3s ease-in-out infinite;
@@ -354,12 +355,12 @@ const goBack = () => {
   position: relative;
   width: 100px;
   height: 100px;
-  background: linear-gradient(135deg, #10b981, #059669);
+  background: linear-gradient(135deg, #16a34a, #15803d);
   border-radius: 20px;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 12px 24px rgba(16, 185, 129, 0.3);
+  box-shadow: 0 12px 24px rgba(22, 163, 74, 0.3);
 }
 
 .logo-icon {
@@ -371,7 +372,7 @@ const goBack = () => {
 .app-name {
   font-size: 2rem;
   font-weight: 700;
-  background: linear-gradient(135deg, #10b981, #6ee7b7);
+  background: linear-gradient(135deg, #16a34a, #15803d);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -379,7 +380,7 @@ const goBack = () => {
 }
 
 .app-version {
-  color: #94a3b8;
+  color: #64748b;
   font-size: 0.9rem;
 }
 
@@ -387,16 +388,16 @@ const goBack = () => {
 .info-section {
   margin-bottom: 2rem;
   padding: 1.75rem;
-  background: linear-gradient(135deg, rgba(30, 41, 59, 0.7), rgba(15, 23, 42, 0.7));
-  border: 1px solid rgba(148, 163, 184, 0.2);
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(22, 163, 74, 0.15);
   border-radius: 16px;
   backdrop-filter: blur(10px);
   transition: all 0.3s ease;
 }
 
 .info-section:hover {
-  border-color: rgba(16, 185, 129, 0.3);
-  box-shadow: 0 8px 24px rgba(16, 185, 129, 0.1);
+  border-color: rgba(22, 163, 74, 0.3);
+  box-shadow: 0 8px 24px rgba(22, 163, 74, 0.1);
 }
 
 .section-title {
@@ -406,19 +407,19 @@ const goBack = () => {
   font-size: 1.25rem;
   font-weight: 600;
   margin-bottom: 1rem;
-  color: #e2e8f0;
+  color: #1e3a2f;
 }
 
 .section-icon {
   width: 24px;
   height: 24px;
-  color: #10b981;
+  color: #16a34a;
 }
 
 .section-text {
   font-size: 0.95rem;
   line-height: 1.6;
-  color: #cbd5e1;
+  color: #374151;
 }
 
 /* ========== FEATURES LIST ========== */
@@ -432,15 +433,15 @@ const goBack = () => {
   display: flex;
   gap: 1rem;
   padding: 1rem;
-  background: rgba(15, 23, 42, 0.5);
-  border: 1px solid rgba(148, 163, 184, 0.1);
+  background: white;
+  border: 1px solid rgba(22, 163, 74, 0.1);
   border-radius: 12px;
   transition: all 0.3s ease;
 }
 
 .feature-item:hover {
-  border-color: rgba(16, 185, 129, 0.3);
-  background: rgba(16, 185, 129, 0.05);
+  border-color: rgba(22, 163, 74, 0.3);
+  background: rgba(22, 163, 74, 0.05);
   transform: translateY(-4px);
 }
 
@@ -448,8 +449,8 @@ const goBack = () => {
   flex-shrink: 0;
   width: 48px;
   height: 48px;
-  background: rgba(16, 185, 129, 0.15);
-  border: 1px solid rgba(16, 185, 129, 0.3);
+  background: rgba(22, 163, 74, 0.1);
+  border: 1px solid rgba(22, 163, 74, 0.2);
   border-radius: 12px;
   display: flex;
   align-items: center;
@@ -459,7 +460,7 @@ const goBack = () => {
 .icon-svg {
   width: 24px;
   height: 24px;
-  color: #10b981;
+  color: #16a34a;
 }
 
 .feature-content {
@@ -469,13 +470,13 @@ const goBack = () => {
 .feature-title {
   font-size: 0.9rem;
   font-weight: 600;
-  color: #e2e8f0;
+  color: #1e3a2f;
   margin-bottom: 0.25rem;
 }
 
 .feature-desc {
   font-size: 0.8rem;
-  color: #94a3b8;
+  color: #64748b;
 }
 
 /* ========== TECH GRID ========== */
@@ -487,23 +488,23 @@ const goBack = () => {
 
 .tech-item {
   padding: 0.75rem 1rem;
-  background: rgba(16, 185, 129, 0.1);
-  border: 1px solid rgba(16, 185, 129, 0.3);
+  background: rgba(22, 163, 74, 0.08);
+  border: 1px solid rgba(22, 163, 74, 0.2);
   border-radius: 8px;
   text-align: center;
   transition: all 0.3s ease;
 }
 
 .tech-item:hover {
-  background: rgba(16, 185, 129, 0.2);
+  background: rgba(22, 163, 74, 0.15);
   transform: scale(1.05);
-  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
+  box-shadow: 0 4px 12px rgba(22, 163, 74, 0.15);
 }
 
 .tech-name {
   font-size: 0.85rem;
   font-weight: 600;
-  color: #10b981;
+  color: #16a34a;
 }
 
 /* ========== FOOTER SECTION ========== */
@@ -522,7 +523,7 @@ const goBack = () => {
 
 .footer-text {
   font-size: 0.9rem;
-  color: #cbd5e1;
+  color: #374151;
 }
 
 .footer-version {
@@ -637,11 +638,11 @@ const goBack = () => {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(148, 163, 184, 0.3);
+  background: rgba(22, 163, 74, 0.2);
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(148, 163, 184, 0.5);
+  background: rgba(22, 163, 74, 0.4);
 }
 </style>

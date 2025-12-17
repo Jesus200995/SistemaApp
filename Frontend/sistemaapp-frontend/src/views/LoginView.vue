@@ -263,7 +263,7 @@ const crearAdmin = async () => {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+  background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 50%, #f0fdf4 100%);
   position: relative;
   overflow-y: auto;
   overflow-x: hidden;
@@ -281,15 +281,15 @@ const crearAdmin = async () => {
 
 .blob {
   position: absolute;
-  opacity: 0.1;
+  opacity: 0.3;
   filter: blur(100px);
-  mix-blend-mode: screen;
+  mix-blend-mode: multiply;
 }
 
 .blob-1 {
   width: 500px;
   height: 500px;
-  background: linear-gradient(135deg, #10b981, #06b6d4);
+  background: linear-gradient(135deg, #bbf7d0, #86efac);
   border-radius: 50%;
   top: -200px;
   left: -200px;
@@ -299,7 +299,7 @@ const crearAdmin = async () => {
 .blob-2 {
   width: 400px;
   height: 400px;
-  background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+  background: linear-gradient(135deg, #a7f3d0, #6ee7b7);
   border-radius: 50%;
   top: 50%;
   right: -150px;
@@ -309,7 +309,7 @@ const crearAdmin = async () => {
 .blob-3 {
   width: 300px;
   height: 300px;
-  background: linear-gradient(135deg, #ec4899, #f59e0b);
+  background: linear-gradient(135deg, #bbf7d0, #34d399);
   border-radius: 50%;
   bottom: -100px;
   left: 50%;
@@ -420,7 +420,7 @@ const crearAdmin = async () => {
 .app-title {
   font-size: 1.15rem;
   font-weight: 600;
-  background: linear-gradient(90deg, #ffffff 0%, #10b981 25%, #ffffff 50%, #10b981 75%, #ffffff 100%);
+  background: linear-gradient(90deg, #15803d 0%, #166534 25%, #15803d 50%, #166534 75%, #15803d 100%);
   background-size: 200% 100%;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -457,19 +457,19 @@ const crearAdmin = async () => {
 /* ========== LOGIN CARD ========== */
 .login-card {
   width: 100%;
-  background: linear-gradient(135deg, rgba(30, 41, 59, 0.85) 0%, rgba(15, 23, 42, 0.85) 100%);
-  border: 1px solid rgba(148, 163, 184, 0.25);
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(22, 163, 74, 0.2);
   border-radius: 20px;
   padding: 0.9rem 0.7rem;
   backdrop-filter: blur(10px);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), 0 0 1px rgba(16, 185, 129, 0.1);
+  box-shadow: 0 8px 32px rgba(22, 163, 74, 0.1), 0 0 1px rgba(16, 185, 129, 0.2);
   margin-bottom: 0.5rem;
 }
 
 .login-title {
   font-size: 1.1rem;
   font-weight: 700;
-  color: #f1f5f9;
+  color: #15803d;
   margin-bottom: 0.3rem;
   text-align: center;
   letter-spacing: -0.01em;
@@ -477,7 +477,7 @@ const crearAdmin = async () => {
 
 .login-subtitle {
   font-size: 0.85rem;
-  color: #cbd5e1;
+  color: #166534;
   text-align: center;
   margin-bottom: 1.2rem;
   font-weight: 400;
@@ -499,7 +499,7 @@ const crearAdmin = async () => {
 .form-label {
   font-size: 0.7rem;
   font-weight: 600;
-  color: #cbd5e1;
+  color: #15803d;
   text-transform: uppercase;
   letter-spacing: 0.08em;
 }
@@ -521,25 +521,25 @@ const crearAdmin = async () => {
 
 .form-input {
   width: 100%;
-  background: rgba(15, 23, 42, 0.6);
-  border: 1.5px solid rgba(148, 163, 184, 0.25);
+  background: rgba(255, 255, 255, 0.95);
+  border: 1.5px solid rgba(22, 163, 74, 0.3);
   border-radius: 10px;
   padding: 0.55rem 0.8rem 0.55rem 2.2rem;
-  color: #e2e8f0;
+  color: #1e3a2f;
   font-size: 0.75rem;
   font-family: 'Inter', 'Segoe UI', sans-serif;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .form-input::placeholder {
-  color: #64748b;
+  color: #6b7280;
 }
 
 .form-input:focus {
   outline: none;
-  border-color: #10b981;
-  background: rgba(15, 23, 42, 0.8);
-  box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.15);
+  border-color: #16a34a;
+  background: #ffffff;
+  box-shadow: 0 0 0 4px rgba(22, 163, 74, 0.15);
 }
 
 /* ========== REMEMBER ME ========== */
@@ -559,14 +559,14 @@ const crearAdmin = async () => {
 }
 
 .checkbox-label {
-  color: #cbd5e1;
+  color: #166534;
   cursor: pointer;
   transition: color 0.3s ease;
   font-weight: 500;
 }
 
 .checkbox-label:hover {
-  color: #e2e8f0;
+  color: #15803d;
 }
 
 /* ========== ERROR MESSAGE ========== */
@@ -640,7 +640,7 @@ const crearAdmin = async () => {
 .divider {
   position: relative;
   height: 1px;
-  background: rgba(148, 163, 184, 0.2);
+  background: rgba(22, 163, 74, 0.2);
   margin: 1.2rem 0;
   display: flex;
   align-items: center;
@@ -648,9 +648,9 @@ const crearAdmin = async () => {
 }
 
 .divider span {
-  background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+  background: rgba(255, 255, 255, 0.9);
   padding: 0 0.75rem;
-  color: #64748b;
+  color: #166534;
   font-size: 0.8rem;
   font-weight: 500;
 }
@@ -658,9 +658,9 @@ const crearAdmin = async () => {
 /* ========== REGISTER BUTTON ========== */
 .register-button {
   width: 100%;
-  background: rgba(148, 163, 184, 0.08);
-  color: #6ee7b7;
-  border: 1.5px solid rgba(16, 185, 129, 0.3);
+  background: rgba(22, 163, 74, 0.08);
+  color: #15803d;
+  border: 1.5px solid rgba(22, 163, 74, 0.4);
   border-radius: 12px;
   padding: 0.8rem 1.4rem;
   font-size: 0.9rem;
@@ -675,9 +675,9 @@ const crearAdmin = async () => {
 }
 
 .register-button:hover {
-  background: rgba(16, 185, 129, 0.15);
-  border-color: rgba(16, 185, 129, 0.6);
-  color: #10b981;
+  background: rgba(22, 163, 74, 0.15);
+  border-color: rgba(22, 163, 74, 0.7);
+  color: #166534;
   transform: translateY(-1px);
 }
 
@@ -688,9 +688,9 @@ const crearAdmin = async () => {
 /* ========== ADMIN BUTTON ========== */
 .admin-button {
   width: 100%;
-  background: rgba(59, 130, 246, 0.1);
-  color: #60a5fa;
-  border: 1.5px solid rgba(59, 130, 246, 0.3);
+  background: rgba(20, 184, 166, 0.1);
+  color: #0d9488;
+  border: 1.5px solid rgba(20, 184, 166, 0.3);
   border-radius: 12px;
   padding: 0.75rem 1.3rem;
   font-size: 0.8rem;
@@ -702,9 +702,9 @@ const crearAdmin = async () => {
 }
 
 .admin-button:hover {
-  background: rgba(59, 130, 246, 0.2);
-  border-color: rgba(59, 130, 246, 0.6);
-  color: #3b82f6;
+  background: rgba(20, 184, 166, 0.2);
+  border-color: rgba(20, 184, 166, 0.6);
+  color: #0f766e;
   transform: translateY(-1px);
 }
 
@@ -716,14 +716,14 @@ const crearAdmin = async () => {
 .login-footer {
   text-align: center;
   font-size: 0.65rem;
-  color: #475569;
+  color: #166534;
   margin-top: 0.7rem;
   font-weight: 500;
   letter-spacing: 0.01em;
 }
 
 .footer-highlight {
-  color: #10b981;
+  color: #15803d;
   font-weight: 700;
 }
 
@@ -1395,7 +1395,7 @@ const crearAdmin = async () => {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(15, 23, 42, 0.95);
+  background: rgba(240, 253, 244, 0.95);
   backdrop-filter: blur(4px);
   z-index: 9999;
 }
