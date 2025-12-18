@@ -676,12 +676,12 @@ const getUsuariosDesc = (): string => {
   letter-spacing: -0.5px;
   margin: 0;
   font-family: 'Segoe UI', 'Trebuchet MS', sans-serif;
-  /* Efecto de brillo blanco pasando letra por letra */
+  /* Efecto de brillo verde suave pasando letra por letra */
   background: linear-gradient(
     90deg,
     #15803d 0%,
     #15803d 40%,
-    #ffffff 50%,
+    #86efac 50%,
     #15803d 60%,
     #15803d 100%
   );
