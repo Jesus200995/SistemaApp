@@ -42,8 +42,8 @@
           
           <div class="stats-grid">
             <!-- Card: Total Usuarios -->
-            <div class="stat-card" :style="{ borderLeftColor: '#10b981' }">
-              <div class="stat-icon" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%)">
+            <div class="stat-card stat-card-green">
+              <div class="stat-icon stat-icon-green">
                 <Users class="card-icon" />
               </div>
               <div class="stat-content">
@@ -53,8 +53,8 @@
             </div>
 
             <!-- Card: Total Sembradores -->
-            <div class="stat-card" :style="{ borderLeftColor: '#f59e0b' }">
-              <div class="stat-icon" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%)">
+            <div class="stat-card stat-card-amber">
+              <div class="stat-icon stat-icon-amber">
                 <Sprout class="card-icon" />
               </div>
               <div class="stat-content">
@@ -64,8 +64,8 @@
             </div>
 
             <!-- Card: Total Seguimientos -->
-            <div class="stat-card" :style="{ borderLeftColor: '#3b82f6' }">
-              <div class="stat-icon" style="background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)">
+            <div class="stat-card stat-card-blue">
+              <div class="stat-icon stat-icon-blue">
                 <BarChart3 class="card-icon" />
               </div>
               <div class="stat-content">
@@ -75,8 +75,8 @@
             </div>
 
             <!-- Card: Solicitudes Pendientes -->
-            <div class="stat-card" :style="{ borderLeftColor: '#ef4444' }">
-              <div class="stat-icon" style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%)">
+            <div class="stat-card stat-card-red">
+              <div class="stat-icon stat-icon-red">
                 <AlertCircle class="card-icon" />
               </div>
               <div class="stat-content">
@@ -86,8 +86,8 @@
             </div>
 
             <!-- Card: Promedio de Avance -->
-            <div class="stat-card" :style="{ borderLeftColor: '#8b5cf6' }">
-              <div class="stat-icon" style="background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)">
+            <div class="stat-card stat-card-purple">
+              <div class="stat-icon stat-icon-purple">
                 <TrendingUp class="card-icon" />
               </div>
               <div class="stat-content">
@@ -614,15 +614,15 @@ onMounted(async () => {
 .admin-main {
   position: relative;
   z-index: 5;
-  padding: 2rem;
+  padding: 1rem;
 }
 
 .admin-content {
-  max-width: 1400px;
+  max-width: 1200px;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
-  gap: 2rem;
+  gap: 1rem;
 }
 
 /* ========== SECCIONES ========== */
@@ -631,20 +631,20 @@ onMounted(async () => {
 .notifications-section {
   background: rgba(255, 255, 255, 0.9);
   border: 1px solid var(--border-light);
-  border-radius: 16px;
-  padding: 2rem;
+  border-radius: 12px;
+  padding: 1rem;
   backdrop-filter: blur(10px);
-  box-shadow: 0 8px 32px rgba(22, 163, 74, 0.1);
+  box-shadow: 0 4px 20px rgba(22, 163, 74, 0.08);
 }
 
 .section-title {
-  font-size: 1.2rem;
+  font-size: 0.95rem;
   font-weight: 700;
   color: #16a34a;
   display: flex;
   align-items: center;
-  gap: 1rem;
-  margin: 0 0 1rem 0;
+  gap: 0.5rem;
+  margin: 0 0 0.75rem 0;
   text-shadow: none;
 }
 
@@ -652,84 +652,230 @@ onMounted(async () => {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
-  height: 32px;
+  width: 24px;
+  height: 24px;
   background: linear-gradient(135deg, #16a34a, #15803d);
   color: white;
-  border-radius: 8px;
+  border-radius: 6px;
   font-weight: 700;
-  font-size: 0.875rem;
+  font-size: 0.75rem;
 }
 
 .section-header {
-  margin-bottom: 1.5rem;
+  margin-bottom: 0.75rem;
 }
 
 .section-subtitle {
-  font-size: 0.95rem;
+  font-size: 0.8rem;
   color: var(--text-muted);
-  margin-top: 0.5rem;
+  margin-top: 0.25rem;
 }
 
 /* ========== STATS GRID ========== */
 .stats-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 1.5rem;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 0.75rem;
+  justify-items: center;
 }
 
 .stat-card {
-  background: white;
-  border: 1px solid rgba(22, 163, 74, 0.15);
-  border-radius: 12px;
-  padding: 1.5rem;
-  transition: all 0.3s ease;
-  border-left: 4px solid;
+  position: relative;
+  background: linear-gradient(
+    135deg,
+    rgba(var(--card-rgb), 0.12) 0%,
+    rgba(var(--card-rgb), 0.06) 50%,
+    rgba(var(--card-rgb), 0.12) 100%
+  );
+  border-radius: 16px;
+  padding: 1rem 0.75rem;
+  width: 100%;
+  max-width: 160px;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 1rem;
+  text-align: center;
+  gap: 0.6rem;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1.5px solid rgba(var(--card-rgb), 0.25);
+  box-shadow: 
+    0 4px 15px rgba(var(--card-rgb), 0.1),
+    inset 0 0 30px rgba(var(--card-rgb), 0.05);
 }
 
 .stat-card:hover {
   transform: translateY(-4px);
-  background: white;
-  border-color: rgba(22, 163, 74, 0.3);
-  box-shadow: 0 8px 25px rgba(22, 163, 74, 0.15);
+  background: linear-gradient(
+    135deg,
+    rgba(var(--card-rgb), 0.18) 0%,
+    rgba(var(--card-rgb), 0.1) 50%,
+    rgba(var(--card-rgb), 0.18) 100%
+  );
+  box-shadow: 
+    0 8px 25px rgba(var(--card-rgb), 0.2),
+    inset 0 0 40px rgba(var(--card-rgb), 0.08);
 }
 
+/* Variantes de color para cada card */
+.stat-card-green {
+  --card-rgb: 16, 185, 129;
+}
+
+.stat-card-amber {
+  --card-rgb: 245, 158, 11;
+}
+
+.stat-card-blue {
+  --card-rgb: 59, 130, 246;
+}
+
+.stat-card-red {
+  --card-rgb: 239, 68, 68;
+}
+
+.stat-card-purple {
+  --card-rgb: 139, 92, 246;
+}
+
+/* Iconos de las cards - Circular con efecto vidrio líquido */
 .stat-icon {
-  width: 56px;
-  height: 56px;
-  border-radius: 12px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  position: relative;
+  z-index: 1;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.stat-icon-green {
+  background: linear-gradient(
+    135deg,
+    rgba(16, 185, 129, 0.25) 0%,
+    rgba(5, 150, 105, 0.4) 50%,
+    rgba(16, 185, 129, 0.25) 100%
+  );
+  border: 1.5px solid rgba(16, 185, 129, 0.5);
+  box-shadow: 
+    0 4px 15px rgba(16, 185, 129, 0.3),
+    inset 0 0 20px rgba(16, 185, 129, 0.15),
+    inset 0 2px 4px rgba(255, 255, 255, 0.2);
+}
+
+.stat-icon-green .card-icon {
+  color: #059669;
+  filter: drop-shadow(0 1px 2px rgba(5, 150, 105, 0.4));
+}
+
+.stat-icon-amber {
+  background: linear-gradient(
+    135deg,
+    rgba(245, 158, 11, 0.25) 0%,
+    rgba(217, 119, 6, 0.4) 50%,
+    rgba(245, 158, 11, 0.25) 100%
+  );
+  border: 1.5px solid rgba(245, 158, 11, 0.5);
+  box-shadow: 
+    0 4px 15px rgba(245, 158, 11, 0.3),
+    inset 0 0 20px rgba(245, 158, 11, 0.15),
+    inset 0 2px 4px rgba(255, 255, 255, 0.2);
+}
+
+.stat-icon-amber .card-icon {
+  color: #d97706;
+  filter: drop-shadow(0 1px 2px rgba(217, 119, 6, 0.4));
+}
+
+.stat-icon-blue {
+  background: linear-gradient(
+    135deg,
+    rgba(59, 130, 246, 0.25) 0%,
+    rgba(37, 99, 235, 0.4) 50%,
+    rgba(59, 130, 246, 0.25) 100%
+  );
+  border: 1.5px solid rgba(59, 130, 246, 0.5);
+  box-shadow: 
+    0 4px 15px rgba(59, 130, 246, 0.3),
+    inset 0 0 20px rgba(59, 130, 246, 0.15),
+    inset 0 2px 4px rgba(255, 255, 255, 0.2);
+}
+
+.stat-icon-blue .card-icon {
+  color: #2563eb;
+  filter: drop-shadow(0 1px 2px rgba(37, 99, 235, 0.4));
+}
+
+.stat-icon-red {
+  background: linear-gradient(
+    135deg,
+    rgba(239, 68, 68, 0.25) 0%,
+    rgba(220, 38, 38, 0.4) 50%,
+    rgba(239, 68, 68, 0.25) 100%
+  );
+  border: 1.5px solid rgba(239, 68, 68, 0.5);
+  box-shadow: 
+    0 4px 15px rgba(239, 68, 68, 0.3),
+    inset 0 0 20px rgba(239, 68, 68, 0.15),
+    inset 0 2px 4px rgba(255, 255, 255, 0.2);
+}
+
+.stat-icon-red .card-icon {
+  color: #dc2626;
+  filter: drop-shadow(0 1px 2px rgba(220, 38, 38, 0.4));
+}
+
+.stat-icon-purple {
+  background: linear-gradient(
+    135deg,
+    rgba(139, 92, 246, 0.25) 0%,
+    rgba(124, 58, 237, 0.4) 50%,
+    rgba(139, 92, 246, 0.25) 100%
+  );
+  border: 1.5px solid rgba(139, 92, 246, 0.5);
+  box-shadow: 
+    0 4px 15px rgba(139, 92, 246, 0.3),
+    inset 0 0 20px rgba(139, 92, 246, 0.15),
+    inset 0 2px 4px rgba(255, 255, 255, 0.2);
+}
+
+.stat-icon-purple .card-icon {
+  color: #7c3aed;
+  filter: drop-shadow(0 1px 2px rgba(124, 58, 237, 0.4));
 }
 
 .card-icon {
-  width: 28px;
-  height: 28px;
-  color: white;
+  width: 22px;
+  height: 22px;
 }
 
 .stat-content {
-  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
 }
 
 .stat-label {
-  font-size: 0.875rem;
+  font-size: 0.65rem;
   color: var(--text-muted);
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.03em;
   margin: 0;
+  line-height: 1.2;
 }
 
 .stat-value {
-  font-size: 2rem;
+  font-size: 1.35rem;
   font-weight: 700;
   color: var(--text-primary);
-  margin: 0.25rem 0 0 0;
+  margin: 0.2rem 0 0 0;
+  line-height: 1;
 }
 
 /* ========== TABLE ========== */
@@ -749,17 +895,17 @@ onMounted(async () => {
 
 .table-header-row {
   background: linear-gradient(135deg, rgba(22, 163, 74, 0.1), rgba(22, 163, 74, 0.05));
-  border-bottom: 2px solid var(--border-accent);
+  border-bottom: 1.5px solid var(--border-accent);
 }
 
 .table-header-cell {
-  padding: 1rem;
+  padding: 0.6rem 0.5rem;
   text-align: left;
-  font-size: 0.875rem;
+  font-size: 0.7rem;
   font-weight: 600;
   color: var(--text-secondary);
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.03em;
 }
 
 .table-body-row {
@@ -772,32 +918,32 @@ onMounted(async () => {
 }
 
 .table-cell {
-  padding: 1rem;
+  padding: 0.5rem;
   color: var(--text-primary);
-  font-size: 0.9rem;
+  font-size: 0.75rem;
 }
 
 .cell-content {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 0.5rem;
 }
 
 .icon-small {
-  width: 16px;
-  height: 16px;
+  width: 14px;
+  height: 14px;
   color: var(--color-primary);
   flex-shrink: 0;
 }
 
 .tipo-badge {
   display: inline-block;
-  padding: 0.375rem 0.75rem;
-  border-radius: 6px;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
   font-weight: 600;
-  font-size: 0.75rem;
+  font-size: 0.65rem;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.03em;
 }
 
 .tipo-solicitud {
@@ -840,36 +986,36 @@ onMounted(async () => {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 3rem 2rem;
+  padding: 1.5rem 1rem;
   text-align: center;
 }
 
 .empty-icon {
-  width: 80px;
-  height: 80px;
+  width: 50px;
+  height: 50px;
   background: rgba(22, 163, 74, 0.1);
-  border-radius: 16px;
+  border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 1rem;
+  margin-bottom: 0.75rem;
   color: #16a34a;
 }
 
 .empty-icon svg {
-  width: 40px;
-  height: 40px;
+  width: 24px;
+  height: 24px;
 }
 
 .empty-title {
-  font-size: 1.25rem;
+  font-size: 0.95rem;
   font-weight: 600;
   color: var(--text-primary);
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.25rem;
 }
 
 .empty-text {
-  font-size: 0.95rem;
+  font-size: 0.8rem;
   color: var(--text-muted);
 }
 
@@ -877,16 +1023,16 @@ onMounted(async () => {
 .notifications-list {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 0.5rem;
 }
 
 .notification-item {
   display: flex;
-  gap: 1rem;
-  padding: 1rem;
+  gap: 0.6rem;
+  padding: 0.6rem;
   background: white;
-  border-radius: 12px;
-  border-left: 4px solid;
+  border-radius: 8px;
+  border-left: 3px solid;
   transition: all 0.3s ease;
   border: 1px solid rgba(22, 163, 74, 0.1);
 }
@@ -897,13 +1043,13 @@ onMounted(async () => {
 
 .notification-item:hover {
   background: rgba(22, 163, 74, 0.08);
-  transform: translateX(4px);
+  transform: translateX(2px);
 }
 
 .notif-icon {
-  width: 40px;
-  height: 40px;
-  border-radius: 8px;
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
   background: rgba(22, 163, 74, 0.1);
   display: flex;
   align-items: center;
@@ -912,8 +1058,8 @@ onMounted(async () => {
 }
 
 .notif-icon svg {
-  width: 20px;
-  height: 20px;
+  width: 16px;
+  height: 16px;
   color: #16a34a;
 }
 
@@ -923,156 +1069,72 @@ onMounted(async () => {
 }
 
 .notif-titulo {
-  font-size: 0.95rem;
+  font-size: 0.8rem;
   font-weight: 600;
   color: var(--text-primary);
-  margin: 0 0 0.25rem 0;
+  margin: 0 0 0.15rem 0;
 }
 
 .notif-mensaje {
-  font-size: 0.85rem;
+  font-size: 0.7rem;
   color: var(--text-secondary);
-  margin: 0 0 0.5rem 0;
-  line-height: 1.4;
+  margin: 0 0 0.25rem 0;
+  line-height: 1.35;
 }
 
 .notif-tiempo {
-  font-size: 0.75rem;
+  font-size: 0.65rem;
   color: var(--text-muted);
   margin: 0;
 }
 
 /* ========== RESPONSIVE ========== */
-@media (max-width: 768px) {
-  .header-admin {
-    padding: 0.8rem 1rem;
-  }
 
-  .header-icon-small {
-    width: 28px;
-    height: 28px;
+/* Pantallas grandes horizontales */
+@media (min-width: 1200px) {
+  .stats-grid {
+    grid-template-columns: repeat(5, 1fr);
   }
-
-  .icon-stat {
-    width: 18px;
-    height: 18px;
+  
+  .stat-card {
+    max-width: 180px;
   }
+}
 
-  .header-title {
-    font-size: 0.85rem;
+/* Tablets y pantallas medianas */
+@media (max-width: 1024px) {
+  .stats-grid {
+    grid-template-columns: repeat(5, 1fr);
+    gap: 0.5rem;
   }
-
-  .header-subtitle {
-    font-size: 0.7rem;
+  
+  .stat-card {
+    max-width: none;
+    padding: 0.75rem 0.5rem;
   }
-
-  .reload-button {
+  
+  .stat-icon {
     width: 36px;
     height: 36px;
+    border-radius: 50%;
   }
-
-  .reload-icon {
-    width: 20px;
-    height: 20px;
+  
+  .stat-label {
+    font-size: 0.55rem;
   }
-
-  .admin-main {
-    padding: 1rem;
-  }
-
-  .stats-section,
-  .solicitudes-section,
-  .notifications-section {
-    padding: 1.5rem;
-  }
-
-  .section-title {
+  
+  .stat-value {
     font-size: 1.1rem;
   }
-
-  .stats-grid {
-    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-    gap: 1rem;
-  }
-
-  .stat-card {
-    padding: 1rem;
-  }
-
-  .stat-value {
-    font-size: 1.3rem;
-  }
-
-  .table-header-cell,
-  .table-cell {
-    padding: 0.6rem 0.5rem;
-    font-size: 0.75rem;
-  }
-
-  .table-header-cell {
-    font-size: 0.7rem;
-  }
 }
 
-@media (max-width: 640px) {
+@media (max-width: 768px) {
   .header-admin {
-    padding: 0.75rem 0.9rem;
+    padding: 0.6rem 0.8rem;
   }
 
-  .header-icon-small {
-    width: 28px;
-    height: 28px;
-  }
-
-  .icon-stat {
-    width: 18px;
-    height: 18px;
-  }
-
-  .header-title {
-    font-size: 0.8rem;
-  }
-
-  .header-subtitle {
-    font-size: 0.7rem;
-  }
-
-  .reload-button {
-    width: 36px;
-    height: 36px;
-  }
-
-  .reload-icon {
-    width: 20px;
-    height: 20px;
-  }
-
-  .section-title {
-    font-size: 1.05rem;
-  }
-
-  .stats-grid {
-    gap: 0.8rem;
-  }
-
-  .stat-value {
-    font-size: 1.2rem;
-  }
-
-  .table-header-cell,
-  .table-cell {
-    padding: 0.5rem 0.4rem;
-    font-size: 0.7rem;
-  }
-}
-
-@media (max-width: 480px) {
-  .admin-container {
-    min-height: 100vh;
-  }
-
-  .header-admin {
-    padding: 0.7rem 0.8rem;
+  .header-wrapper {
+    padding-right: 50px;
   }
 
   .header-icon-small {
@@ -1086,79 +1148,82 @@ onMounted(async () => {
   }
 
   .header-title {
-    font-size: 0.75rem;
+    font-size: 0.8rem;
   }
 
   .header-subtitle {
     font-size: 0.65rem;
   }
 
-  .back-button {
-    width: 34px;
-    height: 34px;
-  }
-
-  .back-icon {
-    width: 16px;
-    height: 16px;
-  }
-
+  .back-button,
   .reload-button {
     width: 34px;
     height: 34px;
   }
 
-  .reload-icon {
+  .reload-icon,
+  .back-icon {
     width: 18px;
     height: 18px;
-  }
-
-  .back-icon {
-    width: 16px;
-    height: 16px;
   }
 
   .admin-main {
     padding: 0.75rem;
   }
 
+  .admin-content {
+    gap: 0.75rem;
+  }
+
   .stats-section,
   .solicitudes-section,
   .notifications-section {
-    padding: 1rem;
-  }
-
-  .stats-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 0.6rem;
-  }
-
-  .stat-card {
     padding: 0.75rem;
-    gap: 0.6rem;
-  }
-
-  .stat-label {
-    font-size: 0.65rem;
-  }
-
-  .stat-value {
-    font-size: 1.1rem;
+    border-radius: 10px;
   }
 
   .section-title {
+    font-size: 0.85rem;
+  }
+
+  .stats-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.5rem;
+  }
+
+  .stat-card {
+    padding: 0.6rem 0.4rem;
+    gap: 0.5rem;
+  }
+
+  .stat-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+  }
+
+  .card-icon {
+    width: 16px;
+    height: 16px;
+  }
+
+  .stat-label {
+    font-size: 0.6rem;
+  }
+
+  .stat-value {
     font-size: 1rem;
   }
 
   .table-header-cell,
   .table-cell {
-    padding: 0.4rem 0.3rem;
+    padding: 0.4rem 0.35rem;
     font-size: 0.65rem;
   }
 
   .notification-item {
-    padding: 0.75rem;
-    gap: 0.6rem;
+    padding: 0.5rem;
+    gap: 0.5rem;
   }
 
   .notif-icon {
@@ -1166,12 +1231,232 @@ onMounted(async () => {
     height: 28px;
   }
 
+  .notif-icon svg {
+    width: 14px;
+    height: 14px;
+  }
+
   .notif-titulo {
-    font-size: 0.8rem;
+    font-size: 0.75rem;
   }
 
   .notif-mensaje {
+    font-size: 0.65rem;
+  }
+}
+
+/* Móviles pequeños */
+@media (max-width: 480px) {
+  .admin-container {
+    min-height: 100vh;
+  }
+
+  .header-admin {
+    padding: 0.5rem 0.6rem;
+  }
+
+  .header-wrapper {
+    padding-right: 45px;
+    gap: 0.4rem;
+  }
+
+  .header-left {
+    gap: 0.4rem;
+  }
+
+  .header-icon-small {
+    width: 22px;
+    height: 22px;
+  }
+
+  .icon-stat {
+    width: 14px;
+    height: 14px;
+  }
+
+  .header-title {
     font-size: 0.7rem;
+  }
+
+  .header-subtitle {
+    font-size: 0.6rem;
+  }
+
+  .back-button,
+  .reload-button {
+    width: 30px;
+    height: 30px;
+  }
+
+  .back-icon,
+  .reload-icon {
+    width: 16px;
+    height: 16px;
+  }
+
+  .admin-main {
+    padding: 0.5rem;
+  }
+
+  .admin-content {
+    gap: 0.5rem;
+  }
+
+  .stats-section,
+  .solicitudes-section,
+  .notifications-section {
+    padding: 0.6rem;
+    border-radius: 8px;
+  }
+
+  .section-title {
+    font-size: 0.75rem;
+    gap: 0.4rem;
+  }
+
+  .count-badge {
+    width: 20px;
+    height: 20px;
+    font-size: 0.65rem;
+    border-radius: 4px;
+  }
+
+  .section-subtitle {
+    font-size: 0.65rem;
+  }
+
+  .stats-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.4rem;
+  }
+
+  .stat-card {
+    padding: 0.5rem 0.35rem;
+    gap: 0.35rem;
+    align-items: center;
+  }
+
+  .stat-icon {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+  }
+
+  .card-icon {
+    width: 14px;
+    height: 14px;
+  }
+
+  .stat-label {
+    font-size: 0.5rem;
+  }
+
+  .stat-value {
+    font-size: 0.9rem;
+  }
+
+  .table-header-cell,
+  .table-cell {
+    padding: 0.3rem 0.25rem;
+    font-size: 0.6rem;
+  }
+
+  .tipo-badge,
+  .estado-badge {
+    padding: 0.2rem 0.35rem;
+    font-size: 0.55rem;
+  }
+
+  .notifications-list {
+    gap: 0.35rem;
+  }
+
+  .notification-item {
+    padding: 0.4rem;
+    gap: 0.4rem;
+    border-radius: 6px;
+  }
+
+  .notif-icon {
+    width: 24px;
+    height: 24px;
+  }
+
+  .notif-icon svg {
+    width: 12px;
+    height: 12px;
+  }
+
+  .notif-titulo {
+    font-size: 0.7rem;
+  }
+
+  .notif-mensaje {
+    font-size: 0.6rem;
+  }
+
+  .notif-tiempo {
+    font-size: 0.55rem;
+  }
+
+  .empty-state {
+    padding: 1rem;
+  }
+
+  .empty-icon {
+    width: 40px;
+    height: 40px;
+  }
+
+  .empty-icon svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .empty-title {
+    font-size: 0.8rem;
+  }
+
+  .empty-text {
+    font-size: 0.7rem;
+  }
+}
+
+/* Orientación horizontal en móviles */
+@media (max-height: 500px) and (orientation: landscape) {
+  .header-admin {
+    padding: 0.4rem 0.6rem;
+  }
+
+  .admin-main {
+    padding: 0.4rem;
+  }
+
+  .stats-grid {
+    grid-template-columns: repeat(5, 1fr);
+  }
+
+  .stat-card {
+    flex-direction: row;
+    padding: 0.4rem;
+  }
+
+  .stat-icon {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+  }
+
+  .stats-section,
+  .solicitudes-section,
+  .notifications-section {
+    padding: 0.5rem;
+  }
+
+  .notifications-list {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.4rem;
   }
 }
 </style>
