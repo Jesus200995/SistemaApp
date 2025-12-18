@@ -553,7 +553,7 @@ const getUsuariosDesc = (): string => {
   overflow-y: auto;
   overflow-x: hidden;
   -webkit-overflow-scrolling: touch;
-  padding-top: 62px;
+  padding-top: 52px;
   box-sizing: border-box;
   position: relative;
   height: 100vh;
@@ -573,7 +573,7 @@ const getUsuariosDesc = (): string => {
   padding: 0;
   box-shadow: 0 4px 20px rgba(22, 163, 74, 0.1);
   width: 100%;
-  height: 62px;
+  height: 52px;
   box-sizing: border-box;
 }
 
@@ -584,38 +584,40 @@ const getUsuariosDesc = (): string => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 0.75rem;
+  gap: 0.5rem;
   width: 100%;
-  height: 62px;
+  height: 52px;
   box-sizing: border-box;
 }
 
 .logo-section {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 0.65rem;
   min-width: 0;
-  padding-left: 0.5rem;
+  padding-left: 0.4rem;
 }
 
 .logo-icon {
-  width: 56px;
-  height: 56px;
+  width: 42px;
+  height: 42px;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
   position: relative;
-  padding: 4px;
+  padding: 2px;
   margin: 0;
 }
 
 .custom-logo-svg {
   filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+  width: 36px;
+  height: 36px;
 }
 
 .logo-text h1 {
-  font-size: 1.3rem;
+  font-size: 1rem;
   font-weight: 600;
   letter-spacing: -0.5px;
   color: #15803d;
@@ -637,7 +639,7 @@ const getUsuariosDesc = (): string => {
 }
 
 .logo-text p {
-  font-size: 0.7rem;
+  font-size: 0.55rem;
   color: #16a34a;
   margin: 0.02rem 0 0 0;
   font-weight: 600;
@@ -664,22 +666,22 @@ const getUsuariosDesc = (): string => {
 .logout-btn {
   display: flex;
   align-items: center;
-  gap: 0.4rem;
+  gap: 0.3rem;
   background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
   color: white;
   border: none;
-  padding: 0.4rem 0.6rem;
-  border-radius: 8px;
+  padding: 0.3rem 0.5rem;
+  border-radius: 6px;
   font-weight: 700;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
   box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
-  font-size: 0.7rem;
+  font-size: 0.6rem;
   flex-shrink: 0;
   font-family: 'Segoe UI', sans-serif;
   letter-spacing: 0.03em;
   text-transform: uppercase;
-  margin-right: 0.5rem;
+  margin-right: 0.4rem;
 }
 
 .logout-btn:hover {
@@ -739,7 +741,7 @@ const getUsuariosDesc = (): string => {
 .dashboard-content {
   width: 100%;
   max-width: 900px;
-  padding: 1.5rem 1.2rem 3rem 1.2rem;
+  padding: 1rem 0.9rem 2rem 0.9rem;
   box-sizing: border-box;
   position: relative;
   z-index: 1;
@@ -750,14 +752,14 @@ const getUsuariosDesc = (): string => {
   display: inline-block;
   background: linear-gradient(90deg, #16a34a 0%, #15803d 100%);
   color: white;
-  padding: 0.35rem 1rem;
-  border-radius: 6px 6px 0 0;
-  font-size: 0.7rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: 5px 5px 0 0;
+  font-size: 0.6rem;
   font-weight: 700;
   letter-spacing: 0.1em;
   text-align: center;
   margin-bottom: 0;
-  margin-left: 0.5rem;
+  margin-left: 0.4rem;
   text-transform: none;
   box-shadow: 0 4px 12px rgba(22, 163, 74, 0.25);
 }
@@ -766,11 +768,11 @@ const getUsuariosDesc = (): string => {
 .profile-card {
   background: rgba(255, 255, 255, 0.9);
   border: 1.5px solid rgba(22, 163, 74, 0.25);
-  border-radius: 20px;
-  padding: 1rem 0.8rem;
+  border-radius: 16px;
+  padding: 0.75rem 0.65rem;
   backdrop-filter: blur(10px);
   text-align: left;
-  margin-bottom: 1rem;
+  margin-bottom: 0.75rem;
   box-shadow: 0 8px 32px rgba(22, 163, 74, 0.1);
   transition: all 0.3s ease;
   margin-top: -2px;
@@ -785,20 +787,20 @@ const getUsuariosDesc = (): string => {
 .profile-header {
   display: flex;
   align-items: center;
-  gap: 1rem;
-  margin-bottom: 1.2rem;
+  gap: 0.75rem;
+  margin-bottom: 0.9rem;
 }
 
 .avatar-initials {
   flex-shrink: 0;
-  width: 60px;
-  height: 60px;
+  width: 48px;
+  height: 48px;
   border-radius: 50%;
-  border: 2.5px solid #16a34a;
+  border: 2px solid #16a34a;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.4rem;
+  font-size: 1.1rem;
   font-weight: 700;
   color: #16a34a;
   text-shadow: none;
@@ -813,25 +815,25 @@ const getUsuariosDesc = (): string => {
 }
 
 .user-full-name {
-  font-size: 1.2rem;
+  font-size: 0.95rem;
   font-weight: 700;
   color: #15803d;
-  margin-bottom: 0.3rem;
+  margin-bottom: 0.2rem;
 }
 
 .role-badge {
   display: inline-block;
-  padding: 0.25rem 0.8rem;
+  padding: 0.2rem 0.6rem;
   border: 1.5px solid #16a34a;
-  border-radius: 6px;
-  font-size: 0.85rem;
+  border-radius: 5px;
+  font-size: 0.7rem;
   font-weight: 600;
   color: #16a34a;
-  margin-bottom: 0.3rem;
+  margin-bottom: 0.2rem;
 }
 
 .user-email {
-  font-size: 0.85rem;
+  font-size: 0.7rem;
   color: #166534;
   font-style: italic;
   margin: 0;
@@ -900,21 +902,21 @@ const getUsuariosDesc = (): string => {
 
 /* ========== ACTIONS SECTION ========== */
 .actions-section {
-  margin-bottom: 1rem;
+  margin-bottom: 0.75rem;
 }
 
 .section-title {
-  font-size: 0.95rem;
+  font-size: 0.8rem;
   font-weight: 600;
-  margin-bottom: 0.8rem;
+  margin-bottom: 0.6rem;
   color: #15803d;
   text-align: center;
   position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 1rem;
-  padding: 0.5rem 0;
+  gap: 0.75rem;
+  padding: 0.4rem 0;
 }
 
 .section-title::before,
@@ -948,37 +950,37 @@ const getUsuariosDesc = (): string => {
 
 .actions-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
-  gap: 0.6rem;
-  margin-bottom: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(75px, 1fr));
+  gap: 0.45rem;
+  margin-bottom: 0.75rem;
 }
 
 @media (max-width: 768px) {
   .actions-grid {
     grid-template-columns: repeat(3, 1fr);
-    gap: 0.5rem;
+    gap: 0.4rem;
   }
 }
 
 @media (max-width: 480px) {
   .actions-grid {
     grid-template-columns: repeat(2, 1fr);
-    gap: 0.5rem;
+    gap: 0.35rem;
   }
 }
 
 .action-card {
   position: relative;
   background: rgba(255, 255, 255, 0.9);
-  border: 2px solid rgba(22, 163, 74, 0.25);
-  border-radius: 20px;
-  padding: 1rem;
+  border: 1.5px solid rgba(22, 163, 74, 0.25);
+  border-radius: 14px;
+  padding: 0.7rem;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.6rem;
+  gap: 0.4rem;
   text-decoration: none;
   color: inherit;
   overflow: visible;
@@ -987,15 +989,15 @@ const getUsuariosDesc = (): string => {
 /* Badge de solicitudes pendientes */
 .solicitudes-badge {
   position: absolute;
-  top: 6px;
-  right: 6px;
-  min-width: 18px;
-  height: 18px;
-  padding: 0 5px;
+  top: 4px;
+  right: 4px;
+  min-width: 15px;
+  height: 15px;
+  padding: 0 4px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.65rem;
+  font-size: 0.55rem;
   font-weight: 700;
   color: white;
   background: radial-gradient(ellipse at 30% 30%, rgba(252, 165, 165, 0.6), rgba(248, 113, 113, 0.45) 50%, rgba(239, 68, 68, 0.35));
@@ -1006,44 +1008,44 @@ const getUsuariosDesc = (): string => {
 }
 
 .action-card:hover {
-  transform: translateY(-8px);
+  transform: translateY(-6px);
   border-color: #16a34a;
   background: rgba(22, 163, 74, 0.08);
-  box-shadow: 0 12px 32px rgba(22, 163, 74, 0.2), inset 0 0 20px rgba(22, 163, 74, 0.05);
+  box-shadow: 0 10px 28px rgba(22, 163, 74, 0.2), inset 0 0 15px rgba(22, 163, 74, 0.05);
 }
 
 .action-card:active {
-  transform: translateY(-4px);
+  transform: translateY(-3px);
 }
 
 .action-icon-wrapper {
-  width: 48px;
-  height: 48px;
+  width: 36px;
+  height: 36px;
   background: transparent;
-  border: 2.5px solid #16a34a;
+  border: 2px solid #16a34a;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 0 15px rgba(22, 163, 74, 0.3);
+  box-shadow: 0 0 12px rgba(22, 163, 74, 0.3);
   transition: all 0.3s ease;
 }
 
 .action-card:hover .action-icon-wrapper {
-  transform: scale(1.15) rotate(5deg);
-  box-shadow: 0 0 25px rgba(22, 163, 74, 0.4);
+  transform: scale(1.12) rotate(5deg);
+  box-shadow: 0 0 20px rgba(22, 163, 74, 0.4);
   background: rgba(22, 163, 74, 0.1);
 }
 
 .action-icon {
-  width: 24px;
-  height: 24px;
+  width: 18px;
+  height: 18px;
   color: #16a34a;
   text-shadow: none;
 }
 
 .action-title {
-  font-size: 0.75rem;
+  font-size: 0.6rem;
   font-weight: 600;
   color: #166534;
   text-align: center;
@@ -1389,9 +1391,9 @@ const getUsuariosDesc = (): string => {
 .notifications-section {
   background: rgba(255, 255, 255, 0.9);
   border: 1.5px solid rgba(22, 163, 74, 0.2);
-  border-radius: 16px;
-  padding: 1.2rem;
-  margin-bottom: 1rem;
+  border-radius: 12px;
+  padding: 0.85rem;
+  margin-bottom: 0.75rem;
   backdrop-filter: blur(12px);
   box-shadow: 
     0 8px 32px rgba(22, 163, 74, 0.08),
@@ -1402,15 +1404,15 @@ const getUsuariosDesc = (): string => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1rem;
-  padding-bottom: 0.8rem;
+  margin-bottom: 0.7rem;
+  padding-bottom: 0.6rem;
   border-bottom: 1px solid rgba(132, 204, 22, 0.15);
 }
 
 .header-left-notif {
   display: flex;
   align-items: center;
-  gap: 0.3rem;
+  gap: 0.25rem;
   line-height: 1;
 }
 
@@ -1419,6 +1421,8 @@ const getUsuariosDesc = (): string => {
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 14px;
+  height: 14px;
 }
 
 .header-left-notif .section-title {
@@ -1426,17 +1430,18 @@ const getUsuariosDesc = (): string => {
   line-height: 1;
   display: flex;
   align-items: center;
+  font-size: 0.75rem;
 }
 
 /* Badge rojo suave estilo vidrio */
 .notifications-badge-glass {
-  min-width: 22px;
-  height: 22px;
-  padding: 0 6px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.7rem;
+  font-size: 0.6rem;
   font-weight: 700;
   color: white;
   background: radial-gradient(ellipse at 30% 30%, rgba(248, 113, 113, 0.5), rgba(239, 68, 68, 0.4) 50%, rgba(220, 38, 38, 0.3));
@@ -1451,11 +1456,11 @@ const getUsuariosDesc = (): string => {
   position: relative;
   display: flex;
   align-items: center;
-  gap: 0.8rem;
-  padding: 0.9rem;
-  padding-right: 55px; /* Espacio para el botón semicírculo */
+  gap: 0.6rem;
+  padding: 0.65rem;
+  padding-right: 45px; /* Espacio para el botón semicírculo */
   background: rgba(255, 255, 255, 0.95);
-  border-radius: 12px;
+  border-radius: 10px;
   border: 1px solid rgba(239, 68, 68, 0.2);
   transition: all 0.3s ease;
   overflow: hidden;
@@ -1493,8 +1498,8 @@ const getUsuariosDesc = (): string => {
   z-index: 1;
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
-  padding-left: 0.8rem;
+  gap: 0.15rem;
+  padding-left: 0.6rem;
   border-left: 1px solid rgba(22, 163, 74, 0.2);
 }
 
@@ -1507,22 +1512,24 @@ const getUsuariosDesc = (): string => {
   justify-content: center;
   flex-shrink: 0;
   z-index: 1;
-  gap: 0.15rem;
+  gap: 0.1rem;
 }
 
 .notif-main-icon {
   color: #f87171;
+  width: 18px;
+  height: 18px;
 }
 
 .notif-icon-label {
-  font-size: 0.5rem;
+  font-size: 0.45rem;
   color: #94a3b8;
   text-transform: uppercase;
   letter-spacing: 0.02em;
 }
 
 .notif-tipo-tag {
-  font-size: 0.8rem;
+  font-size: 0.65rem;
   font-weight: 700;
   color: #f87171;
   text-transform: uppercase;
@@ -1531,9 +1538,9 @@ const getUsuariosDesc = (): string => {
 
 /* Fecha arriba del contenido */
 .notif-fecha-top {
-  font-size: 0.65rem;
+  font-size: 0.55rem;
   color: #64748b;
-  margin-bottom: 0.2rem;
+  margin-bottom: 0.15rem;
   display: block;
 }
 
@@ -1541,11 +1548,11 @@ const getUsuariosDesc = (): string => {
   display: flex;
   flex-direction: column;
   min-width: 0;
-  margin-bottom: 0.2rem;
+  margin-bottom: 0.15rem;
 }
 
 .notif-user-name {
-  font-size: 0.75rem;
+  font-size: 0.65rem;
   font-weight: 500;
   color: #15803d;
   white-space: nowrap;
@@ -1554,7 +1561,7 @@ const getUsuariosDesc = (): string => {
 }
 
 .notif-user-rol {
-  font-size: 0.65rem;
+  font-size: 0.55rem;
   color: #166534;
   font-style: italic;
 }
@@ -1565,16 +1572,16 @@ const getUsuariosDesc = (): string => {
   right: 0;
   top: 50%;
   transform: translateY(-50%);
-  width: 42px;
-  height: 60px;
+  width: 35px;
+  height: 48px;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding-left: 6px;
+  padding-left: 5px;
   background: linear-gradient(135deg, rgba(59, 130, 246, 0.25) 0%, rgba(37, 99, 235, 0.35) 100%);
   border: 1.5px solid rgba(96, 165, 250, 0.4);
   border-right: none;
-  border-radius: 30px 0 0 30px;
+  border-radius: 24px 0 0 24px;
   text-decoration: none;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -1586,7 +1593,7 @@ const getUsuariosDesc = (): string => {
 }
 
 .notif-btn-semicircle:hover {
-  width: 50px;
+  width: 42px;
   background: linear-gradient(135deg, rgba(96, 165, 250, 0.35) 0%, rgba(59, 130, 246, 0.45) 100%);
   border-color: rgba(147, 197, 253, 0.6);
   box-shadow: 
@@ -1595,7 +1602,7 @@ const getUsuariosDesc = (): string => {
 }
 
 .semicircle-text {
-  font-size: 0.7rem;
+  font-size: 0.6rem;
   font-weight: 600;
   color: #93c5fd;
   text-transform: uppercase;
@@ -1612,10 +1619,10 @@ const getUsuariosDesc = (): string => {
   position: relative;
   background: rgba(100, 116, 139, 0.12);
   border: 1px solid rgba(148, 163, 184, 0.15);
-  border-radius: 0 8px 8px 8px;
-  padding: 0.35rem 0.6rem;
+  border-radius: 0 6px 6px 6px;
+  padding: 0.25rem 0.45rem;
   backdrop-filter: blur(6px);
-  margin-top: 0.15rem;
+  margin-top: 0.1rem;
 }
 
 /* Esquina picuda tipo mensaje */
@@ -1623,19 +1630,19 @@ const getUsuariosDesc = (): string => {
   content: '';
   position: absolute;
   top: 0;
-  left: -6px;
+  left: -5px;
   width: 0;
   height: 0;
   border-style: solid;
-  border-width: 0 6px 8px 0;
+  border-width: 0 5px 6px 0;
   border-color: transparent rgba(100, 116, 139, 0.12) transparent transparent;
 }
 
 .notif-mensaje-text {
-  font-size: 0.7rem;
+  font-size: 0.55rem;
   color: #94a3b8;
   margin: 0;
-  line-height: 1.35;
+  line-height: 1.3;
   font-style: italic;
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -1996,11 +2003,11 @@ const getUsuariosDesc = (): string => {
 /* ========== FOOTER ========== */
 .dashboard-footer {
   text-align: center;
-  padding: 0.8rem;
+  padding: 0.5rem;
   border-top: 1px solid rgba(22, 163, 74, 0.1);
   background: rgba(255, 255, 255, 0.9);
   backdrop-filter: blur(10px);
-  font-size: 0.7rem;
+  font-size: 0.55rem;
   color: #166534;
 }
 
@@ -2603,6 +2610,160 @@ const getUsuariosDesc = (): string => {
 
   .notification-card {
     gap: 0.5rem;
+  }
+}
+
+/* ========== LANDSCAPE MOBILE ========== */
+@media (max-height: 500px) and (orientation: landscape) {
+  .dashboard-container {
+    padding-top: 44px;
+    height: 100vh;
+  }
+
+  .dashboard-header {
+    height: 44px;
+  }
+
+  .header-content {
+    height: 44px;
+    padding: 0 0.4rem;
+  }
+
+  .logo-icon {
+    width: 32px;
+    height: 32px;
+  }
+
+  .custom-logo-svg {
+    width: 28px;
+    height: 28px;
+  }
+
+  .logo-text h1 {
+    font-size: 0.85rem;
+  }
+
+  .logo-text p {
+    font-size: 0.45rem;
+  }
+
+  .dashboard-content {
+    padding: 0.6rem 0.7rem 1rem 0.7rem;
+  }
+
+  .profile-label {
+    font-size: 0.5rem;
+    padding: 0.15rem 0.5rem;
+  }
+
+  .profile-card {
+    padding: 0.5rem 0.4rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .profile-header {
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .avatar-initials {
+    width: 36px;
+    height: 36px;
+    font-size: 0.85rem;
+  }
+
+  .user-full-name {
+    font-size: 0.75rem;
+  }
+
+  .role-badge {
+    font-size: 0.55rem;
+    padding: 0.1rem 0.35rem;
+  }
+
+  .user-email {
+    font-size: 0.55rem;
+  }
+
+  .section-title {
+    font-size: 0.65rem;
+    margin-bottom: 0.4rem;
+  }
+
+  .actions-grid {
+    grid-template-columns: repeat(auto-fit, minmax(55px, 1fr));
+    gap: 0.3rem;
+  }
+
+  .action-card {
+    padding: 0.4rem;
+    gap: 0.2rem;
+    border-radius: 10px;
+  }
+
+  .action-icon-wrapper {
+    width: 28px;
+    height: 28px;
+  }
+
+  .action-icon {
+    width: 14px;
+    height: 14px;
+  }
+
+  .action-title {
+    font-size: 0.5rem;
+  }
+
+  .notifications-section {
+    padding: 0.5rem;
+    margin-bottom: 0.4rem;
+  }
+
+  .notifications-header {
+    margin-bottom: 0.4rem;
+    padding-bottom: 0.3rem;
+  }
+
+  .notif-card-pro {
+    padding: 0.4rem;
+    padding-right: 35px;
+    gap: 0.4rem;
+  }
+
+  .notif-main-icon {
+    width: 14px;
+    height: 14px;
+  }
+
+  .notif-tipo-tag {
+    font-size: 0.5rem;
+  }
+
+  .notif-fecha-top {
+    font-size: 0.45rem;
+  }
+
+  .notif-user-name {
+    font-size: 0.5rem;
+  }
+
+  .notif-user-rol {
+    font-size: 0.45rem;
+  }
+
+  .notif-btn-semicircle {
+    width: 28px;
+    height: 36px;
+  }
+
+  .semicircle-text {
+    font-size: 0.45rem;
+  }
+
+  .dashboard-footer {
+    padding: 0.3rem;
+    font-size: 0.45rem;
   }
 }
 
