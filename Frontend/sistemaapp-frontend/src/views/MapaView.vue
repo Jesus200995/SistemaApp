@@ -501,7 +501,7 @@ onMounted(() => {
   background: rgba(255, 255, 255, 0.9);
   border-bottom: 1px solid rgba(22, 163, 74, 0.2);
   backdrop-filter: blur(12px);
-  padding: 1rem 1.2rem;
+  padding: 0.65rem 1rem;
   box-shadow: 0 4px 20px rgba(22, 163, 74, 0.1);
   width: 100%;
 }
@@ -512,13 +512,13 @@ onMounted(() => {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding-right: 60px; /* Espacio para el menú hamburguesa */
+  padding-right: 50px; /* Espacio para el menú hamburguesa */
 }
 
 .header-left {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 0.5rem;
   flex: 1;
 }
 
@@ -527,8 +527,8 @@ onMounted(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 40px;
-  height: 40px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.9);
   border: 1.5px solid rgba(22, 163, 74, 0.4);
@@ -552,8 +552,8 @@ onMounted(() => {
 }
 
 .back-icon {
-  width: 20px;
-  height: 20px;
+  width: 16px;
+  height: 16px;
   stroke-width: 2.5;
 }
 
@@ -561,16 +561,16 @@ onMounted(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
-  height: 32px;
-  border-radius: 6px;
+  width: 26px;
+  height: 26px;
+  border-radius: 5px;
   background: transparent;
   flex-shrink: 0;
 }
 
 .icon-header {
-  width: 20px;
-  height: 20px;
+  width: 16px;
+  height: 16px;
   color: #16a34a;
   stroke-width: 2;
 }
@@ -582,7 +582,7 @@ onMounted(() => {
 
 .header-text h1,
 .header-title {
-  font-size: 0.95rem;
+  font-size: 0.85rem;
   font-weight: 700;
   color: #15803d;
   margin: 0;
@@ -594,22 +594,22 @@ onMounted(() => {
 
 .header-text p,
 .header-subtitle {
-  font-size: 0.75rem;
+  font-size: 0.65rem;
   color: #64748b;
   margin: 0;
-  margin-top: 0.2rem;
+  margin-top: 0.15rem;
 }
 
 .btn-location {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.35rem;
   background: rgba(255, 255, 255, 0.9);
   color: #16a34a;
   border: 1.5px solid rgba(22, 163, 74, 0.4);
-  border-radius: 20px;
-  padding: 0.5rem 1rem;
-  font-size: 0.8rem;
+  border-radius: 16px;
+  padding: 0.35rem 0.75rem;
+  font-size: 0.7rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -628,36 +628,36 @@ onMounted(() => {
 }
 
 .btn-icon {
-  width: 18px;
-  height: 18px;
+  width: 14px;
+  height: 14px;
 }
 
 /* ========== LAYERS PANEL ========== */
 .layers-panel {
   position: absolute;
-  top: 80px;
+  top: 65px;
   left: 0;
-  width: 300px;
-  max-height: calc(100vh - 80px);
+  width: 240px;
+  max-height: calc(100vh - 65px);
   z-index: 20;
   backdrop-filter: blur(10px);
   background: rgba(255, 255, 255, 0.95);
   border-right: 1px solid rgba(22, 163, 74, 0.15);
   border-bottom: 1px solid rgba(22, 163, 74, 0.15);
-  border-radius: 0 0 16px 0;
+  border-radius: 0 0 12px 0;
   overflow-y: auto;
-  box-shadow: 0 8px 32px rgba(22, 163, 74, 0.15);
+  box-shadow: 0 6px 24px rgba(22, 163, 74, 0.12);
 }
 
 .panel-wrapper {
-  padding: 1.5rem;
+  padding: 1rem;
 }
 
 .panel-title {
-  font-size: 0.9rem;
+  font-size: 0.7rem;
   font-weight: 700;
   color: #1e3a2f;
-  margin-bottom: 1rem;
+  margin-bottom: 0.65rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
@@ -665,18 +665,18 @@ onMounted(() => {
 .layers-list {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
-  margin-bottom: 1rem;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
 }
 
 .layer-checkbox {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  padding: 0.75rem;
+  gap: 0.5rem;
+  padding: 0.5rem;
   background: rgba(240, 253, 244, 0.8);
   border: 1px solid rgba(22, 163, 74, 0.2);
-  border-radius: 8px;
+  border-radius: 6px;
   cursor: pointer;
   transition: all 0.2s ease;
   user-select: none;
@@ -693,22 +693,22 @@ onMounted(() => {
 }
 
 .checkbox-input {
-  width: 18px;
-  height: 18px;
+  width: 14px;
+  height: 14px;
   cursor: pointer;
   accent-color: #16a34a;
 }
 
 .checkbox-circle {
-  width: 14px;
-  height: 14px;
+  width: 12px;
+  height: 12px;
   border-radius: 50%;
   flex-shrink: 0;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
 }
 
 .checkbox-label {
-  font-size: 0.9rem;
+  font-size: 0.75rem;
   font-weight: 500;
   color: #374151;
 }
@@ -716,13 +716,13 @@ onMounted(() => {
 .panel-divider {
   border: none;
   border-top: 1px solid rgba(148, 163, 184, 0.2);
-  margin: 1rem 0;
+  margin: 0.65rem 0;
 }
 
 .panel-hint {
-  font-size: 0.8rem;
+  font-size: 0.65rem;
   color: #64748b;
-  line-height: 1.4;
+  line-height: 1.35;
   font-style: italic;
 }
 
@@ -732,29 +732,29 @@ onMounted(() => {
   position: relative;
   z-index: 10;
   overflow: hidden;
-  margin-left: 300px;
+  margin-left: 240px;
 }
 
 /* ========== LEGEND BOX ========== */
 .legend-box {
   position: absolute;
-  bottom: 1.5rem;
-  right: 1.5rem;
+  bottom: 1rem;
+  right: 1rem;
   z-index: 40;
   background: rgba(255, 255, 255, 0.95);
   border: 1px solid rgba(22, 163, 74, 0.3);
-  border-radius: 12px;
-  padding: 1rem;
+  border-radius: 10px;
+  padding: 0.75rem;
   backdrop-filter: blur(12px);
-  box-shadow: 0 8px 32px rgba(22, 163, 74, 0.15);
-  max-width: 280px;
+  box-shadow: 0 6px 24px rgba(22, 163, 74, 0.12);
+  max-width: 220px;
 }
 
 .legend-title {
-  font-size: 0.9rem;
+  font-size: 0.7rem;
   font-weight: 700;
   color: #1e3a2f;
-  margin-bottom: 0.75rem;
+  margin-bottom: 0.5rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
@@ -762,32 +762,32 @@ onMounted(() => {
 .legend-items {
   display: flex;
   flex-direction: column;
-  gap: 0.625rem;
+  gap: 0.4rem;
 }
 
 .legend-item {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  font-size: 0.875rem;
+  gap: 0.5rem;
+  font-size: 0.7rem;
   color: #374151;
 }
 
 .legend-marker {
-  width: 20px;
-  height: 20px;
+  width: 14px;
+  height: 14px;
   border-radius: 50%;
   flex-shrink: 0;
-  border: 2px solid rgba(255, 255, 255, 0.3);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  border: 1.5px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
 }
 
 /* ========== POPUP STYLES ========== */
 :deep(.leaflet-popup-content-wrapper) {
-  border-radius: 10px;
+  border-radius: 8px;
   background: rgba(255, 255, 255, 0.98);
   border: 1px solid rgba(22, 163, 74, 0.3);
-  box-shadow: 0 10px 40px rgba(22, 163, 74, 0.15);
+  box-shadow: 0 8px 30px rgba(22, 163, 74, 0.12);
   backdrop-filter: blur(10px);
 }
 
@@ -808,20 +808,20 @@ onMounted(() => {
 }
 
 .popup-content {
-  padding: 0.5rem 0;
-  min-width: 180px;
+  padding: 0.35rem 0;
+  min-width: 150px;
 }
 
 .popup-type {
-  font-size: 0.95rem;
+  font-size: 0.8rem;
   font-weight: 600;
   color: #16a34a;
   display: block;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.35rem;
 }
 
 .popup-name {
-  font-size: 0.85rem;
+  font-size: 0.75rem;
   color: #1e3a2f;
   display: block;
 }
@@ -829,51 +829,63 @@ onMounted(() => {
 /* ========== RESPONSIVE ========== */
 @media (max-width: 1024px) {
   .header-wrapper {
-    gap: 1rem;
+    gap: 0.75rem;
   }
 
   .header-text h1 {
-    font-size: 1.5rem;
+    font-size: 0.8rem;
   }
 
   .layers-panel {
-    width: 280px;
+    width: 220px;
+    top: 60px;
   }
 
   .map-section {
-    margin-left: 280px;
+    margin-left: 220px;
   }
 
   .legend-box {
-    bottom: 1rem;
-    right: 1rem;
-    max-width: 260px;
+    bottom: 0.75rem;
+    right: 0.75rem;
+    max-width: 200px;
   }
 }
 
 @media (max-width: 768px) {
   .header-mapa {
-    padding: 1rem;
+    padding: 0.55rem 0.85rem;
   }
 
   .back-button {
-    width: 40px;
-    height: 40px;
+    width: 30px;
+    height: 30px;
   }
 
   .back-icon {
-    width: 18px;
-    height: 18px;
+    width: 14px;
+    height: 14px;
   }
 
   .header-wrapper {
     flex-direction: column;
-    padding-right: 60px; /* Mantener espacio para menú hamburguesa */
+    gap: 0.5rem;
+    padding-right: 50px;
+  }
+
+  .header-text h1 {
+    font-size: 0.75rem;
+  }
+
+  .header-text p {
+    font-size: 0.6rem;
   }
 
   .btn-location {
     width: 100%;
     justify-content: center;
+    padding: 0.35rem 0.65rem;
+    font-size: 0.65rem;
   }
 
   .layers-panel {
@@ -888,7 +900,36 @@ onMounted(() => {
   }
 
   .panel-wrapper {
-    padding: 1rem;
+    padding: 0.75rem;
+  }
+
+  .panel-title {
+    font-size: 0.65rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .layers-list {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+
+  .layer-checkbox {
+    padding: 0.4rem 0.5rem;
+    flex: 1;
+    min-width: 100px;
+  }
+
+  .checkbox-label {
+    font-size: 0.65rem;
+  }
+
+  .panel-hint {
+    display: none;
+  }
+
+  .panel-divider {
+    display: none;
   }
 
   .map-section {
@@ -896,17 +937,46 @@ onMounted(() => {
   }
 
   .legend-box {
-    bottom: 0.75rem;
-    right: 0.75rem;
-    right: 0.75rem;
+    bottom: 0.5rem;
+    right: 0.5rem;
     max-width: none;
     width: auto;
+    padding: 0.5rem;
+  }
+
+  .legend-title {
+    font-size: 0.6rem;
+    margin-bottom: 0.35rem;
+  }
+
+  .legend-item {
+    font-size: 0.6rem;
+    gap: 0.35rem;
+  }
+
+  .legend-marker {
+    width: 12px;
+    height: 12px;
   }
 }
 
 @media (max-width: 640px) {
+  .header-mapa {
+    padding: 0.5rem 0.75rem;
+  }
+
   .header-left {
-    gap: 0.75rem;
+    gap: 0.4rem;
+  }
+
+  .back-button {
+    width: 28px;
+    height: 28px;
+  }
+
+  .back-icon {
+    width: 14px;
+    height: 14px;
   }
 
   .icon-box {
@@ -915,50 +985,90 @@ onMounted(() => {
 
   .header-text h1,
   .header-title {
-    font-size: 0.9rem;
+    font-size: 0.75rem;
   }
 
   .header-text p,
   .header-subtitle {
-    font-size: 0.7rem;
+    font-size: 0.55rem;
   }
 
   .btn-location {
-    padding: 0.4rem 0.75rem;
-    font-size: 0.75rem;
+    padding: 0.3rem 0.6rem;
+    font-size: 0.6rem;
+  }
+
+  .btn-icon {
+    width: 12px;
+    height: 12px;
   }
 
   .panel-title {
-    font-size: 0.8rem;
+    font-size: 0.6rem;
   }
 
   .layer-checkbox {
-    padding: 0.6rem;
-    gap: 0.5rem;
+    padding: 0.35rem 0.45rem;
+    gap: 0.35rem;
+  }
+
+  .checkbox-input {
+    width: 12px;
+    height: 12px;
+  }
+
+  .checkbox-circle {
+    width: 10px;
+    height: 10px;
   }
 
   .checkbox-label {
-    font-size: 0.85rem;
+    font-size: 0.6rem;
   }
 
   .legend-box {
-    padding: 0.75rem;
-    bottom: 0.5rem;
-    right: 0.5rem;
+    padding: 0.4rem;
+    bottom: 0.35rem;
+    right: 0.35rem;
+    border-radius: 8px;
   }
 
   .legend-title {
-    font-size: 0.8rem;
+    font-size: 0.55rem;
+    margin-bottom: 0.3rem;
+  }
+
+  .legend-items {
+    gap: 0.25rem;
   }
 
   .legend-item {
-    font-size: 0.75rem;
-    gap: 0.5rem;
+    font-size: 0.55rem;
+    gap: 0.3rem;
   }
 
   .legend-marker {
-    width: 16px;
-    height: 16px;
+    width: 10px;
+    height: 10px;
+  }
+
+  .legend-divider {
+    margin: 0.25rem 0;
+  }
+
+  .legend-controls {
+    padding-top: 0.35rem;
+    margin-top: 0.35rem;
+  }
+
+  .legend-checkbox {
+    font-size: 0.55rem;
+    gap: 0.3rem;
+  }
+
+  .legend-checkbox input {
+    width: 12px;
+    height: 12px;
   }
 }
 
@@ -992,36 +1102,36 @@ onMounted(() => {
 
 .popup-content-sembrador {
   padding: 0;
-  min-width: 220px;
+  min-width: 180px;
 }
 
 .popup-header-sembrador {
-  padding: 0.75rem 0.75rem 0.5rem 0.75rem;
+  padding: 0.5rem 0.6rem 0.35rem 0.6rem;
   background: linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, rgba(16, 185, 129, 0.05) 100%);
   border-bottom: 1px solid rgba(16, 185, 129, 0.3);
-  border-radius: 8px 8px 0 0;
+  border-radius: 6px 6px 0 0;
 }
 
 .popup-type-sembrador {
-  font-size: 0.9rem;
+  font-size: 0.75rem;
   font-weight: 700;
   color: #10b981;
   display: block;
 }
 
 .popup-body-sembrador {
-  padding: 0.75rem;
+  padding: 0.5rem 0.6rem;
 }
 
 .popup-field {
-  margin: 0 0 0.5rem 0;
-  font-size: 0.85rem;
+  margin: 0 0 0.35rem 0;
+  font-size: 0.7rem;
   display: flex;
   justify-content: space-between;
-  gap: 1rem;
-  padding: 0.5rem;
+  gap: 0.75rem;
+  padding: 0.35rem;
   background: rgba(71, 85, 105, 0.3);
-  border-radius: 4px;
+  border-radius: 3px;
 }
 
 .popup-field:last-child {
@@ -1032,44 +1142,46 @@ onMounted(() => {
   font-weight: 600;
   color: #64748b;
   white-space: nowrap;
+  font-size: 0.65rem;
 }
 
 .popup-value {
   color: #1e3a2f;
   text-align: right;
   word-break: break-word;
+  font-size: 0.65rem;
 }
 
 .popup-field.text-xs {
-  font-size: 0.75rem;
+  font-size: 0.6rem;
 }
 
 /* ========== LEGEND CONTROLS ========== */
 .legend-divider {
   border: none;
   border-top: 1px solid rgba(148, 163, 184, 0.2);
-  margin: 0.5rem 0;
+  margin: 0.35rem 0;
 }
 
 .legend-controls {
-  padding-top: 0.75rem;
+  padding-top: 0.5rem;
   border-top: 1px solid rgba(148, 163, 184, 0.2);
-  margin-top: 0.75rem;
+  margin-top: 0.5rem;
 }
 
 .legend-checkbox {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.35rem;
   cursor: pointer;
-  font-size: 0.85rem;
+  font-size: 0.65rem;
   color: #374151;
   user-select: none;
 }
 
 .legend-checkbox input {
-  width: 16px;
-  height: 16px;
+  width: 12px;
+  height: 12px;
   cursor: pointer;
   accent-color: #16a34a;
 }
@@ -1079,28 +1191,242 @@ onMounted(() => {
 }
 
 @media (max-width: 480px) {
+  .header-mapa {
+    padding: 0.45rem 0.6rem;
+  }
+
   .back-button {
-    width: 36px;
-    height: 36px;
+    width: 26px;
+    height: 26px;
   }
 
   .back-icon {
-    width: 16px;
-    height: 16px;
+    width: 12px;
+    height: 12px;
   }
 
   .header-left {
-    gap: 0.75rem;
+    gap: 0.35rem;
   }
 
-  .icon-box {
-    width: 44px;
-    height: 44px;
+  .header-text h1 {
+    font-size: 0.7rem;
   }
 
-  .icon-header {
+  .header-text p {
+    font-size: 0.5rem;
+  }
+
+  .btn-location {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.55rem;
+    border-radius: 12px;
+  }
+
+  .panel-wrapper {
+    padding: 0.5rem;
+  }
+
+  .layer-checkbox {
+    padding: 0.3rem 0.4rem;
+    min-width: 80px;
+  }
+
+  .legend-box {
+    padding: 0.35rem;
+    border-radius: 6px;
+  }
+
+  .legend-title {
+    font-size: 0.5rem;
+  }
+
+  .legend-item {
+    font-size: 0.5rem;
+  }
+
+  .legend-marker {
+    width: 8px;
+    height: 8px;
+  }
+
+  .legend-checkbox {
+    font-size: 0.5rem;
+  }
+
+  .legend-checkbox input {
+    width: 10px;
+    height: 10px;
+  }
+}
+
+/* ========== 360px - Pantallas muy pequeñas ========== */
+@media (max-width: 360px) {
+  .header-mapa {
+    padding: 0.4rem 0.5rem;
+  }
+
+  .back-button {
     width: 24px;
     height: 24px;
+  }
+
+  .header-text h1 {
+    font-size: 0.65rem;
+  }
+
+  .header-text p {
+    font-size: 0.45rem;
+  }
+
+  .btn-location {
+    padding: 0.2rem 0.4rem;
+    font-size: 0.5rem;
+  }
+
+  .btn-icon {
+    width: 10px;
+    height: 10px;
+  }
+
+  .panel-wrapper {
+    padding: 0.4rem;
+  }
+
+  .panel-title {
+    font-size: 0.55rem;
+  }
+
+  .layer-checkbox {
+    padding: 0.25rem 0.35rem;
+    min-width: 70px;
+  }
+
+  .checkbox-input {
+    width: 10px;
+    height: 10px;
+  }
+
+  .checkbox-circle {
+    width: 8px;
+    height: 8px;
+  }
+
+  .checkbox-label {
+    font-size: 0.55rem;
+  }
+
+  .legend-box {
+    padding: 0.3rem;
+    border-radius: 5px;
+    bottom: 0.25rem;
+    right: 0.25rem;
+  }
+
+  .legend-title {
+    font-size: 0.45rem;
+  }
+
+  .legend-item {
+    font-size: 0.45rem;
+    gap: 0.2rem;
+  }
+
+  .legend-marker {
+    width: 7px;
+    height: 7px;
+  }
+}
+
+/* ========== Landscape mobile ========== */
+@media (max-height: 500px) and (orientation: landscape) {
+  .mapa-container {
+    height: 100vh;
+  }
+
+  .header-mapa {
+    padding: 0.35rem 0.65rem;
+  }
+
+  .header-wrapper {
+    flex-direction: row;
+    gap: 0.5rem;
+  }
+
+  .header-text h1 {
+    font-size: 0.7rem;
+  }
+
+  .header-text p {
+    font-size: 0.5rem;
+  }
+
+  .back-button {
+    width: 26px;
+    height: 26px;
+  }
+
+  .btn-location {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.55rem;
+  }
+
+  .layers-panel {
+    position: absolute;
+    top: 50px;
+    left: 0;
+    width: 180px;
+    max-height: calc(100vh - 50px);
+  }
+
+  .panel-wrapper {
+    padding: 0.5rem;
+  }
+
+  .panel-title {
+    font-size: 0.55rem;
+    margin-bottom: 0.35rem;
+  }
+
+  .layers-list {
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+
+  .layer-checkbox {
+    padding: 0.3rem 0.4rem;
+  }
+
+  .checkbox-label {
+    font-size: 0.55rem;
+  }
+
+  .map-section {
+    margin-left: 180px;
+  }
+
+  .legend-box {
+    bottom: 0.35rem;
+    right: 0.35rem;
+    padding: 0.35rem;
+    max-width: 160px;
+  }
+
+  .legend-title {
+    font-size: 0.5rem;
+  }
+
+  .legend-item {
+    font-size: 0.5rem;
+  }
+
+  .legend-marker {
+    width: 8px;
+    height: 8px;
+  }
+
+  .legend-checkbox {
+    font-size: 0.5rem;
   }
 }
 </style>
