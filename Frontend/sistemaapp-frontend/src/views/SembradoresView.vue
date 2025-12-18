@@ -964,7 +964,7 @@ onMounted(getSembradores)
   background: rgba(255, 255, 255, 0.9);
   border-bottom: 1px solid rgba(22, 163, 74, 0.2);
   backdrop-filter: blur(12px);
-  padding: 1rem 1.2rem;
+  padding: 0.75rem 1rem;
   box-shadow: 0 4px 20px rgba(22, 163, 74, 0.1);
   width: 100%;
 }
@@ -990,8 +990,8 @@ onMounted(getSembradores)
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 40px;
-  height: 40px;
+  width: 34px;
+  height: 34px;
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.9);
   border: 1.5px solid rgba(22, 163, 74, 0.4);
@@ -1011,8 +1011,8 @@ onMounted(getSembradores)
 }
 
 .back-icon {
-  width: 20px;
-  height: 20px;
+  width: 16px;
+  height: 16px;
   stroke-width: 2.5;
 }
 
@@ -1020,16 +1020,16 @@ onMounted(getSembradores)
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
-  height: 32px;
+  width: 28px;
+  height: 28px;
   border-radius: 6px;
   background: transparent;
   flex-shrink: 0;
 }
 
 .icon-stat {
-  width: 20px;
-  height: 20px;
+  width: 18px;
+  height: 18px;
   color: #16a34a;
   stroke-width: 2;
 }
@@ -1040,17 +1040,17 @@ onMounted(getSembradores)
 }
 
 .header-title {
-  font-size: 0.95rem;
+  font-size: 0.85rem;
   font-weight: 700;
   color: #15803d;
   margin: 0;
 }
 
 .header-subtitle {
-  font-size: 0.75rem;
+  font-size: 0.65rem;
   color: #64748b;
   margin: 0;
-  margin-top: 0.2rem;
+  margin-top: 0.15rem;
 }
 
 /* ========== RELOAD BUTTON ========== */
@@ -1058,8 +1058,8 @@ onMounted(getSembradores)
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 40px;
-  height: 40px;
+  width: 34px;
+  height: 34px;
   border-radius: 50%;
   background: rgba(59, 130, 246, 0.1);
   border: 1.5px solid rgba(59, 130, 246, 0.4);
@@ -1082,8 +1082,8 @@ onMounted(getSembradores)
 }
 
 .reload-icon {
-  width: 22px;
-  height: 22px;
+  width: 18px;
+  height: 18px;
   stroke-width: 2.5;
 }
 
@@ -1092,7 +1092,7 @@ onMounted(getSembradores)
   position: relative;
   z-index: 5;
   min-height: calc(100vh - 100px);
-  padding: 1.25rem;
+  padding: 1rem;
 }
 
 .sembradores-content {
@@ -1100,55 +1100,55 @@ onMounted(getSembradores)
   margin: 0 auto;
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;
+  gap: 1rem;
 }
 
 /* ========== FORM SECTION ========== */
 .form-section {
   background: rgba(255, 255, 255, 0.9);
   border: 1px solid rgba(22, 163, 74, 0.2);
-  border-radius: 16px;
-  padding: 1.25rem;
+  border-radius: 12px;
+  padding: 1rem;
   backdrop-filter: blur(10px);
-  box-shadow: 0 8px 32px rgba(22, 163, 74, 0.1);
+  box-shadow: 0 4px 20px rgba(22, 163, 74, 0.08);
 }
 
 .form-header {
-  margin-bottom: 1rem;
+  margin-bottom: 0.75rem;
 }
 
 .form-title {
-  font-size: 0.95rem;
+  font-size: 0.85rem;
   font-weight: 700;
   color: #15803d;
-  margin-bottom: 0.2rem;
+  margin-bottom: 0.15rem;
 }
 
 .form-subtitle {
-  font-size: 0.7rem;
+  font-size: 0.65rem;
   color: #64748b;
 }
 
 .sembrador-form {
   display: flex;
   flex-direction: column;
-  gap: 0.85rem;
+  gap: 0.65rem;
 }
 
 .form-row {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 0.85rem;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 0.65rem;
 }
 
 .form-group {
   display: flex;
   flex-direction: column;
-  gap: 0.3rem;
+  gap: 0.25rem;
 }
 
 .form-label {
-  font-size: 0.65rem;
+  font-size: 0.6rem;
   font-weight: 600;
   color: #374151;
   text-transform: uppercase;
@@ -1159,13 +1159,13 @@ onMounted(getSembradores)
   font-weight: 400;
   color: #64748b;
   text-transform: lowercase;
-  font-size: 0.6rem;
+  font-size: 0.55rem;
 }
 
 .input-hint {
-  font-size: 0.6rem;
+  font-size: 0.55rem;
   color: #f59e0b;
-  margin-top: 0.2rem;
+  margin-top: 0.15rem;
   font-weight: 500;
 }
 
@@ -1177,9 +1177,9 @@ onMounted(getSembradores)
 
 .input-icon {
   position: absolute;
-  left: 10px;
-  width: 14px;
-  height: 14px;
+  left: 8px;
+  width: 12px;
+  height: 12px;
   color: #16a34a;
   pointer-events: none;
 }
@@ -1188,16 +1188,16 @@ onMounted(getSembradores)
   width: 100%;
   background: white;
   border: 1px solid rgba(22, 163, 74, 0.3);
-  border-radius: 8px;
-  padding: 0.5rem 0.75rem 0.5rem 2rem;
+  border-radius: 6px;
+  padding: 0.45rem 0.6rem 0.45rem 1.75rem;
   color: #1e3a2f;
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   transition: all 0.3s ease;
 }
 
 .form-input::placeholder {
   color: #64748b;
-  font-size: 0.75rem;
+  font-size: 0.7rem;
 }
 
 .form-input:focus {
@@ -1216,9 +1216,9 @@ onMounted(getSembradores)
 
 .select-wrapper .input-icon {
   position: absolute;
-  left: 0.6rem;
-  width: 14px;
-  height: 14px;
+  left: 0.5rem;
+  width: 12px;
+  height: 12px;
   color: #16a34a;
   pointer-events: none;
   z-index: 1;
@@ -1228,17 +1228,17 @@ onMounted(getSembradores)
   width: 100%;
   background: white;
   border: 1px solid rgba(22, 163, 74, 0.3);
-  border-radius: 8px;
-  padding: 0.5rem 2rem 0.5rem 2rem;
+  border-radius: 6px;
+  padding: 0.45rem 1.75rem 0.45rem 1.75rem;
   color: #1e3a2f;
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   transition: all 0.3s ease;
   cursor: pointer;
   appearance: none;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2316a34a'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
   background-repeat: no-repeat;
-  background-position: right 0.6rem center;
-  background-size: 1rem;
+  background-position: right 0.5rem center;
+  background-size: 0.85rem;
 }
 
 .form-select:focus {
@@ -1258,23 +1258,23 @@ onMounted(getSembradores)
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.4rem;
+  gap: 0.35rem;
   background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
   color: white;
   border: none;
-  border-radius: 8px;
-  padding: 0.6rem 1rem;
-  font-size: 0.8rem;
+  border-radius: 6px;
+  padding: 0.5rem 0.85rem;
+  font-size: 0.75rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 4px 12px rgba(22, 163, 74, 0.3);
-  margin-top: 0.5rem;
+  box-shadow: 0 3px 10px rgba(22, 163, 74, 0.25);
+  margin-top: 0.35rem;
 }
 
 .submit-btn:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(22, 163, 74, 0.4);
+  box-shadow: 0 5px 15px rgba(22, 163, 74, 0.35);
 }
 
 .submit-btn:active:not(:disabled) {
@@ -1287,8 +1287,8 @@ onMounted(getSembradores)
 }
 
 .btn-icon {
-  width: 14px;
-  height: 14px;
+  width: 12px;
+  height: 12px;
 }
 
 .btn-text {
@@ -1299,41 +1299,41 @@ onMounted(getSembradores)
 .list-section {
   background: rgba(255, 255, 255, 0.9);
   border: 1px solid rgba(22, 163, 74, 0.2);
-  border-radius: 16px;
-  padding: 1.25rem;
+  border-radius: 12px;
+  padding: 1rem;
   backdrop-filter: blur(10px);
-  box-shadow: 0 8px 32px rgba(22, 163, 74, 0.1);
+  box-shadow: 0 4px 20px rgba(22, 163, 74, 0.08);
 }
 
 .list-header {
-  margin-bottom: 1rem;
+  margin-bottom: 0.75rem;
 }
 
 .list-title {
-  font-size: 0.95rem;
+  font-size: 0.85rem;
   font-weight: 700;
   color: #1e3a2f;
   display: flex;
   align-items: center;
-  gap: 0.6rem;
-  margin-bottom: 0.3rem;
+  gap: 0.5rem;
+  margin-bottom: 0.2rem;
 }
 
 .count-badge {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 24px;
-  height: 24px;
+  width: 20px;
+  height: 20px;
   background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
   color: white;
-  border-radius: 6px;
+  border-radius: 5px;
   font-weight: 700;
-  font-size: 0.75rem;
+  font-size: 0.65rem;
 }
 
 .list-subtitle {
-  font-size: 0.75rem;
+  font-size: 0.65rem;
   color: #64748b;
 }
 
@@ -1343,36 +1343,36 @@ onMounted(getSembradores)
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 1.5rem 1rem;
+  padding: 1.25rem 0.85rem;
   text-align: center;
 }
 
 .empty-icon {
-  width: 50px;
-  height: 50px;
+  width: 40px;
+  height: 40px;
   background: rgba(22, 163, 74, 0.15);
-  border-radius: 12px;
+  border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 0.6rem;
+  margin-bottom: 0.5rem;
   color: #16a34a;
 }
 
 .empty-icon svg {
-  width: 24px;
-  height: 24px;
+  width: 20px;
+  height: 20px;
 }
 
 .empty-title {
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   font-weight: 600;
   color: #1e3a2f;
-  margin-bottom: 0.3rem;
+  margin-bottom: 0.2rem;
 }
 
 .empty-text {
-  font-size: 0.75rem;
+  font-size: 0.65rem;
   color: #64748b;
 }
 
@@ -1397,9 +1397,9 @@ onMounted(getSembradores)
 }
 
 .table-header-cell {
-  padding: 1rem;
+  padding: 0.6rem 0.5rem;
   text-align: left;
-  font-size: 0.875rem;
+  font-size: 0.6rem;
   font-weight: 600;
   color: #64748b;
   text-transform: uppercase;
@@ -1416,22 +1416,22 @@ onMounted(getSembradores)
 }
 
 .table-cell {
-  padding: 1rem;
+  padding: 0.5rem;
   color: #1e3a2f;
-  font-size: 0.9rem;
+  font-size: 0.7rem;
 }
 
 .cell-content {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 0.5rem;
 }
 
 .cell-icon {
-  width: 32px;
-  height: 32px;
+  width: 26px;
+  height: 26px;
   background: rgba(22, 163, 74, 0.1);
-  border-radius: 8px;
+  border-radius: 6px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1439,8 +1439,8 @@ onMounted(getSembradores)
 }
 
 .icon-small {
-  width: 16px;
-  height: 16px;
+  width: 12px;
+  height: 12px;
   color: #16a34a;
 }
 
@@ -1451,13 +1451,13 @@ onMounted(getSembradores)
 .cell-location {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.35rem;
   color: #64748b;
 }
 
 .icon-tiny {
-  width: 14px;
-  height: 14px;
+  width: 11px;
+  height: 11px;
   color: #16a34a;
   flex-shrink: 0;
 }
@@ -1466,10 +1466,10 @@ onMounted(getSembradores)
   display: inline-block;
   background: linear-gradient(135deg, rgba(22, 163, 74, 0.2) 0%, rgba(22, 163, 74, 0.1) 100%);
   color: #15803d;
-  padding: 0.375rem 0.75rem;
-  border-radius: 6px;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
   font-weight: 500;
-  font-size: 0.875rem;
+  font-size: 0.65rem;
   border: 1px solid rgba(22, 163, 74, 0.3);
 }
 
@@ -1481,7 +1481,7 @@ onMounted(getSembradores)
 
 .cell-curp {
   font-family: 'Courier New', monospace;
-  font-size: 0.75rem;
+  font-size: 0.6rem;
   color: #94a3b8;
   letter-spacing: 0.5px;
 }
@@ -1498,7 +1498,7 @@ onMounted(getSembradores)
 }
 
 .cell-location-small {
-  font-size: 0.85rem;
+  font-size: 0.65rem;
   color: #94a3b8;
   font-family: 'Courier New', monospace;
 }
@@ -1506,15 +1506,15 @@ onMounted(getSembradores)
 .cell-actions {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.35rem;
 }
 
 .action-btn {
-  width: 36px;
-  height: 36px;
+  width: 28px;
+  height: 28px;
   border: 1px solid rgba(22, 163, 74, 0.3);
   background: rgba(255, 255, 255, 0.9);
-  border-radius: 8px;
+  border-radius: 6px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1533,8 +1533,8 @@ onMounted(getSembradores)
 }
 
 .action-icon {
-  width: 18px;
-  height: 18px;
+  width: 14px;
+  height: 14px;
 }
 
 .edit-btn .action-icon {
@@ -1548,76 +1548,113 @@ onMounted(getSembradores)
 /* ========== RESPONSIVE ========== */
 @media (max-width: 768px) {
   .header-sembradores {
-    padding: 0.8rem 1rem;
+    padding: 0.6rem 0.85rem;
   }
 
   .header-icon-small {
-    width: 28px;
-    height: 28px;
+    width: 24px;
+    height: 24px;
   }
 
   .icon-stat {
-    width: 18px;
-    height: 18px;
+    width: 16px;
+    height: 16px;
   }
 
   .header-title {
-    font-size: 0.85rem;
+    font-size: 0.8rem;
   }
 
   .header-subtitle {
-    font-size: 0.7rem;
+    font-size: 0.6rem;
   }
 
+  .back-button,
   .reload-button {
-    width: 36px;
-    height: 36px;
+    width: 32px;
+    height: 32px;
   }
 
+  .back-icon,
   .reload-icon {
-    width: 20px;
-    height: 20px;
+    width: 16px;
+    height: 16px;
   }
 
   .sembradores-main {
-    padding: 1rem;
+    padding: 0.75rem;
   }
 
-  .form-title {
-    font-size: 1.1rem;
+  .form-section,
+  .list-section {
+    padding: 0.85rem;
+    border-radius: 10px;
+  }
+
+  .form-title,
+  .list-title {
+    font-size: 0.8rem;
   }
 
   .form-label {
-    font-size: 0.7rem;
+    font-size: 0.55rem;
   }
 
-  .list-title {
-    font-size: 1rem;
+  .form-row {
+    grid-template-columns: 1fr;
+    gap: 0.55rem;
   }
 
   .table-header-cell,
   .table-cell {
-    padding: 0.6rem 0.5rem;
-    font-size: 0.75rem;
+    padding: 0.45rem 0.35rem;
+    font-size: 0.65rem;
   }
 
   .table-header-cell {
-    font-size: 0.7rem;
+    font-size: 0.55rem;
   }
 
-  .form-input {
+  .form-input,
+  .form-select {
     font-size: 16px;
+    padding: 0.5rem 0.65rem 0.5rem 1.6rem;
+  }
+
+  .cell-icon {
+    width: 22px;
+    height: 22px;
+  }
+
+  .icon-small {
+    width: 10px;
+    height: 10px;
+  }
+
+  .cell-badge {
+    padding: 0.2rem 0.4rem;
+    font-size: 0.55rem;
+  }
+
+  .action-btn {
+    width: 26px;
+    height: 26px;
+  }
+
+  .action-icon {
+    width: 12px;
+    height: 12px;
   }
 }
 
 @media (max-width: 640px) {
   .header-sembradores {
-    padding: 0.75rem 0.9rem;
+    padding: 0.55rem 0.75rem;
   }
 
   .header-icon-small {
-    width: 28px;
-    height: 28px;
+    width: 22px;
+    height: 22px;
   }
 
   .icon-stat {
@@ -1749,18 +1786,18 @@ onMounted(getSembradores)
   justify-content: center;
   z-index: 1000;
   backdrop-filter: blur(4px);
-  padding: 1rem;
+  padding: 0.75rem;
   overflow-y: auto;
 }
 
 .modal-edicion {
   background: white;
   border: 1px solid rgba(22, 163, 74, 0.2);
-  border-radius: 16px;
-  box-shadow: 0 20px 60px rgba(22, 163, 74, 0.15);
+  border-radius: 12px;
+  box-shadow: 0 15px 50px rgba(22, 163, 74, 0.12);
   backdrop-filter: blur(12px);
   width: 100%;
-  max-width: 600px;
+  max-width: 520px;
   max-height: 90vh;
   overflow-y: auto;
   animation: modalSlideIn 0.3s ease;
@@ -1781,14 +1818,14 @@ onMounted(getSembradores)
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 1.5rem;
+  padding: 1rem;
   border-bottom: 1px solid rgba(22, 163, 74, 0.1);
   background: rgba(22, 163, 74, 0.05);
-  border-radius: 16px 16px 0 0;
+  border-radius: 12px 12px 0 0;
 }
 
 .modal-title {
-  font-size: 1.3rem;
+  font-size: 0.95rem;
   font-weight: 700;
   color: #15803d;
   margin: 0;
@@ -1798,8 +1835,8 @@ onMounted(getSembradores)
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 40px;
-  height: 40px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
   background: rgba(239, 68, 68, 0.1);
   border: 1px solid rgba(239, 68, 68, 0.3);
@@ -1814,37 +1851,37 @@ onMounted(getSembradores)
 }
 
 .modal-close-icon {
-  width: 20px;
-  height: 20px;
+  width: 16px;
+  height: 16px;
   color: #ef4444;
 }
 
 .modal-form {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
-  padding: 1.5rem;
+  gap: 0.75rem;
+  padding: 1rem;
 }
 
 .modal-actions {
   display: flex;
-  gap: 0.75rem;
-  margin-top: 1rem;
-  padding-top: 1rem;
+  gap: 0.6rem;
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
   border-top: 1px solid rgba(132, 204, 22, 0.1);
 }
 
 .btn-cancelar {
   flex: 1;
-  padding: 0.75rem 1rem;
+  padding: 0.55rem 0.85rem;
   background: rgba(107, 114, 128, 0.1);
   border: 1px solid rgba(107, 114, 128, 0.3);
-  border-radius: 8px;
+  border-radius: 6px;
   color: #d1d5db;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
-  font-size: 0.9rem;
+  font-size: 0.75rem;
 }
 
 .btn-cancelar:hover {
@@ -1854,22 +1891,22 @@ onMounted(getSembradores)
 
 .btn-guardar {
   flex: 1;
-  padding: 0.75rem 1rem;
+  padding: 0.55rem 0.85rem;
   background: linear-gradient(135deg, #84cc16, #65a30d);
   border: 1px solid rgba(132, 204, 22, 0.5);
-  border-radius: 8px;
+  border-radius: 6px;
   color: #0f172a;
   font-weight: 700;
   cursor: pointer;
   transition: all 0.3s ease;
-  font-size: 0.9rem;
+  font-size: 0.75rem;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-  box-shadow: 0 4px 12px rgba(132, 204, 22, 0.2);
+  box-shadow: 0 3px 10px rgba(132, 204, 22, 0.2);
 }
 
 .btn-guardar:hover:not(:disabled) {
   background: linear-gradient(135deg, #a3e635, #84cc16);
-  box-shadow: 0 6px 16px rgba(132, 204, 22, 0.3);
+  box-shadow: 0 5px 14px rgba(132, 204, 22, 0.3);
   transform: translateY(-2px);
 }
 
@@ -2441,6 +2478,325 @@ onMounted(getSembradores)
 
   :deep(.swal-success-value) {
     font-size: 0.8rem;
+  }
+}
+
+/* ========== 360px - Pantallas muy pequeñas ========== */
+@media (max-width: 360px) {
+  .header-sembradores {
+    padding: 0.5rem 0.6rem;
+  }
+  
+  .header-title {
+    font-size: 0.7rem;
+  }
+  
+  .header-subtitle {
+    font-size: 0.55rem;
+  }
+  
+  .back-button,
+  .reload-button {
+    width: 28px;
+    height: 28px;
+  }
+  
+  .back-icon,
+  .reload-icon {
+    width: 14px;
+    height: 14px;
+  }
+  
+  .header-icon-small {
+    width: 20px;
+    height: 20px;
+  }
+  
+  .icon-stat {
+    width: 14px;
+    height: 14px;
+  }
+  
+  .sembradores-main {
+    padding: 0.5rem 0.4rem;
+  }
+  
+  .sembradores-content {
+    gap: 0.75rem;
+  }
+  
+  .form-section,
+  .list-section {
+    padding: 0.65rem;
+    border-radius: 8px;
+  }
+  
+  .form-title,
+  .list-title {
+    font-size: 0.75rem;
+  }
+  
+  .form-subtitle,
+  .list-subtitle {
+    font-size: 0.55rem;
+  }
+  
+  .form-label {
+    font-size: 0.5rem;
+  }
+  
+  .form-input,
+  .form-select {
+    padding: 0.4rem 0.5rem 0.4rem 1.5rem;
+    font-size: 14px;
+    border-radius: 5px;
+  }
+  
+  .input-icon {
+    left: 6px;
+    width: 10px;
+    height: 10px;
+  }
+  
+  .select-wrapper .input-icon {
+    left: 0.4rem;
+    width: 10px;
+    height: 10px;
+  }
+  
+  .submit-btn {
+    padding: 0.4rem 0.7rem;
+    font-size: 0.7rem;
+    border-radius: 5px;
+  }
+  
+  .btn-icon {
+    width: 10px;
+    height: 10px;
+  }
+  
+  .count-badge {
+    width: 18px;
+    height: 18px;
+    font-size: 0.6rem;
+    border-radius: 4px;
+  }
+  
+  .empty-icon {
+    width: 32px;
+    height: 32px;
+  }
+  
+  .empty-icon svg {
+    width: 16px;
+    height: 16px;
+  }
+  
+  .empty-title {
+    font-size: 0.7rem;
+  }
+  
+  .empty-text {
+    font-size: 0.55rem;
+  }
+  
+  .table-header-cell {
+    padding: 0.3rem 0.2rem;
+    font-size: 0.5rem;
+  }
+  
+  .table-cell {
+    padding: 0.3rem 0.2rem;
+    font-size: 0.55rem;
+  }
+  
+  .cell-icon {
+    width: 18px;
+    height: 18px;
+    border-radius: 4px;
+  }
+  
+  .icon-small {
+    width: 9px;
+    height: 9px;
+  }
+  
+  .cell-badge {
+    padding: 0.15rem 0.3rem;
+    font-size: 0.5rem;
+    border-radius: 3px;
+  }
+  
+  .cell-curp {
+    font-size: 0.5rem;
+  }
+  
+  .action-btn {
+    width: 22px;
+    height: 22px;
+    border-radius: 5px;
+  }
+  
+  .action-icon {
+    width: 10px;
+    height: 10px;
+  }
+  
+  .modal-overlay {
+    padding: 0.4rem;
+  }
+  
+  .modal-edicion {
+    border-radius: 10px;
+  }
+  
+  .modal-header {
+    padding: 0.75rem;
+  }
+  
+  .modal-title {
+    font-size: 0.85rem;
+  }
+  
+  .modal-close-btn {
+    width: 28px;
+    height: 28px;
+  }
+  
+  .modal-close-icon {
+    width: 14px;
+    height: 14px;
+  }
+  
+  .modal-form {
+    padding: 0.75rem;
+    gap: 0.5rem;
+  }
+  
+  .btn-cancelar,
+  .btn-guardar {
+    padding: 0.45rem 0.7rem;
+    font-size: 0.7rem;
+  }
+}
+
+/* ========== Landscape mobile ========== */
+@media (max-height: 500px) and (orientation: landscape) {
+  .sembradores-container {
+    min-height: auto;
+  }
+  
+  .header-sembradores {
+    padding: 0.4rem 0.65rem;
+  }
+  
+  .header-title {
+    font-size: 0.75rem;
+  }
+  
+  .header-subtitle {
+    font-size: 0.55rem;
+  }
+  
+  .back-button,
+  .reload-button {
+    width: 28px;
+    height: 28px;
+  }
+  
+  .sembradores-main {
+    padding: 0.5rem;
+    min-height: auto;
+  }
+  
+  .sembradores-content {
+    gap: 0.5rem;
+  }
+  
+  .form-section,
+  .list-section {
+    padding: 0.65rem;
+    border-radius: 8px;
+  }
+  
+  .form-header,
+  .list-header {
+    margin-bottom: 0.5rem;
+  }
+  
+  .form-title,
+  .list-title {
+    font-size: 0.75rem;
+  }
+  
+  .sembrador-form {
+    gap: 0.4rem;
+  }
+  
+  .form-row {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.4rem;
+  }
+  
+  .form-label {
+    font-size: 0.5rem;
+    margin-bottom: 0.15rem;
+  }
+  
+  .form-input,
+  .form-select {
+    padding: 0.35rem 0.5rem 0.35rem 1.5rem;
+    font-size: 13px;
+  }
+  
+  .submit-btn {
+    padding: 0.4rem 0.75rem;
+    font-size: 0.7rem;
+    margin-top: 0.25rem;
+  }
+  
+  .table-header-cell,
+  .table-cell {
+    padding: 0.3rem 0.25rem;
+    font-size: 0.6rem;
+  }
+  
+  .modal-overlay {
+    padding: 0.35rem;
+  }
+  
+  .modal-edicion {
+    max-height: 95vh;
+    border-radius: 10px;
+  }
+  
+  .modal-header {
+    padding: 0.6rem 0.85rem;
+  }
+  
+  .modal-title {
+    font-size: 0.85rem;
+  }
+  
+  .modal-form {
+    padding: 0.6rem 0.85rem;
+    gap: 0.45rem;
+  }
+  
+  .form-row {
+    grid-template-columns: 1fr 1fr;
+  }
+  
+  .modal-actions {
+    margin-top: 0.5rem;
+    padding-top: 0.5rem;
+    gap: 0.4rem;
+  }
+  
+  .btn-cancelar,
+  .btn-guardar {
+    padding: 0.4rem 0.7rem;
+    font-size: 0.7rem;
   }
 }
 
