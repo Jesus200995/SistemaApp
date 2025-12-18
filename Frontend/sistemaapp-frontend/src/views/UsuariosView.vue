@@ -44,198 +44,164 @@
         </div>
       </header>
 
-    <!-- Modal Crear Usuario -->
+    <!-- Modal Crear Usuario - Diseño Nuevo -->
     <Teleport to="body">
-      <div v-if="showModalCrear" class="modal-overlay" @click.self="cerrarModalCrearUsuario">
-        <div class="modal-crear-usuario">
-          <div class="modal-header">
-            <div class="modal-icon">
-              <UserPlus class="modal-icon-svg" />
-            </div>
-            <h2 class="modal-title">Crear Nuevo Usuario</h2>
-            <p class="modal-subtitle">{{ getDescripcionRol() }}</p>
-            <button @click="cerrarModalCrearUsuario" class="modal-close">
-              <X class="close-icon" />
+      <Transition name="modal-fade">
+        <div v-if="showModalCrear" class="nuevo-modal-overlay">
+          <div class="nuevo-modal">
+            <!-- Botón cerrar -->
+            <button @click="cerrarModalCrearUsuario" class="nuevo-modal-close" type="button">
+              <X :size="18" />
             </button>
-          </div>
 
-          <form @submit.prevent="crearUsuario" class="modal-form">
-            <div class="form-group">
-              <label for="nombre" class="form-label">
-                <User class="label-icon" />
-                Nombre completo
-              </label>
-              <input
-                id="nombre"
-                v-model="nuevoUsuario.nombre"
-                type="text"
-                class="form-input"
-                placeholder="NOMBRE COMPLETO"
-                required
-                minlength="2"
-                @input="nuevoUsuario.nombre = nuevoUsuario.nombre.toUpperCase()"
-              />
-            </div>
-
-            <div class="form-group">
-              <label for="email" class="form-label">
-                <Mail class="label-icon" />
-                Correo electrónico
-              </label>
-              <input
-                id="email"
-                v-model="nuevoUsuario.email"
-                type="email"
-                class="form-input"
-                placeholder="correo@ejemplo.com"
-                required
-              />
-            </div>
-
-            <div class="form-group">
-              <label for="password" class="form-label">
-                <Lock class="label-icon" />
-                Contraseña
-              </label>
-              <div class="password-wrapper">
-                <input
-                  id="password"
-                  v-model="nuevoUsuario.password"
-                  :type="showPassword ? 'text' : 'password'"
-                  class="form-input"
-                  placeholder="Mínimo 6 caracteres"
-                  required
-                  minlength="6"
-                />
-                <button type="button" @click="showPassword = !showPassword" class="toggle-password">
-                  <Eye v-if="!showPassword" class="eye-icon" />
-                  <EyeOff v-else class="eye-icon" />
-                </button>
+            <!-- Contenido del modal con scroll -->
+            <div class="nuevo-modal-content">
+              <!-- Header compacto -->
+              <div class="nuevo-modal-header">
+                <div class="nuevo-modal-icon">
+                  <UserPlus :size="20" />
+                </div>
+                <div class="nuevo-modal-titles">
+                  <h2>Nuevo Usuario</h2>
+                  <span>{{ getDescripcionRol() }}</span>
+                </div>
               </div>
-            </div>
 
-            <div class="form-group">
-              <label for="rol" class="form-label">
-                <Shield class="label-icon" />
-                Rol del usuario
-              </label>
-              <select
-                id="rol"
-                v-model="nuevoUsuario.rol"
-                class="form-select"
-                required
-              >
-                <option value="" disabled>Selecciona un rol</option>
-                <option 
-                  v-for="rol in rolesDisponibles" 
-                  :key="rol.value" 
-                  :value="rol.value"
-                >
-                  {{ rol.label }}
-                </option>
-              </select>
-            </div>
+              <!-- Formulario -->
+              <form @submit.prevent="crearUsuario" class="nuevo-modal-form">
+                <!-- Fila 1: Nombre -->
+                <div class="campo">
+                  <label>Nombre completo <span class="req">*</span></label>
+                  <input
+                    v-model="nuevoUsuario.nombre"
+                    type="text"
+                    placeholder="Ingresa el nombre"
+                    required
+                    minlength="2"
+                    @input="nuevoUsuario.nombre = nuevoUsuario.nombre.toUpperCase()"
+                  />
+                </div>
 
-            <!-- Campo CURP -->
-            <div class="form-group">
-              <label for="curp" class="form-label">
-                <IdCard class="label-icon" />
-                CURP
-              </label>
-              <input
-                id="curp"
-                v-model="nuevoUsuario.curp"
-                type="text"
-                class="form-input"
-                placeholder="XXXX######HXXXXX##"
-                maxlength="18"
-                minlength="18"
-                pattern="[A-Z]{4}[0-9]{6}[HM][A-Z]{5}[A-Z0-9]{2}"
-                @input="nuevoUsuario.curp = nuevoUsuario.curp.toUpperCase()"
-                required
-              />
-              <span class="field-hint">18 caracteres alfanuméricos (obligatorio)</span>
-            </div>
+                <!-- Fila 2: Email y Contraseña -->
+                <div class="campos-row">
+                  <div class="campo">
+                    <label>Email <span class="req">*</span></label>
+                    <input
+                      v-model="nuevoUsuario.email"
+                      type="email"
+                      placeholder="correo@ejemplo.com"
+                      required
+                    />
+                  </div>
+                  <div class="campo">
+                    <label>Contraseña <span class="req">*</span></label>
+                    <div class="input-password">
+                      <input
+                        v-model="nuevoUsuario.password"
+                        :type="showPassword ? 'text' : 'password'"
+                        placeholder="Mínimo 6 caracteres"
+                        required
+                        minlength="6"
+                      />
+                      <button type="button" @click="showPassword = !showPassword" class="btn-eye">
+                        <Eye v-if="!showPassword" :size="16" />
+                        <EyeOff v-else :size="16" />
+                      </button>
+                    </div>
+                  </div>
+                </div>
 
-            <!-- Campo Teléfono -->
-            <div class="form-group">
-              <label for="telefono" class="form-label">
-                <Phone class="label-icon" />
-                Número de Teléfono
-              </label>
-              <input
-                id="telefono"
-                v-model="nuevoUsuario.telefono"
-                type="tel"
-                class="form-input"
-                placeholder="10 dígitos"
-                maxlength="10"
-                minlength="10"
-                pattern="[0-9]{10}"
-                @input="nuevoUsuario.telefono = nuevoUsuario.telefono.replace(/[^0-9]/g, '').slice(0, 10)"
-              />
-              <span class="field-hint" v-if="nuevoUsuario.telefono && nuevoUsuario.telefono.length > 0 && nuevoUsuario.telefono.length < 10">{{ nuevoUsuario.telefono.length }}/10 dígitos</span>
-            </div>
+                <!-- Fila 3: Rol y CURP -->
+                <div class="campos-row">
+                  <div class="campo">
+                    <label>Rol <span class="req">*</span></label>
+                    <select v-model="nuevoUsuario.rol" required>
+                      <option value="" disabled>Seleccionar</option>
+                      <option v-for="rol in rolesDisponibles" :key="rol.value" :value="rol.value">
+                        {{ rol.label }}
+                      </option>
+                    </select>
+                  </div>
+                  <div class="campo">
+                    <label>CURP <span class="req">*</span></label>
+                    <input
+                      v-model="nuevoUsuario.curp"
+                      type="text"
+                      placeholder="18 caracteres"
+                      maxlength="18"
+                      minlength="18"
+                      required
+                      @input="nuevoUsuario.curp = nuevoUsuario.curp.toUpperCase()"
+                    />
+                  </div>
+                </div>
 
-            <!-- Campo Territorio -->
-            <div class="form-group">
-              <label for="territorio" class="form-label">
-                <MapPin class="label-icon" />
-                Territorio <span class="required-mark">*</span>
-              </label>
-              <select
-                id="territorio"
-                v-model="nuevoUsuario.territorio"
-                class="form-select"
-                required
-              >
-                <option value="" disabled>Selecciona un territorio</option>
-                <option value="Acapulco - Centro - Norte - Tierra Caliente">Acapulco - Centro - Norte - Tierra Caliente</option>
-                <option value="Acayucan">Acayucan</option>
-                <option value="Balancán">Balancán</option>
-                <option value="Chihuahua / Sonora">Chihuahua / Sonora</option>
-                <option value="Colima">Colima</option>
-                <option value="Comalcalco">Comalcalco</option>
-                <option value="Córdoba">Córdoba</option>
-                <option value="Costa Chica - Montaña">Costa Chica - Montaña</option>
-                <option value="Costa Grande - Sierra">Costa Grande - Sierra</option>
-                <option value="Durango / Zacatecas">Durango / Zacatecas</option>
-                <option value="Hidalgo">Hidalgo</option>
-                <option value="Istmo">Istmo</option>
-                <option value="Michoacán">Michoacán</option>
-                <option value="Mixteca">Mixteca</option>
-                <option value="Morelos">Morelos</option>
-                <option value="Nayarit / Jalisco">Nayarit / Jalisco</option>
-                <option value="Ocosingo">Ocosingo</option>
-                <option value="Palenque">Palenque</option>
-                <option value="Papantla">Papantla</option>
-                <option value="Pichucalco">Pichucalco</option>
-                <option value="Puebla">Puebla</option>
-                <option value="San Luis Potosí">San Luis Potosí</option>
-                <option value="Sinaloa">Sinaloa</option>
-                <option value="Tamaulipas">Tamaulipas</option>
-                <option value="Tantoyuca">Tantoyuca</option>
-                <option value="Tapachula">Tapachula</option>
-                <option value="Teapa">Teapa</option>
-                <option value="Tlaxcala / Estado de México">Tlaxcala / Estado de México</option>
-                <option value="Tzucacab / Opb">Tzucacab / Opb</option>
-                <option value="Xpujil">Xpujil</option>
-                <option value="Oficinas Centrales">Oficinas Centrales</option>
-              </select>
-            </div>
+                <!-- Fila 4: Teléfono y Territorio -->
+                <div class="campos-row">
+                  <div class="campo">
+                    <label>Teléfono</label>
+                    <input
+                      v-model="nuevoUsuario.telefono"
+                      type="tel"
+                      placeholder="10 dígitos"
+                      maxlength="10"
+                      @input="nuevoUsuario.telefono = nuevoUsuario.telefono.replace(/[^0-9]/g, '').slice(0, 10)"
+                    />
+                  </div>
+                  <div class="campo">
+                    <label>Territorio <span class="req">*</span></label>
+                    <select v-model="nuevoUsuario.territorio" required>
+                      <option value="" disabled>Seleccionar</option>
+                      <option value="Acapulco - Centro - Norte - Tierra Caliente">Acapulco - Centro - Norte</option>
+                      <option value="Acayucan">Acayucan</option>
+                      <option value="Balancán">Balancán</option>
+                      <option value="Chihuahua / Sonora">Chihuahua / Sonora</option>
+                      <option value="Colima">Colima</option>
+                      <option value="Comalcalco">Comalcalco</option>
+                      <option value="Córdoba">Córdoba</option>
+                      <option value="Costa Chica - Montaña">Costa Chica - Montaña</option>
+                      <option value="Costa Grande - Sierra">Costa Grande - Sierra</option>
+                      <option value="Durango / Zacatecas">Durango / Zacatecas</option>
+                      <option value="Hidalgo">Hidalgo</option>
+                      <option value="Istmo">Istmo</option>
+                      <option value="Michoacán">Michoacán</option>
+                      <option value="Mixteca">Mixteca</option>
+                      <option value="Morelos">Morelos</option>
+                      <option value="Nayarit / Jalisco">Nayarit / Jalisco</option>
+                      <option value="Ocosingo">Ocosingo</option>
+                      <option value="Palenque">Palenque</option>
+                      <option value="Papantla">Papantla</option>
+                      <option value="Pichucalco">Pichucalco</option>
+                      <option value="Puebla">Puebla</option>
+                      <option value="San Luis Potosí">San Luis Potosí</option>
+                      <option value="Sinaloa">Sinaloa</option>
+                      <option value="Tamaulipas">Tamaulipas</option>
+                      <option value="Tantoyuca">Tantoyuca</option>
+                      <option value="Tapachula">Tapachula</option>
+                      <option value="Teapa">Teapa</option>
+                      <option value="Tlaxcala / Estado de México">Tlaxcala / Edo. México</option>
+                      <option value="Tzucacab / Opb">Tzucacab / Opb</option>
+                      <option value="Xpujil">Xpujil</option>
+                      <option value="Oficinas Centrales">Oficinas Centrales</option>
+                    </select>
+                  </div>
+                </div>
 
-            <div class="form-actions">
-              <button type="button" @click="cerrarModalCrearUsuario" class="btn-cancelar">
-                Cancelar
-              </button>
-              <button type="submit" class="btn-crear" :disabled="creando">
-                <Loader2 v-if="creando" class="spinner" />
-                <span v-else>Crear Usuario</span>
-              </button>
+                <!-- Botones -->
+                <div class="nuevo-modal-actions">
+                  <button type="button" @click="cerrarModalCrearUsuario" class="btn-cancel">
+                    Cancelar
+                  </button>
+                  <button type="submit" class="btn-submit" :disabled="creando">
+                    <Loader2 v-if="creando" :size="16" class="spinning" />
+                    <span v-else>Crear Usuario</span>
+                  </button>
+                </div>
+              </form>
             </div>
-          </form>
+          </div>
         </div>
-      </div>
+      </Transition>
     </Teleport>
 
     <!-- Modal de Edición de Usuario -->
@@ -726,11 +692,11 @@ const verificarPermisosCreacion = async () => {
 const getDescripcionRol = () => {
   const rol = auth.user?.rol
   if (rol === 'admin') {
-    return 'Como Coordinador Territorial (Admin), puedes crear usuarios Territoriales'
+    return 'Crear usuario Territorial'
   } else if (rol === 'territorial') {
-    return 'Como Territorial, puedes crear usuarios Facilitadores'
+    return 'Crear usuario Facilitador'
   } else if (rol === 'facilitador') {
-    return 'Como Facilitador, puedes crear Técnicos Productivos o Técnicos Sociales'
+    return 'Crear Técnico Productivo o Social'
   }
   return ''
 }
@@ -2257,302 +2223,404 @@ onMounted(async () => {
   }
 }
 
-/* ========== MODAL OVERLAY ========== */
-.modal-overlay {
+/* ========================================
+   NUEVO MODAL CREAR USUARIO - DISEÑO LIMPIO
+   ======================================== */
+
+/* Transición del modal */
+.modal-fade-enter-active,
+.modal-fade-leave-active {
+  transition: all 0.25s ease;
+}
+.modal-fade-enter-from,
+.modal-fade-leave-to {
+  opacity: 0;
+}
+.modal-fade-enter-from .nuevo-modal,
+.modal-fade-leave-to .nuevo-modal {
+  transform: scale(0.95) translateY(-20px);
+}
+
+/* Overlay */
+.nuevo-modal-overlay {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(22, 163, 74, 0.2);
+  inset: 0;
+  background: rgba(15, 23, 42, 0.6);
   backdrop-filter: blur(4px);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 9999;
-  padding: 0.75rem;
-}
-
-/* ========== MODAL CREAR USUARIO ========== */
-.modal-crear-usuario {
-  background: white;
-  border: 1px solid rgba(22, 163, 74, 0.2);
-  border-radius: 14px;
-  padding: 0;
-  max-width: 380px;
-  width: 100%;
-  max-height: 85vh;
+  padding: 1rem;
+  box-sizing: border-box;
   overflow-y: auto;
-  box-shadow: 0 16px 48px rgba(22, 163, 74, 0.15);
 }
 
-.modal-header {
+/* Modal Container */
+.nuevo-modal {
   position: relative;
-  padding: 1rem 1rem 0.75rem;
-  text-align: center;
-  border-bottom: 1px solid rgba(22, 163, 74, 0.1);
+  background: #fff;
+  border-radius: 16px;
+  width: 100%;
+  max-width: 480px;
+  max-height: 90vh;
+  overflow: hidden;
+  box-shadow: 
+    0 20px 25px -5px rgba(0, 0, 0, 0.1),
+    0 8px 10px -6px rgba(0, 0, 0, 0.1);
 }
 
-.modal-icon {
-  width: 48px;
-  height: 48px;
-  background: linear-gradient(135deg, rgba(22, 163, 74, 0.2) 0%, rgba(22, 163, 74, 0.1) 100%);
-  border: 1.5px solid #16a34a;
-  border-radius: 50%;
+/* Botón Cerrar */
+.nuevo-modal-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 10;
+  width: 32px;
+  height: 32px;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 0 auto 0.75rem;
-}
-
-.modal-icon-svg {
-  width: 22px;
-  height: 22px;
-  color: #16a34a;
-}
-
-.modal-title {
-  font-size: 1rem;
-  font-weight: 700;
-  color: #1e3a2f;
-  margin: 0 0 0.35rem;
-}
-
-.modal-subtitle {
-  font-size: 0.7rem;
+  background: #f1f5f9;
+  border: none;
+  border-radius: 8px;
   color: #64748b;
-  margin: 0;
-  line-height: 1.4;
-}
-
-.modal-close {
-  position: absolute;
-  top: 0.75rem;
-  right: 0.75rem;
-  background: rgba(239, 68, 68, 0.1);
-  border: 1px solid rgba(239, 68, 68, 0.3);
-  border-radius: 6px;
-  padding: 0.35rem;
   cursor: pointer;
-  transition: all 0.3s ease;
-  color: #ef4444;
+  transition: all 0.15s ease;
+}
+.nuevo-modal-close:hover {
+  background: #fee2e2;
+  color: #dc2626;
 }
 
-.modal-close:hover {
-  background: rgba(239, 68, 68, 0.2);
-  border-color: rgba(239, 68, 68, 0.5);
+/* Contenido con scroll */
+.nuevo-modal-content {
+  max-height: 90vh;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
-.close-icon {
-  width: 14px;
-  height: 14px;
-}
-
-/* ========== MODAL FORM ========== */
-.modal-form {
-  padding: 1rem;
-}
-
-.form-group {
-  margin-bottom: 0.9rem;
-}
-
-.form-label {
+/* Header */
+.nuevo-modal-header {
   display: flex;
   align-items: center;
-  gap: 0.35rem;
-  font-size: 0.7rem;
-  font-weight: 600;
-  color: #1e3a2f;
-  margin-bottom: 0.35rem;
+  gap: 12px;
+  padding: 20px 24px;
+  background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+  border-bottom: 1px solid #bbf7d0;
 }
 
-.label-icon {
-  width: 13px;
-  height: 13px;
-  color: #16a34a;
+.nuevo-modal-icon {
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
+  border-radius: 12px;
+  color: white;
+  flex-shrink: 0;
 }
 
-.form-input,
-.form-select {
-  width: 100%;
-  background: rgba(255, 255, 255, 0.9);
-  border: 1px solid rgba(22, 163, 74, 0.3);
-  border-radius: 8px;
-  padding: 0.55rem 0.75rem;
-  color: #1e3a2f;
+.nuevo-modal-titles {
+  flex: 1;
+  min-width: 0;
+}
+.nuevo-modal-titles h2 {
+  margin: 0;
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: #15803d;
+  line-height: 1.3;
+}
+.nuevo-modal-titles span {
+  display: block;
   font-size: 0.75rem;
-  transition: all 0.3s ease;
+  color: #4ade80;
+  margin-top: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Formulario */
+.nuevo-modal-form {
+  padding: 20px 24px 24px;
+}
+
+/* Campos individuales */
+.campo {
+  margin-bottom: 14px;
+}
+.campo label {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 6px;
+}
+.campo .req {
+  color: #ef4444;
+}
+.campo input,
+.campo select {
+  width: 100%;
+  height: 42px;
+  padding: 0 12px;
+  background: #f9fafb;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  color: #1f2937;
+  transition: all 0.15s ease;
   box-sizing: border-box;
 }
-
-.form-input::placeholder {
-  color: #64748b;
+.campo input::placeholder {
+  color: #9ca3af;
 }
-
-.form-input:focus,
-.form-select:focus {
+.campo input:focus,
+.campo select:focus {
   outline: none;
+  background: #fff;
   border-color: #16a34a;
-  background: white;
-  box-shadow: 0 0 0 2px rgba(22, 163, 74, 0.15);
+  box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.1);
 }
-
-.form-select {
-  cursor: pointer;
+.campo select {
   appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2394a3b8'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+  cursor: pointer;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='%236b7280'%3E%3Cpath fill-rule='evenodd' d='M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z' clip-rule='evenodd'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
-  background-position: right 0.6rem center;
-  background-size: 0.85rem;
-  padding-right: 2rem;
+  background-position: right 10px center;
+  background-size: 16px;
+  padding-right: 36px;
 }
 
-.form-select option {
-  background: white;
-  color: #1e3a2f;
+/* Campos en fila (2 columnas) */
+.campos-row {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-bottom: 14px;
 }
 
-.password-wrapper {
+/* Input password */
+.input-password {
   position: relative;
 }
-
-.toggle-password {
+.input-password input {
+  padding-right: 40px;
+}
+.btn-eye {
   position: absolute;
-  right: 0.6rem;
+  right: 10px;
   top: 50%;
   transform: translateY(-50%);
   background: none;
   border: none;
+  color: #9ca3af;
   cursor: pointer;
-  color: #94a3b8;
-  padding: 0.2rem;
-  transition: color 0.3s ease;
-}
-
-.toggle-password:hover {
-  color: #10b981;
-}
-
-.eye-icon {
-  width: 14px;
-  height: 14px;
-}
-
-.field-hint {
-  display: block;
-  font-size: 0.6rem;
-  color: #64748b;
-  margin-top: 0.25rem;
-  font-style: italic;
-}
-
-.required-mark {
-  color: #ef4444;
-  font-weight: bold;
-}
-
-/* ========== FORM ACTIONS ========== */
-.form-actions {
-  display: flex;
-  gap: 0.75rem;
-  margin-top: 1rem;
-}
-
-.btn-cancelar,
-.btn-crear {
-  flex: 1;
-  padding: 0.55rem 1rem;
-  border-radius: 8px;
-  font-size: 0.7rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
+  padding: 4px;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.35rem;
+}
+.btn-eye:hover {
+  color: #16a34a;
 }
 
-.btn-cancelar {
-  background: rgba(148, 163, 184, 0.1);
-  border: 1px solid rgba(148, 163, 184, 0.3);
-  color: #94a3b8;
+/* Botones de acción */
+.nuevo-modal-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid #f3f4f6;
 }
 
-.btn-cancelar:hover {
-  background: rgba(148, 163, 184, 0.2);
-  border-color: rgba(148, 163, 184, 0.5);
+.btn-cancel,
+.btn-submit {
+  flex: 1;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.15s ease;
 }
 
-.btn-crear {
-  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+.btn-cancel {
+  background: #f3f4f6;
+  border: 1px solid #e5e7eb;
+  color: #6b7280;
+}
+.btn-cancel:hover {
+  background: #e5e7eb;
+}
+
+.btn-submit {
+  background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
   border: none;
   color: white;
-  box-shadow: 0 3px 12px rgba(16, 185, 129, 0.3);
+  box-shadow: 0 4px 12px rgba(22, 163, 74, 0.3);
 }
-
-.btn-crear:hover:not(:disabled) {
-  transform: translateY(-2px);
-  box-shadow: 0 5px 16px rgba(16, 185, 129, 0.4);
+.btn-submit:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(22, 163, 74, 0.4);
 }
-
-.btn-crear:disabled {
-  opacity: 0.7;
+.btn-submit:disabled {
+  opacity: 0.6;
   cursor: not-allowed;
   transform: none;
 }
 
-.spinner {
-  width: 14px;
-  height: 14px;
+.spinning {
   animation: spin 1s linear infinite;
 }
-
 @keyframes spin {
-  from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
 }
 
-/* ========== RESPONSIVE MODAL ========== */
-@media (max-width: 480px) {
-  .modal-crear-usuario {
+/* ===== RESPONSIVE ===== */
+@media (max-width: 540px) {
+  .nuevo-modal-overlay {
+    padding: 1rem;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .nuevo-modal {
     max-height: 90vh;
-    border-radius: 12px;
+    margin: auto;
   }
-
-  .modal-header {
-    padding: 0.85rem 0.85rem 0.6rem;
+  
+  .nuevo-modal-header {
+    padding: 16px 20px;
   }
-
-  .modal-icon {
+  
+  .nuevo-modal-icon {
     width: 40px;
     height: 40px;
   }
-
-  .modal-icon-svg {
-    width: 18px;
-    height: 18px;
+  
+  .nuevo-modal-titles h2 {
+    font-size: 1rem;
   }
-
-  .modal-title {
-    font-size: 0.9rem;
+  
+  .nuevo-modal-form {
+    padding: 16px 20px 20px;
   }
-
-  .modal-subtitle {
-    font-size: 0.65rem;
+  
+  .campos-row {
+    grid-template-columns: 1fr;
+    gap: 0;
+    margin-bottom: 0;
   }
-
-  .modal-form {
-    padding: 0.85rem;
+  
+  .campos-row .campo {
+    margin-bottom: 14px;
   }
-
-  .form-actions {
-    flex-direction: column;
+  
+  .campo input,
+  .campo select {
+    height: 46px;
+    font-size: 16px; /* Previene zoom iOS */
   }
 }
 
-/* ========== MODAL OVERLAY ========== */
+@media (max-width: 380px) {
+  .nuevo-modal-overlay {
+    padding: 0.75rem;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .nuevo-modal {
+    margin: auto;
+  }
+  
+  .nuevo-modal-header {
+    padding: 14px 16px;
+  }
+  
+  .nuevo-modal-icon {
+    width: 36px;
+    height: 36px;
+  }
+  
+  .nuevo-modal-form {
+    padding: 14px 16px 18px;
+  }
+  
+  .campo {
+    margin-bottom: 12px;
+  }
+  
+  .nuevo-modal-actions {
+    flex-direction: column;
+    gap: 8px;
+  }
+}
+
+/* Landscape móviles */
+@media (max-height: 500px) and (orientation: landscape) {
+  .nuevo-modal-overlay {
+    padding: 0.5rem;
+  }
+  
+  .nuevo-modal {
+    max-width: 600px;
+    max-height: 95vh;
+  }
+  
+  .nuevo-modal-header {
+    padding: 12px 20px;
+  }
+  
+  .nuevo-modal-icon {
+    width: 36px;
+    height: 36px;
+  }
+  
+  .nuevo-modal-titles h2 {
+    font-size: 0.95rem;
+  }
+  
+  .nuevo-modal-titles span {
+    display: none;
+  }
+  
+  .nuevo-modal-form {
+    padding: 12px 20px 16px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px 16px;
+  }
+  
+  .campo {
+    margin-bottom: 0;
+  }
+  
+  .campos-row {
+    display: contents;
+  }
+  
+  .campos-row .campo {
+    margin-bottom: 0;
+  }
+  
+  .nuevo-modal-actions {
+    grid-column: span 2;
+    margin-top: 12px;
+    padding-top: 12px;
+    flex-direction: row;
+  }
+}
+
+/* ========== MODAL EDICION (existente) ========== */
 .modal-overlay {
   position: fixed;
   inset: 0;
@@ -2591,7 +2659,7 @@ onMounted(async () => {
   }
 }
 
-.modal-header {
+.modal-edicion .modal-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -2601,7 +2669,7 @@ onMounted(async () => {
   border-radius: 16px 16px 0 0;
 }
 
-.modal-title {
+.modal-edicion .modal-title {
   font-size: 1.3rem;
   font-weight: 700;
   color: #15803d;
