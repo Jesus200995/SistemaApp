@@ -3,35 +3,32 @@
     <!-- Menú hamburguesa global -->
     <HamburgerMenu :pendingCount="solicitudesPendientes" />
 
-    <!-- Header moderno -->
+    <!-- Header moderno con efecto vidrio líquido -->
     <header class="dashboard-header">
       <div class="header-content">
         <div class="logo-section">
           <div class="logo-icon">
-            <!-- Icono SVG personalizado: Carpeta con ubicación -->
-            <svg viewBox="0 0 64 64" width="48" height="48" class="custom-logo-svg" xmlns="http://www.w3.org/2000/svg">
-              <!-- Carpeta outline -->
-              <g id="folder">
-                <!-- Línea superior de la carpeta (pestaña) -->
-                <path d="M 12 16 L 24 10 L 48 10 L 48 16" 
-                      stroke="white" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-                <!-- Cuerpo de la carpeta -->
-                <rect x="8" y="16" width="48" height="28" rx="3" 
-                      stroke="white" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+            <!-- Icono SVG: Flor girando -->
+            <svg viewBox="0 0 64 64" width="48" height="48" class="flower-logo-svg" xmlns="http://www.w3.org/2000/svg">
+              <!-- Pétalos de la flor -->
+              <g class="flower-petals">
+                <!-- Pétalo 1 (arriba) -->
+                <ellipse cx="32" cy="16" rx="8" ry="12" fill="#16a34a" opacity="0.9"/>
+                <!-- Pétalo 2 (arriba-derecha) -->
+                <ellipse cx="32" cy="16" rx="8" ry="12" fill="#22c55e" opacity="0.85" transform="rotate(60 32 32)"/>
+                <!-- Pétalo 3 (abajo-derecha) -->
+                <ellipse cx="32" cy="16" rx="8" ry="12" fill="#16a34a" opacity="0.9" transform="rotate(120 32 32)"/>
+                <!-- Pétalo 4 (abajo) -->
+                <ellipse cx="32" cy="16" rx="8" ry="12" fill="#22c55e" opacity="0.85" transform="rotate(180 32 32)"/>
+                <!-- Pétalo 5 (abajo-izquierda) -->
+                <ellipse cx="32" cy="16" rx="8" ry="12" fill="#16a34a" opacity="0.9" transform="rotate(240 32 32)"/>
+                <!-- Pétalo 6 (arriba-izquierda) -->
+                <ellipse cx="32" cy="16" rx="8" ry="12" fill="#22c55e" opacity="0.85" transform="rotate(300 32 32)"/>
               </g>
-              
-              <!-- Pin de ubicación en el centro con outline -->
-              <g transform="translate(32, 32)">
-                <!-- Pin shape outline -->
-                <path d="M 0 -8 C -4.4 -8 -8 -4.4 -8 0 C -8 4 -3.6 8 0 13 C 3.6 8 8 4 8 0 C 8 -4.4 4.4 -8 0 -8 Z" 
-                      stroke="#10b981" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-                <!-- Círculo en la punta del pin -->
-                <circle cx="0" cy="0" r="2.5" fill="#10b981" stroke="none"/>
-              </g>
-              
-              <!-- Pequeños detalles de líneas dentro de la carpeta -->
-              <line x1="16" y1="26" x2="48" y2="26" stroke="white" stroke-width="1.5" opacity="0.4" stroke-linecap="round"/>
-              <line x1="16" y1="34" x2="40" y2="34" stroke="white" stroke-width="1.5" opacity="0.4" stroke-linecap="round"/>
+              <!-- Centro de la flor -->
+              <circle cx="32" cy="32" r="8" fill="#15803d"/>
+              <circle cx="32" cy="32" r="5" fill="#facc15"/>
+              <circle cx="32" cy="32" r="2.5" fill="#eab308"/>
             </svg>
           </div>
           <div class="logo-text">
@@ -567,47 +564,104 @@ const getUsuariosDesc = (): string => {
   left: 0;
   right: 0;
   z-index: 100;
-  backdrop-filter: blur(12px);
-  background: rgba(255, 255, 255, 0.9);
-  border-bottom: 1px solid rgba(22, 163, 74, 0.15);
+  backdrop-filter: blur(16px) saturate(180%);
+  background: linear-gradient(
+    135deg,
+    rgba(134, 239, 172, 0.35) 0%,
+    rgba(187, 247, 208, 0.4) 25%,
+    rgba(255, 255, 255, 0.5) 50%,
+    rgba(187, 247, 208, 0.4) 75%,
+    rgba(134, 239, 172, 0.35) 100%
+  );
+  border-bottom: 1px solid rgba(22, 163, 74, 0.25);
   padding: 0;
-  box-shadow: 0 4px 20px rgba(22, 163, 74, 0.1);
+  box-shadow: 
+    0 4px 24px rgba(22, 163, 74, 0.15),
+    0 1px 3px rgba(22, 163, 74, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.6),
+    inset 0 -1px 0 rgba(22, 163, 74, 0.1);
   width: 100%;
   height: 52px;
   box-sizing: border-box;
+  /* Efecto de brillo líquido que se mueve */
+  overflow: hidden;
+}
+
+.dashboard-header::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 200%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.4) 25%,
+    rgba(134, 239, 172, 0.3) 50%,
+    rgba(255, 255, 255, 0.4) 75%,
+    transparent 100%
+  );
+  animation: liquidShine 4s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes liquidShine {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(50%); }
 }
 
 .header-content {
   max-width: 100%;
   margin: 0;
-  padding: 0;
+  padding: 0 0.5rem;
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
   align-items: center;
   gap: 0.5rem;
   width: 100%;
   height: 52px;
   box-sizing: border-box;
+  position: relative;
+  z-index: 1;
 }
 
 .logo-section {
   display: flex;
   align-items: center;
-  gap: 0.65rem;
+  justify-content: flex-start;
+  gap: 0.5rem;
   min-width: 0;
-  padding-left: 0.4rem;
+  padding-left: 0.3rem;
 }
 
 .logo-icon {
-  width: 42px;
-  height: 42px;
+  width: 38px;
+  height: 38px;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
   position: relative;
-  padding: 2px;
+  padding: 0;
   margin: 0;
+}
+
+/* Flor girando */
+.flower-logo-svg {
+  width: 36px;
+  height: 36px;
+  filter: drop-shadow(0 2px 6px rgba(22, 163, 74, 0.4));
+}
+
+.flower-logo-svg .flower-petals {
+  transform-origin: 32px 32px;
+  animation: flowerSpin 8s linear infinite;
+}
+
+@keyframes flowerSpin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }
 
 .custom-logo-svg {
@@ -620,21 +674,30 @@ const getUsuariosDesc = (): string => {
   font-size: 1rem;
   font-weight: 600;
   letter-spacing: -0.5px;
-  color: #15803d;
   margin: 0;
   font-family: 'Segoe UI', 'Trebuchet MS', sans-serif;
-  text-shadow: none;
+  /* Efecto de brillo blanco pasando letra por letra */
+  background: linear-gradient(
+    90deg,
+    #15803d 0%,
+    #15803d 40%,
+    #ffffff 50%,
+    #15803d 60%,
+    #15803d 100%
+  );
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: textShine 3s linear infinite;
 }
 
-@keyframes gradient-flow {
+@keyframes textShine {
   0% {
-    background-position: 0% center;
-  }
-  50% {
     background-position: 100% center;
   }
   100% {
-    background-position: 0% center;
+    background-position: -100% center;
   }
 }
 
