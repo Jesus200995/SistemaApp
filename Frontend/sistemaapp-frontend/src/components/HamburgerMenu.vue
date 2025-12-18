@@ -168,14 +168,14 @@ const formatRole = (role: string): string => {
 /* ========== HAMBURGER BUTTON ========== */
 .hamburger-btn {
   position: fixed;
-  top: 12px;
-  right: 16px;
+  top: 9px;
+  right: 14px;
   z-index: 1001;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 40px;
-  height: 40px;
+  width: 36px;
+  height: 36px;
   background: rgba(255, 255, 255, 0.95);
   border: 1.5px solid rgba(22, 163, 74, 0.4);
   border-radius: 50%;
@@ -231,6 +231,7 @@ const formatRole = (role: string): string => {
   width: 280px;
   max-width: 85vw;
   height: 100vh;
+  height: 100dvh; /* Dynamic viewport height para móviles */
   background: linear-gradient(
     135deg,
     rgba(255, 255, 255, 0.98) 0%,
@@ -439,6 +440,7 @@ const formatRole = (role: string): string => {
   justify-content: center;
   gap: 0.65rem;
   margin: 0.75rem;
+  margin-top: auto;
   padding: 0.75rem;
   background: rgba(239, 68, 68, 0.1);
   border: 1px solid rgba(239, 68, 68, 0.25);
@@ -450,6 +452,7 @@ const formatRole = (role: string): string => {
   transition: all 0.3s ease;
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
+  flex-shrink: 0;
 }
 
 .menu-logout-btn:hover {
@@ -464,31 +467,426 @@ const formatRole = (role: string): string => {
   transform: translateY(0);
 }
 
-/* ========== RESPONSIVE ========== */
+/* ========== RESPONSIVE - PANTALLAS GRANDES (PC) ========== */
+@media (min-width: 1024px) {
+  .hamburger-btn {
+    top: 10px;
+    right: 16px;
+    width: 38px;
+    height: 38px;
+  }
+
+  .hamburger-menu {
+    width: 320px;
+    max-width: 320px;
+  }
+
+  .menu-header {
+    padding: 1rem 0.9rem;
+    padding-top: 1.25rem;
+  }
+
+  .menu-avatar {
+    width: 46px;
+    height: 46px;
+    font-size: 1rem;
+  }
+
+  .menu-user-name {
+    font-size: 0.95rem;
+  }
+
+  .menu-user-role {
+    font-size: 0.7rem;
+  }
+
+  .menu-user-info {
+    gap: 0.85rem;
+  }
+
+  .menu-item {
+    padding: 0.7rem 0.85rem;
+    gap: 0.7rem;
+    margin: 0.1rem 0.4rem;
+  }
+
+  .menu-item-text {
+    font-size: 0.85rem;
+  }
+
+  .menu-item-icon {
+    width: 18px;
+    height: 18px;
+  }
+
+  .menu-logout-btn {
+    margin: 0.75rem;
+    padding: 0.7rem;
+    font-size: 0.85rem;
+  }
+}
+
+/* ========== RESPONSIVE - PANTALLAS MUY GRANDES (PC ESCRITORIO) ========== */
+@media (min-width: 1200px) {
+  .hamburger-btn {
+    top: 10px;
+    right: 18px;
+    width: 38px;
+    height: 38px;
+  }
+
+  .hamburger-menu {
+    width: 340px;
+    max-width: 340px;
+  }
+}
+
+/* ========== RESPONSIVE - TABLETS ========== */
+@media (max-width: 768px) {
+  .hamburger-btn {
+    top: 9px;
+    right: 10px;
+    width: 38px;
+    height: 38px;
+  }
+
+  .hamburger-menu {
+    width: 300px;
+    max-width: 80vw;
+  }
+
+  .menu-header {
+    padding: 1rem 0.9rem;
+    padding-top: 1.25rem;
+  }
+
+  .menu-avatar {
+    width: 44px;
+    height: 44px;
+    font-size: 1rem;
+  }
+
+  .menu-user-name {
+    font-size: 0.95rem;
+  }
+
+  .menu-user-role {
+    font-size: 0.7rem;
+  }
+
+  .menu-item {
+    padding: 0.65rem 0.9rem;
+    gap: 0.7rem;
+  }
+
+  .menu-item-text {
+    font-size: 0.85rem;
+  }
+
+  .menu-item-icon {
+    width: 18px;
+    height: 18px;
+  }
+
+  .menu-logout-btn {
+    margin: 0.65rem;
+    padding: 0.65rem;
+    font-size: 0.85rem;
+  }
+}
+
+/* ========== RESPONSIVE - MÓVILES ========== */
 @media (max-width: 480px) {
   .hamburger-btn {
-    top: 12px;
-    right: 10px;
-    width: 36px;
-    height: 36px;
+    top: 8px;
+    right: 8px;
+    width: 34px;
+    height: 34px;
   }
 
   .hamburger-menu {
     width: 100%;
     max-width: 100%;
+    height: 100vh;
+    height: 100dvh;
   }
-  
+
   .menu-header {
-    padding: 1rem 0.85rem;
+    padding: 0.85rem 0.75rem;
+    padding-top: 1rem;
   }
-  
+
   .menu-avatar {
+    width: 40px;
+    height: 40px;
+    font-size: 0.95rem;
+  }
+
+  .menu-user-name {
+    font-size: 0.9rem;
+  }
+
+  .menu-user-role {
+    font-size: 0.65rem;
+  }
+
+  .menu-list {
+    padding: 0.4rem 0;
+    flex: 1;
+    overflow-y: auto;
+  }
+
+  .menu-item {
+    padding: 0.6rem 0.75rem;
+    gap: 0.6rem;
+    margin: 0.1rem 0.4rem;
+  }
+
+  .menu-item-text {
+    font-size: 0.8rem;
+  }
+
+  .menu-item-icon {
+    width: 17px;
+    height: 17px;
+  }
+
+  .menu-item-arrow {
+    width: 16px;
+    height: 16px;
+  }
+
+  .menu-badge {
+    font-size: 0.6rem;
+    padding: 0.1rem 0.35rem;
+    min-width: 16px;
+  }
+
+  .menu-divider {
+    margin: 0.4rem 0.75rem;
+  }
+
+  .menu-logout-btn {
+    margin: 0.5rem;
+    padding: 0.6rem;
+    font-size: 0.8rem;
+    gap: 0.5rem;
+    border-radius: 8px;
+  }
+}
+
+/* ========== RESPONSIVE - MÓVILES MUY PEQUEÑOS ========== */
+@media (max-width: 360px) {
+  .hamburger-btn {
+    top: 7px;
+    right: 6px;
+    width: 32px;
+    height: 32px;
+  }
+
+  .hamburger-menu {
+    width: 100%;
+  }
+
+  .menu-header {
+    padding: 0.7rem 0.6rem;
+    padding-top: 0.85rem;
+  }
+
+  .menu-avatar {
+    width: 36px;
+    height: 36px;
+    font-size: 0.85rem;
+  }
+
+  .menu-user-name {
+    font-size: 0.8rem;
+  }
+
+  .menu-user-role {
+    font-size: 0.6rem;
+  }
+
+  .menu-user-info {
+    gap: 0.6rem;
+  }
+
+  .menu-item {
+    padding: 0.5rem 0.6rem;
+    gap: 0.5rem;
+    margin: 0.08rem 0.35rem;
+  }
+
+  .menu-item-text {
+    font-size: 0.75rem;
+  }
+
+  .menu-item-icon {
+    width: 16px;
+    height: 16px;
+  }
+
+  .menu-item-arrow {
+    width: 14px;
+    height: 14px;
+  }
+
+  .menu-badge {
+    font-size: 0.55rem;
+    padding: 0.08rem 0.3rem;
+    min-width: 14px;
+  }
+
+  .menu-divider {
+    margin: 0.35rem 0.6rem;
+  }
+
+  .menu-logout-btn {
+    margin: 0.4rem;
+    padding: 0.5rem;
+    font-size: 0.75rem;
+    gap: 0.4rem;
+  }
+}
+
+/* ========== LANDSCAPE MOBILE ========== */
+@media (max-height: 500px) and (orientation: landscape) {
+  .hamburger-btn {
+    top: 6px;
+    right: 8px;
+    width: 32px;
+    height: 32px;
+  }
+
+  .hamburger-menu {
+    width: 280px;
+    max-width: 50vw;
+    height: 100vh;
+    height: 100dvh;
+  }
+
+  .menu-header {
+    padding: 0.5rem 0.6rem;
+    padding-top: 0.6rem;
+  }
+
+  .menu-header::before {
+    height: 2px;
+  }
+
+  .menu-avatar {
+    width: 32px;
+    height: 32px;
+    font-size: 0.75rem;
+  }
+
+  .menu-user-name {
+    font-size: 0.75rem;
+  }
+
+  .menu-user-role {
+    font-size: 0.55rem;
+  }
+
+  .menu-user-info {
+    gap: 0.5rem;
+  }
+
+  .menu-list {
+    padding: 0.25rem 0;
+    flex: 1;
+    overflow-y: auto;
+  }
+
+  .menu-item {
+    padding: 0.35rem 0.5rem;
+    gap: 0.4rem;
+    margin: 0.05rem 0.3rem;
+    border-radius: 6px;
+  }
+
+  .menu-item-text {
+    font-size: 0.65rem;
+  }
+
+  .menu-item-icon {
+    width: 14px;
+    height: 14px;
+  }
+
+  .menu-item-arrow {
+    width: 12px;
+    height: 12px;
+  }
+
+  .menu-badge {
+    font-size: 0.5rem;
+    padding: 0.05rem 0.25rem;
+    min-width: 12px;
+  }
+
+  .menu-divider {
+    margin: 0.25rem 0.5rem;
+  }
+
+  .menu-logout-btn {
+    margin: 0.3rem;
+    padding: 0.35rem;
+    font-size: 0.65rem;
+    gap: 0.3rem;
+    border-radius: 6px;
+  }
+}
+
+/* ========== PANTALLAS GRANDES ========== */
+@media (min-width: 1024px) {
+  .hamburger-btn {
+    top: 10px;
+    right: 20px;
     width: 42px;
     height: 42px;
-    font-size: 1rem;
   }
-  
+
+  .hamburger-menu {
+    width: 320px;
+    max-width: 320px;
+  }
+
+  .menu-header {
+    padding: 1.5rem 1.25rem;
+  }
+
+  .menu-avatar {
+    width: 52px;
+    height: 52px;
+    font-size: 1.15rem;
+  }
+
   .menu-user-name {
+    font-size: 1.05rem;
+  }
+
+  .menu-user-role {
+    font-size: 0.8rem;
+  }
+
+  .menu-item {
+    padding: 0.85rem 1.1rem;
+    gap: 0.9rem;
+  }
+
+  .menu-item-text {
+    font-size: 0.95rem;
+  }
+
+  .menu-item-icon {
+    width: 22px;
+    height: 22px;
+  }
+
+  .menu-logout-btn {
+    margin: 1rem;
+    padding: 0.85rem;
     font-size: 0.95rem;
   }
 }

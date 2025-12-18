@@ -550,7 +550,7 @@ const getUsuariosDesc = (): string => {
   overflow-y: auto;
   overflow-x: hidden;
   -webkit-overflow-scrolling: touch;
-  padding-top: 52px;
+  padding-top: 54px;
   box-sizing: border-box;
   position: relative;
   height: 100vh;
@@ -581,7 +581,7 @@ const getUsuariosDesc = (): string => {
     inset 0 1px 0 rgba(255, 255, 255, 0.6),
     inset 0 -1px 0 rgba(22, 163, 74, 0.1);
   width: 100%;
-  height: 52px;
+  height: 54px;
   box-sizing: border-box;
   /* Efecto de brillo líquido que se mueve */
   overflow: hidden;
@@ -614,13 +614,14 @@ const getUsuariosDesc = (): string => {
 .header-content {
   max-width: 100%;
   margin: 0;
-  padding: 0 0.5rem;
+  padding: 0 0.85rem;
+  padding-right: 60px; /* Espacio para el menú hamburguesa */
   display: flex;
   justify-content: flex-start;
   align-items: center;
   gap: 0.5rem;
   width: 100%;
-  height: 52px;
+  height: 54px;
   box-sizing: border-box;
   position: relative;
   z-index: 1;
@@ -630,14 +631,14 @@ const getUsuariosDesc = (): string => {
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  gap: 0.5rem;
+  gap: 0.6rem;
   min-width: 0;
-  padding-left: 0.3rem;
+  padding-left: 0.5rem;
 }
 
 .logo-icon {
-  width: 38px;
-  height: 38px;
+  width: 40px;
+  height: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -767,7 +768,59 @@ const getUsuariosDesc = (): string => {
   font-size: 0.7rem;
 }
 
+/* ========== RESPONSIVE - PANTALLAS GRANDES (PC) ========== */
+@media (min-width: 1200px) {
+  .dashboard-container {
+    padding-top: 56px;
+  }
+
+  .dashboard-header {
+    height: 56px;
+  }
+
+  .header-content {
+    height: 56px;
+    padding-right: 65px;
+  }
+
+  .logo-icon {
+    width: 42px;
+    height: 42px;
+  }
+
+  .flower-logo-svg {
+    width: 38px;
+    height: 38px;
+  }
+
+  .logo-text h1 {
+    font-size: 1.1rem;
+  }
+
+  .logo-text p {
+    font-size: 0.6rem;
+  }
+
+  .logo-section {
+    gap: 0.55rem;
+  }
+}
+
 @media (max-width: 768px) {
+  .dashboard-container {
+    padding-top: 56px;
+  }
+
+  .dashboard-header {
+    height: 56px;
+  }
+
+  .header-content {
+    height: 56px;
+    padding: 0 0.75rem;
+    padding-right: 55px;
+  }
+
   .logout-text {
     display: none;
   }
@@ -777,12 +830,106 @@ const getUsuariosDesc = (): string => {
   }
 
   .logo-icon {
-    width: 40px;
-    height: 40px;
+    width: 42px;
+    height: 42px;
+  }
+
+  .flower-logo-svg {
+    width: 38px;
+    height: 38px;
   }
 
   .logo-text h1 {
-    font-size: 1.25rem;
+    font-size: 1.1rem;
+  }
+
+  .logo-text p {
+    font-size: 0.6rem;
+  }
+
+  .logo-section {
+    gap: 0.5rem;
+    padding-left: 0.25rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .dashboard-container {
+    padding-top: 50px;
+  }
+
+  .dashboard-header {
+    height: 50px;
+  }
+
+  .header-content {
+    height: 50px;
+    padding: 0 0.5rem;
+    padding-right: 48px;
+  }
+
+  .logo-icon {
+    width: 36px;
+    height: 36px;
+  }
+
+  .flower-logo-svg {
+    width: 32px;
+    height: 32px;
+  }
+
+  .logo-text h1 {
+    font-size: 0.95rem;
+  }
+
+  .logo-text p {
+    font-size: 0.55rem;
+  }
+
+  .logo-section {
+    gap: 0.4rem;
+    padding-left: 0.15rem;
+  }
+}
+
+@media (max-width: 360px) {
+  .dashboard-container {
+    padding-top: 46px;
+  }
+
+  .dashboard-header {
+    height: 46px;
+  }
+
+  .header-content {
+    height: 46px;
+    padding: 0 0.35rem;
+    padding-right: 42px;
+  }
+
+  .logo-icon {
+    width: 32px;
+    height: 32px;
+  }
+
+  .flower-logo-svg {
+    width: 28px;
+    height: 28px;
+  }
+
+  .logo-text h1 {
+    font-size: 0.85rem;
+    letter-spacing: -0.3px;
+  }
+
+  .logo-text p {
+    font-size: 0.5rem;
+    letter-spacing: 0.02em;
+  }
+
+  .logo-section {
+    gap: 0.3rem;
+    padding-left: 0.1rem;
   }
 }
 
@@ -2690,11 +2837,17 @@ const getUsuariosDesc = (): string => {
   .header-content {
     height: 44px;
     padding: 0 0.4rem;
+    padding-right: 44px;
   }
 
   .logo-icon {
     width: 32px;
     height: 32px;
+  }
+
+  .flower-logo-svg {
+    width: 28px;
+    height: 28px;
   }
 
   .custom-logo-svg {
@@ -2708,6 +2861,11 @@ const getUsuariosDesc = (): string => {
 
   .logo-text p {
     font-size: 0.45rem;
+  }
+
+  .logo-section {
+    gap: 0.3rem;
+    padding-left: 0.1rem;
   }
 
   .dashboard-content {
