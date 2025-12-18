@@ -192,11 +192,6 @@
         </section>
       </div>
     </main>
-
-    <!-- Pie de página -->
-    <footer class="estadisticas-footer">
-      <p>© 2025 <span class="footer-highlight">SistemaApp</span>. Reportes actualizados en tiempo real.</p>
-    </footer>
   </div>
 </template>
 
@@ -598,14 +593,14 @@ onMounted(() => {
 .estadisticas-main {
   position: relative;
   z-index: 5;
-  padding: 2rem 1rem;
+  padding: 1rem;
   max-width: 1200px;
   margin: 0 auto;
 }
 
 .estadisticas-content {
   display: grid;
-  gap: 2rem;
+  gap: 1rem;
 }
 
 /* ========== STATS SECTION ========== */
@@ -622,13 +617,13 @@ onMounted(() => {
 .stat-card {
   background: rgba(255, 255, 255, 0.9);
   border: 1px solid rgba(22, 163, 74, 0.15);
-  border-radius: 16px;
-  padding: 1rem 0.9rem;
+  border-radius: 12px;
+  padding: 0.85rem 0.75rem;
   backdrop-filter: blur(10px);
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.6rem;
+  gap: 0.5rem;
   transition: all 0.3s ease;
 }
 
@@ -640,9 +635,9 @@ onMounted(() => {
 }
 
 .stat-icon-wrapper {
-  width: 36px;
-  height: 36px;
-  border-radius: 12px;
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -650,8 +645,8 @@ onMounted(() => {
 }
 
 .stat-icon {
-  width: 24px;
-  height: 24px;
+  width: 18px;
+  height: 18px;
   color: #16a34a;
   stroke-width: 2;
 }
@@ -673,46 +668,51 @@ onMounted(() => {
 
 .stat-content {
   flex: 1;
+  text-align: center;
 }
 
 .stat-label {
-  font-size: 0.7rem;
+  font-size: 0.65rem;
   color: #64748b;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   margin: 0;
+  line-height: 1.2;
+  text-align: center;
 }
 
 .stat-value {
-  font-size: 1.5rem;
+  font-size: 1.25rem;
   font-weight: 700;
   color: #1e3a2f;
   margin: 0;
+  line-height: 1.1;
+  text-align: center;
 }
 
 .stat-change {
-  font-size: 0.65rem;
+  font-size: 0.6rem;
   margin: 0;
 }
 
 .badge-success {
   display: inline-block;
-  padding: 0.2rem 0.5rem;
+  padding: 0.15rem 0.4rem;
   background: rgba(22, 163, 74, 0.15);
   color: #16a34a;
-  border-radius: 20px;
+  border-radius: 12px;
   font-weight: 600;
-  font-size: 0.65rem;
+  font-size: 0.55rem;
 }
 
 .badge-info {
   display: inline-block;
-  padding: 0.2rem 0.5rem;
+  padding: 0.15rem 0.4rem;
   background: rgba(59, 130, 246, 0.2);
   color: #3b82f6;
-  border-radius: 20px;
+  border-radius: 12px;
   font-weight: 600;
-  font-size: 0.65rem;
+  font-size: 0.55rem;
 }
 
 .progress-mini {
@@ -736,14 +736,14 @@ onMounted(() => {
 .chart-section {
   background: rgba(255, 255, 255, 0.9);
   border: 1px solid rgba(22, 163, 74, 0.15);
-  border-radius: 16px;
-  padding: 2rem;
+  border-radius: 12px;
+  padding: 1rem;
   backdrop-filter: blur(10px);
 }
 
 .chart-header {
-  margin-bottom: 1.5rem;
-  padding-bottom: 1rem;
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.5rem;
   border-bottom: 1px solid rgba(22, 163, 74, 0.1);
 }
 
@@ -754,30 +754,30 @@ onMounted(() => {
 }
 
 .chart-title-icon {
-  width: 24px;
-  height: 24px;
+  width: 18px;
+  height: 18px;
   color: #16a34a;
   stroke-width: 2;
   flex-shrink: 0;
 }
 
 .chart-title {
-  font-size: 1.1rem;
+  font-size: 0.95rem;
   font-weight: 700;
   color: #1e3a2f;
-  margin: 0 0 0.25rem 0;
+  margin: 0;
 }
 
 .chart-subtitle {
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   color: #64748b;
-  margin: 0;
+  margin: 0.15rem 0 0 0;
 }
 
 .chart-container {
   position: relative;
-  height: 400px;
-  margin-bottom: 1rem;
+  height: 280px;
+  margin-bottom: 0.5rem;
 }
 
 .chart-wrapper {
@@ -787,25 +787,25 @@ onMounted(() => {
 
 .empty-chart {
   text-align: center;
-  padding: 3rem 2rem;
+  padding: 1.5rem 1rem;
 }
 
 .empty-icon {
-  width: 40px;
-  height: 40px;
+  width: 32px;
+  height: 32px;
   color: #16a34a;
   stroke-width: 2;
-  margin: 0 auto 0.75rem;
+  margin: 0 auto 0.5rem;
 }
 
 .empty-text {
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   color: #1e3a2f;
-  margin: 0 0 0.35rem 0;
+  margin: 0 0 0.25rem 0;
 }
 
 .empty-subtext {
-  font-size: 0.8rem;
+  font-size: 0.7rem;
   color: #64748b;
   margin: 0;
 }
@@ -814,14 +814,14 @@ onMounted(() => {
 .table-section {
   background: rgba(255, 255, 255, 0.9);
   border: 1px solid rgba(22, 163, 74, 0.15);
-  border-radius: 16px;
-  padding: 2rem;
+  border-radius: 12px;
+  padding: 1rem;
   backdrop-filter: blur(10px);
 }
 
 .table-header {
-  margin-bottom: 1.5rem;
-  padding-bottom: 1rem;
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.5rem;
   border-bottom: 1px solid rgba(22, 163, 74, 0.1);
 }
 
@@ -832,15 +832,15 @@ onMounted(() => {
 }
 
 .table-title-icon {
-  width: 24px;
-  height: 24px;
+  width: 18px;
+  height: 18px;
   color: #16a34a;
   stroke-width: 2;
   flex-shrink: 0;
 }
 
 .table-title {
-  font-size: 1.1rem;
+  font-size: 0.95rem;
   font-weight: 700;
   color: #1e3a2f;
   margin: 0;
@@ -863,11 +863,11 @@ onMounted(() => {
 }
 
 .cultivos-table th {
-  padding: 1rem;
+  padding: 0.6rem 0.5rem;
   text-align: left;
   color: #16a34a;
   font-weight: 600;
-  font-size: 0.9rem;
+  font-size: 0.7rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
@@ -882,52 +882,55 @@ onMounted(() => {
 }
 
 .table-row td {
-  padding: 1rem;
+  padding: 0.5rem;
   color: #374151;
+  font-size: 0.8rem;
 }
 
 .cultivo-name {
-  min-width: 150px;
+  min-width: 120px;
 }
 
 .cultivo-badge {
   display: inline-block;
-  padding: 0.4rem 0.75rem;
+  padding: 0.3rem 0.5rem;
   background: rgba(22, 163, 74, 0.1);
-  border-left: 3px solid #16a34a;
-  border-radius: 4px;
+  border-left: 2px solid #16a34a;
+  border-radius: 3px;
   color: #1e3a2f;
   font-weight: 500;
+  font-size: 0.75rem;
 }
 
 .cultivo-cantidad {
-  min-width: 100px;
+  min-width: 70px;
 }
 
 .cantidad-badge {
   display: inline-block;
-  padding: 0.4rem 0.75rem;
+  padding: 0.25rem 0.5rem;
   background: rgba(59, 130, 246, 0.15);
   color: #2563eb;
-  border-radius: 6px;
+  border-radius: 4px;
   font-weight: 600;
+  font-size: 0.75rem;
 }
 
 .cultivo-porcentaje {
-  min-width: 100px;
+  min-width: 60px;
   color: #1e3a2f;
   font-weight: 600;
 }
 
 .cultivo-bar {
-  min-width: 200px;
+  min-width: 140px;
 }
 
 .bar-container {
   width: 100%;
-  height: 24px;
+  height: 18px;
   background: rgba(22, 163, 74, 0.1);
-  border-radius: 4px;
+  border-radius: 3px;
   overflow: hidden;
 }
 
@@ -953,14 +956,14 @@ onMounted(() => {
 .summary-card {
   background: linear-gradient(135deg, rgba(22, 163, 74, 0.08), rgba(21, 128, 61, 0.04));
   border: 1px solid rgba(22, 163, 74, 0.2);
-  border-radius: 16px;
-  padding: 1.25rem;
+  border-radius: 12px;
+  padding: 0.85rem;
   backdrop-filter: blur(10px);
 }
 
 .summary-header {
-  margin-bottom: 1rem;
-  padding-bottom: 0.75rem;
+  margin-bottom: 0.5rem;
+  padding-bottom: 0.5rem;
   border-bottom: 1px solid rgba(22, 163, 74, 0.15);
 }
 
@@ -971,15 +974,15 @@ onMounted(() => {
 }
 
 .summary-title-icon {
-  width: 24px;
-  height: 24px;
+  width: 16px;
+  height: 16px;
   color: #16a34a;
   stroke-width: 2;
   flex-shrink: 0;
 }
 
 .summary-title {
-  font-size: 1rem;
+  font-size: 0.85rem;
   font-weight: 700;
   color: #1e3a2f;
   margin: 0;
@@ -987,19 +990,19 @@ onMounted(() => {
 
 .summary-content {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 0.75rem;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 0.5rem;
 }
 
 .summary-item {
   display: flex;
   align-items: flex-start;
-  gap: 0.6rem;
+  gap: 0.4rem;
 }
 
 .summary-item-icon {
-  width: 18px;
-  height: 18px;
+  width: 14px;
+  height: 14px;
   color: #16a34a;
   stroke-width: 2;
   flex-shrink: 0;
@@ -1008,8 +1011,8 @@ onMounted(() => {
 
 .summary-text {
   color: #374151;
-  line-height: 1.5;
-  font-size: 0.8rem;
+  line-height: 1.4;
+  font-size: 0.7rem;
 }
 
 .summary-text strong {
@@ -1017,28 +1020,10 @@ onMounted(() => {
   font-weight: 700;
 }
 
-/* ========== FOOTER ========== */
-.estadisticas-footer {
-  position: relative;
-  z-index: 5;
-  text-align: center;
-  padding: 1.5rem;
-  border-top: 1px solid rgba(22, 163, 74, 0.15);
-  background: rgba(255, 255, 255, 0.8);
-  backdrop-filter: blur(10px);
-  font-size: 0.9rem;
-  color: #64748b;
-}
-
-.footer-highlight {
-  color: #16a34a;
-  font-weight: 700;
-}
-
 /* ========== RESPONSIVE ========== */
 @media (max-width: 768px) {
   .header-estadisticas {
-    padding: 0.8rem 1rem;
+    padding: 0.7rem 0.8rem;
   }
 
   .header-title {
@@ -1046,7 +1031,7 @@ onMounted(() => {
   }
 
   .header-subtitle {
-    font-size: 0.6rem;
+    font-size: 0.65rem;
   }
 
   .header-icon-small {
@@ -1055,119 +1040,8 @@ onMounted(() => {
   }
 
   .icon-stat {
-    width: 18px;
-    height: 18px;
-  }
-
-  .header-subtitle {
-    font-size: 0.7rem;
-  }
-
-  .reload-button {
-    width: 36px;
-    height: 36px;
-  }
-
-  .reload-icon {
-    width: 20px;
-    height: 20px;
-  }
-
-  .estadisticas-main {
-    padding: 1.5rem 0.5rem;
-  }
-
-  .stats-grid {
-    gap: 0.8rem;
-  }
-
-  .stat-label {
-    font-size: 0.65rem;
-  }
-
-  .stat-value {
-    font-size: 1.3rem;
-  }
-
-  .stat-change {
-    font-size: 0.6rem;
-  }
-
-  .chart-section {
-    padding: 1.5rem;
-  }
-
-  .cultivos-table {
-    font-size: 0.7rem;
-  }
-
-  .cultivos-table th,
-  .cultivos-table td {
-    padding: 0.5rem 0.4rem;
-  }
-}
-
-@media (max-width: 640px) {
-  .header-title {
-    font-size: 0.8rem;
-  }
-
-  .header-subtitle {
-    font-size: 0.7rem;
-  }
-
-  .stat-label {
-    font-size: 0.6rem;
-  }
-
-  .stat-value {
-    font-size: 1.2rem;
-  }
-
-  .stat-change {
-    font-size: 0.55rem;
-  }
-
-  .stats-grid {
-    gap: 0.7rem;
-  }
-}
-
-@media (max-width: 480px) {
-  .header-estadisticas {
-    padding: 0.6rem 0.8rem;
-  }
-
-  .header-wrapper {
-    gap: 0.5rem;
-  }
-
-  .back-button {
-    width: 36px;
-    height: 36px;
-  }
-
-  .back-icon {
-    width: 18px;
-    height: 18px;
-  }
-
-  .header-icon-small {
-    width: 26px;
-    height: 26px;
-  }
-
-  .icon-stat {
     width: 16px;
     height: 16px;
-  }
-
-  .header-title {
-    font-size: 0.75rem;
-  }
-
-  .header-subtitle {
-    font-size: 0.65rem;
   }
 
   .reload-button {
@@ -1180,8 +1054,54 @@ onMounted(() => {
     height: 18px;
   }
 
-  .estadisticas-container {
-    padding: 0;
+  .estadisticas-main {
+    padding: 0.75rem 0.5rem;
+  }
+
+  .stats-grid {
+    gap: 0.6rem;
+  }
+
+  .chart-section,
+  .table-section {
+    padding: 0.75rem;
+  }
+  
+  .chart-container {
+    height: 220px;
+  }
+
+  .cultivos-table th,
+  .cultivos-table td {
+    padding: 0.4rem 0.35rem;
+  }
+  
+  .summary-content {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .header-estadisticas {
+    padding: 0.6rem 0.75rem;
+  }
+
+  .header-title {
+    font-size: 0.8rem;
+  }
+
+  .header-subtitle {
+    font-size: 0.6rem;
+  }
+  
+  .back-button {
+    width: 34px;
+    height: 34px;
+  }
+
+  .back-icon {
+    width: 16px;
+    height: 16px;
   }
 
   .stat-label {
@@ -1197,34 +1117,280 @@ onMounted(() => {
   }
 
   .stats-grid {
-    gap: 0.6rem;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.5rem;
   }
-
+  
   .stat-card {
-    padding: 0.8rem 0.7rem;
+    padding: 0.6rem 0.5rem;
+  }
+  
+  .stat-icon-wrapper {
+    width: 28px;
+    height: 28px;
+  }
+  
+  .stat-icon {
+    width: 16px;
+    height: 16px;
+  }
+  
+  .chart-container {
+    height: 180px;
+  }
+  
+  .chart-title,
+  .table-title {
+    font-size: 0.85rem;
+  }
+  
+  .summary-card {
+    padding: 0.6rem;
+  }
+  
+  .summary-content {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .header-estadisticas {
+    padding: 0.5rem 0.6rem;
   }
 
-  .stat-icon-wrapper {
+  .header-wrapper {
+    gap: 0.4rem;
+    padding-right: 50px;
+  }
+
+  .back-button {
+    width: 32px;
+    height: 32px;
+  }
+
+  .back-icon {
+    width: 14px;
+    height: 14px;
+  }
+
+  .header-icon-small {
+    width: 24px;
+    height: 24px;
+  }
+
+  .icon-stat {
+    width: 14px;
+    height: 14px;
+  }
+
+  .header-title {
+    font-size: 0.75rem;
+  }
+
+  .header-subtitle {
+    font-size: 0.55rem;
+  }
+
+  .reload-button {
     width: 30px;
     height: 30px;
   }
 
+  .reload-icon {
+    width: 16px;
+    height: 16px;
+  }
+
+  .estadisticas-main {
+    padding: 0.5rem 0.4rem;
+  }
+  
+  .estadisticas-content {
+    gap: 0.6rem;
+  }
+
+  .stat-label {
+    font-size: 0.5rem;
+  }
+
+  .stat-value {
+    font-size: 1rem;
+  }
+
+  .stat-change {
+    font-size: 0.45rem;
+  }
+  
+  .badge-success,
+  .badge-info {
+    padding: 0.1rem 0.3rem;
+    font-size: 0.45rem;
+  }
+
+  .stats-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.4rem;
+  }
+
+  .stat-card {
+    padding: 0.5rem 0.4rem;
+    border-radius: 10px;
+  }
+
+  .stat-icon-wrapper {
+    width: 24px;
+    height: 24px;
+    border-radius: 6px;
+  }
+
   .stat-icon {
-    width: 18px;
-    height: 18px;
+    width: 14px;
+    height: 14px;
   }
 
-  .chart-section {
-    padding: 1rem;
+  .chart-section,
+  .table-section {
+    padding: 0.6rem;
+    border-radius: 10px;
+  }
+  
+  .chart-container {
+    height: 160px;
+  }
+  
+  .chart-title-icon,
+  .table-title-icon {
+    width: 14px;
+    height: 14px;
+  }
+  
+  .chart-title,
+  .table-title {
+    font-size: 0.8rem;
+  }
+  
+  .chart-subtitle {
+    font-size: 0.6rem;
   }
 
-  .cultivos-table {
+  .cultivos-table th {
+    font-size: 0.55rem;
+    padding: 0.35rem 0.25rem;
+  }
+  
+  .cultivos-table td {
+    padding: 0.3rem 0.25rem;
     font-size: 0.65rem;
   }
+  
+  .cultivo-badge {
+    padding: 0.2rem 0.35rem;
+    font-size: 0.6rem;
+  }
+  
+  .cantidad-badge {
+    padding: 0.15rem 0.3rem;
+    font-size: 0.6rem;
+  }
+  
+  .cultivo-bar {
+    min-width: 80px;
+  }
+  
+  .bar-container {
+    height: 12px;
+  }
+  
+  .summary-card {
+    padding: 0.5rem;
+    border-radius: 10px;
+  }
+  
+  .summary-title {
+    font-size: 0.75rem;
+  }
+  
+  .summary-text {
+    font-size: 0.6rem;
+  }
+}
 
-  .cultivos-table th,
-  .cultivos-table td {
+/* Landscape móviles */
+@media (max-height: 500px) and (orientation: landscape) {
+  .estadisticas-main {
+    padding: 0.5rem;
+  }
+  
+  .estadisticas-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+  }
+  
+  .stats-section {
+    grid-column: span 2;
+  }
+  
+  .stats-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.4rem;
+  }
+  
+  .stat-card {
+    padding: 0.4rem;
+    flex-direction: row;
+    gap: 0.4rem;
+  }
+  
+  .stat-value {
+    font-size: 1rem;
+  }
+  
+  .chart-container {
+    height: 140px;
+  }
+  
+  .summary-section {
+    grid-column: span 2;
+  }
+  
+  .summary-content {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* Pantallas muy pequeñas */
+@media (max-width: 360px) {
+  .header-left {
+    gap: 0.3rem;
+  }
+  
+  .header-icon-small {
+    display: none;
+  }
+  
+  .header-title {
+    font-size: 0.7rem;
+  }
+  
+  .header-subtitle {
+    font-size: 0.5rem;
+  }
+  
+  .stat-card {
     padding: 0.4rem 0.3rem;
+  }
+  
+  .stat-label {
+    font-size: 0.45rem;
+  }
+  
+  .stat-value {
+    font-size: 0.9rem;
+  }
+  
+  .chart-container {
+    height: 140px;
   }
 }
 </style>
