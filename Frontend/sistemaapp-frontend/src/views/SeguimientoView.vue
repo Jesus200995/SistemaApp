@@ -1,17 +1,30 @@
 <template>
   <div class="seguimiento-container">
-    <!-- Menú hamburguesa global -->
-    <HamburgerMenu />
+    <!-- Desktop Sidebar -->
+    <DesktopSidebar />
 
-    <!-- Fondo decorativo con blobs -->
-    <div class="background-blobs">
-      <div class="blob blob-1"></div>
-      <div class="blob blob-2"></div>
-      <div class="blob blob-3"></div>
-    </div>
+    <!-- Menú hamburguesa global (solo móvil) -->
+    <HamburgerMenu class="mobile-only" />
 
-    <!-- Header con botón de regreso -->
-    <header class="header-seguimiento">
+    <!-- Main Wrapper para PC -->
+    <div class="main-wrapper">
+      <!-- Header para PC -->
+      <div class="desktop-page-header">
+        <h1 class="page-title">Seguimiento</h1>
+        <button @click="recargarSeguimientos" class="desktop-reload-button" title="Recargar">
+          <RotateCw :size="18" />
+        </button>
+      </div>
+
+      <!-- Fondo decorativo con blobs (solo móvil) -->
+      <div class="background-blobs mobile-only">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+      </div>
+
+      <!-- Header con botón de regreso (solo móvil) -->
+      <header class="header-seguimiento mobile-only">
       <div class="header-wrapper">
         <div class="header-left">
           <router-link to="/dashboard" class="back-button" title="Volver al Dashboard">
@@ -422,6 +435,7 @@
         </div>
       </Transition>
     </Teleport>
+    </div> <!-- Cierre main-wrapper -->
   </div>
 </template>
 
@@ -431,6 +445,7 @@ import type { Ref } from 'vue'
 import { useAuthStore } from '../stores/auth'
 import { getSecureApiUrl } from '../utils/api'
 import HamburgerMenu from '../components/HamburgerMenu.vue'
+import DesktopSidebar from '../components/DesktopSidebar.vue'
 import axios from 'axios'
 import Swal from 'sweetalert2'
 import { 
@@ -447,7 +462,8 @@ import {
   FileText,
   Users,
   BarChart3,
-  Eye
+  Eye,
+  RotateCw
 } from 'lucide-vue-next'
 
 const auth = useAuthStore()
@@ -818,6 +834,83 @@ onMounted(async () => {
   position: relative;
   overflow-x: hidden;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ========== LAYOUT PC ========== */
+@media (min-width: 1024px) {
+  .seguimiento-container {
+    flex-direction: row;
+    background: #f8fafc;
+  }
+  .mobile-only {
+    display: none !important;
+  }
+}
+
+/* ========== MAIN WRAPPER ========== */
+.main-wrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  width: 100%;
+}
+
+@media (min-width: 1024px) {
+  .main-wrapper {
+    margin-left: 220px;
+    width: calc(100% - 220px);
+  }
+}
+
+/* ========== DESKTOP PAGE HEADER ========== */
+.desktop-page-header {
+  display: none;
+}
+
+@media (min-width: 1024px) {
+  .desktop-page-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.25rem 2rem;
+    background: white;
+    border-bottom: 1px solid #e2e8f0;
+  }
+}
+
+.page-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.desktop-reload-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.6rem;
+  background: #f1f5f9;
+  color: #475569;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.desktop-reload-button:hover {
+  background: #e2e8f0;
+  color: #1e293b;
+}
+
+/* ========== SEGUIMIENTO MAIN ========== */
+@media (min-width: 1024px) {
+  .seguimiento-main {
+    padding: 1.5rem 2rem;
+    background: #f8fafc;
+  }
 }
 
 /* Blobs */

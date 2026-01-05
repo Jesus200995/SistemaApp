@@ -1,16 +1,24 @@
 <template>
   <div class="usuarios-container">
-    <!-- Menú hamburguesa global -->
-    <HamburgerMenu />
+    <!-- Menú hamburguesa global (solo móvil) -->
+    <HamburgerMenu class="mobile-only-menu" />
 
-    <!-- Fondo decorativo -->
-    <div class="background-decoration">
+    <!-- Sidebar para PC -->
+    <DesktopSidebar />
+
+    <!-- Fondo decorativo (solo móvil) -->
+    <div class="background-decoration mobile-only">
       <div class="blob blob-1"></div>
       <div class="blob blob-2"></div>
     </div>
 
-    <!-- Header con botón de regreso -->
-    <header class="usuarios-header">
+    <!-- ========== CONTENEDOR PRINCIPAL ========== -->
+    <div class="main-wrapper">
+      <!-- Header/Breadcrumb para PC -->
+      <DesktopHeader />
+
+      <!-- Header con botón de regreso (móvil) -->
+      <header class="usuarios-header mobile-header">
         <div class="header-wrapper">
           <div class="header-left">
             <router-link to="/dashboard" class="back-button" title="Volver al Dashboard">
@@ -43,6 +51,26 @@
           </div>
         </div>
       </header>
+
+      <!-- Header Desktop con título de página -->
+      <header class="desktop-page-header">
+        <div class="page-header-left">
+          <h1 class="page-title">Directorio de Personal</h1>
+        </div>
+        <div class="page-header-actions">
+          <button 
+            v-if="puedeCrearUsuarios" 
+            @click="abrirModalCrearUsuario" 
+            class="desktop-create-button"
+          >
+            <UserPlus :size="18" />
+            <span>Crear Usuario</span>
+          </button>
+        </div>
+      </header>
+
+      <!-- Contenido principal -->
+      <main class="usuarios-main">
 
     <!-- Modal Crear Usuario - Diseño Nuevo -->
     <Teleport to="body">
@@ -570,6 +598,7 @@
           <div class="stat-label">Total</div>
         </div>
       </div>
+      </main>
     </div>
   </div>
 </template>
@@ -581,6 +610,8 @@ import { Users, RotateCw, Search, ChevronLeft, ChevronRight, ArrowLeft, Edit, Tr
 import { useAuthStore } from '../stores/auth'
 import { getSecureApiUrl } from '../utils/api'
 import HamburgerMenu from '../components/HamburgerMenu.vue'
+import DesktopSidebar from '../components/DesktopSidebar.vue'
+import DesktopHeader from '../components/DesktopHeader.vue'
 import Swal from 'sweetalert2'
 import 'sweetalert2/dist/sweetalert2.min.css'
 
@@ -1002,6 +1033,101 @@ onMounted(async () => {
   padding: 0;
   display: flex;
   flex-direction: column;
+}
+
+/* ========== LAYOUT PC ========== */
+@media (min-width: 1024px) {
+  .usuarios-container {
+    flex-direction: row;
+    background: #f8fafc;
+  }
+
+  .mobile-only-menu {
+    display: none !important;
+  }
+
+  .mobile-header {
+    display: none !important;
+  }
+
+  .mobile-only {
+    display: none !important;
+  }
+}
+
+/* ========== MAIN WRAPPER ========== */
+.main-wrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  width: 100%;
+  overflow: hidden;
+}
+
+@media (min-width: 1024px) {
+  .main-wrapper {
+    margin-left: 220px;
+    width: calc(100% - 220px);
+  }
+}
+
+/* ========== DESKTOP PAGE HEADER ========== */
+.desktop-page-header {
+  display: none;
+}
+
+@media (min-width: 1024px) {
+  .desktop-page-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.25rem 2rem;
+    background: white;
+    border-bottom: 1px solid #e2e8f0;
+  }
+}
+
+.page-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.desktop-create-button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1.25rem;
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.desktop-create-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.35);
+}
+
+/* ========== USUARIOS MAIN ========== */
+.usuarios-main {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  position: relative;
+  z-index: 5;
+}
+
+@media (min-width: 1024px) {
+  .usuarios-main {
+    padding: 1.5rem 2rem;
+    background: #f8fafc;
+  }
 }
 
 /* ========== BACKGROUND BLOBS ========== */

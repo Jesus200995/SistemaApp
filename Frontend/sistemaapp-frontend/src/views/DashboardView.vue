@@ -1,47 +1,55 @@
 <template>
   <div class="dashboard-container">
-    <!-- Menú hamburguesa global -->
-    <HamburgerMenu :pendingCount="solicitudesPendientes" />
+    <!-- Menú hamburguesa global (solo móvil) -->
+    <HamburgerMenu :pendingCount="solicitudesPendientes" class="mobile-only-menu" />
 
-    <!-- Header moderno con efecto vidrio líquido -->
-    <header class="dashboard-header">
-      <div class="header-content">
-        <div class="logo-section">
-          <div class="logo-icon">
-            <!-- Icono SVG: Flor girando -->
-            <svg viewBox="0 0 64 64" width="48" height="48" class="flower-logo-svg" xmlns="http://www.w3.org/2000/svg">
-              <!-- Pétalos de la flor -->
-              <g class="flower-petals">
-                <!-- Pétalo 1 (arriba) -->
-                <ellipse cx="32" cy="16" rx="8" ry="12" fill="#16a34a" opacity="0.9"/>
-                <!-- Pétalo 2 (arriba-derecha) -->
-                <ellipse cx="32" cy="16" rx="8" ry="12" fill="#22c55e" opacity="0.85" transform="rotate(60 32 32)"/>
-                <!-- Pétalo 3 (abajo-derecha) -->
-                <ellipse cx="32" cy="16" rx="8" ry="12" fill="#16a34a" opacity="0.9" transform="rotate(120 32 32)"/>
-                <!-- Pétalo 4 (abajo) -->
-                <ellipse cx="32" cy="16" rx="8" ry="12" fill="#22c55e" opacity="0.85" transform="rotate(180 32 32)"/>
-                <!-- Pétalo 5 (abajo-izquierda) -->
-                <ellipse cx="32" cy="16" rx="8" ry="12" fill="#16a34a" opacity="0.9" transform="rotate(240 32 32)"/>
-                <!-- Pétalo 6 (arriba-izquierda) -->
-                <ellipse cx="32" cy="16" rx="8" ry="12" fill="#22c55e" opacity="0.85" transform="rotate(300 32 32)"/>
-              </g>
-              <!-- Centro de la flor -->
-              <circle cx="32" cy="32" r="8" fill="#15803d"/>
-              <circle cx="32" cy="32" r="5" fill="#facc15"/>
-              <circle cx="32" cy="32" r="2.5" fill="#eab308"/>
-            </svg>
-          </div>
-          <div class="logo-text">
-            <h1 class="app-title">Sistema de Administración</h1>
-            <p class="app-subtitle">Panel de Control</p>
+    <!-- Sidebar para PC -->
+    <DesktopSidebar :pendingCount="solicitudesPendientes" />
+
+    <!-- ========== CONTENEDOR PRINCIPAL ========== -->
+    <div class="main-wrapper">
+      <!-- Header/Breadcrumb para PC -->
+      <DesktopHeader />
+
+      <!-- Header moderno con efecto vidrio líquido (móvil) -->
+      <header class="dashboard-header mobile-header">
+        <div class="header-content">
+          <div class="logo-section">
+            <div class="logo-icon">
+              <!-- Icono SVG: Flor girando -->
+              <svg viewBox="0 0 64 64" width="48" height="48" class="flower-logo-svg" xmlns="http://www.w3.org/2000/svg">
+                <!-- Pétalos de la flor -->
+                <g class="flower-petals">
+                  <!-- Pétalo 1 (arriba) -->
+                  <ellipse cx="32" cy="16" rx="8" ry="12" fill="#16a34a" opacity="0.9"/>
+                  <!-- Pétalo 2 (arriba-derecha) -->
+                  <ellipse cx="32" cy="16" rx="8" ry="12" fill="#22c55e" opacity="0.85" transform="rotate(60 32 32)"/>
+                  <!-- Pétalo 3 (abajo-derecha) -->
+                  <ellipse cx="32" cy="16" rx="8" ry="12" fill="#16a34a" opacity="0.9" transform="rotate(120 32 32)"/>
+                  <!-- Pétalo 4 (abajo) -->
+                  <ellipse cx="32" cy="16" rx="8" ry="12" fill="#22c55e" opacity="0.85" transform="rotate(180 32 32)"/>
+                  <!-- Pétalo 5 (abajo-izquierda) -->
+                  <ellipse cx="32" cy="16" rx="8" ry="12" fill="#16a34a" opacity="0.9" transform="rotate(240 32 32)"/>
+                  <!-- Pétalo 6 (arriba-izquierda) -->
+                  <ellipse cx="32" cy="16" rx="8" ry="12" fill="#22c55e" opacity="0.85" transform="rotate(300 32 32)"/>
+                </g>
+                <!-- Centro de la flor -->
+                <circle cx="32" cy="32" r="8" fill="#15803d"/>
+                <circle cx="32" cy="32" r="5" fill="#facc15"/>
+                <circle cx="32" cy="32" r="2.5" fill="#eab308"/>
+              </svg>
+            </div>
+            <div class="logo-text">
+              <h1 class="app-title">Sistema de Administración</h1>
+              <p class="app-subtitle">Panel de Control</p>
+            </div>
           </div>
         </div>
-      </div>
-    </header>
+      </header>
 
-    <!-- Contenido principal -->
-    <main class="dashboard-main">
-      <div class="dashboard-content">
+      <!-- Contenido principal -->
+      <main class="dashboard-main">
+        <div class="dashboard-content">
         <!-- Etiqueta de perfil -->
         <div class="profile-label">Mi Perfil</div>
 
@@ -158,6 +166,7 @@
     <footer class="dashboard-footer">
       <p>© 2025 <span class="footer-highlight">SistemaApp</span>. Todos los derechos reservados.</p>
     </footer>
+    </div>
   </div>
 </template>
 
@@ -167,8 +176,10 @@ import { onMounted, ref, computed, onUnmounted } from 'vue'
 import { useAuthStore } from '../stores/auth'
 import { getSecureApiUrl, getSecureWsUrl } from '../utils/api'
 import { useRouter } from 'vue-router'
-import { LogOut, User, Mail, LayoutDashboard, BarChart3, Users, Settings, MapPin, Sprout, FileText, Smile, Clipboard, Check, Shield, Zap, Bell, Clock, CheckCircle, AlertCircle, Info, Eye, MessageSquare } from 'lucide-vue-next'
+import { LogOut, User, Mail, LayoutDashboard, BarChart3, Users, Settings, MapPin, Sprout, FileText, Smile, Clipboard, Check, Shield, Zap, Bell, Clock, CheckCircle, AlertCircle, Info, Eye, MessageSquare, Home, ChevronRight, Upload } from 'lucide-vue-next'
 import HamburgerMenu from '../components/HamburgerMenu.vue'
+import DesktopSidebar from '../components/DesktopSidebar.vue'
+import DesktopHeader from '../components/DesktopHeader.vue'
 import axios from 'axios'
 
 const auth = useAuthStore()
@@ -557,7 +568,40 @@ const getUsuariosDesc = (): string => {
   will-change: scroll-position;
 }
 
-/* ========== HEADER ========== */
+/* ========== LAYOUT PC ========== */
+@media (min-width: 1024px) {
+  .dashboard-container {
+    flex-direction: row;
+    padding-top: 0;
+    background: #f8fafc;
+  }
+
+  .mobile-only-menu {
+    display: none !important;
+  }
+
+  .mobile-header {
+    display: none !important;
+  }
+}
+
+/* ========== MAIN WRAPPER ========== */
+.main-wrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  width: 100%;
+}
+
+@media (min-width: 1024px) {
+  .main-wrapper {
+    margin-left: 220px;
+    width: calc(100% - 220px);
+  }
+}
+
+/* ========== HEADER (móvil) ========== */
 .dashboard-header {
   position: fixed;
   top: 0;
@@ -585,6 +629,12 @@ const getUsuariosDesc = (): string => {
   box-sizing: border-box;
   /* Efecto de brillo líquido que se mueve */
   overflow: hidden;
+}
+
+@media (min-width: 1024px) {
+  .dashboard-header.mobile-header {
+    display: none;
+  }
 }
 
 .dashboard-header::before {
@@ -768,12 +818,9 @@ const getUsuariosDesc = (): string => {
   font-size: 0.7rem;
 }
 
-/* ========== RESPONSIVE - PANTALLAS GRANDES (PC) ========== */
+/* ========== RESPONSIVE - PANTALLAS GRANDES (solo aplica estilos que no afectan PC layout) ========== */
 @media (min-width: 1200px) {
-  .dashboard-container {
-    padding-top: 56px;
-  }
-
+  /* El padding-top ya está en 0 para PC desde la media query de layout */
   .dashboard-header {
     height: 56px;
   }
@@ -948,6 +995,14 @@ const getUsuariosDesc = (): string => {
   box-sizing: border-box;
 }
 
+@media (min-width: 1024px) {
+  .dashboard-main {
+    min-height: calc(100vh - 52px);
+    padding: 1rem 1.5rem;
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  }
+}
+
 .dashboard-content {
   width: 100%;
   max-width: 900px;
@@ -955,6 +1010,16 @@ const getUsuariosDesc = (): string => {
   box-sizing: border-box;
   position: relative;
   z-index: 1;
+}
+
+@media (min-width: 1024px) {
+  .dashboard-content {
+    max-width: 1200px;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
 }
 
 /* ========== PROFILE LABEL ========== */
@@ -974,6 +1039,15 @@ const getUsuariosDesc = (): string => {
   box-shadow: 0 4px 12px rgba(22, 163, 74, 0.25);
 }
 
+@media (min-width: 1024px) {
+  .profile-label {
+    font-size: 0.75rem;
+    padding: 0.35rem 1rem;
+    border-radius: 8px 8px 0 0;
+    margin-left: 0;
+  }
+}
+
 /* ========== PROFILE CARD ========== */
 .profile-card {
   background: rgba(255, 255, 255, 0.9);
@@ -988,9 +1062,28 @@ const getUsuariosDesc = (): string => {
   margin-top: -2px;
 }
 
+@media (min-width: 1024px) {
+  .profile-card {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 1.25rem 1.5rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+    margin-bottom: 0;
+    margin-top: 0;
+  }
+}
+
 .profile-card:hover {
   border-color: rgba(22, 163, 74, 0.4);
   box-shadow: 0 12px 48px rgba(22, 163, 74, 0.15);
+}
+
+@media (min-width: 1024px) {
+  .profile-card:hover {
+    border-color: #3b82f6;
+    box-shadow: 0 8px 30px rgba(59, 130, 246, 0.12);
+  }
 }
 
 /* ===== NEW PROFILE HEADER LAYOUT ===== */
@@ -1115,6 +1208,16 @@ const getUsuariosDesc = (): string => {
   margin-bottom: 0.75rem;
 }
 
+@media (min-width: 1024px) {
+  .actions-section {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 1.25rem 1.5rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+  }
+}
+
 .section-title {
   font-size: 0.8rem;
   font-weight: 600;
@@ -1127,6 +1230,21 @@ const getUsuariosDesc = (): string => {
   justify-content: center;
   gap: 0.75rem;
   padding: 0.4rem 0;
+}
+
+@media (min-width: 1024px) {
+  .section-title {
+    font-size: 1rem;
+    color: #1e3a5f;
+    text-align: left;
+    justify-content: flex-start;
+    margin-bottom: 1rem;
+  }
+
+  .section-title::before,
+  .section-title::after {
+    display: none;
+  }
 }
 
 .section-title::before,
@@ -1165,6 +1283,14 @@ const getUsuariosDesc = (): string => {
   margin-bottom: 0.75rem;
 }
 
+@media (min-width: 1024px) {
+  .actions-grid {
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 1rem;
+    margin-bottom: 0;
+  }
+}
+
 @media (max-width: 768px) {
   .actions-grid {
     grid-template-columns: repeat(3, 1fr);
@@ -1194,6 +1320,23 @@ const getUsuariosDesc = (): string => {
   text-decoration: none;
   color: inherit;
   overflow: visible;
+}
+
+@media (min-width: 1024px) {
+  .action-card {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 1.25rem;
+    gap: 0.6rem;
+  }
+
+  .action-card:hover {
+    transform: translateY(-4px);
+    border-color: #3b82f6;
+    background: white;
+    box-shadow: 0 8px 25px rgba(59, 130, 246, 0.15);
+  }
 }
 
 /* Badge de solicitudes pendientes */
@@ -1608,6 +1751,18 @@ const getUsuariosDesc = (): string => {
   box-shadow: 
     0 8px 32px rgba(22, 163, 74, 0.08),
     inset 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+
+@media (min-width: 1024px) {
+  .notifications-section {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 1.25rem 1.5rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+    backdrop-filter: none;
+    margin-bottom: 0;
+  }
 }
 
 .notifications-header {
@@ -2221,9 +2376,25 @@ const getUsuariosDesc = (): string => {
   color: #166534;
 }
 
+@media (min-width: 1024px) {
+  .dashboard-footer {
+    background: white;
+    border-top: 1px solid #e2e8f0;
+    padding: 1rem;
+    font-size: 0.8rem;
+    color: #64748b;
+  }
+}
+
 .footer-highlight {
   color: #15803d;
   font-weight: 600;
+}
+
+@media (min-width: 1024px) {
+  .footer-highlight {
+    color: #3b82f6;
+  }
 }
 
 /* ========== RESPONSIVE ========== */

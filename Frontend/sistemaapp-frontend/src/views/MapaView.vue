@@ -1,17 +1,28 @@
 <template>
   <div class="mapa-container">
-    <!-- Menú hamburguesa global -->
-    <HamburgerMenu />
+    <!-- Desktop Sidebar -->
+    <DesktopSidebar />
 
-    <!-- Fondo decorativo con blobs animados -->
-    <div class="background-blobs">
-      <div class="blob blob-1"></div>
-      <div class="blob blob-2"></div>
-      <div class="blob blob-3"></div>
-    </div>
+    <!-- Menú hamburguesa global (solo móvil) -->
+    <HamburgerMenu class="mobile-only" />
 
-    <!-- Header principal con botón de regreso -->
-    <header class="header-mapa">
+    <!-- Main Wrapper para PC -->
+    <div class="main-wrapper">
+      <!-- Header para PC -->
+      <div class="desktop-page-header">
+        <h1 class="page-title">Capas Temáticas</h1>
+        <p class="page-subtitle">Ambiental, Social, Productiva e Infraestructura</p>
+      </div>
+
+      <!-- Fondo decorativo con blobs animados -->
+      <div class="background-blobs mobile-only">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+      </div>
+
+      <!-- Header principal con botón de regreso (solo móvil) -->
+      <header class="header-mapa mobile-only">
       <div class="header-wrapper">
         <div class="header-left">
           <router-link to="/dashboard" class="back-button" title="Volver al Dashboard">
@@ -232,6 +243,7 @@
         </label>
       </div>
     </div>
+    </div> <!-- Cierre main-wrapper -->
   </div>
 </template>
 
@@ -244,6 +256,7 @@ import axios from 'axios'
 import { useAuthStore } from '../stores/auth'
 import { getSecureApiUrl } from '../utils/api'
 import HamburgerMenu from '../components/HamburgerMenu.vue'
+import DesktopSidebar from '../components/DesktopSidebar.vue'
 import { addOfflinePoint, getOfflinePoints, clearOfflinePoints } from '../utils/db'
 import 'leaflet/dist/leaflet.css'
 import 'leaflet-defaulticon-compatibility'
@@ -443,6 +456,61 @@ onMounted(() => {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   margin: 0;
   padding: 0;
+}
+
+/* ========== LAYOUT PC ========== */
+@media (min-width: 1024px) {
+  .mapa-container {
+    flex-direction: row;
+    background: #f8fafc;
+  }
+  .mobile-only {
+    display: none !important;
+  }
+}
+
+/* ========== MAIN WRAPPER ========== */
+.main-wrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100%;
+}
+
+@media (min-width: 1024px) {
+  .main-wrapper {
+    margin-left: 220px;
+    width: calc(100% - 220px);
+  }
+}
+
+/* ========== DESKTOP PAGE HEADER ========== */
+.desktop-page-header {
+  display: none;
+}
+
+@media (min-width: 1024px) {
+  .desktop-page-header {
+    display: flex;
+    flex-direction: column;
+    padding: 1rem 2rem;
+    background: white;
+    border-bottom: 1px solid #e2e8f0;
+  }
+}
+
+.page-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #1e293b;
+  margin: 0;
+}
+
+.page-subtitle {
+  font-size: 0.875rem;
+  color: #64748b;
+  margin: 0.25rem 0 0 0;
 }
 
 /* ========== BACKGROUND BLOBS ========== */

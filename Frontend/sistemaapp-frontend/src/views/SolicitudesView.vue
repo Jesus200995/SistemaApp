@@ -1,53 +1,73 @@
 <template>
   <div class="solicitudes-container">
-    <!-- Menú hamburguesa global -->
-    <HamburgerMenu />
+    <!-- Menú hamburguesa global (solo móvil) -->
+    <HamburgerMenu class="mobile-only-menu" />
 
-    <!-- Background decorativo -->
-    <div class="background-blobs">
+    <!-- Sidebar para PC -->
+    <DesktopSidebar />
+
+    <!-- Background decorativo (solo móvil) -->
+    <div class="background-blobs mobile-only">
       <div class="blob blob-1"></div>
       <div class="blob blob-2"></div>
       <div class="blob blob-3"></div>
     </div>
 
-    <!-- Header con botón de regreso -->
-    <header class="solicitudes-header">
-      <div class="header-wrapper">
-        <div class="header-left">
-          <router-link to="/dashboard" class="back-button" title="Volver al Dashboard">
-            <ArrowLeft class="back-icon" />
-          </router-link>
-          <div class="header-icon-small">
-            <FileText class="icon-stat" />
-          </div>
-          <div class="header-text">
-            <h1 class="header-title">Solicitudes</h1>
-            <p class="header-subtitle">Gestión de solicitudes</p>
-          </div>
-        </div>
-        <button @click="recargarSolicitudes" class="reload-button" title="Recargar">
-          <svg class="reload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8M21 3v5h-5M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16M3 21v-5h5"></path>
-          </svg>
-        </button>
-      </div>
-    </header>
+    <!-- ========== CONTENEDOR PRINCIPAL ========== -->
+    <div class="main-wrapper">
+      <!-- Header/Breadcrumb para PC -->
+      <DesktopHeader />
 
-    <!-- Main Content -->
-    <main class="solicitudes-main">
-      <div class="solicitudes-content">
-        <!-- Formulario de creación -->
-        <section class="form-section">
-          <div class="form-card">
-            <div class="form-header">
-              <h2 class="form-title">Crear Nueva Solicitud</h2>
-              <p class="form-subtitle">Completa los campos para enviar una solicitud</p>
+      <!-- Header con botón de regreso (móvil) -->
+      <header class="solicitudes-header mobile-header">
+        <div class="header-wrapper">
+          <div class="header-left">
+            <router-link to="/dashboard" class="back-button" title="Volver al Dashboard">
+              <ArrowLeft class="back-icon" />
+            </router-link>
+            <div class="header-icon-small">
+              <FileText class="icon-stat" />
             </div>
+            <div class="header-text">
+              <h1 class="header-title">Solicitudes</h1>
+              <p class="header-subtitle">Gestión de solicitudes</p>
+            </div>
+          </div>
+          <button @click="recargarSolicitudes" class="reload-button" title="Recargar">
+            <svg class="reload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8M21 3v5h-5M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16M3 21v-5h5"></path>
+            </svg>
+          </button>
+        </div>
+      </header>
 
-            <form @submit.prevent="crearSolicitud" class="form-container">
-              <div class="form-grid">
-                <!-- Tipo de solicitud -->
-                <div class="form-group">
+      <!-- Header Desktop con título de página -->
+      <header class="desktop-page-header">
+        <div class="page-header-left">
+          <h1 class="page-title">Bandeja de Solicitudes</h1>
+        </div>
+        <div class="page-header-actions">
+          <button @click="recargarSolicitudes" class="desktop-reload-button" title="Recargar">
+            <RotateCw :size="18" />
+          </button>
+        </div>
+      </header>
+
+      <!-- Main Content -->
+      <main class="solicitudes-main">
+        <div class="solicitudes-content">
+          <!-- Formulario de creación -->
+          <section class="form-section">
+            <div class="form-card">
+              <div class="form-header">
+                <h2 class="form-title">Crear Nueva Solicitud</h2>
+                <p class="form-subtitle">Completa los campos para enviar una solicitud</p>
+              </div>
+
+              <form @submit.prevent="crearSolicitud" class="form-container">
+                <div class="form-grid">
+                  <!-- Tipo de solicitud -->
+                  <div class="form-group">
                   <label class="form-label">
                     <FileText :size="14" class="label-icon" />
                     Tipo de Solicitud *
@@ -559,6 +579,7 @@
         </div>
       </Transition>
     </Teleport>
+    </div>
   </div>
 </template>
 
@@ -569,7 +590,9 @@ import Swal from 'sweetalert2'
 import { useAuthStore } from '../stores/auth'
 import { getSecureApiUrl } from '../utils/api'
 import HamburgerMenu from '../components/HamburgerMenu.vue'
-import { FileText, Send, Check, X, ArrowLeft, UserCheck, MessageSquare, Eye, Calendar, User, Clock, History, CheckCircle, Bell, Search, Edit, SendHorizontal } from 'lucide-vue-next'
+import DesktopSidebar from '../components/DesktopSidebar.vue'
+import DesktopHeader from '../components/DesktopHeader.vue'
+import { FileText, Send, Check, X, ArrowLeft, UserCheck, MessageSquare, Eye, Calendar, User, Clock, History, CheckCircle, Bell, Search, Edit, SendHorizontal, RotateCw } from 'lucide-vue-next'
 
 const auth = useAuthStore()
 const form = ref({ tipo: '', destino_id: null as number | null, descripcion: '' })
@@ -1054,6 +1077,97 @@ onMounted(async () => {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   display: flex;
   flex-direction: column;
+}
+
+/* ========== LAYOUT PC ========== */
+@media (min-width: 1024px) {
+  .solicitudes-container {
+    flex-direction: row;
+    background: #f8fafc;
+  }
+
+  .mobile-only-menu {
+    display: none !important;
+  }
+
+  .mobile-header {
+    display: none !important;
+  }
+
+  .mobile-only {
+    display: none !important;
+  }
+}
+
+/* ========== MAIN WRAPPER ========== */
+.main-wrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  width: 100%;
+}
+
+@media (min-width: 1024px) {
+  .main-wrapper {
+    margin-left: 220px;
+    width: calc(100% - 220px);
+  }
+}
+
+/* ========== DESKTOP PAGE HEADER ========== */
+.desktop-page-header {
+  display: none;
+}
+
+@media (min-width: 1024px) {
+  .desktop-page-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.25rem 2rem;
+    background: white;
+    border-bottom: 1px solid #e2e8f0;
+  }
+}
+
+.page-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.desktop-reload-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.6rem;
+  background: #f1f5f9;
+  color: #475569;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.desktop-reload-button:hover {
+  background: #e2e8f0;
+  color: #1e293b;
+}
+
+/* ========== SOLICITUDES MAIN ========== */
+.solicitudes-main {
+  flex: 1;
+  overflow-y: auto;
+  position: relative;
+  z-index: 5;
+}
+
+@media (min-width: 1024px) {
+  .solicitudes-main {
+    padding: 1.5rem 2rem;
+    background: #f8fafc;
+  }
 }
 
 /* ========== BACKGROUND BLOBS ========== */
