@@ -71,10 +71,9 @@
 
       <!-- Contenido principal -->
       <main class="usuarios-main">
-
-    <!-- Modal Crear Usuario - Diseño Nuevo -->
-    <Teleport to="body">
-      <Transition name="modal-fade">
+        <!-- Modal Crear Usuario (se teletransporta al body) -->
+        <Teleport to="body">
+          <Transition name="modal-fade">
         <div v-if="showModalCrear" class="nuevo-modal-overlay">
           <div class="nuevo-modal">
             <!-- Botón cerrar -->
@@ -230,10 +229,10 @@
           </div>
         </div>
       </Transition>
-    </Teleport>
+        </Teleport>
 
-    <!-- Modal de Edición de Usuario -->
-    <Teleport to="body">
+        <!-- Modal de Edición de Usuario -->
+        <Teleport to="body">
       <div v-if="showModalEditar" class="modal-overlay" @click.self="cerrarModalEditar">
         <div class="modal-edicion">
           <div class="modal-header">
@@ -389,10 +388,10 @@
           </form>
         </div>
       </div>
-    </Teleport>
+        </Teleport>
 
-    <!-- Contenido principal -->
-    <div class="usuarios-content">
+        <!-- Contenido principal -->
+        <div class="usuarios-content">
       <!-- Tarjeta principal -->
       <div class="usuarios-card">
         <!-- Buscador -->
@@ -598,6 +597,7 @@
           <div class="stat-label">Total</div>
         </div>
       </div>
+        </div>
       </main>
     </div>
   </div>
@@ -1082,7 +1082,7 @@ onMounted(async () => {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 1.25rem 2rem;
+    padding: 1rem 1.5rem;
     background: white;
     border-bottom: 1px solid #e2e8f0;
   }
@@ -1125,7 +1125,7 @@ onMounted(async () => {
 
 @media (min-width: 1024px) {
   .usuarios-main {
-    padding: 1.5rem 2rem;
+    padding: 1rem 1.5rem;
     background: #f8fafc;
   }
 }
@@ -1178,6 +1178,14 @@ onMounted(async () => {
   margin: 0 auto;
   margin-top: 60px;
   overflow-y: auto;
+}
+
+@media (min-width: 1024px) {
+  .usuarios-content {
+    max-width: 100%;
+    padding: 0;
+    margin-top: 0;
+  }
   height: calc(100vh - 60px);
   width: 100%;
   box-sizing: border-box;
@@ -1331,6 +1339,16 @@ onMounted(async () => {
   margin-bottom: 1rem;
 }
 
+@media (min-width: 1024px) {
+  .usuarios-card {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 1.25rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  }
+}
+
 /* ========== SEARCH SECTION ========== */
 .search-section {
   display: flex;
@@ -1367,6 +1385,13 @@ onMounted(async () => {
   transition: all 0.3s ease;
 }
 
+@media (min-width: 1024px) {
+  .search-input {
+    font-size: 0.9rem;
+    padding: 0.65rem 1rem 0.65rem 2.5rem;
+  }
+}
+
 .search-input::placeholder {
   color: #64748b;
 }
@@ -1385,6 +1410,12 @@ onMounted(async () => {
   padding: 0.4rem 0.75rem;
 }
 
+@media (min-width: 1024px) {
+  .results-info {
+    font-size: 0.875rem;
+  }
+}
+
 /* ========== TABLE (DESKTOP) ========== */
 .table-wrapper {
   overflow-x: auto;
@@ -1397,6 +1428,12 @@ onMounted(async () => {
   width: 100%;
   border-collapse: collapse;
   font-size: 0.7rem;
+}
+
+@media (min-width: 1024px) {
+  .users-table {
+    font-size: 0.875rem;
+  }
 }
 
 .users-table thead {
@@ -1412,6 +1449,13 @@ onMounted(async () => {
   text-transform: uppercase;
   letter-spacing: 0.03em;
   font-size: 0.6rem;
+}
+
+@media (min-width: 1024px) {
+  .users-table thead th {
+    padding: 0.75rem 1rem;
+    font-size: 0.75rem;
+  }
 }
 
 .skeleton-row {
@@ -1452,6 +1496,13 @@ onMounted(async () => {
   font-size: 0.65rem;
 }
 
+@media (min-width: 1024px) {
+  .users-table td {
+    padding: 0.75rem 1rem;
+    font-size: 0.875rem;
+  }
+}
+
 /* Cell Styles */
 .cell-id {
   width: 60px;
@@ -1465,6 +1516,13 @@ onMounted(async () => {
   border-radius: 5px;
   font-weight: 600;
   font-size: 0.65rem;
+}
+
+@media (min-width: 1024px) {
+  .id-badge {
+    padding: 0.35rem 0.65rem;
+    font-size: 0.8rem;
+  }
 }
 
 .cell-nombre {
@@ -1492,15 +1550,35 @@ onMounted(async () => {
   text-shadow: 0 0 8px rgba(132, 204, 22, 0.5);
 }
 
+@media (min-width: 1024px) {
+  .nombre-avatar {
+    width: 32px;
+    height: 32px;
+    font-size: 0.75rem;
+  }
+}
+
 .cell-email {
   color: #94a3b8;
   font-size: 0.65rem;
+}
+
+@media (min-width: 1024px) {
+  .cell-email {
+    font-size: 0.875rem;
+  }
 }
 
 .cell-curp {
   font-family: 'Courier New', monospace;
   width: 120px;
   text-align: center;
+}
+
+@media (min-width: 1024px) {
+  .cell-curp {
+    width: 180px;
+  }
 }
 
 .curp-badge {
@@ -1515,9 +1593,22 @@ onMounted(async () => {
   border: 1px solid rgba(59, 130, 246, 0.3);
 }
 
+@media (min-width: 1024px) {
+  .curp-badge {
+    padding: 0.35rem 0.65rem;
+    font-size: 0.75rem;
+  }
+}
+
 .cell-telefono {
   width: 90px;
   text-align: center;
+}
+
+@media (min-width: 1024px) {
+  .cell-telefono {
+    width: 120px;
+  }
 }
 
 .telefono-text {
@@ -1531,9 +1622,22 @@ onMounted(async () => {
   border: 1px solid rgba(139, 92, 246, 0.3);
 }
 
+@media (min-width: 1024px) {
+  .telefono-text {
+    padding: 0.35rem 0.65rem;
+    font-size: 0.75rem;
+  }
+}
+
 .cell-territorio {
   width: 120px;
   text-align: center;
+}
+
+@media (min-width: 1024px) {
+  .cell-territorio {
+    width: 160px;
+  }
 }
 
 .territorio-badge {
@@ -1551,6 +1655,14 @@ onMounted(async () => {
   max-width: 110px;
 }
 
+@media (min-width: 1024px) {
+  .territorio-badge {
+    padding: 0.35rem 0.65rem;
+    font-size: 0.75rem;
+    max-width: 160px;
+  }
+}
+
 .cell-rol {
   text-align: center;
 }
@@ -1558,6 +1670,12 @@ onMounted(async () => {
 .cell-actions {
   text-align: center;
   width: 80px;
+}
+
+@media (min-width: 1024px) {
+  .cell-actions {
+    width: 120px;
+  }
 }
 
 .action-btn {
@@ -1575,9 +1693,23 @@ onMounted(async () => {
   margin: 0 0.15rem;
 }
 
+@media (min-width: 1024px) {
+  .action-btn {
+    padding: 0.4rem 0.5rem;
+    margin: 0 0.25rem;
+  }
+}
+
 .action-icon {
   width: 15px;
   height: 15px;
+}
+
+@media (min-width: 1024px) {
+  .action-icon {
+    width: 18px;
+    height: 18px;
+  }
 }
 
 .edit-btn:hover {
@@ -1597,6 +1729,13 @@ onMounted(async () => {
   font-weight: 600;
   font-size: 0.55rem;
   letter-spacing: 0.04em;
+}
+
+@media (min-width: 1024px) {
+  .rol-badge {
+    padding: 0.35rem 0.85rem;
+    font-size: 0.7rem;
+  }
 }
 
 .rol-admin {
@@ -1851,6 +1990,14 @@ onMounted(async () => {
   justify-items: center;
   max-width: 800px;
   margin: 0 auto;
+}
+
+@media (min-width: 1024px) {
+  .stats-section {
+    max-width: 100%;
+    gap: 1rem;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  }
 }
 
 .stat-card {

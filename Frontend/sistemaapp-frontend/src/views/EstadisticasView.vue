@@ -436,7 +436,7 @@ onMounted(() => {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 1.25rem 2rem;
+    padding: 1rem 1.5rem;
     background: white;
     border-bottom: 1px solid #e2e8f0;
   }
@@ -471,6 +471,12 @@ onMounted(() => {
   .estadisticas-main {
     padding: 1.5rem 2rem;
     background: #f8fafc;
+    max-width: 100%;
+    margin: 0;
+  }
+  
+  .estadisticas-content {
+    gap: 1.5rem;
   }
 }
 
@@ -690,6 +696,13 @@ onMounted(() => {
   margin: 0 auto;
 }
 
+@media (min-width: 1024px) {
+  .estadisticas-main {
+    max-width: 100%;
+    padding: 0;
+  }
+}
+
 .estadisticas-content {
   display: grid;
   gap: 1rem;
@@ -717,6 +730,32 @@ onMounted(() => {
   align-items: center;
   gap: 0.5rem;
   transition: all 0.3s ease;
+}
+
+@media (min-width: 1024px) {
+  .stats-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+  }
+  
+  .stat-card {
+    background: white;
+    border: 1px solid #e2e8f0;
+    padding: 1.5rem 1.25rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    border-radius: 16px;
+  }
+  
+  .stat-icon-wrapper {
+    width: 48px;
+    height: 48px;
+    border-radius: 14px;
+  }
+  
+  .stat-icon {
+    width: 24px;
+    height: 24px;
+  }
 }
 
 .stat-card:hover {
@@ -773,6 +812,13 @@ onMounted(() => {
   text-align: center;
 }
 
+@media (min-width: 1024px) {
+  .stat-label {
+    font-size: 0.85rem;
+    letter-spacing: 0.04em;
+  }
+}
+
 .stat-value {
   font-size: 1.25rem;
   font-weight: 700;
@@ -780,6 +826,19 @@ onMounted(() => {
   margin: 0;
   line-height: 1.1;
   text-align: center;
+}
+
+@media (min-width: 1024px) {
+  .stat-value {
+    font-size: 2rem;
+    margin: 0.5rem 0;
+  }
+  
+  .badge-success,
+  .badge-info {
+    font-size: 0.7rem;
+    padding: 0.25rem 0.6rem;
+  }
 }
 
 .stat-change {
@@ -831,6 +890,33 @@ onMounted(() => {
   border-radius: 12px;
   padding: 1rem;
   backdrop-filter: blur(10px);
+}
+
+@media (min-width: 1024px) {
+  .chart-section {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  }
+  
+  .chart-title-icon {
+    width: 22px;
+    height: 22px;
+  }
+  
+  .chart-title {
+    font-size: 1.1rem;
+  }
+  
+  .chart-subtitle {
+    font-size: 0.85rem;
+  }
+  
+  .chart-container {
+    height: 350px;
+  }
 }
 
 .chart-header {
@@ -909,6 +995,49 @@ onMounted(() => {
   border-radius: 12px;
   padding: 1rem;
   backdrop-filter: blur(10px);
+}
+
+@media (min-width: 1024px) {
+  .table-section {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  }
+  
+  .table-title-icon {
+    width: 22px;
+    height: 22px;
+  }
+  
+  .table-title {
+    font-size: 1.1rem;
+  }
+  
+  .cultivos-table th {
+    padding: 1rem 0.75rem;
+    font-size: 0.8rem;
+  }
+  
+  .table-row td {
+    padding: 0.85rem 0.75rem;
+    font-size: 0.9rem;
+  }
+  
+  .cultivo-badge {
+    padding: 0.4rem 0.75rem;
+    font-size: 0.85rem;
+  }
+  
+  .cantidad-badge {
+    padding: 0.35rem 0.65rem;
+    font-size: 0.85rem;
+  }
+  
+  .bar-container {
+    height: 24px;
+  }
 }
 
 .table-header {
@@ -1051,6 +1180,48 @@ onMounted(() => {
   border-radius: 12px;
   padding: 0.85rem;
   backdrop-filter: blur(10px);
+}
+
+@media (min-width: 1024px) {
+  .summary-card {
+    background: linear-gradient(135deg, rgba(22, 163, 74, 0.1), rgba(21, 128, 61, 0.05));
+    border: 1px solid rgba(22, 163, 74, 0.25);
+    border-radius: 16px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  }
+  
+  .summary-title-icon {
+    width: 22px;
+    height: 22px;
+  }
+  
+  .summary-title {
+    font-size: 1.1rem;
+  }
+  
+  .summary-content {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+  
+  .summary-item {
+    gap: 0.75rem;
+    padding: 0.75rem;
+    background: rgba(255, 255, 255, 0.6);
+    border-radius: 12px;
+  }
+  
+  .summary-item-icon {
+    width: 20px;
+    height: 20px;
+    margin-top: 0;
+  }
+  
+  .summary-text {
+    font-size: 0.95rem;
+    line-height: 1.5;
+  }
 }
 
 .summary-header {

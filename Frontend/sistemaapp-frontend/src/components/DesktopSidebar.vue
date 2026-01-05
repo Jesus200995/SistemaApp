@@ -25,35 +25,53 @@
 
     <!-- Navegación del sidebar -->
     <nav class="sidebar-nav">
+      <!-- Dashboard - Todos los usuarios -->
       <router-link to="/dashboard" class="sidebar-item" :class="{ active: currentRoute === '/dashboard' }">
         <LayoutDashboard :size="20" class="sidebar-icon" />
-        <span class="sidebar-text">Directorio</span>
+        <span class="sidebar-text">Dashboard</span>
       </router-link>
 
+      <!-- Solicitudes - Todos los usuarios -->
       <router-link to="/solicitudes" class="sidebar-item" :class="{ active: currentRoute === '/solicitudes' }">
         <FileText :size="20" class="sidebar-icon" />
         <span class="sidebar-text">Solicitudes</span>
         <span v-if="pendingCount > 0" class="sidebar-badge">{{ pendingCount }}</span>
       </router-link>
 
+      <!-- Sembradores - Todos los usuarios -->
       <router-link to="/sembradores" class="sidebar-item" :class="{ active: currentRoute === '/sembradores' }">
-        <Upload :size="20" class="sidebar-icon" />
-        <span class="sidebar-text">Importar Datos</span>
+        <Sprout :size="20" class="sidebar-icon" />
+        <span class="sidebar-text">Sembradores</span>
       </router-link>
 
+      <!-- Seguimiento - Solo técnicos -->
+      <router-link v-if="canViewSeguimiento" to="/seguimiento" class="sidebar-item" :class="{ active: currentRoute === '/seguimiento' }">
+        <ClipboardList :size="20" class="sidebar-icon" />
+        <span class="sidebar-text">Seguimiento</span>
+      </router-link>
+
+      <!-- Usuarios - Solo admin, territorial, facilitador -->
       <router-link v-if="canViewUsers" to="/usuarios" class="sidebar-item" :class="{ active: currentRoute === '/usuarios' }">
         <Users :size="20" class="sidebar-icon" />
         <span class="sidebar-text">Usuarios</span>
       </router-link>
 
+      <!-- Estadísticas - Solo admin, territorial, facilitador -->
       <router-link v-if="canViewStats" to="/estadisticas" class="sidebar-item" :class="{ active: currentRoute === '/estadisticas' }">
         <BarChart3 :size="20" class="sidebar-icon" />
         <span class="sidebar-text">Estadísticas</span>
       </router-link>
 
+      <!-- Mapa - Todos los usuarios -->
       <router-link to="/mapa" class="sidebar-item" :class="{ active: currentRoute === '/mapa' }">
         <MapPin :size="20" class="sidebar-icon" />
         <span class="sidebar-text">Mapa</span>
+      </router-link>
+
+      <!-- Panel Admin - Solo admin -->
+      <router-link v-if="isAdmin" to="/admin-panel" class="sidebar-item" :class="{ active: currentRoute === '/admin-panel' }">
+        <Settings :size="20" class="sidebar-icon" />
+        <span class="sidebar-text">Panel Admin</span>
       </router-link>
     </nav>
 
@@ -78,7 +96,7 @@ import { computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useAuthStore } from '../stores/auth'
 import { 
-  LayoutDashboard, FileText, Upload, Users, BarChart3, MapPin, LogOut 
+  LayoutDashboard, FileText, Sprout, ClipboardList, Users, BarChart3, MapPin, Settings, LogOut 
 } from 'lucide-vue-next'
 
 const props = defineProps<{
@@ -91,14 +109,25 @@ const router = useRouter()
 
 const currentRoute = computed(() => route.path)
 
+// Permisos basados en roles
 const canViewUsers = computed(() => {
-  const rol = auth.user?.rol || ''
+  const rol = (auth.user?.rol || '').toLowerCase()
   return ['admin', 'territorial', 'facilitador'].includes(rol)
 })
 
 const canViewStats = computed(() => {
-  const rol = auth.user?.rol || ''
+  const rol = (auth.user?.rol || '').toLowerCase()
   return ['admin', 'territorial', 'facilitador'].includes(rol)
+})
+
+const canViewSeguimiento = computed(() => {
+  const rol = (auth.user?.rol || '').toLowerCase()
+  return ['tecnico_productivo', 'tecnico_social'].includes(rol)
+})
+
+const isAdmin = computed(() => {
+  const rol = (auth.user?.rol || '').toLowerCase()
+  return rol === 'admin'
 })
 
 const getInitials = (name: string): string => {

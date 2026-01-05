@@ -443,7 +443,7 @@ onMounted(async () => {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 1.25rem 2rem;
+    padding: 1rem 1.5rem;
     background: white;
     border-bottom: 1px solid #e2e8f0;
   }
@@ -476,7 +476,7 @@ onMounted(async () => {
 /* ========== ADMIN MAIN ========== */
 @media (min-width: 1024px) {
   .admin-main {
-    padding: 1.5rem 2rem;
+    padding: 1rem 1.5rem;
     background: #f8fafc;
   }
 }
@@ -710,12 +710,24 @@ onMounted(async () => {
   padding: 1rem;
 }
 
+@media (min-width: 1024px) {
+  .admin-main {
+    padding: 0;
+  }
+}
+
 .admin-content {
   max-width: 1200px;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
   gap: 1rem;
+}
+
+@media (min-width: 1024px) {
+  .admin-content {
+    max-width: 100%;
+  }
 }
 
 /* ========== SECCIONES ========== */
@@ -728,6 +740,17 @@ onMounted(async () => {
   padding: 1rem;
   backdrop-filter: blur(10px);
   box-shadow: 0 4px 20px rgba(22, 163, 74, 0.08);
+}
+
+@media (min-width: 1024px) {
+  .stats-section,
+  .solicitudes-section,
+  .notifications-section {
+    background: white;
+    border: 1px solid #e2e8f0;
+    padding: 1.25rem 1.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  }
 }
 
 .section-title {
@@ -963,12 +986,24 @@ onMounted(async () => {
   line-height: 1.2;
 }
 
+@media (min-width: 1024px) {
+  .stat-label {
+    font-size: 0.8rem;
+  }
+}
+
 .stat-value {
   font-size: 1.35rem;
   font-weight: 700;
   color: var(--text-primary);
   margin: 0.2rem 0 0 0;
   line-height: 1;
+}
+
+@media (min-width: 1024px) {
+  .stat-value {
+    font-size: 1.5rem;
+  }
 }
 
 /* ========== TABLE ========== */
@@ -1001,6 +1036,13 @@ onMounted(async () => {
   letter-spacing: 0.03em;
 }
 
+@media (min-width: 1024px) {
+  .table-header-cell {
+    padding: 0.75rem 1rem;
+    font-size: 0.8rem;
+  }
+}
+
 .table-body-row {
   border-bottom: 1px solid var(--border-light);
   transition: all 0.3s ease;
@@ -1014,6 +1056,13 @@ onMounted(async () => {
   padding: 0.5rem;
   color: var(--text-primary);
   font-size: 0.75rem;
+}
+
+@media (min-width: 1024px) {
+  .table-cell {
+    padding: 0.75rem 1rem;
+    font-size: 0.875rem;
+  }
 }
 
 .cell-content {

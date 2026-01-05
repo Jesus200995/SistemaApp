@@ -147,13 +147,14 @@ router.beforeEach(async (to, from, next) => {
   // 🔐 Verificar roles permitidos
   const allowedRoles = to.meta.allowedRoles as string[] | undefined
   if (allowedRoles && token && auth.user) {
-    const userRole = auth.user.rol || ''
+    const userRole = (auth.user.rol || '').toLowerCase()
     // Para técnicos, verificar si el rol incluye 'tecnico' cuando está en allowedRoles
     const hasAccess = allowedRoles.some(role => {
-      if (role.includes('tecnico') && userRole.includes('tecnico')) {
+      const roleLower = role.toLowerCase()
+      if (roleLower.includes('tecnico') && userRole.includes('tecnico')) {
         return true
       }
-      return role === userRole
+      return roleLower === userRole
     })
     
     if (!hasAccess) {

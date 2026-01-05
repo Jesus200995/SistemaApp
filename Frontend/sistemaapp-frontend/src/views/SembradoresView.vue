@@ -952,7 +952,7 @@ onMounted(getSembradores)
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 1.25rem 2rem;
+    padding: 1rem 1.5rem;
     background: white;
     border-bottom: 1px solid #e2e8f0;
   }
@@ -985,7 +985,7 @@ onMounted(getSembradores)
 /* ========== SEMBRADORES MAIN ========== */
 @media (min-width: 1024px) {
   .sembradores-main {
-    padding: 1.5rem 2rem;
+    padding: 1rem 1.5rem;
     background: #f8fafc;
   }
 }
@@ -1196,6 +1196,12 @@ onMounted(getSembradores)
   gap: 1rem;
 }
 
+@media (min-width: 1024px) {
+  .sembradores-content {
+    max-width: 100%;
+  }
+}
+
 /* ========== FORM SECTION ========== */
 .form-section {
   background: rgba(255, 255, 255, 0.9);
@@ -1204,6 +1210,15 @@ onMounted(getSembradores)
   padding: 1rem;
   backdrop-filter: blur(10px);
   box-shadow: 0 4px 20px rgba(22, 163, 74, 0.08);
+}
+
+@media (min-width: 1024px) {
+  .form-section {
+    background: white;
+    border: 1px solid #e2e8f0;
+    padding: 1.25rem 1.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  }
 }
 
 .form-header {
@@ -1217,9 +1232,21 @@ onMounted(getSembradores)
   margin-bottom: 0.15rem;
 }
 
+@media (min-width: 1024px) {
+  .form-title {
+    font-size: 1.1rem;
+  }
+}
+
 .form-subtitle {
   font-size: 0.65rem;
   color: #64748b;
+}
+
+@media (min-width: 1024px) {
+  .form-subtitle {
+    font-size: 0.85rem;
+  }
 }
 
 .sembrador-form {
@@ -1246,6 +1273,12 @@ onMounted(getSembradores)
   color: #374151;
   text-transform: uppercase;
   letter-spacing: 0.05em;
+}
+
+@media (min-width: 1024px) {
+  .form-label {
+    font-size: 0.8rem;
+  }
 }
 
 .optional-label {
@@ -1286,6 +1319,13 @@ onMounted(getSembradores)
   color: #1e3a2f;
   font-size: 0.75rem;
   transition: all 0.3s ease;
+}
+
+@media (min-width: 1024px) {
+  .form-input {
+    font-size: 0.9rem;
+    padding: 0.65rem 0.85rem 0.65rem 2rem;
+  }
 }
 
 .form-input::placeholder {
@@ -1398,6 +1438,15 @@ onMounted(getSembradores)
   box-shadow: 0 4px 20px rgba(22, 163, 74, 0.08);
 }
 
+@media (min-width: 1024px) {
+  .list-section {
+    background: white;
+    border: 1px solid #e2e8f0;
+    padding: 1.25rem 1.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  }
+}
+
 .list-header {
   margin-bottom: 0.75rem;
 }
@@ -1499,6 +1548,13 @@ onMounted(getSembradores)
   letter-spacing: 0.05em;
 }
 
+@media (min-width: 1024px) {
+  .table-header-cell {
+    padding: 0.75rem 1rem;
+    font-size: 0.75rem;
+  }
+}
+
 .table-body-row {
   border-bottom: 1px solid rgba(22, 163, 74, 0.1);
   transition: all 0.3s ease;
@@ -1512,6 +1568,13 @@ onMounted(getSembradores)
   padding: 0.5rem;
   color: #1e3a2f;
   font-size: 0.7rem;
+}
+
+@media (min-width: 1024px) {
+  .table-cell {
+    padding: 0.75rem 1rem;
+    font-size: 0.875rem;
+  }
 }
 
 .cell-content {

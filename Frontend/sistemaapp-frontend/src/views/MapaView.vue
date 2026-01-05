@@ -43,30 +43,32 @@
       </div>
     </header>
 
-    <!-- Panel lateral de capas -->
-    <div class="layers-panel">
-      <div class="panel-wrapper">
-        <h3 class="panel-title">Capas disponibles:</h3>
-        <div class="layers-list">
-          <label v-for="c in capas" :key="c.value" class="layer-checkbox"
-            :class="{ 'layer-active': activeLayers.includes(c.value) }"
-          >
-            <input type="checkbox" v-model="activeLayers" :value="c.value" class="checkbox-input" />
-            <span class="checkbox-circle" :style="{ backgroundColor: c.colorBg }"></span>
-            <span class="checkbox-label">{{ c.label }}</span>
-          </label>
+    <!-- Contenedor del mapa y panel -->
+    <div class="map-content-wrapper">
+      <!-- Panel lateral de capas -->
+      <div class="layers-panel">
+        <div class="panel-wrapper">
+          <h3 class="panel-title">Capas disponibles:</h3>
+          <div class="layers-list">
+            <label v-for="c in capas" :key="c.value" class="layer-checkbox"
+              :class="{ 'layer-active': activeLayers.includes(c.value) }"
+            >
+              <input type="checkbox" v-model="activeLayers" :value="c.value" class="checkbox-input" />
+              <span class="checkbox-circle" :style="{ backgroundColor: c.colorBg }"></span>
+              <span class="checkbox-label">{{ c.label }}</span>
+            </label>
+          </div>
+          <hr class="panel-divider" />
+          <p class="panel-hint">
+            Selecciona las capas para mostrar información ambiental, social, productiva o de infraestructura.
+          </p>
         </div>
-        <hr class="panel-divider" />
-        <p class="panel-hint">
-          Selecciona las capas para mostrar información ambiental, social, productiva o de infraestructura.
-        </p>
       </div>
-    </div>
 
-    <!-- Mapa principal -->
-    <div id="map-container" class="map-section">
-      <l-map ref="map" v-model:zoom="zoom" :center="center" style="height: 100%; width: 100%;" @click="onMapClick">
-        <l-tile-layer :url="tileUrl" :attribution="tileAttr" />
+      <!-- Mapa principal -->
+      <div id="map-container" class="map-section">
+        <l-map ref="map" v-model:zoom="zoom" :center="center" style="height: 100%; width: 100%;" @click="onMapClick">
+          <l-tile-layer :url="tileUrl" :attribution="tileAttr" />
 
         <!-- Capa ambiental -->
         <l-marker
@@ -205,6 +207,7 @@
         </l-marker>
       </l-map>
     </div>
+    </div> <!-- Cierre map-content-wrapper -->
 
     <!-- Leyenda flotante CON SEMBRADORES -->
     <div class="legend-box">
@@ -498,6 +501,14 @@ onMounted(() => {
     background: white;
     border-bottom: 1px solid #e2e8f0;
   }
+  
+  .page-title {
+    font-size: 1.5rem;
+  }
+  
+  .page-subtitle {
+    font-size: 0.9rem;
+  }
 }
 
 .page-title {
@@ -560,6 +571,24 @@ onMounted(() => {
 @keyframes float {
   0%, 100% { transform: translate(0, 0); }
   50% { transform: translate(30px, -50px); }
+}
+
+/* ========== MAP CONTENT WRAPPER ========== */
+.map-content-wrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+}
+
+@media (min-width: 1024px) {
+  .map-content-wrapper {
+    flex-direction: row;
+    padding: 0;
+    align-items: stretch;
+    overflow: visible;
+  }
 }
 
 /* ========== HEADER ========== */
@@ -717,6 +746,64 @@ onMounted(() => {
   box-shadow: 0 6px 24px rgba(22, 163, 74, 0.12);
 }
 
+@media (min-width: 1024px) {
+  .layers-panel {
+    position: relative;
+    top: 0;
+    left: 0;
+    width: 280px;
+    min-width: 280px;
+    max-height: none;
+    height: auto;
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    margin: 1.5rem;
+    margin-right: 0;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    flex-shrink: 0;
+  }
+  
+  .panel-wrapper {
+    padding: 1.25rem;
+  }
+  
+  .panel-title {
+    font-size: 0.85rem;
+    margin-bottom: 1rem;
+  }
+  
+  .layers-list {
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+  }
+  
+  .layer-checkbox {
+    padding: 0.75rem;
+    border-radius: 8px;
+    gap: 0.75rem;
+  }
+  
+  .checkbox-input {
+    width: 18px;
+    height: 18px;
+  }
+  
+  .checkbox-circle {
+    width: 16px;
+    height: 16px;
+  }
+  
+  .checkbox-label {
+    font-size: 0.9rem;
+  }
+  
+  .panel-hint {
+    font-size: 0.8rem;
+    line-height: 1.5;
+  }
+}
+
 .panel-wrapper {
   padding: 1rem;
 }
@@ -803,6 +890,18 @@ onMounted(() => {
   margin-left: 240px;
 }
 
+@media (min-width: 1024px) {
+  .map-section {
+    margin-left: 0;
+    margin: 1.5rem;
+    margin-left: 1rem;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    overflow: hidden;
+  }
+}
+
 /* ========== LEGEND BOX ========== */
 .legend-box {
   position: absolute;
@@ -816,6 +915,36 @@ onMounted(() => {
   backdrop-filter: blur(12px);
   box-shadow: 0 6px 24px rgba(22, 163, 74, 0.12);
   max-width: 220px;
+}
+
+@media (min-width: 1024px) {
+  .legend-box {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 1.25rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    max-width: 280px;
+  }
+  
+  .legend-title {
+    font-size: 0.9rem;
+    margin-bottom: 0.75rem;
+  }
+  
+  .legend-item {
+    font-size: 0.85rem;
+    gap: 0.75rem;
+    padding: 0.25rem 0;
+  }
+  
+  .legend-marker {
+    width: 18px;
+    height: 18px;
+  }
 }
 
 .legend-title {

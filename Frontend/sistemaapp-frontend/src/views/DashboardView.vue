@@ -1014,7 +1014,7 @@ const getUsuariosDesc = (): string => {
 
 @media (min-width: 1024px) {
   .dashboard-content {
-    max-width: 1200px;
+    max-width: 100%;
     padding: 0;
     display: flex;
     flex-direction: column;
