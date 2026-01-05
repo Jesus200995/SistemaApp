@@ -18,7 +18,8 @@
         </svg>
       </div>
       <div class="sidebar-title">
-        <span class="sidebar-app-name">Estructura</span>
+        <span class="sidebar-app-name">Sistema de</span>
+        <span class="sidebar-app-subtitle">Administración</span>
       </div>
     </div>
 
@@ -144,8 +145,8 @@ const logout = () => {
     position: fixed;
     left: 0;
     top: 0;
-    background: linear-gradient(180deg, #1e3a5f 0%, #1a365d 50%, #1e3a5f 100%);
-    border-right: 1px solid rgba(59, 130, 246, 0.2);
+    background: linear-gradient(180deg, #14532d 0%, #166534 50%, #15803d 100%);
+    border-right: 1px solid rgba(22, 163, 74, 0.3);
     z-index: 200;
     transition: all 0.3s ease;
     box-shadow: 4px 0 20px rgba(0, 0, 0, 0.15);
@@ -191,10 +192,20 @@ const logout = () => {
 }
 
 .sidebar-app-name {
-  font-size: 1.25rem;
-  font-weight: 700;
+  font-size: 1.1rem;
+  font-weight: 400;
   color: white;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.3px;
+  display: block;
+  line-height: 1.2;
+}
+
+.sidebar-app-subtitle {
+  font-size: 1rem;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.9);
+  display: block;
+  line-height: 1.2;
 }
 
 .sidebar-nav {
@@ -225,9 +236,9 @@ const logout = () => {
 }
 
 .sidebar-item.active {
-  background: linear-gradient(135deg, rgba(59, 130, 246, 0.3) 0%, rgba(37, 99, 235, 0.2) 100%);
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.3) 0%, rgba(22, 163, 74, 0.2) 100%);
   color: white;
-  border-left: 3px solid #3b82f6;
+  border-left: 3px solid #22c55e;
   margin-left: -3px;
   padding-left: calc(1rem + 3px);
 }
@@ -272,7 +283,7 @@ const logout = () => {
   width: 36px;
   height: 36px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
   display: flex;
   align-items: center;
   justify-content: center;
