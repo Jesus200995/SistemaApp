@@ -819,9 +819,14 @@ def directorio_personas(
     for p in personas:
         # Determinar ámbito (territorio/rutas/CAC)
         ambito = []
+        territorio_nombre = None
+        cac_nombre = None
+        cacs = []
+        
         if p.territorio_id:
             t = db.query(Territorio).filter(Territorio.id == p.territorio_id).first()
             if t:
+                territorio_nombre = t.nombre
                 ambito.append(f"Territorio: {t.nombre}")
         
         # Buscar CAC asignadas si es técnico
@@ -832,15 +837,25 @@ def directorio_personas(
             ).all()
             for c in cacs:
                 ambito.append(f"CAC: {c.nombre}")
+            if cacs:
+                cac_nombre = cacs[0].nombre
         
         result.append({
+            "id": p.id,
             "persona_id": p.id,
+            "nombre": p.nombre,
             "nombre_completo": p.nombre,
             "curp": p.curp,
+            "rol": p.rol,
             "rol_sistema": p.rol,
             "perfil_operativo": p.perfil_operativo,
+            "territorio_id": p.territorio_id,
+            "territorio_nombre": territorio_nombre,
+            "ruta_nombre": None,  # TODO: implementar relación ruta
+            "cac_nombre": cac_nombre,
             "ambito": ", ".join(ambito) if ambito else "Sin asignación",
             "correo": p.email,
+            "correo_contacto": p.email,
             "telefono": p.telefono,
             "activo": p.activo
         })
