@@ -45,6 +45,8 @@ class CambioAdscripcionCreate(BaseModel):
     territorio_destino_id: Optional[int] = None
     resumen: Optional[str] = None
     fecha_efecto: Optional[datetime] = None
+    destino_id: Optional[int] = None  # Usuario destinatario de la solicitud
+    estatus: Optional[str] = None  # Si se envía EN_REVISION, se salta el borrador
 
 class CambioAdscripcionAccion(BaseModel):
     accion: str  # AUTORIZAR, RECHAZAR, APLICAR, CANCELAR, DEVOLVER
@@ -189,9 +191,16 @@ def listar_cambios_adscripcion(
             if u:
                 propuesto_por = {"persona_id": u.id, "nombre_completo": u.nombre}
         
+        # Obtener destinatario
+        destinatario = None
+        if c.destino_id:
+            u = db.query(User).filter(User.id == c.destino_id).first()
+            if u:
+                destinatario = {"persona_id": u.id, "nombre_completo": u.nombre}
+        
         # Verificar si está vencido
         vencido = False
-        if c.fecha_limite and c.estatus in ["BORRADOR", "EN_REVISION", "AUTORIZADO"]:
+        if c.fecha_limite and c.estatus in ["EN_REVISION", "AUTORIZADO"]:
             vencido = c.fecha_limite < datetime.utcnow()
         
         result.append({
@@ -205,6 +214,9 @@ def listar_cambios_adscripcion(
             "fecha_limite": c.fecha_limite.isoformat() if c.fecha_limite else None,
             "vencido": vencido,
             "propuesto_por": propuesto_por,
+            "propuesto_por_id": c.propuesto_por_id,
+            "destino_id": c.destino_id,
+            "destinatario": destinatario,
             "created_at": c.created_at.isoformat() if c.created_at else None
         })
     
@@ -296,6 +308,9 @@ def crear_cambio_adscripcion(
     # Calcular fecha límite (SLA de 5 días hábiles)
     fecha_limite = datetime.utcnow() + timedelta(days=7)
     
+    # Si se envía estatus EN_REVISION, se salta el borrador
+    estatus_inicial = "EN_REVISION" if data.estatus == "EN_REVISION" else "BORRADOR"
+    
     cambio = CambioAdscripcion(
         folio=folio,
         tipo_cambio=data.tipo_cambio.upper(),
@@ -310,8 +325,9 @@ def crear_cambio_adscripcion(
         resumen=data.resumen,
         fecha_efecto=data.fecha_efecto,
         fecha_limite=fecha_limite,
-        estatus="BORRADOR",
-        propuesto_por_id=current_user["user_id"]
+        estatus=estatus_inicial,
+        propuesto_por_id=current_user["user_id"],
+        destino_id=data.destino_id  # Usuario destinatario
     )
     
     db.add(cambio)

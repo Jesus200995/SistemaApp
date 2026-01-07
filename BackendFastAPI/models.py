@@ -287,6 +287,7 @@ class CambioAdscripcion(Base):
     
     # Auditoría
     propuesto_por_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    destino_id = Column(Integer, ForeignKey("users.id"), nullable=True)  # Usuario destinatario de la solicitud
     autorizado_por_id = Column(Integer, ForeignKey("users.id"), nullable=True)
     aplicado_por_id = Column(Integer, ForeignKey("users.id"), nullable=True)
     observaciones = Column(Text, nullable=True)
