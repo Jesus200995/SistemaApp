@@ -87,7 +87,7 @@
                 <p class="alert-from">De: {{ solicitud.solicitante?.nombre || 'Usuario' }}</p>
                 <p class="alert-time">{{ formatTimeAgo(solicitud.fecha) }}</p>
               </div>
-              <router-link to="/solicitudes" class="alert-action">
+              <router-link to="/cambios-adscripcion" class="alert-action">
                 <ChevronRight :size="20" />
               </router-link>
             </div>
@@ -208,13 +208,70 @@
           </div>
         </section>
 
+        <!-- Módulo 1: Personal Operativo (Admin, Territorial, Facilitador) -->
+        <section v-if="['admin', 'territorial', 'facilitador'].includes(auth.user?.rol)" class="module-section">
+          <div class="module-header">
+            <div class="module-title-row">
+              <Building2 :size="22" class="module-icon" />
+              <h3 class="module-title">Personal Operativo</h3>
+            </div>
+            <span class="module-badge">Módulo 1</span>
+          </div>
+          <div class="module-grid">
+            <router-link to="/estructura-territorial" class="module-card">
+              <div class="module-card-icon">
+                <Globe :size="24" />
+              </div>
+              <div class="module-card-info">
+                <h4>Estructura Territorial</h4>
+                <p>Organigrama jerárquico</p>
+              </div>
+              <ChevronRight :size="18" class="module-arrow" />
+            </router-link>
+            
+            <router-link to="/directorio" class="module-card">
+              <div class="module-card-icon">
+                <Users :size="24" />
+              </div>
+              <div class="module-card-info">
+                <h4>Directorio</h4>
+                <p>Lista de personal</p>
+              </div>
+              <ChevronRight :size="18" class="module-arrow" />
+            </router-link>
+            
+            <router-link to="/cambios-adscripcion" class="module-card highlight">
+              <div class="module-card-icon">
+                <GitBranch :size="24" />
+                <span v-if="solicitudesPendientes > 0" class="module-badge-count">{{ solicitudesPendientes }}</span>
+              </div>
+              <div class="module-card-info">
+                <h4>Solicitudes</h4>
+                <p>Cambios de adscripción</p>
+              </div>
+              <ChevronRight :size="18" class="module-arrow" />
+            </router-link>
+            
+            <router-link v-if="auth.user?.rol === 'admin'" to="/importaciones" class="module-card">
+              <div class="module-card-icon">
+                <Upload :size="24" />
+              </div>
+              <div class="module-card-info">
+                <h4>Importaciones</h4>
+                <p>Cargar datos masivos</p>
+              </div>
+              <ChevronRight :size="18" class="module-arrow" />
+            </router-link>
+          </div>
+        </section>
+
         <!-- Herramientas Comunes (Todos los roles) -->
         <section class="common-tools-section">
-          <h3 class="section-header">Herramientas</h3>
+          <h3 class="section-header">Acceso Rápido</h3>
           <div class="tools-grid">
-            <router-link to="/solicitudes" class="tool-card">
+            <router-link to="/cambios-adscripcion" class="tool-card">
               <div class="tool-icon-wrapper">
-                <FileText :size="24" />
+                <GitBranch :size="24" />
                 <span v-if="solicitudesPendientes > 0" class="tool-badge">{{ solicitudesPendientes }}</span>
               </div>
               <span class="tool-label">Solicitudes</span>
@@ -229,9 +286,9 @@
             
             <router-link to="/mapa" class="tool-card">
               <div class="tool-icon-wrapper">
-                <MapPin :size="24" />
+                <Layers :size="24" />
               </div>
-              <span class="tool-label">Mapa</span>
+              <span class="tool-label">Capas</span>
             </router-link>
           </div>
         </section>
@@ -253,7 +310,7 @@ import { onMounted, ref, computed, onUnmounted } from 'vue'
 import { useAuthStore } from '../stores/auth'
 import { getSecureApiUrl, getSecureWsUrl } from '../utils/api'
 import { useRouter } from 'vue-router'
-import { LogOut, User, Mail, LayoutDashboard, BarChart3, Users, Settings, MapPin, Sprout, FileText, Smile, Clipboard, Check, Shield, Zap, Bell, Clock, CheckCircle, AlertCircle, Info, Eye, MessageSquare, Home, ChevronRight, Upload } from 'lucide-vue-next'
+import { LogOut, User, Mail, LayoutDashboard, BarChart3, Users, Settings, MapPin, Sprout, FileText, Smile, Clipboard, Check, Shield, Zap, Bell, Clock, CheckCircle, AlertCircle, Info, Eye, MessageSquare, Home, ChevronRight, Upload, GitBranch, Layers, Building2, Globe } from 'lucide-vue-next'
 import HamburgerMenu from '../components/HamburgerMenu.vue'
 import DesktopSidebar from '../components/DesktopSidebar.vue'
 import DesktopHeader from '../components/DesktopHeader.vue'
@@ -559,7 +616,7 @@ const actions = computed(() => {
   }
   
   // Solicitudes - Todos los roles
-  baseActions.push({ title: 'Solicitudes', icon: FileText, route: '/solicitudes' })
+  baseActions.push({ title: 'Solicitudes', icon: GitBranch, route: '/cambios-adscripcion' })
   
   // Sembradores - Todos los roles
   baseActions.push({ title: 'Sembradores', icon: Sprout, route: '/sembradores' })
@@ -576,7 +633,7 @@ const actions = computed(() => {
 })
 
 const goTo = (route: string) => {
-  const validRoutes = ['/usuarios', '/estadisticas', '/solicitudes', '/mapa', '/sembradores', '/seguimiento', '/admin-panel']
+  const validRoutes = ['/usuarios', '/estadisticas', '/cambios-adscripcion', '/mapa', '/sembradores', '/seguimiento', '/admin-panel', '/estructura-territorial', '/directorio', '/importaciones']
   if (validRoutes.includes(route)) {
     router.push(route)
   } else {
@@ -3827,6 +3884,239 @@ const getUsuariosDesc = (): string => {
   .alert-card {
     padding: 1.25rem 1.5rem;
     border-radius: 16px;
+  }
+}
+
+/* ========== MODULE SECTION (MÓDULO 1) ========== */
+.module-section {
+  margin-bottom: 1.5rem;
+}
+
+.module-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+  padding: 0 0.25rem;
+}
+
+.module-title-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.module-icon {
+  color: #16a34a;
+}
+
+.module-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0;
+}
+
+.module-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.35rem 0.75rem;
+  background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
+  color: white;
+  border-radius: 20px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  box-shadow: 0 2px 8px rgba(22, 163, 74, 0.3);
+}
+
+.module-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
+}
+
+@media (min-width: 640px) {
+  .module-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .module-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.25rem;
+  }
+  
+  .module-section {
+    margin-bottom: 0;
+  }
+}
+
+.module-card {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem;
+  background: linear-gradient(135deg, #ffffff 0%, #f9fafb 100%);
+  border: 1.5px solid #e2e8f0;
+  border-radius: 14px;
+  text-decoration: none;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.module-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #16a34a, #22c55e, #16a34a);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.module-card:hover::before {
+  opacity: 1;
+}
+
+.module-card:hover {
+  border-color: #16a34a;
+  box-shadow: 0 8px 24px rgba(22, 163, 74, 0.15), 0 2px 6px rgba(22, 163, 74, 0.08);
+  transform: translateY(-3px);
+  background: linear-gradient(135deg, #ffffff 0%, #f0fdf4 100%);
+}
+
+.module-card.highlight {
+  background: linear-gradient(135deg, #fef2f2 0%, #fff5f5 100%);
+  border-color: #fecaca;
+}
+
+.module-card.highlight:hover {
+  border-color: #ef4444;
+  box-shadow: 0 8px 24px rgba(239, 68, 68, 0.15), 0 2px 6px rgba(239, 68, 68, 0.08);
+  background: linear-gradient(135deg, #fff5f5 0%, #fef2f2 100%);
+}
+
+.module-card.highlight::before {
+  background: linear-gradient(90deg, #ef4444, #f87171, #ef4444);
+}
+
+.module-card-icon {
+  position: relative;
+  width: 44px;
+  height: 44px;
+  background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #16a34a;
+  flex-shrink: 0;
+  transition: all 0.3s ease;
+}
+
+.module-card.highlight .module-card-icon {
+  background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+  color: #ef4444;
+}
+
+.module-card:hover .module-card-icon {
+  transform: scale(1.1);
+  box-shadow: 0 4px 12px rgba(22, 163, 74, 0.2);
+}
+
+.module-card.highlight:hover .module-card-icon {
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2);
+}
+
+.module-badge-count {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 4px;
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  color: white;
+  border-radius: 10px;
+  font-size: 0.65rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(239, 68, 68, 0.4);
+  border: 2px solid white;
+  animation: pulse 2s infinite;
+}
+
+.module-card-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.module-card-info h4 {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #1e293b;
+  margin: 0 0 0.15rem 0;
+  letter-spacing: -0.2px;
+}
+
+.module-card-info p {
+  font-size: 0.7rem;
+  color: #64748b;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.module-arrow {
+  color: #94a3b8;
+  flex-shrink: 0;
+  transition: all 0.3s ease;
+}
+
+.module-card:hover .module-arrow {
+  color: #16a34a;
+  transform: translateX(3px);
+}
+
+.module-card.highlight:hover .module-arrow {
+  color: #ef4444;
+}
+
+@media (min-width: 1024px) {
+  .module-card {
+    padding: 1.25rem;
+    gap: 1rem;
+    border-radius: 16px;
+  }
+  
+  .module-card-icon {
+    width: 50px;
+    height: 50px;
+  }
+  
+  .module-card-info h4 {
+    font-size: 0.95rem;
+  }
+  
+  .module-card-info p {
+    font-size: 0.8rem;
+  }
+  
+  .module-header {
+    margin-bottom: 1.25rem;
+  }
+  
+  .module-title {
+    font-size: 1.25rem;
   }
 }
 </style>
