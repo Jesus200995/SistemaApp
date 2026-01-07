@@ -6,7 +6,7 @@
       <header class="view-header">
         <div class="header-content">
           <div class="header-title">
-            <Upload :size="28" class="header-icon" />
+            <Upload :size="22" class="header-icon" />
             <div>
               <h1>Importaciones</h1>
               <p class="header-subtitle">Carga de bases - Solo Administrador</p>
@@ -509,7 +509,7 @@ onMounted(() => {
 
 .view-header {
   background: white;
-  padding: 1rem 1.5rem;
+  padding: 0.625rem 1.25rem;
   border-bottom: 1px solid #e5e7eb;
 }
 
@@ -522,18 +522,18 @@ onMounted(() => {
 .header-title {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 0.5rem;
 }
 
 .header-title h1 {
-  font-size: 1.5rem;
-  font-weight: 700;
+  font-size: 1.1rem;
+  font-weight: 600;
   color: #14532d;
   margin: 0;
 }
 
 .header-subtitle {
-  font-size: 0.875rem;
+  font-size: 0.75rem;
   color: #6b7280;
   margin: 0;
 }

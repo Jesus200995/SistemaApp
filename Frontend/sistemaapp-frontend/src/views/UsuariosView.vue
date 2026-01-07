@@ -49,20 +49,26 @@
         </div>
       </header>
 
-      <!-- Header Desktop con título de página -->
-      <header class="desktop-page-header">
-        <div class="page-header-left">
-          <h1 class="page-title">Directorio de Personal</h1>
-        </div>
-        <div class="page-header-actions">
-          <button 
-            v-if="puedeCrearUsuarios" 
-            @click="abrirModalCrearUsuario" 
-            class="desktop-create-button"
-          >
-            <UserPlus :size="18" />
-            <span>Crear Usuario</span>
-          </button>
+      <!-- Header Desktop con estilo blanco -->
+      <header class="view-header">
+        <div class="header-content">
+          <div class="header-title">
+            <Users :size="22" class="header-icon" />
+            <div>
+              <h1>Directorio de Personal</h1>
+              <p class="header-subtitle">Gestión de usuarios del sistema</p>
+            </div>
+          </div>
+          <div class="header-actions">
+            <button 
+              v-if="puedeCrearUsuarios" 
+              @click="abrirModalCrearUsuario" 
+              class="btn-primary"
+            >
+              <UserPlus :size="18" />
+              <span>Crear Usuario</span>
+            </button>
+          </div>
         </div>
       </header>
 
@@ -1068,49 +1074,72 @@ onMounted(async () => {
   }
 }
 
-/* ========== DESKTOP PAGE HEADER ========== */
-.desktop-page-header {
+/* ========== VIEW HEADER (ESTILO BLANCO) ========== */
+.view-header {
   display: none;
 }
 
 @media (min-width: 1024px) {
-  .desktop-page-header {
+  .view-header {
+    display: block;
+    background: white;
+    padding: 0.625rem 1.25rem;
+    border-bottom: 1px solid #e5e7eb;
+  }
+  
+  .header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .header-title {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    padding: 0.75rem 1.5rem;
-    background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
-    border-bottom: 1.5px solid rgba(255, 255, 255, 0.2);
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+    gap: 0.5rem;
   }
-}
-
-.page-title {
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: #ffffff;
-  letter-spacing: -0.3px;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-}
-
-.desktop-create-button {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.6rem 1.25rem;
-  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
-  color: white;
-  border: none;
-  border-radius: 8px;
-  font-size: 0.9rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.desktop-create-button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.35);
+  
+  .header-title h1 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #14532d;
+    margin: 0;
+  }
+  
+  .header-subtitle {
+    font-size: 0.75rem;
+    color: #6b7280;
+    margin: 0;
+  }
+  
+  .header-icon {
+    color: #16a34a;
+  }
+  
+  .header-actions {
+    display: flex;
+    gap: 0.5rem;
+  }
+  
+  .btn-primary {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  
+  .btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(22, 163, 74, 0.35);
+  }
 }
 
 /* ========== USUARIOS MAIN ========== */

@@ -9,12 +9,22 @@
     <!-- Main Wrapper para PC -->
     <div class="main-wrapper">
       <!-- Header para PC -->
-      <div class="desktop-page-header">
-        <h1 class="page-title">Seguimiento</h1>
-        <button @click="recargarSeguimientos" class="desktop-reload-button" title="Recargar">
-          <RotateCw :size="18" />
-        </button>
-      </div>
+      <header class="view-header">
+        <div class="header-content">
+          <div class="header-title">
+            <Microscope :size="22" class="header-icon" />
+            <div>
+              <h1>Seguimiento</h1>
+              <p class="header-subtitle">Seguimiento de campo</p>
+            </div>
+          </div>
+          <div class="header-actions">
+            <button @click="recargarSeguimientos" class="btn-secondary" title="Recargar">
+              <RotateCw :size="18" />
+            </button>
+          </div>
+        </div>
+      </header>
 
       <!-- Fondo decorativo con blobs (solo móvil) -->
       <div class="background-blobs mobile-only">
@@ -865,51 +875,69 @@ onMounted(async () => {
   }
 }
 
-/* ========== DESKTOP PAGE HEADER ========== */
-.desktop-page-header {
+/* ========== VIEW HEADER (ESTILO BLANCO) ========== */
+.view-header {
   display: none;
 }
 
 @media (min-width: 1024px) {
-  .desktop-page-header {
+  .view-header {
+    display: block;
+    background: white;
+    padding: 0.625rem 1.25rem;
+    border-bottom: 1px solid #e5e7eb;
+  }
+  
+  .header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .header-title {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    padding: 0.75rem 1.5rem;
-    background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
-    border-bottom: 1.5px solid rgba(255, 255, 255, 0.2);
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+    gap: 0.5rem;
   }
-}
-
-.page-title {
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: #ffffff;
-  letter-spacing: -0.3px;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-}
-
-.desktop-reload-button {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0.5rem;
-  background: rgba(255, 255, 255, 0.15);
-  color: #ffffff;
-  border: 1.5px solid rgba(255, 255, 255, 0.3);
-  border-radius: 10px;
-  cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.1);
-}
-
-.desktop-reload-button:hover {
-  background: rgba(255, 255, 255, 0.25);
-  color: #ffffff;
-  transform: scale(1.05) rotate(180deg);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2), inset 0 2px 4px rgba(255, 255, 255, 0.2);
-  border-color: rgba(255, 255, 255, 0.5);
+  
+  .header-title h1 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #14532d;
+    margin: 0;
+  }
+  
+  .header-subtitle {
+    font-size: 0.75rem;
+    color: #6b7280;
+    margin: 0;
+  }
+  
+  .header-icon {
+    color: #16a34a;
+  }
+  
+  .header-actions {
+    display: flex;
+    gap: 0.5rem;
+  }
+  
+  .btn-secondary {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem;
+    background: #f3f4f6;
+    color: #374151;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  
+  .btn-secondary:hover {
+    background: #e5e7eb;
+  }
 }
 
 /* ========== SEGUIMIENTO MAIN ========== */

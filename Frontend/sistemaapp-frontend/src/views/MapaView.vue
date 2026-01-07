@@ -9,10 +9,17 @@
     <!-- Main Wrapper para PC -->
     <div class="main-wrapper">
       <!-- Header para PC -->
-      <div class="desktop-page-header">
-        <h1 class="page-title">Capas Temáticas</h1>
-        <p class="page-subtitle">Ambiental, Social, Productiva e Infraestructura</p>
-      </div>
+      <header class="view-header">
+        <div class="header-content">
+          <div class="header-title">
+            <Layers :size="22" class="header-icon" />
+            <div>
+              <h1>Capas Temáticas</h1>
+              <p class="header-subtitle">Ambiental, Social, Productiva e Infraestructura</p>
+            </div>
+          </div>
+        </div>
+      </header>
 
       <!-- Fondo decorativo con blobs animados -->
       <div class="background-blobs mobile-only">
@@ -488,43 +495,47 @@ onMounted(() => {
   }
 }
 
-/* ========== DESKTOP PAGE HEADER ========== */
-.desktop-page-header {
+/* ========== VIEW HEADER (ESTILO BLANCO) ========== */
+.view-header {
   display: none;
 }
 
 @media (min-width: 1024px) {
-  .desktop-page-header {
+  .view-header {
+    display: block;
+    background: white;
+    padding: 0.625rem 1.25rem;
+    border-bottom: 1px solid #e5e7eb;
+  }
+  
+  .view-header .header-content {
     display: flex;
-    flex-direction: column;
-    padding: 0.75rem 1.5rem;
-    background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
-    border-bottom: 1.5px solid rgba(255, 255, 255, 0.2);
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+    justify-content: space-between;
+    align-items: center;
   }
   
-  .page-title {
-    font-size: 1.25rem;
+  .view-header .header-title {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
   }
   
-  .page-subtitle {
-    font-size: 0.9rem;
+  .view-header .header-title h1 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #14532d;
+    margin: 0;
   }
-}
-
-.page-title {
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: #ffffff;
-  margin: 0;
-  letter-spacing: -0.3px;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-}
-
-.page-subtitle {
-  font-size: 0.875rem;
-  color: rgba(255, 255, 255, 0.85);
-  margin: 0.25rem 0 0 0;
+  
+  .view-header .header-subtitle {
+    font-size: 0.75rem;
+    color: #6b7280;
+    margin: 0;
+  }
+  
+  .view-header .header-icon {
+    color: #16a34a;
+  }
 }
 
 /* ========== BACKGROUND BLOBS ========== */
