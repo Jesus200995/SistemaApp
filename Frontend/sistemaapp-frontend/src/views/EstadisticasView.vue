@@ -466,20 +466,6 @@ onMounted(() => {
   color: #1e293b;
 }
 
-/* ========== ESTADISTICAS MAIN ========== */
-@media (min-width: 1024px) {
-  .estadisticas-main {
-    padding: 1.5rem 2rem;
-    background: #f8fafc;
-    max-width: 100%;
-    margin: 0;
-  }
-  
-  .estadisticas-content {
-    gap: 1.5rem;
-  }
-}
-
 /* ========== BLOBS ========== */
 .background-blobs {
   position: fixed;
@@ -692,20 +678,24 @@ onMounted(() => {
   position: relative;
   z-index: 5;
   padding: 1rem;
-  max-width: 1200px;
-  margin: 0 auto;
+  width: 100%;
 }
 
 @media (min-width: 1024px) {
   .estadisticas-main {
-    max-width: 100%;
-    padding: 0;
+    padding: 1.5rem 2rem;
+    background: #f8fafc;
+  }
+  
+  .estadisticas-content {
+    gap: 2rem;
   }
 }
 
 .estadisticas-content {
   display: grid;
   gap: 1rem;
+  width: 100%;
 }
 
 /* ========== STATS SECTION ========== */
@@ -735,13 +725,13 @@ onMounted(() => {
 @media (min-width: 1024px) {
   .stats-grid {
     grid-template-columns: repeat(3, 1fr);
-    gap: 1.5rem;
+    gap: 2rem;
   }
   
   .stat-card {
     background: white;
     border: 1px solid #e2e8f0;
-    padding: 1.5rem 1.25rem;
+    padding: 2rem 1.5rem;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
     border-radius: 16px;
   }
@@ -897,7 +887,7 @@ onMounted(() => {
     background: white;
     border: 1px solid #e2e8f0;
     border-radius: 16px;
-    padding: 1.5rem;
+    padding: 2rem;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
   }
   
@@ -1002,7 +992,7 @@ onMounted(() => {
     background: white;
     border: 1px solid #e2e8f0;
     border-radius: 16px;
-    padding: 1.5rem;
+    padding: 2rem;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
   }
   
@@ -1187,7 +1177,7 @@ onMounted(() => {
     background: linear-gradient(135deg, rgba(22, 163, 74, 0.1), rgba(21, 128, 61, 0.05));
     border: 1px solid rgba(22, 163, 74, 0.25);
     border-radius: 16px;
-    padding: 1.5rem;
+    padding: 2rem;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
   }
   
