@@ -23,6 +23,56 @@
       </header>
 
       <main class="view-main">
+        <!-- Pestañas -->
+        <div class="tabs-container">
+          <div class="tabs-wrapper">
+            <button 
+              class="tab-btn" 
+              :class="{ active: activeTab === 'pendientes' }"
+              @click="activeTab = 'pendientes'"
+            >
+              <Clock :size="18" />
+              <span>Pendientes</span>
+              <span v-if="cambiosPendientes.length > 0" class="tab-badge">
+                {{ cambiosPendientes.length }}
+              </span>
+            </button>
+            <button 
+              class="tab-btn" 
+              :class="{ active: activeTab === 'enviadas' }"
+              @click="activeTab = 'enviadas'"
+            >
+              <SendHorizontal :size="18" />
+              <span>Enviadas</span>
+              <span v-if="cambiosEnviados.length > 0" class="tab-badge tab-badge-enviadas">
+                {{ cambiosEnviados.length }}
+              </span>
+            </button>
+            <button 
+              class="tab-btn" 
+              :class="{ active: activeTab === 'historial' }"
+              @click="activeTab = 'historial'"
+            >
+              <History :size="18" />
+              <span>Historial</span>
+            </button>
+          </div>
+          <div class="tabs-stats">
+            <div class="stat-item">
+              <span class="stat-label">Pendientes:</span>
+              <span class="stat-value pending">{{ cambiosPendientes.length }}</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">Enviadas:</span>
+              <span class="stat-value sent">{{ cambiosEnviados.length }}</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">Procesadas:</span>
+              <span class="stat-value approved">{{ cambiosHistorial.length }}</span>
+            </div>
+          </div>
+        </div>
+
         <!-- Filtros -->
         <div class="filters-section">
           <div class="filter-group">
@@ -80,7 +130,7 @@
                 <th>Tipo</th>
                 <th>Objeto</th>
                 <th>Resumen</th>
-                <th>Propuesto por</th>
+                <th>{{ activeTab === 'enviadas' ? 'Dirigido a' : 'Propuesto por' }}</th>
                 <th>Fecha Efecto</th>
                 <th>SLA</th>
                 <th>Estatus</th>
@@ -89,7 +139,7 @@
             </thead>
             <tbody>
               <tr 
-                v-for="cambio in cambios" 
+                v-for="cambio in cambiosFiltradosTab" 
                 :key="cambio.cambio_adscripcion_id"
                 :class="{ vencido: cambio.vencido }"
               >
@@ -101,7 +151,9 @@
                 </td>
                 <td class="objeto">{{ formatObjeto(cambio.objeto) }}</td>
                 <td class="resumen">{{ cambio.resumen || '-' }}</td>
-                <td>{{ cambio.propuesto_por?.nombre_completo?.split(' ')[0] || '-' }}</td>
+                <td>{{ activeTab === 'enviadas' 
+                    ? (cambio.destinatario?.nombre_completo?.split(' ')[0] || '-') 
+                    : (cambio.propuesto_por?.nombre_completo?.split(' ')[0] || '-') }}</td>
                 <td>{{ formatDate(cambio.fecha_efecto) }}</td>
                 <td>
                   <span v-if="cambio.vencido" class="sla-badge vencido">
@@ -163,9 +215,11 @@
             </tbody>
           </table>
           
-          <div v-if="cambios.length === 0" class="empty-state">
+          <div v-if="cambiosFiltradosTab.length === 0" class="empty-state">
             <GitBranch :size="48" />
-            <p>No hay cambios de adscripción</p>
+            <p v-if="activeTab === 'pendientes'">No hay cambios pendientes por revisar</p>
+            <p v-else-if="activeTab === 'enviadas'">No has enviado propuestas de cambio</p>
+            <p v-else>No hay cambios en el historial</p>
           </div>
         </div>
       </main>
@@ -204,6 +258,102 @@
             </div>
           </div>
           
+          <!-- Selector de Destinatario en 2 pasos -->
+          <div class="form-group">
+            <label>
+              <UserCheck :size="14" class="label-icon" />
+              Dirigir a (Destinatario) *
+            </label>
+            
+            <!-- Paso 1: Seleccionar Rol -->
+            <div class="select-wrapper">
+              <select 
+                v-model="rolSeleccionado" 
+                class="form-select"
+                :class="{ 'loading-select': loadingUsuarios }"
+                @change="onRolChange"
+              >
+                <option value="">-- Selecciona el tipo de destinatario --</option>
+                <option 
+                  v-for="grupo in rolesDisponiblesParaUsuario" 
+                  :key="grupo.rol" 
+                  :value="grupo.rol"
+                >
+                  {{ formatRolNombre(grupo.rol) }}
+                </option>
+              </select>
+              <div v-if="loadingUsuarios" class="select-loading">
+                <div class="mini-spinner"></div>
+              </div>
+            </div>
+
+            <!-- Paso 2: Seleccionar Destinatario (con búsqueda) -->
+            <div v-if="rolSeleccionado" class="persona-selector">
+              <div class="search-input-wrapper">
+                <Search :size="16" class="search-icon" />
+                <input 
+                  type="text" 
+                  v-model="busquedaPersona" 
+                  placeholder="Buscar destinatario por nombre o territorio..."
+                  class="search-input"
+                />
+                <button 
+                  v-if="busquedaPersona" 
+                  @click="busquedaPersona = ''" 
+                  class="clear-search"
+                  type="button"
+                >
+                  <X :size="14" />
+                </button>
+              </div>
+              
+              <div class="personas-list">
+                <div 
+                  v-for="usuario in personasFiltradas" 
+                  :key="usuario.id"
+                  class="persona-item"
+                  :class="{ 'selected': nuevoCambio.destino_id === usuario.id }"
+                  @click="seleccionarPersona(usuario)"
+                >
+                  <div class="persona-avatar">
+                    {{ getInitials(usuario.nombre) }}
+                  </div>
+                  <div class="persona-info">
+                    <span class="persona-nombre">{{ usuario.nombre }}</span>
+                    <span class="persona-territorio">{{ usuario.territorio || 'Sin territorio' }}</span>
+                  </div>
+                  <div v-if="nuevoCambio.destino_id === usuario.id" class="persona-check">
+                    <Check :size="16" />
+                  </div>
+                </div>
+                <div v-if="personasFiltradas.length === 0" class="personas-empty">
+                  No se encontraron destinatarios
+                </div>
+              </div>
+            </div>
+
+            <!-- Usuario seleccionado -->
+            <div v-if="usuarioSeleccionadoInfo" class="usuario-seleccionado">
+              <Check :size="14" class="check-icon" />
+              <span>Dirigido a: <strong>{{ usuarioSeleccionadoInfo.nombre }}</strong></span>
+              <button type="button" @click="limpiarSeleccion" class="btn-limpiar">
+                <X :size="14" />
+              </button>
+            </div>
+
+            <p class="form-hint">
+              <span v-if="loadingUsuarios" class="hint-loading">
+                Cargando destinatarios...
+              </span>
+              <span v-else-if="usuariosDisponibles.length === 0" class="hint-error">
+                No hay destinatarios disponibles
+              </span>
+              <span v-else-if="!rolSeleccionado" class="hint-info">
+                Selecciona primero el tipo de destinatario
+              </span>
+            </p>
+          </div>
+          
           <div class="form-group">
             <label>Descripción del cambio</label>
             <textarea v-model="nuevoCambio.resumen" rows="3" placeholder="Describir el cambio propuesto..."></textarea>
@@ -215,10 +365,10 @@
           </div>
           
           <div class="form-actions">
-            <button type="button" @click="showCrearCambio = false" class="btn-secondary">
+            <button type="button" @click="cerrarModalCrear" class="btn-secondary">
               Cancelar
             </button>
-            <button type="submit" class="btn-primary" :disabled="creando">
+            <button type="submit" class="btn-primary" :disabled="creando || !nuevoCambio.destino_id">
               {{ creando ? 'Creando...' : 'Crear Propuesta' }}
             </button>
           </div>
@@ -329,7 +479,7 @@ import axios from 'axios'
 import DesktopSidebar from '../components/DesktopSidebar.vue'
 import { 
   GitBranch, Plus, RefreshCw, Eye, Send, Check, X, PlayCircle,
-  AlertTriangle, ArrowRight
+  AlertTriangle, ArrowRight, UserCheck, Search, Clock, SendHorizontal, History
 } from 'lucide-vue-next'
 
 const auth = useAuthStore()
@@ -339,6 +489,7 @@ const API_URL = getSecureApiUrl()
 const cambios = ref([])
 const pendientesCambios = ref(0)
 const cambioSeleccionado = ref(null)
+const activeTab = ref('pendientes')
 
 // Filtros
 const filtros = ref({
@@ -357,7 +508,8 @@ const nuevoCambio = ref({
   tipo_cambio: '',
   objeto: '',
   resumen: '',
-  fecha_efecto: ''
+  fecha_efecto: '',
+  destino_id: null
 })
 
 const accionModal = ref({
@@ -367,9 +519,192 @@ const accionModal = ref({
   observaciones: ''
 })
 
+// === SELECTOR DE DESTINATARIOS ===
+const usuariosDisponibles = ref([])
+const loadingUsuarios = ref(false)
+const rolSeleccionado = ref('')
+const busquedaPersona = ref('')
+
+// Normalizar rol a categoría
+const normalizarRol = (rol) => {
+  if (!rol) return ''
+  const rolLower = rol.toLowerCase().replace(/[_\s-]/g, '')
+  if (rolLower.includes('admin')) return 'admin'
+  if (rolLower.includes('territorial')) return 'territorial'
+  if (rolLower.includes('facilitador')) return 'facilitador'
+  if (rolLower.includes('tecnico') || rolLower.includes('técnico')) return 'tecnico'
+  return rol
+}
+
+// Agrupar usuarios por rol (normalizado)
+const usuariosAgrupados = computed(() => {
+  const grupos = {}
+  
+  usuariosDisponibles.value.forEach(usuario => {
+    const categoria = normalizarRol(usuario.rol)
+    if (!grupos[categoria]) {
+      grupos[categoria] = []
+    }
+    grupos[categoria].push(usuario)
+  })
+  
+  // Ordenar por jerarquía: admin > territorial > facilitador > tecnico
+  const ordenRoles = ['admin', 'territorial', 'facilitador', 'tecnico']
+  
+  return ordenRoles
+    .filter(rol => grupos[rol] && grupos[rol].length > 0)
+    .map(rol => ({
+      rol,
+      usuarios: grupos[rol]
+    }))
+})
+
+// Filtrar roles disponibles según el rol del usuario actual
+const rolesDisponiblesParaUsuario = computed(() => {
+  const rolUsuario = normalizarRol(auth.user?.rol || '')
+  
+  // Definir qué roles puede ver cada tipo de usuario
+  const rolesPermitidos = {
+    tecnico: ['facilitador', 'territorial'],     // Técnico puede enviar a Facilitadores y Territoriales
+    facilitador: ['territorial', 'admin'],       // Facilitador puede enviar a Territoriales y Admin
+    territorial: ['admin'],                      // Territorial puede enviar a Admin
+    admin: ['admin', 'territorial', 'facilitador', 'tecnico'] // Admin puede enviar a todos
+  }
+  
+  const permitidos = rolesPermitidos[rolUsuario] || []
+  
+  if (rolUsuario === 'admin') {
+    return usuariosAgrupados.value
+  }
+  
+  return usuariosAgrupados.value.filter(grupo => permitidos.includes(grupo.rol))
+})
+
+// Personas filtradas por rol y búsqueda
+const personasFiltradas = computed(() => {
+  if (!rolSeleccionado.value) return []
+  
+  const grupo = usuariosAgrupados.value.find(g => g.rol === rolSeleccionado.value)
+  if (!grupo) return []
+  
+  const busqueda = busquedaPersona.value.toLowerCase().trim()
+  if (!busqueda) return grupo.usuarios
+  
+  return grupo.usuarios.filter(u => 
+    u.nombre?.toLowerCase().includes(busqueda) || 
+    u.territorio?.toLowerCase().includes(busqueda)
+  )
+})
+
+// Info del usuario seleccionado
+const usuarioSeleccionadoInfo = computed(() => {
+  if (!nuevoCambio.value.destino_id) return null
+  return usuariosDisponibles.value.find(u => u.id === nuevoCambio.value.destino_id)
+})
+
+// Formatear nombre del rol
+const formatRolNombre = (rol) => {
+  const roles = {
+    admin: 'Administradores',
+    territorial: 'Territoriales',
+    facilitador: 'Facilitadores',
+    tecnico: 'Técnicos'
+  }
+  return roles[rol] || rol
+}
+
+// Obtener iniciales
+const getInitials = (nombre) => {
+  if (!nombre) return '?'
+  const parts = nombre.split(' ')
+  if (parts.length >= 2) {
+    return (parts[0][0] + parts[1][0]).toUpperCase()
+  }
+  return nombre.substring(0, 2).toUpperCase()
+}
+
+// Cuando cambia el rol seleccionado
+const onRolChange = () => {
+  nuevoCambio.value.destino_id = null
+  busquedaPersona.value = ''
+}
+
+// Seleccionar una persona
+const seleccionarPersona = (usuario) => {
+  nuevoCambio.value.destino_id = usuario.id
+}
+
+// Limpiar selección
+const limpiarSeleccion = () => {
+  nuevoCambio.value.destino_id = null
+  rolSeleccionado.value = ''
+  busquedaPersona.value = ''
+}
+
+// Cerrar modal y limpiar
+const cerrarModalCrear = () => {
+  showCrearCambio.value = false
+  limpiarSeleccion()
+  nuevoCambio.value = { tipo_cambio: '', objeto: '', resumen: '', fecha_efecto: '', destino_id: null }
+}
+
+// Cargar usuarios disponibles
+const cargarUsuariosDisponibles = async () => {
+  loadingUsuarios.value = true
+  try {
+    const res = await axios.get(`${API_URL}/users/superiores`, {
+      headers: { Authorization: `Bearer ${auth.token}` }
+    })
+    usuariosDisponibles.value = res.data.items || []
+  } catch (err) {
+    console.error('Error al cargar usuarios:', err)
+    usuariosDisponibles.value = []
+  } finally {
+    loadingUsuarios.value = false
+  }
+}
+
 // Computed
 const isAdmin = computed(() => auth.user?.rol?.toLowerCase() === 'admin')
 const puedeAutorizar = computed(() => ['admin', 'territorial'].includes(auth.user?.rol?.toLowerCase()))
+
+// Cambios pendientes: EN_REVISION dirigidos a mí (donde yo soy el destinatario)
+const cambiosPendientes = computed(() => {
+  const userId = auth.user?.id
+  return cambios.value.filter(c => 
+    ['EN_REVISION', 'AUTORIZADO'].includes(c.estatus) && 
+    c.destino_id === userId
+  )
+})
+
+// Cambios enviados: propuestos por mí
+const cambiosEnviados = computed(() => {
+  const userId = auth.user?.id
+  return cambios.value.filter(c => 
+    c.propuesto_por?.persona_id === userId || c.propuesto_por_id === userId
+  )
+})
+
+// Historial: cambios ya procesados (APLICADO, RECHAZADO, CANCELADO)
+const cambiosHistorial = computed(() => {
+  return cambios.value.filter(c => 
+    ['APLICADO', 'RECHAZADO', 'CANCELADO'].includes(c.estatus)
+  )
+})
+
+// Cambios filtrados según la pestaña activa
+const cambiosFiltradosTab = computed(() => {
+  switch (activeTab.value) {
+    case 'pendientes':
+      return cambiosPendientes.value
+    case 'enviadas':
+      return cambiosEnviados.value
+    case 'historial':
+      return cambiosHistorial.value
+    default:
+      return cambios.value
+  }
+})
 
 // Métodos
 const cargarCambios = async () => {
@@ -435,8 +770,7 @@ const crearCambio = async () => {
     await axios.post(`${API_URL}/workflows/cambios-adscripcion`, nuevoCambio.value, {
       headers: { Authorization: `Bearer ${auth.token}` }
     })
-    showCrearCambio.value = false
-    nuevoCambio.value = { tipo_cambio: '', objeto: '', resumen: '', fecha_efecto: '' }
+    cerrarModalCrear()
     cargarCambios()
   } catch (error) {
     console.error('Error creando cambio:', error)
@@ -490,6 +824,7 @@ const ejecutarAccion = async () => {
 
 onMounted(() => {
   cargarCambios()
+  cargarUsuariosDisponibles()
 })
 </script>
 
@@ -505,6 +840,107 @@ onMounted(() => {
   margin-left: 220px;
   display: flex;
   flex-direction: column;
+}
+
+/* === ESTILOS DE PESTAÑAS === */
+.tabs-container {
+  background: white;
+  border-radius: 12px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.tabs-wrapper {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.tab-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1rem;
+  background: #f3f4f6;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #6b7280;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.tab-btn:hover {
+  background: #e5e7eb;
+}
+
+.tab-btn.active {
+  background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
+  border-color: transparent;
+  color: white;
+}
+
+.tab-badge {
+  background: #dc2626;
+  color: white;
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 0.125rem 0.375rem;
+  border-radius: 10px;
+  min-width: 18px;
+  text-align: center;
+}
+
+.tab-btn.active .tab-badge {
+  background: white;
+  color: #16a34a;
+}
+
+.tab-badge-enviadas {
+  background: #2563eb;
+}
+
+.tab-btn.active .tab-badge-enviadas {
+  background: white;
+  color: #2563eb;
+}
+
+.tabs-stats {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.stat-item {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  font-size: 0.8rem;
+}
+
+.stat-label {
+  color: #6b7280;
+}
+
+.stat-value {
+  font-weight: 600;
+}
+
+.stat-value.pending {
+  color: #dc2626;
+}
+
+.stat-value.sent {
+  color: #2563eb;
+}
+
+.stat-value.approved {
+  color: #16a34a;
 }
 
 .view-header {
@@ -970,5 +1406,205 @@ onMounted(() => {
   .table-container {
     overflow-x: auto;
   }
+}
+
+/* === ESTILOS DEL SELECTOR DE DESTINATARIOS === */
+.label-icon {
+  display: inline;
+  vertical-align: middle;
+  margin-right: 0.25rem;
+}
+
+.select-wrapper {
+  position: relative;
+}
+
+.form-select {
+  width: 100%;
+  padding: 0.625rem 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  background: white;
+}
+
+.form-select.loading-select {
+  padding-right: 2.5rem;
+}
+
+.select-loading {
+  position: absolute;
+  right: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.mini-spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid #e5e7eb;
+  border-top-color: #16a34a;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.persona-selector {
+  margin-top: 0.75rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.search-input-wrapper {
+  position: relative;
+  padding: 0.5rem;
+  background: #f9fafb;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.search-icon {
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #9ca3af;
+}
+
+.search-input {
+  width: 100%;
+  padding: 0.5rem 2rem;
+  padding-left: 2.25rem;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 0.875rem;
+}
+
+.clear-search {
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: #9ca3af;
+  cursor: pointer;
+  padding: 0.25rem;
+}
+
+.personas-list {
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.persona-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.persona-item:hover {
+  background: #f0fdf4;
+}
+
+.persona-item.selected {
+  background: #dcfce7;
+}
+
+.persona-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #16a34a, #15803d);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.persona-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.persona-nombre {
+  font-weight: 500;
+  color: #1f2937;
+  font-size: 0.875rem;
+}
+
+.persona-territorio {
+  font-size: 0.75rem;
+  color: #6b7280;
+}
+
+.persona-check {
+  color: #16a34a;
+}
+
+.personas-empty {
+  padding: 1rem;
+  text-align: center;
+  color: #9ca3af;
+  font-size: 0.875rem;
+}
+
+.usuario-seleccionado {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+  padding: 0.75rem 1rem;
+  background: #dcfce7;
+  border-radius: 8px;
+  color: #16a34a;
+  font-size: 0.875rem;
+}
+
+.usuario-seleccionado .check-icon {
+  flex-shrink: 0;
+}
+
+.btn-limpiar {
+  margin-left: auto;
+  background: none;
+  border: none;
+  color: #6b7280;
+  cursor: pointer;
+  padding: 0.25rem;
+  display: flex;
+  align-items: center;
+}
+
+.btn-limpiar:hover {
+  color: #dc2626;
+}
+
+.form-hint {
+  margin-top: 0.5rem;
+  font-size: 0.75rem;
+  color: #6b7280;
+}
+
+.hint-loading {
+  color: #2563eb;
+}
+
+.hint-error {
+  color: #dc2626;
+}
+
+.hint-info {
+  color: #6b7280;
 }
 </style>

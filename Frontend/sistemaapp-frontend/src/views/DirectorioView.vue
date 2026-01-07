@@ -865,6 +865,7 @@ onMounted(() => {
   font-weight: 600;
 }
 
+.rol-badge.admin,
 .rol-badge.administrador {
   background: #fef3c7;
   color: #d97706;
@@ -880,9 +881,15 @@ onMounted(() => {
   color: #2563eb;
 }
 
-.rol-badge.tecnico {
+.rol-badge.tecnico,
+.rol-badge.tecnico-social {
   background: #dcfce7;
   color: #16a34a;
+}
+
+.rol-badge.tecnico-productivo {
+  background: #fce7f3;
+  color: #db2777;
 }
 
 .perfil-badge {
