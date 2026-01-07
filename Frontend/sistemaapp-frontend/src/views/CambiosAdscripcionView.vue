@@ -166,12 +166,22 @@
                 </td>
                 <td>
                   <span :class="['estatus-badge', cambio.estatus?.toLowerCase()]">
-                    {{ cambio.estatus }}
+                    {{ formatEstatus(cambio.estatus) }}
                   </span>
                 </td>
                 <td class="actions">
-                  <button @click="verDetalle(cambio)" class="btn-action" title="Ver detalle">
+                  <button @click="verDetalle(cambio)" class="btn-action info" title="Ver detalle">
                     <Eye :size="16" />
+                  </button>
+                  
+                  <!-- Botón Cancelar - solo si es mi solicitud y está pendiente -->
+                  <button 
+                    v-if="cambio.estatus === 'EN_REVISION' && esPropietario(cambio)"
+                    @click="cancelarSolicitud(cambio)"
+                    class="btn-action warning"
+                    title="Cancelar solicitud"
+                  >
+                    <XCircle :size="16" />
                   </button>
                   
                   <button 
@@ -369,60 +379,136 @@
     
     <!-- Modal Detalle -->
     <div v-if="cambioSeleccionado" class="modal-overlay" @click.self="cambioSeleccionado = null">
-      <div class="modal-content modal-lg">
-        <div class="modal-header">
-          <h3>Detalle del Cambio {{ cambioSeleccionado.folio }}</h3>
-          <button @click="cambioSeleccionado = null" class="btn-close">
+      <div class="modal-content modal-detalle-nuevo">
+        <!-- Header -->
+        <div class="detalle-header-nuevo">
+          <div class="header-left">
+            <span class="folio-tag">{{ cambioSeleccionado.folio }}</span>
+            <span :class="['estatus-tag', cambioSeleccionado.estatus?.toLowerCase().replace('_', '-')]">
+              {{ formatEstatus(cambioSeleccionado.estatus) }}
+            </span>
+          </div>
+          <button @click="cambioSeleccionado = null" class="btn-close-modal">
             <X :size="20" />
           </button>
         </div>
         
-        <div class="detalle-content">
-          <div class="detalle-grid">
-            <div class="detalle-item">
-              <label>Folio</label>
-              <span>{{ cambioSeleccionado.folio }}</span>
+        <!-- Body -->
+        <div class="detalle-body">
+          <!-- Grid de info -->
+          <div class="info-grid">
+            <div class="info-item">
+              <div class="info-icon-box tipo">
+                <FileText :size="18" />
+              </div>
+              <div class="info-content">
+                <span class="info-label-sm">TIPO DE CAMBIO</span>
+                <span :class="['tipo-tag', cambioSeleccionado.tipo_cambio?.toLowerCase()]">
+                  {{ cambioSeleccionado.tipo_cambio }}
+                </span>
+              </div>
             </div>
-            <div class="detalle-item">
-              <label>Tipo</label>
-              <span :class="['tipo-badge', cambioSeleccionado.tipo_cambio?.toLowerCase()]">
-                {{ cambioSeleccionado.tipo_cambio }}
-              </span>
+            
+            <div class="info-item">
+              <div class="info-icon-box objeto">
+                <GitBranch :size="18" />
+              </div>
+              <div class="info-content">
+                <span class="info-label-sm">OBJETO AFECTADO</span>
+                <span class="info-value-lg">{{ formatObjeto(cambioSeleccionado.objeto) }}</span>
+              </div>
             </div>
-            <div class="detalle-item">
-              <label>Objeto</label>
-              <span>{{ formatObjeto(cambioSeleccionado.objeto) }}</span>
-            </div>
-            <div class="detalle-item">
-              <label>Estatus</label>
-              <span :class="['estatus-badge', cambioSeleccionado.estatus?.toLowerCase()]">
-                {{ cambioSeleccionado.estatus }}
-              </span>
-            </div>
-          </div>
-          
-          <div class="detalle-section" v-if="cambioSeleccionado.resumen">
-            <label>Resumen</label>
-            <p>{{ cambioSeleccionado.resumen }}</p>
-          </div>
-          
-          <div class="comparador" v-if="cambioSeleccionado.antes || cambioSeleccionado.despues">
-            <div class="comparador-col antes">
-              <h4>Antes</h4>
-              <pre>{{ JSON.stringify(cambioSeleccionado.antes, null, 2) }}</pre>
-            </div>
-            <div class="comparador-arrow">
-              <ArrowRight :size="24" />
-            </div>
-            <div class="comparador-col despues">
-              <h4>Después</h4>
-              <pre>{{ JSON.stringify(cambioSeleccionado.despues, null, 2) }}</pre>
+            
+            <div class="info-item" v-if="cambioSeleccionado.fecha_efecto">
+              <div class="info-icon-box fecha">
+                <Calendar :size="18" />
+              </div>
+              <div class="info-content">
+                <span class="info-label-sm">FECHA DE EFECTO</span>
+                <span class="info-value-lg">{{ formatDate(cambioSeleccionado.fecha_efecto) }}</span>
+              </div>
             </div>
           </div>
           
-          <div class="detalle-section" v-if="cambioSeleccionado.observaciones">
-            <label>Observaciones</label>
-            <p>{{ cambioSeleccionado.observaciones }}</p>
+          <!-- Personas involucradas -->
+          <div class="personas-section">
+            <div class="persona-box solicitante">
+              <span class="persona-label">SOLICITANTE</span>
+              <div class="persona-info-row">
+                <div class="avatar-circle blue">
+                  {{ getInitials(cambioSeleccionado.propuesto_por?.nombre || cambioSeleccionado.propuesto_por?.nombre_completo) }}
+                </div>
+                <span class="persona-nombre">{{ cambioSeleccionado.propuesto_por?.nombre || cambioSeleccionado.propuesto_por?.nombre_completo || 'Sin asignar' }}</span>
+              </div>
+            </div>
+            
+            <div class="arrow-icon">
+              <ArrowRight :size="20" />
+            </div>
+            
+            <div class="persona-box destinatario">
+              <span class="persona-label">DESTINATARIO</span>
+              <div class="persona-info-row">
+                <div class="avatar-circle green">
+                  {{ getInitials(cambioSeleccionado.destinatario?.nombre_completo || cambioSeleccionado.destinatario?.nombre) }}
+                </div>
+                <span class="persona-nombre">{{ cambioSeleccionado.destinatario?.nombre_completo || cambioSeleccionado.destinatario?.nombre || 'Sin asignar' }}</span>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Descripción -->
+          <div class="seccion-texto" v-if="cambioSeleccionado.resumen">
+            <h4 class="seccion-titulo">Descripción</h4>
+            <div class="texto-contenido">{{ cambioSeleccionado.resumen }}</div>
+          </div>
+          
+          <!-- Observaciones -->
+          <div class="seccion-texto observaciones" v-if="cambioSeleccionado.observaciones">
+            <h4 class="seccion-titulo">Observaciones</h4>
+            <div class="texto-contenido">{{ cambioSeleccionado.observaciones }}</div>
+          </div>
+          
+          <!-- Fechas al pie -->
+          <div class="fechas-row">
+            <div class="fecha-info" v-if="cambioSeleccionado.created_at">
+              <Clock :size="14" />
+              <span>Creado: {{ formatDate(cambioSeleccionado.created_at) }}</span>
+            </div>
+            <div class="fecha-info limite" v-if="cambioSeleccionado.fecha_limite">
+              <AlertTriangle :size="14" />
+              <span>Límite: {{ formatDate(cambioSeleccionado.fecha_limite) }}</span>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Footer con acciones -->
+        <div class="detalle-footer" v-if="cambioSeleccionado.estatus === 'EN_REVISION'">
+          <button 
+            v-if="esPropietarioCambio"
+            @click="cancelarSolicitud(cambioSeleccionado); cambioSeleccionado = null"
+            class="btn-accion cancelar"
+          >
+            <XCircle :size="16" />
+            <span>Cancelar</span>
+          </button>
+          
+          <div class="acciones-derecha" v-if="esDestinatarioCambio">
+            <button 
+              @click="abrirAccion(cambioSeleccionado, 'RECHAZAR'); cambioSeleccionado = null"
+              class="btn-accion rechazar"
+            >
+              <X :size="16" />
+              <span>Rechazar</span>
+            </button>
+            
+            <button 
+              @click="abrirAccion(cambioSeleccionado, 'AUTORIZAR'); cambioSeleccionado = null"
+              class="btn-accion aprobar"
+            >
+              <Check :size="16" />
+              <span>Aprobar</span>
+            </button>
           </div>
         </div>
       </div>
@@ -468,9 +554,10 @@ import { useAuthStore } from '../stores/auth'
 import { getSecureApiUrl } from '../utils/api'
 import axios from 'axios'
 import DesktopSidebar from '../components/DesktopSidebar.vue'
+import Swal from 'sweetalert2'
 import { 
   GitBranch, Plus, RefreshCw, Eye, Send, Check, X, PlayCircle,
-  AlertTriangle, ArrowRight, UserCheck, Search, Clock, SendHorizontal, History
+  AlertTriangle, ArrowRight, UserCheck, Search, Clock, SendHorizontal, History, XCircle, User, Calendar, FileText
 } from 'lucide-vue-next'
 
 const auth = useAuthStore()
@@ -759,7 +846,83 @@ const formatDate = (dateStr) => {
 }
 
 const esPropietario = (cambio) => {
-  return cambio.propuesto_por?.persona_id === auth.user?.id
+  const userId = auth.user?.id
+  return cambio.propuesto_por?.persona_id === userId || cambio.propuesto_por_id === userId
+}
+
+// Para el modal de detalle
+const esPropietarioCambio = computed(() => {
+  if (!cambioSeleccionado.value) return false
+  const userId = auth.user?.id
+  return cambioSeleccionado.value.propuesto_por?.persona_id === userId || 
+         cambioSeleccionado.value.propuesto_por_id === userId
+})
+
+const esDestinatarioCambio = computed(() => {
+  if (!cambioSeleccionado.value) return false
+  return cambioSeleccionado.value.destino_id === auth.user?.id
+})
+
+// Formatear estatus para mostrar "Pendiente" en vez de "EN_REVISION"
+const formatEstatus = (estatus) => {
+  const map = {
+    'EN_REVISION': 'Pendiente',
+    'AUTORIZADO': 'Autorizado',
+    'APLICADO': 'Aplicado',
+    'RECHAZADO': 'Rechazado',
+    'CANCELADO': 'Cancelado',
+    'BORRADOR': 'Borrador'
+  }
+  return map[estatus] || estatus
+}
+
+// Cancelar solicitud (solo el propietario puede cancelar mientras esté pendiente)
+const cancelarSolicitud = async (cambio) => {
+  const result = await Swal.fire({
+    icon: 'warning',
+    title: '¿Cancelar solicitud?',
+    html: `
+      <p>Estás a punto de cancelar la solicitud:</p>
+      <div style="background: #fef3c7; padding: 12px; border-radius: 8px; margin-top: 10px;">
+        <strong style="color: #92400e;">Folio: ${cambio.folio}</strong>
+      </div>
+      <p style="margin-top: 15px; color: #6b7280;">Esta acción no se puede deshacer.</p>
+    `,
+    showCancelButton: true,
+    confirmButtonColor: '#dc2626',
+    cancelButtonColor: '#6b7280',
+    confirmButtonText: 'Sí, cancelar',
+    cancelButtonText: 'No, mantener'
+  })
+  
+  if (result.isConfirmed) {
+    try {
+      await axios.post(
+        `${API_URL}/workflows/cambios-adscripcion/${cambio.cambio_adscripcion_id}/accion`,
+        { accion: 'CANCELAR', observaciones: 'Cancelado por el solicitante' },
+        { headers: { Authorization: `Bearer ${auth.token}` } }
+      )
+      
+      await Swal.fire({
+        icon: 'success',
+        title: 'Solicitud cancelada',
+        text: 'La solicitud ha sido cancelada correctamente.',
+        confirmButtonColor: '#16a34a'
+      })
+      
+      // Cerrar modal si estaba abierto
+      cambioSeleccionado.value = null
+      cargarCambios()
+    } catch (error) {
+      console.error('Error cancelando solicitud:', error)
+      await Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: error.response?.data?.detail || 'No se pudo cancelar la solicitud.',
+        confirmButtonColor: '#dc2626'
+      })
+    }
+  }
 }
 
 const verDetalle = async (cambio) => {
@@ -776,7 +939,12 @@ const verDetalle = async (cambio) => {
 const crearCambio = async () => {
   // Validar campos requeridos
   if (!puedeEnviar.value) {
-    alert('Por favor completa todos los campos requeridos y selecciona un destinatario')
+    await Swal.fire({
+      icon: 'warning',
+      title: 'Campos incompletos',
+      text: 'Por favor completa todos los campos requeridos y selecciona un destinatario',
+      confirmButtonColor: '#16a34a'
+    })
     return
   }
   
@@ -787,15 +955,36 @@ const crearCambio = async () => {
       ...nuevoCambio.value,
       estatus: 'EN_REVISION'  // Se envía directamente, no como borrador
     }
-    await axios.post(`${API_URL}/workflows/cambios-adscripcion`, payload, {
+    const response = await axios.post(`${API_URL}/workflows/cambios-adscripcion`, payload, {
       headers: { Authorization: `Bearer ${auth.token}` }
     })
     cerrarModalCrear()
     cargarCambios()
-    alert('Solicitud enviada correctamente')
+    
+    // Modal de éxito bonito con el folio
+    await Swal.fire({
+      icon: 'success',
+      title: '¡Solicitud enviada!',
+      html: `
+        <div style="text-align: center;">
+          <p style="margin-bottom: 10px;">Tu solicitud ha sido enviada correctamente.</p>
+          <div style="background: #dcfce7; padding: 12px 20px; border-radius: 8px; display: inline-block;">
+            <span style="color: #166534; font-weight: 600;">Folio: ${response.data.folio || 'Generado'}</span>
+          </div>
+          <p style="margin-top: 15px; color: #6b7280; font-size: 0.9rem;">Estatus: <strong style="color: #2563eb;">EN REVISIÓN</strong></p>
+        </div>
+      `,
+      confirmButtonColor: '#16a34a',
+      confirmButtonText: 'Entendido'
+    })
   } catch (error) {
     console.error('Error enviando solicitud:', error)
-    alert(error.response?.data?.detail || 'Error al enviar solicitud')
+    await Swal.fire({
+      icon: 'error',
+      title: 'Error al enviar',
+      text: error.response?.data?.detail || 'No se pudo enviar la solicitud. Intenta de nuevo.',
+      confirmButtonColor: '#dc2626'
+    })
   } finally {
     creando.value = false
   }
@@ -1615,5 +1804,456 @@ onMounted(() => {
 
 .hint-info {
   color: #6b7280;
+}
+
+/* === BOTÓN DE ACCIÓN WARNING E INFO === */
+.btn-action.warning {
+  color: #d97706;
+}
+
+.btn-action.warning:hover {
+  background: #fef3c7;
+}
+
+.btn-action.info {
+  color: #2563eb;
+}
+
+.btn-action.info:hover {
+  background: #dbeafe;
+}
+
+/* === MODAL DETALLE NUEVO - RESPONSIVO === */
+.modal-detalle-nuevo {
+  width: 95%;
+  max-width: 540px;
+  max-height: 90vh;
+  overflow-y: auto;
+  border-radius: 16px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
+
+.detalle-header-nuevo {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid #e5e7eb;
+  position: sticky;
+  top: 0;
+  background: white;
+  z-index: 10;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.folio-tag {
+  background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
+  color: white;
+  padding: 0.375rem 0.75rem;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 0.8rem;
+}
+
+.estatus-tag {
+  padding: 0.375rem 0.75rem;
+  border-radius: 20px;
+  font-weight: 600;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+}
+
+.estatus-tag.en-revision,
+.estatus-tag.en_revision {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.estatus-tag.autorizado {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.estatus-tag.rechazado {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+.estatus-tag.aplicado {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
+.estatus-tag.cancelado {
+  background: #f3f4f6;
+  color: #6b7280;
+}
+
+.btn-close-modal {
+  background: #f3f4f6;
+  border: none;
+  border-radius: 8px;
+  padding: 0.5rem;
+  cursor: pointer;
+  color: #6b7280;
+  transition: all 0.2s;
+}
+
+.btn-close-modal:hover {
+  background: #e5e7eb;
+  color: #374151;
+}
+
+/* Body del detalle */
+.detalle-body {
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+/* Grid de información */
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 0.75rem;
+}
+
+.info-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.875rem;
+  background: #f9fafb;
+  border-radius: 10px;
+  border: 1px solid #e5e7eb;
+}
+
+.info-icon-box {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.info-icon-box.tipo {
+  background: #dbeafe;
+  color: #2563eb;
+}
+
+.info-icon-box.objeto {
+  background: #f3e8ff;
+  color: #9333ea;
+}
+
+.info-icon-box.fecha {
+  background: #dcfce7;
+  color: #16a34a;
+}
+
+.info-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  min-width: 0;
+}
+
+.info-label-sm {
+  font-size: 0.65rem;
+  color: #9ca3af;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 500;
+}
+
+.info-value-lg {
+  font-weight: 600;
+  color: #1f2937;
+  font-size: 0.85rem;
+  word-break: break-word;
+}
+
+.tipo-tag {
+  display: inline-block;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.tipo-tag.alta {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.tipo-tag.baja {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+.tipo-tag.reasignacion {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
+/* Sección de personas */
+.personas-section {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.persona-box {
+  flex: 1;
+  min-width: 140px;
+  max-width: 200px;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 0.875rem;
+  text-align: center;
+}
+
+.persona-box.solicitante {
+  border-left: 3px solid #2563eb;
+}
+
+.persona-box.destinatario {
+  border-left: 3px solid #16a34a;
+}
+
+.persona-label {
+  display: block;
+  font-size: 0.65rem;
+  color: #9ca3af;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+}
+
+.persona-info-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  justify-content: center;
+}
+
+.avatar-circle {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: white;
+  flex-shrink: 0;
+}
+
+.avatar-circle.blue {
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+}
+
+.avatar-circle.green {
+  background: linear-gradient(135deg, #16a34a, #15803d);
+}
+
+.persona-nombre {
+  font-weight: 500;
+  color: #1f2937;
+  font-size: 0.85rem;
+  text-align: left;
+}
+
+.arrow-icon {
+  color: #9ca3af;
+  flex-shrink: 0;
+}
+
+/* Secciones de texto */
+.seccion-texto {
+  background: #f9fafb;
+  border-radius: 10px;
+  padding: 1rem;
+  border: 1px solid #e5e7eb;
+}
+
+.seccion-texto.observaciones {
+  background: #fffbeb;
+  border-color: #fde68a;
+}
+
+.seccion-titulo {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #374151;
+  margin: 0 0 0.5rem 0;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.texto-contenido {
+  color: #4b5563;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* Fechas */
+.fechas-row {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid #e5e7eb;
+}
+
+.fecha-info {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  font-size: 0.75rem;
+  color: #6b7280;
+}
+
+.fecha-info.limite {
+  color: #d97706;
+}
+
+/* Footer con acciones */
+.detalle-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.25rem;
+  border-top: 1px solid #e5e7eb;
+  background: #f9fafb;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.acciones-derecha {
+  display: flex;
+  gap: 0.5rem;
+  margin-left: auto;
+}
+
+.btn-accion {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.5rem 0.875rem;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: none;
+}
+
+.btn-accion.cancelar {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.btn-accion.cancelar:hover {
+  background: #fde68a;
+}
+
+.btn-accion.rechazar {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+.btn-accion.rechazar:hover {
+  background: #fecaca;
+}
+
+.btn-accion.aprobar {
+  background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
+  color: white;
+}
+
+.btn-accion.aprobar:hover {
+  background: linear-gradient(135deg, #15803d 0%, #166534 100%);
+}
+
+/* Responsive */
+@media (max-width: 500px) {
+  .modal-detalle-nuevo {
+    width: 100%;
+    max-height: 100vh;
+    border-radius: 0;
+  }
+  
+  .detalle-header-nuevo {
+    padding: 1rem;
+  }
+  
+  .header-left {
+    gap: 0.5rem;
+  }
+  
+  .folio-tag {
+    font-size: 0.7rem;
+    padding: 0.25rem 0.5rem;
+  }
+  
+  .detalle-body {
+    padding: 1rem;
+    gap: 1rem;
+  }
+  
+  .info-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .personas-section {
+    flex-direction: column;
+  }
+  
+  .persona-box {
+    width: 100%;
+    max-width: none;
+  }
+  
+  .arrow-icon {
+    transform: rotate(90deg);
+  }
+  
+  .detalle-footer {
+    flex-direction: column;
+    padding: 1rem;
+  }
+  
+  .acciones-derecha {
+    width: 100%;
+    justify-content: stretch;
+  }
+  
+  .btn-accion {
+    flex: 1;
+    justify-content: center;
+  }
+  
+  .btn-accion.cancelar {
+    width: 100%;
+    justify-content: center;
+  }
 }
 </style>

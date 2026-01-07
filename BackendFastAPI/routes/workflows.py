@@ -261,8 +261,8 @@ def obtener_cambio_adscripcion(
         if p:
             persona = {"id": p.id, "nombre": p.nombre, "curp": p.curp, "rol": p.rol}
     
-    # Propuesto, autorizado, aplicado
-    propuesto_por = autorizado_por = aplicado_por = None
+    # Propuesto, autorizado, aplicado, destinatario
+    propuesto_por = autorizado_por = aplicado_por = destinatario = None
     
     if cambio.propuesto_por_id:
         u = db.query(User).filter(User.id == cambio.propuesto_por_id).first()
@@ -275,6 +275,10 @@ def obtener_cambio_adscripcion(
     if cambio.aplicado_por_id:
         u = db.query(User).filter(User.id == cambio.aplicado_por_id).first()
         aplicado_por = {"id": u.id, "nombre": u.nombre} if u else None
+    
+    if cambio.destino_id:
+        u = db.query(User).filter(User.id == cambio.destino_id).first()
+        destinatario = {"id": u.id, "nombre_completo": u.nombre, "rol": u.rol} if u else None
     
     return {
         "cambio_adscripcion_id": cambio.id,
@@ -291,6 +295,8 @@ def obtener_cambio_adscripcion(
         "propuesto_por": propuesto_por,
         "autorizado_por": autorizado_por,
         "aplicado_por": aplicado_por,
+        "destino_id": cambio.destino_id,
+        "destinatario": destinatario,
         "observaciones": cambio.observaciones,
         "created_at": cambio.created_at.isoformat() if cambio.created_at else None
     }
