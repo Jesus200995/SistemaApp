@@ -210,6 +210,16 @@
                   >
                     <PlayCircle :size="16" />
                   </button>
+                  
+                  <!-- Botón Eliminar - solo en historial y si NO está pendiente -->
+                  <button 
+                    v-if="activeTab === 'historial' && cambio.estatus !== 'EN_REVISION' && esPropietario(cambio)"
+                    @click="eliminarSolicitud(cambio)"
+                    class="btn-action danger"
+                    title="Eliminar del historial"
+                  >
+                    <Trash2 :size="16" />
+                  </button>
                 </td>
               </tr>
             </tbody>
@@ -557,7 +567,7 @@ import DesktopSidebar from '../components/DesktopSidebar.vue'
 import Swal from 'sweetalert2'
 import { 
   GitBranch, Plus, RefreshCw, Eye, Send, Check, X, PlayCircle,
-  AlertTriangle, ArrowRight, UserCheck, Search, Clock, SendHorizontal, History, XCircle, User, Calendar, FileText
+  AlertTriangle, ArrowRight, UserCheck, Search, Clock, SendHorizontal, History, XCircle, User, Calendar, FileText, Trash2
 } from 'lucide-vue-next'
 
 const auth = useAuthStore()
@@ -919,6 +929,52 @@ const cancelarSolicitud = async (cambio) => {
         icon: 'error',
         title: 'Error',
         text: error.response?.data?.detail || 'No se pudo cancelar la solicitud.',
+        confirmButtonColor: '#dc2626'
+      })
+    }
+  }
+}
+
+// Eliminar solicitud del historial (solo si NO está pendiente)
+const eliminarSolicitud = async (cambio) => {
+  const result = await Swal.fire({
+    icon: 'warning',
+    title: '¿Eliminar solicitud?',
+    html: `
+      <p>Estás a punto de eliminar permanentemente:</p>
+      <div style="background: #fee2e2; padding: 12px; border-radius: 8px; margin-top: 10px;">
+        <strong style="color: #dc2626;">Folio: ${cambio.folio}</strong>
+      </div>
+      <p style="margin-top: 15px; color: #dc2626; font-weight: 500;">⚠️ Esta acción no se puede deshacer.</p>
+    `,
+    showCancelButton: true,
+    confirmButtonColor: '#dc2626',
+    cancelButtonColor: '#6b7280',
+    confirmButtonText: 'Sí, eliminar',
+    cancelButtonText: 'Cancelar'
+  })
+  
+  if (result.isConfirmed) {
+    try {
+      await axios.delete(
+        `${API_URL}/workflows/cambios-adscripcion/${cambio.cambio_adscripcion_id}`,
+        { headers: { Authorization: `Bearer ${auth.token}` } }
+      )
+      
+      await Swal.fire({
+        icon: 'success',
+        title: 'Solicitud eliminada',
+        text: 'La solicitud ha sido eliminada del historial.',
+        confirmButtonColor: '#16a34a'
+      })
+      
+      cargarCambios()
+    } catch (error) {
+      console.error('Error eliminando solicitud:', error)
+      await Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: error.response?.data?.detail || 'No se pudo eliminar la solicitud.',
         confirmButtonColor: '#dc2626'
       })
     }

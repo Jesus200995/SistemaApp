@@ -343,6 +343,33 @@ def crear_cambio_adscripcion(
     return {"mensaje": "Cambio de adscripción creado", "id": cambio.id, "folio": folio}
 
 
+@router.delete("/cambios-adscripcion/{cambio_id}")
+def eliminar_cambio_adscripcion(
+    cambio_id: int,
+    current_user: dict = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """Eliminar un cambio de adscripción (solo si no está EN_REVISION)"""
+    cambio = db.query(CambioAdscripcion).filter(CambioAdscripcion.id == cambio_id).first()
+    if not cambio:
+        raise HTTPException(status_code=404, detail="Cambio no encontrado")
+    
+    # No se pueden eliminar cambios pendientes (EN_REVISION)
+    if cambio.estatus == "EN_REVISION":
+        raise HTTPException(status_code=400, detail="No se pueden eliminar solicitudes pendientes. Cancela primero la solicitud.")
+    
+    # Solo el propietario o admin puede eliminar
+    rol = current_user.get("rol", "").lower()
+    if cambio.propuesto_por_id != current_user["user_id"] and "admin" not in rol:
+        raise HTTPException(status_code=403, detail="No tienes permiso para eliminar esta solicitud")
+    
+    folio = cambio.folio
+    db.delete(cambio)
+    db.commit()
+    
+    return {"mensaje": f"Solicitud {folio} eliminada correctamente"}
+
+
 @router.post("/cambios-adscripcion/{cambio_id}/enviar-revision")
 def enviar_a_revision(
     cambio_id: int,
