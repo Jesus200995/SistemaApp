@@ -126,8 +126,8 @@
                 </td>
                 <td class="curp">{{ persona.curp }}</td>
                 <td>
-                  <span :class="['rol-badge', persona.rol?.toLowerCase()]">
-                    {{ persona.rol }}
+                  <span :class="['rol-badge', persona.rol?.toLowerCase().replace('_', '-')]">
+                    {{ formatRol(persona.rol) }}
                   </span>
                 </td>
                 <td>
@@ -601,6 +601,20 @@ const formatPerfil = (perfil) => {
     'TECNICO_PRODUCTIVO': 'T. Productivo'
   }
   return map[perfil] || perfil
+}
+
+const formatRol = (rol) => {
+  if (!rol) return '-'
+  const map = {
+    'admin': 'Administrador',
+    'administrador': 'Administrador',
+    'territorial': 'Territorial',
+    'facilitador': 'Facilitador',
+    'tecnico_social': 'Técnico Social',
+    'tecnico_productivo': 'Técnico Productivo',
+    'tecnico': 'Técnico'
+  }
+  return map[rol.toLowerCase()] || rol
 }
 
 const formatDate = (dateStr) => {

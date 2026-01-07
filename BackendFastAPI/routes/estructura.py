@@ -860,7 +860,20 @@ def directorio_personas(
             "activo": p.activo
         })
     
-    return {"items": result, "total": len(result)}
+    # Calcular stats por rol
+    territoriales = sum(1 for p in result if p["rol"] and "territorial" in p["rol"].lower())
+    facilitadores = sum(1 for p in result if p["rol"] and "facilitador" in p["rol"].lower())
+    tecnicos = sum(1 for p in result if p["rol"] and "tecnico" in p["rol"].lower())
+    
+    return {
+        "items": result, 
+        "total": len(result),
+        "stats": {
+            "territoriales": territoriales,
+            "facilitadores": facilitadores,
+            "tecnicos": tecnicos
+        }
+    }
 
 
 @router.get("/buscar-curp")
