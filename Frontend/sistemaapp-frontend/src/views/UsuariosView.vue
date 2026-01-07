@@ -1078,16 +1078,19 @@ onMounted(async () => {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 1rem 1.5rem;
-    background: white;
-    border-bottom: 1px solid #e2e8f0;
+    padding: 0.75rem 1.5rem;
+    background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
+    border-bottom: 1.5px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
   }
 }
 
 .page-title {
-  font-size: 1.5rem;
+  font-size: 1.25rem;
   font-weight: 600;
-  color: #1e293b;
+  color: #ffffff;
+  letter-spacing: -0.3px;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 }
 
 .desktop-create-button {

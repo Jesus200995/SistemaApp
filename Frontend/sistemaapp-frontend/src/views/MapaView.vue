@@ -497,13 +497,14 @@ onMounted(() => {
   .desktop-page-header {
     display: flex;
     flex-direction: column;
-    padding: 1rem 2rem;
-    background: white;
-    border-bottom: 1px solid #e2e8f0;
+    padding: 0.75rem 1.5rem;
+    background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
+    border-bottom: 1.5px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
   }
   
   .page-title {
-    font-size: 1.5rem;
+    font-size: 1.25rem;
   }
   
   .page-subtitle {
@@ -512,15 +513,17 @@ onMounted(() => {
 }
 
 .page-title {
-  font-size: 1.5rem;
+  font-size: 1.25rem;
   font-weight: 600;
-  color: #1e293b;
+  color: #ffffff;
   margin: 0;
+  letter-spacing: -0.3px;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 }
 
 .page-subtitle {
   font-size: 0.875rem;
-  color: #64748b;
+  color: rgba(255, 255, 255, 0.85);
   margin: 0.25rem 0 0 0;
 }
 
