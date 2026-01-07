@@ -16,7 +16,7 @@
           <div class="header-actions">
             <button @click="showCrearCambio = true" class="btn-primary">
               <Plus :size="18" />
-              Proponer Cambio
+              Agregar Solicitud
             </button>
           </div>
         </div>
