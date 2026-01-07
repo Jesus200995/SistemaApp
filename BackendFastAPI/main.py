@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import JSONResponse
 from routes import auth, layers, chat, notificaciones, sembradores, seguimientos, solicitudes, users
+from routes import estructura, workflows, importaciones  # Nuevos módulos Sembrando Vida
 from database import Base, engine
 import os
 
@@ -13,7 +14,14 @@ try:
     from migrations.add_user_fields import run_migration
     run_migration()
 except Exception as e:
-    print(f"⚠️ Error ejecutando migraciones: {str(e)}")
+    print(f"⚠️ Error ejecutando migraciones de campos usuario: {str(e)}")
+
+# 🔄 Ejecutar migración de estructura territorial
+try:
+    from migrations.create_estructura_territorial import run_migration as run_estructura_migration
+    run_estructura_migration()
+except Exception as e:
+    print(f"⚠️ Error ejecutando migración de estructura territorial: {str(e)}")
 
 # 📁 Crear carpeta de uploads si no existe
 UPLOAD_DIR = os.path.join(os.path.dirname(__file__), "uploads", "seguimientos")
@@ -62,6 +70,11 @@ app.include_router(sembradores.router)
 app.include_router(seguimientos.router)
 app.include_router(solicitudes.router)
 app.include_router(users.router)
+
+# 🌱 Rutas Sembrando Vida - Módulo 1: Estructura Territorial
+app.include_router(estructura.router)      # Territorios, Rutas, CAC, Directorio
+app.include_router(workflows.router)       # Cambios de Adscripción, Actualizaciones de Estructura
+app.include_router(importaciones.router)   # Importaciones (solo Admin)
 
 # 📁 Servir archivos estáticos (uploads)
 app.mount("/uploads", StaticFiles(directory=os.path.join(os.path.dirname(__file__), "uploads")), name="uploads")

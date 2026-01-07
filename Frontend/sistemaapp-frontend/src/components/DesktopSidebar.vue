@@ -50,6 +50,51 @@
         <span class="sidebar-text">Seguimiento</span>
       </router-link>
 
+      <!-- Separador Módulo Estructura (Admin/Territorial/Facilitador) -->
+      <div v-if="canViewEstructura || isFacilitador" class="sidebar-divider">
+        <span>Estructura</span>
+      </div>
+
+      <!-- Estructura Territorial - Admin y Territorial -->
+      <router-link v-if="canViewEstructura" to="/estructura-territorial" class="sidebar-item" :class="{ active: currentRoute === '/estructura-territorial' }">
+        <Building2 :size="20" class="sidebar-icon" />
+        <span class="sidebar-text">Estructura</span>
+      </router-link>
+
+      <!-- Directorio - Admin, Territorial, Facilitador (scope filtrado en backend) -->
+      <router-link v-if="canViewEstructura || isFacilitador" to="/directorio" class="sidebar-item" :class="{ active: currentRoute === '/directorio' }">
+        <Contact2 :size="20" class="sidebar-icon" />
+        <span class="sidebar-text">Directorio</span>
+      </router-link>
+
+      <!-- Cambios Adscripción - Admin y Territorial -->
+      <router-link v-if="canViewEstructura" to="/cambios-adscripcion" class="sidebar-item" :class="{ active: currentRoute === '/cambios-adscripcion' }">
+        <ArrowRightLeft :size="20" class="sidebar-icon" />
+        <span class="sidebar-text">Cambios</span>
+      </router-link>
+
+      <!-- Importaciones - Solo Admin -->
+      <router-link v-if="isAdmin" to="/importaciones" class="sidebar-item" :class="{ active: currentRoute === '/importaciones' }">
+        <Upload :size="20" class="sidebar-icon" />
+        <span class="sidebar-text">Importaciones</span>
+      </router-link>
+
+      <!-- Separador Mi Operación (Técnicos) -->
+      <div v-if="isTecnico" class="sidebar-divider">
+        <span>Mi Operación</span>
+      </div>
+
+      <!-- Mis CAC - Solo Técnicos -->
+      <router-link v-if="isTecnico" to="/directorio" class="sidebar-item" :class="{ active: currentRoute === '/directorio' }">
+        <Building2 :size="20" class="sidebar-icon" />
+        <span class="sidebar-text">Mis CAC</span>
+      </router-link>
+
+      <!-- Separador General -->
+      <div class="sidebar-divider">
+        <span>General</span>
+      </div>
+
       <!-- Usuarios - Solo admin, territorial, facilitador -->
       <router-link v-if="canViewUsers" to="/usuarios" class="sidebar-item" :class="{ active: currentRoute === '/usuarios' }">
         <Users :size="20" class="sidebar-icon" />
@@ -96,7 +141,8 @@ import { computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useAuthStore } from '../stores/auth'
 import { 
-  LayoutDashboard, FileText, Sprout, ClipboardList, Users, BarChart3, MapPin, Settings, LogOut 
+  LayoutDashboard, FileText, Sprout, ClipboardList, Users, BarChart3, MapPin, Settings, LogOut,
+  Building2, Contact2, ArrowRightLeft, Upload
 } from 'lucide-vue-next'
 
 const props = defineProps<{
@@ -128,6 +174,21 @@ const canViewSeguimiento = computed(() => {
 const isAdmin = computed(() => {
   const rol = (auth.user?.rol || '').toLowerCase()
   return rol === 'admin'
+})
+
+const canViewEstructura = computed(() => {
+  const rol = (auth.user?.rol || '').toLowerCase()
+  return ['admin', 'territorial'].includes(rol)
+})
+
+const isTecnico = computed(() => {
+  const rol = (auth.user?.rol || '').toLowerCase()
+  return rol.includes('tecnico')
+})
+
+const isFacilitador = computed(() => {
+  const rol = (auth.user?.rol || '').toLowerCase()
+  return rol === 'facilitador'
 })
 
 const getInitials = (name: string): string => {
@@ -244,6 +305,21 @@ const logout = () => {
   padding: 1rem 0.75rem;
   gap: 0.25rem;
   overflow-y: auto;
+}
+
+.sidebar-divider {
+  display: flex;
+  align-items: center;
+  margin: 0.75rem 0 0.5rem;
+  padding: 0 0.5rem;
+}
+
+.sidebar-divider span {
+  font-size: 0.65rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: rgba(255, 255, 255, 0.4);
 }
 
 .sidebar-item {

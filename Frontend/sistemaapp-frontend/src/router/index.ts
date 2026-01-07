@@ -109,6 +109,47 @@ const router = createRouter({
         allowedRoles: ['admin']
       },
     },
+    // ===== MÓDULO 1: Estructura Territorial y Personal =====
+    {
+      path: '/estructura-territorial',
+      name: 'EstructuraTerritorial',
+      // @ts-ignore
+      component: () => import('../views/EstructuraTerritorialView.vue'),
+      meta: { 
+        requiresAuth: true,
+        allowedRoles: ['admin', 'territorial']
+      },
+    },
+    {
+      path: '/directorio',
+      name: 'Directorio',
+      // @ts-ignore
+      component: () => import('../views/DirectorioView.vue'),
+      meta: { 
+        requiresAuth: true
+        // Todos los roles pueden acceder, el filtrado se hace en backend por scope
+      },
+    },
+    {
+      path: '/cambios-adscripcion',
+      name: 'CambiosAdscripcion',
+      // @ts-ignore
+      component: () => import('../views/CambiosAdscripcionView.vue'),
+      meta: { 
+        requiresAuth: true,
+        allowedRoles: ['admin', 'territorial']
+      },
+    },
+    {
+      path: '/importaciones',
+      name: 'Importaciones',
+      // @ts-ignore
+      component: () => import('../views/ImportacionesView.vue'),
+      meta: { 
+        requiresAuth: true,
+        allowedRoles: ['admin']
+      },
+    },
   ],
 })
 
