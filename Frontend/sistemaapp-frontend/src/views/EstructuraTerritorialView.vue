@@ -166,7 +166,7 @@
                 :class="['chip', { active: filtroCAC === 'sin_coords' }]"
                 @click="filtroCAC = 'sin_coords'"
               >
-                <MapOff :size="14" />
+                <MapPinOff :size="14" />
                 Sin Coords
               </button>
             </div>
@@ -207,7 +207,7 @@
                   <span>{{ cac.latitud?.toFixed(4) }}, {{ cac.longitud?.toFixed(4) }}</span>
                 </div>
                 <div class="cac-coords warning" v-else>
-                  <MapOff :size="12" />
+                  <MapPinOff :size="12" />
                   <span>Sin coordenadas</span>
                 </div>
               </div>
@@ -333,7 +333,7 @@ import axios from 'axios'
 import DesktopSidebar from '../components/DesktopSidebar.vue'
 import { 
   Building2, Building, MapPin, Route, Users, Search, Plus, X,
-  UserCheck, AlertCircle, AlertTriangle, ArrowLeft, MapOff
+  UserCheck, AlertCircle, AlertTriangle, ArrowLeft, MapPinOff
 } from 'lucide-vue-next'
 
 const auth = useAuthStore()
