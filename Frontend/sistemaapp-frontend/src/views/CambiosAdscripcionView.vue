@@ -79,7 +79,6 @@
             <label>Estatus</label>
             <select v-model="filtros.estatus">
               <option value="">Todos</option>
-              <option value="BORRADOR">Borrador</option>
               <option value="EN_REVISION">En Revisión</option>
               <option value="AUTORIZADO">Autorizado</option>
               <option value="APLICADO">Aplicado</option>
@@ -176,16 +175,7 @@
                   </button>
                   
                   <button 
-                    v-if="cambio.estatus === 'BORRADOR' && esPropietario(cambio)"
-                    @click="enviarARevision(cambio)"
-                    class="btn-action primary"
-                    title="Enviar a revisión"
-                  >
-                    <Send :size="16" />
-                  </button>
-                  
-                  <button 
-                    v-if="cambio.estatus === 'EN_REVISION' && puedeAutorizar"
+                    v-if="cambio.estatus === 'EN_REVISION' && esDestinatario(cambio)"
                     @click="abrirAccion(cambio, 'AUTORIZAR')"
                     class="btn-action success"
                     title="Autorizar"
@@ -194,7 +184,7 @@
                   </button>
                   
                   <button 
-                    v-if="cambio.estatus === 'EN_REVISION' && puedeAutorizar"
+                    v-if="cambio.estatus === 'EN_REVISION' && esDestinatario(cambio)"
                     @click="abrirAccion(cambio, 'RECHAZAR')"
                     class="btn-action danger"
                     title="Rechazar"
@@ -355,8 +345,8 @@
           </div>
           
           <div class="form-group">
-            <label>Descripción del cambio</label>
-            <textarea v-model="nuevoCambio.resumen" rows="3" placeholder="Describir el cambio propuesto..."></textarea>
+            <label>Descripción de la solicitud *</label>
+            <textarea v-model="nuevoCambio.resumen" rows="3" placeholder="Describir la solicitud..." required></textarea>
           </div>
           
           <div class="form-group">
@@ -368,8 +358,9 @@
             <button type="button" @click="cerrarModalCrear" class="btn-secondary">
               Cancelar
             </button>
-            <button type="submit" class="btn-primary" :disabled="creando || !nuevoCambio.destino_id">
-              {{ creando ? 'Creando...' : 'Crear Propuesta' }}
+            <button type="submit" class="btn-primary" :disabled="creando || !puedeEnviar">
+              <Send :size="16" />
+              {{ creando ? 'Enviando...' : 'Enviar Solicitud' }}
             </button>
           </div>
         </form>
@@ -668,27 +659,45 @@ const cargarUsuariosDisponibles = async () => {
 const isAdmin = computed(() => auth.user?.rol?.toLowerCase() === 'admin')
 const puedeAutorizar = computed(() => ['admin', 'territorial'].includes(auth.user?.rol?.toLowerCase()))
 
-// Cambios pendientes: EN_REVISION dirigidos a mí (donde yo soy el destinatario)
+// Validar que se puede enviar la solicitud (todos los campos requeridos llenos)
+const puedeEnviar = computed(() => {
+  return nuevoCambio.value.tipo_cambio && 
+         nuevoCambio.value.objeto && 
+         nuevoCambio.value.destino_id && 
+         nuevoCambio.value.resumen?.trim()
+})
+
+// Verificar si el usuario actual es el destinatario del cambio
+const esDestinatario = (cambio) => {
+  const userId = auth.user?.id
+  return cambio.destino_id === userId
+}
+
+// Cambios pendientes: EN_REVISION dirigidos a MÍ (solicitudes que debo revisar/autorizar)
 const cambiosPendientes = computed(() => {
   const userId = auth.user?.id
   return cambios.value.filter(c => 
-    ['EN_REVISION', 'AUTORIZADO'].includes(c.estatus) && 
+    c.estatus === 'EN_REVISION' && 
     c.destino_id === userId
   )
 })
 
-// Cambios enviados: propuestos por mí
+// Cambios enviados: EN_REVISION que YO envié (esperando respuesta del destinatario)
 const cambiosEnviados = computed(() => {
   const userId = auth.user?.id
   return cambios.value.filter(c => 
-    c.propuesto_por?.persona_id === userId || c.propuesto_por_id === userId
+    c.estatus === 'EN_REVISION' &&
+    (c.propuesto_por?.persona_id === userId || c.propuesto_por_id === userId)
   )
 })
 
-// Historial: cambios ya procesados (APLICADO, RECHAZADO, CANCELADO)
+// Historial: TODAS mis solicitudes (enviadas o recibidas por mí) sin importar estatus
 const cambiosHistorial = computed(() => {
+  const userId = auth.user?.id
   return cambios.value.filter(c => 
-    ['APLICADO', 'RECHAZADO', 'CANCELADO'].includes(c.estatus)
+    c.propuesto_por?.persona_id === userId || 
+    c.propuesto_por_id === userId ||
+    c.destino_id === userId
   )
 })
 
@@ -765,30 +774,30 @@ const verDetalle = async (cambio) => {
 }
 
 const crearCambio = async () => {
+  // Validar campos requeridos
+  if (!puedeEnviar.value) {
+    alert('Por favor completa todos los campos requeridos y selecciona un destinatario')
+    return
+  }
+  
   try {
     creando.value = true
-    await axios.post(`${API_URL}/workflows/cambios-adscripcion`, nuevoCambio.value, {
+    // Enviar con estatus EN_REVISION directamente (no borrador)
+    const payload = {
+      ...nuevoCambio.value,
+      estatus: 'EN_REVISION'  // Se envía directamente, no como borrador
+    }
+    await axios.post(`${API_URL}/workflows/cambios-adscripcion`, payload, {
       headers: { Authorization: `Bearer ${auth.token}` }
     })
     cerrarModalCrear()
     cargarCambios()
+    alert('Solicitud enviada correctamente')
   } catch (error) {
-    console.error('Error creando cambio:', error)
-    alert(error.response?.data?.detail || 'Error al crear cambio')
+    console.error('Error enviando solicitud:', error)
+    alert(error.response?.data?.detail || 'Error al enviar solicitud')
   } finally {
     creando.value = false
-  }
-}
-
-const enviarARevision = async (cambio) => {
-  try {
-    await axios.post(`${API_URL}/workflows/cambios-adscripcion/${cambio.cambio_adscripcion_id}/enviar-revision`, {}, {
-      headers: { Authorization: `Bearer ${auth.token}` }
-    })
-    cargarCambios()
-  } catch (error) {
-    console.error('Error enviando a revisión:', error)
-    alert(error.response?.data?.detail || 'Error')
   }
 }
 
