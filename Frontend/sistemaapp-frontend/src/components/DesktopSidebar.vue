@@ -31,13 +31,6 @@
         <span class="sidebar-text">Dashboard</span>
       </router-link>
 
-      <!-- Solicitudes - Todos los usuarios -->
-      <router-link to="/solicitudes" class="sidebar-item" :class="{ active: currentRoute === '/solicitudes' }">
-        <FileText :size="20" class="sidebar-icon" />
-        <span class="sidebar-text">Solicitudes</span>
-        <span v-if="pendingCount > 0" class="sidebar-badge">{{ pendingCount }}</span>
-      </router-link>
-
       <!-- Sembradores - Todos los usuarios -->
       <router-link to="/sembradores" class="sidebar-item" :class="{ active: currentRoute === '/sembradores' }">
         <Sprout :size="20" class="sidebar-icon" />
@@ -67,10 +60,10 @@
         <span class="sidebar-text">Directorio</span>
       </router-link>
 
-      <!-- Cambios Adscripción - Admin y Territorial -->
+      <!-- Solicitudes - Admin y Territorial -->
       <router-link v-if="canViewEstructura" to="/cambios-adscripcion" class="sidebar-item" :class="{ active: currentRoute === '/cambios-adscripcion' }">
         <ArrowRightLeft :size="20" class="sidebar-icon" />
-        <span class="sidebar-text">Cambios</span>
+        <span class="sidebar-text">Solicitudes</span>
       </router-link>
 
       <!-- Importaciones - Solo Admin -->

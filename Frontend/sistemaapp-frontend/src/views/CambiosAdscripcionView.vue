@@ -8,8 +8,8 @@
           <div class="header-title">
             <GitBranch :size="28" class="header-icon" />
             <div>
-              <h1>Cambios de Adscripción</h1>
-              <p class="header-subtitle">Gestión de movimientos operativos</p>
+              <h1>Solicitudes</h1>
+              <p class="header-subtitle">Gestión de movimientos y cambios</p>
             </div>
           </div>
           

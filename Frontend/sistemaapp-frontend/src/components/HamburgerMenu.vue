@@ -55,14 +55,6 @@
             <ChevronRight :size="18" class="menu-item-arrow" />
           </li>
 
-          <!-- Solicitudes - Todos -->
-          <li class="menu-item" @click="navigateTo('/solicitudes')">
-            <FileText :size="20" class="menu-item-icon" />
-            <span class="menu-item-text">Solicitudes</span>
-            <span v-if="pendingCount > 0" class="menu-badge">{{ pendingCount }}</span>
-            <ChevronRight :size="18" class="menu-item-arrow" />
-          </li>
-
           <!-- Sembradores - Todos -->
           <li class="menu-item" @click="navigateTo('/sembradores')">
             <Sprout :size="20" class="menu-item-icon" />

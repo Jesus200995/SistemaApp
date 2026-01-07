@@ -93,13 +93,6 @@ const router = createRouter({
       },
     },
     {
-      path: '/solicitudes',
-      name: 'solicitudes',
-      // @ts-ignore
-      component: () => import('../views/SolicitudesView.vue'),
-      meta: { requiresAuth: true }, // 🔒 protegida
-    },
-    {
       path: '/admin-panel',
       name: 'admin-panel',
       // @ts-ignore
