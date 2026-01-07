@@ -395,156 +395,115 @@
 
         <!-- Contenido principal -->
         <div class="usuarios-content">
-      <!-- Tarjeta principal -->
-      <div class="usuarios-card">
-        <!-- Buscador -->
-        <div class="search-section">
-          <div class="search-wrapper">
-            <Search class="search-icon" />
-            <input
-              v-model="search"
-              type="text"
-              placeholder="Buscar por nombre o email..."
-              class="search-input"
-            />
+          <!-- Buscador -->
+          <div class="filters-section">
+            <div class="search-wrapper">
+              <Search class="search-icon" />
+              <input
+                v-model="search"
+                type="text"
+                placeholder="Buscar por nombre o email..."
+                class="search-input"
+              />
+            </div>
+            <div class="results-info">
+              {{ filteredUsuarios.length }} de {{ usuarios.length }} usuarios
+            </div>
           </div>
-          <div class="results-info">
-            {{ filteredUsuarios.length }} de {{ usuarios.length }} usuarios
+
+          <!-- Contadores por rol -->
+          <div class="stats-grid">
+            <div class="stat-item admin" v-if="adminCount > 0">
+              <span class="stat-value">{{ adminCount }}</span>
+              <span class="stat-label">Admins</span>
+            </div>
+            <div class="stat-item territorial" v-if="territorialCount > 0">
+              <span class="stat-value">{{ territorialCount }}</span>
+              <span class="stat-label">Territoriales</span>
+            </div>
+            <div class="stat-item facilitador" v-if="facilitadorCount > 0">
+              <span class="stat-value">{{ facilitadorCount }}</span>
+              <span class="stat-label">Facilitadores</span>
+            </div>
+            <div class="stat-item tecnico" v-if="tecnicoProductivoCount > 0">
+              <span class="stat-value">{{ tecnicoProductivoCount }}</span>
+              <span class="stat-label">Téc. Productivos</span>
+            </div>
+            <div class="stat-item tecnico-social" v-if="tecnicoSocialCount > 0">
+              <span class="stat-value">{{ tecnicoSocialCount }}</span>
+              <span class="stat-label">Téc. Sociales</span>
+            </div>
+            <div class="stat-item total">
+              <span class="stat-value">{{ total }}</span>
+              <span class="stat-label">Total</span>
+            </div>
           </div>
-        </div>
 
-        <!-- Tabla responsiva (Desktop) -->
-        <div class="hidden md:block table-wrapper">
-          <table class="users-table">
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Nombre</th>
-                <th>Email</th>
-                <th>CURP</th>
-                <th>Teléfono</th>
-                <th>Territorio</th>
-                <th>Rol</th>
-                <th>Acciones</th>
-              </tr>
-            </thead>
-            <tbody>
-              <!-- Skeleton loader -->
-              <tr v-if="loading" v-for="n in limit" :key="'skeleton-' + n" class="skeleton-row">
-                <td colspan="8">
-                  <div class="skeleton-line"></div>
-                </td>
-              </tr>
+          <!-- Tabla de Usuarios -->
+          <div class="table-container">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Nombre</th>
+                  <th>Email</th>
+                  <th>CURP</th>
+                  <th>Teléfono</th>
+                  <th>Territorio</th>
+                  <th>Rol</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- Skeleton loader -->
+                <tr v-if="loading" v-for="n in limit" :key="'skeleton-' + n">
+                  <td colspan="8">
+                    <div class="skeleton-line"></div>
+                  </td>
+                </tr>
 
-              <!-- Datos reales -->
-              <tr
-                v-for="u in filteredUsuarios"
-                :key="u.id"
-                class="user-row"
-              >
-                <td class="cell-id">
-                  <span class="id-badge">{{ u.id }}</span>
-                </td>
-                <td class="cell-nombre">
-                  <div class="nombre-content">
-                    <span>{{ u.nombre }}</span>
-                  </div>
-                </td>
-                <td class="cell-email">{{ u.email }}</td>
-                <td class="cell-curp">
-                  <span class="curp-badge">{{ u.curp || '—' }}</span>
-                </td>
-                <td class="cell-telefono">
-                  <span class="telefono-text">{{ u.telefono || '—' }}</span>
-                </td>
-                <td class="cell-territorio">
-                  <span class="territorio-badge">{{ u.territorio || '—' }}</span>
-                </td>
-                <td class="cell-rol">
-                  <span :class="['rol-badge', `rol-${u.rol}`]">
-                    {{ u.rol.toUpperCase().replace(/_/g, ' ') }}
-                  </span>
-                </td>
-                <td class="cell-actions">
-                  <div class="actions-group">
+                <!-- Datos reales -->
+                <tr v-for="u in filteredUsuarios" :key="u.id">
+                  <td class="folio">{{ u.id }}</td>
+                  <td class="nombre">{{ u.nombre }}</td>
+                  <td class="email">{{ u.email }}</td>
+                  <td>
+                    <span class="curp-badge">{{ u.curp || '—' }}</span>
+                  </td>
+                  <td>{{ u.telefono || '—' }}</td>
+                  <td>{{ u.territorio || '—' }}</td>
+                  <td>
+                    <span :class="['rol-badge', `rol-${u.rol}`]">
+                      {{ formatRolTabla(u.rol) }}
+                    </span>
+                  </td>
+                  <td class="actions">
                     <button
                       @click="abrirModalEditar(u)"
-                      class="action-btn edit-btn"
+                      class="btn-action info"
                       title="Editar usuario"
                     >
-                      <Edit class="action-icon" />
+                      <Edit :size="16" />
                     </button>
                     <button
                       @click="abrirConfirmarEliminar(u.id, u.nombre)"
-                      class="action-btn delete-btn"
+                      class="btn-action danger"
                       title="Eliminar usuario"
                     >
-                      <Trash2 class="action-icon" />
+                      <Trash2 :size="16" />
                     </button>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
 
-          <!-- Estado vacío -->
-          <div v-if="!loading && filteredUsuarios.length === 0" class="empty-state">
-            <Search class="empty-icon" />
-            <h3>No se encontraron usuarios</h3>
-            <p>Intenta con otros términos de búsqueda</p>
-          </div>
-        </div>
-
-        <!-- Cards Mobile -->
-        <div class="md:hidden cards-wrapper">
-          <!-- Skeleton loader -->
-          <div v-if="loading" v-for="n in limit" :key="'card-skeleton-' + n" class="skeleton-card">
-            <div class="skeleton-line" style="width: 60%"></div>
-            <div class="skeleton-line" style="width: 80%; margin-top: 0.5rem"></div>
-          </div>
-
-          <!-- Datos reales -->
-          <div
-            v-for="u in filteredUsuarios"
-            :key="u.id"
-            class="user-card"
-          >
-            <div class="card-header">
-              <div class="card-nombre">
-                <div class="card-avatar">{{ u.nombre.charAt(0).toUpperCase() }}</div>
-                <div class="card-info">
-                  <h3>{{ u.nombre }}</h3>
-                  <p class="card-email">{{ u.email }}</p>
-                </div>
-              </div>
-              <span :class="['rol-badge', `rol-${u.rol}`]">
-                {{ u.rol.toUpperCase().replace(/_/g, ' ') }}
-              </span>
-            </div>
-            <div class="card-details">
-              <div class="detail-item">
-                <span class="detail-label">CURP:</span>
-                <span class="detail-value">{{ u.curp || '—' }}</span>
-              </div>
-              <div class="detail-item">
-                <span class="detail-label">Tel:</span>
-                <span class="detail-value">{{ u.telefono || '—' }}</span>
-              </div>
-              <div class="detail-item">
-                <span class="detail-label">Territorio:</span>
-                <span class="detail-value">{{ u.territorio || '—' }}</span>
-              </div>
+            <!-- Estado vacío -->
+            <div v-if="!loading && filteredUsuarios.length === 0" class="empty-state">
+              <Search class="empty-icon" />
+              <h3>No se encontraron usuarios</h3>
+              <p>Intenta con otros términos de búsqueda</p>
             </div>
           </div>
-
-          <!-- Estado vacío -->
-          <div v-if="!loading && filteredUsuarios.length === 0" class="empty-state">
-            <Search class="empty-icon" />
-            <h3>No se encontraron usuarios</h3>
-            <p>Intenta con otros términos de búsqueda</p>
-          </div>
-        </div>
-      </div>
 
       <!-- Paginación -->
       <div class="pagination-section">
@@ -573,40 +532,14 @@
         </button>
       </div>
 
-      <!-- Estadísticas -->
-      <div class="stats-section">
-        <div class="stat-card" v-if="adminCount > 0">
-          <div class="stat-number">{{ adminCount }}</div>
-          <div class="stat-label">Admins</div>
-        </div>
-        <div class="stat-card" v-if="territorialCount > 0">
-          <div class="stat-number">{{ territorialCount }}</div>
-          <div class="stat-label">Territoriales</div>
-        </div>
-        <div class="stat-card" v-if="facilitadorCount > 0">
-          <div class="stat-number">{{ facilitadorCount }}</div>
-          <div class="stat-label">Facilitadores</div>
-        </div>
-        <div class="stat-card" v-if="tecnicoProductivoCount > 0">
-          <div class="stat-number">{{ tecnicoProductivoCount }}</div>
-          <div class="stat-label">Téc. Productivos</div>
-        </div>
-        <div class="stat-card" v-if="tecnicoSocialCount > 0">
-          <div class="stat-number">{{ tecnicoSocialCount }}</div>
-          <div class="stat-label">Téc. Sociales</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-number">{{ total }}</div>
-          <div class="stat-label">Total</div>
-        </div>
+
       </div>
-        </div>
       </main>
     </div>
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
 import axios from 'axios'
 import { Users, RotateCw, Search, ChevronLeft, ChevronRight, ArrowLeft, Edit, Trash2, UserPlus, X, User, Mail, Lock, Shield, Eye, EyeOff, Loader2, IdCard, Phone, MapPin } from 'lucide-vue-next'
@@ -879,6 +812,19 @@ const fetchUsuarios = async () => {
 }
 
 const reload = () => fetchUsuarios()
+
+// Formatear rol para mostrar en tabla
+const formatRolTabla = (rol: string): string => {
+  const roles: Record<string, string> = {
+    admin: 'Admin',
+    territorial: 'Territorial',
+    facilitador: 'Facilitador',
+    tecnico_productivo: 'Téc. Productivo',
+    tecnico_social: 'Téc. Social',
+    sembrador: 'Sembrador'
+  }
+  return roles[rol?.toLowerCase()] || rol?.replace(/_/g, ' ').toUpperCase() || '-'
+}
 
 const nextPage = () => {
   if (page.value < totalPages.value) {
@@ -1432,67 +1378,197 @@ onMounted(async () => {
 }
 
 .results-info {
-  font-size: 0.7rem;
-  color: #94a3b8;
+  font-size: 0.75rem;
+  color: #6b7280;
   white-space: nowrap;
-  padding: 0.4rem 0.75rem;
+  padding: 0.5rem 0.75rem;
+  background: #f9fafb;
+  border-radius: 6px;
 }
 
-@media (min-width: 1024px) {
-  .results-info {
-    font-size: 0.875rem;
-  }
+/* ========== FILTERS SECTION ========== */
+.filters-section {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
 }
 
-/* ========== TABLE (DESKTOP) ========== */
-.table-wrapper {
-  overflow-x: auto;
-  margin-bottom: 0.75rem;
-  border-radius: 10px;
-  border: 1px solid rgba(148, 163, 184, 0.1);
+/* ========== TABLE CONTAINER ========== */
+.table-container {
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
-.users-table {
+.data-table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 0.7rem;
 }
 
-@media (min-width: 1024px) {
-  .users-table {
-    font-size: 0.875rem;
-  }
+.data-table th,
+.data-table td {
+  padding: 0.75rem 1rem;
+  text-align: left;
+  border-bottom: 1px solid #e5e7eb;
 }
 
-.users-table thead {
-  background: linear-gradient(135deg, #dcfce7 0%, #f0fdf4 100%);
-  border-bottom: 1.5px solid rgba(22, 163, 74, 0.3);
-}
-
-.users-table thead th {
-  padding: 0.5rem 0.4rem;
-  text-align: center;
+.data-table th {
+  background: #f9fafb;
   font-weight: 600;
-  color: #15803d;
+  font-size: 0.75rem;
   text-transform: uppercase;
-  letter-spacing: 0.03em;
-  font-size: 0.6rem;
+  color: #6b7280;
 }
 
-@media (min-width: 1024px) {
-  .users-table thead th {
-    padding: 0.75rem 1rem;
-    font-size: 0.75rem;
-  }
+.data-table tr:hover {
+  background: #f9fafb;
 }
 
-.skeleton-row {
-  animation: pulse-loading 2s ease-in-out infinite;
+.folio {
+  font-family: monospace;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.nombre {
+  font-weight: 500;
+  color: #1f2937;
+  max-width: 180px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.email {
+  color: #6b7280;
+  font-size: 0.875rem;
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.curp-badge {
+  display: inline-block;
+  padding: 0.25rem 0.5rem;
+  background: #f3f4f6;
+  color: #374151;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  font-family: monospace;
+}
+
+.rol-badge {
+  display: inline-block;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  font-weight: 600;
+}
+
+.rol-badge.rol-admin {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+.rol-badge.rol-territorial {
+  background: #dbeafe;
+  color: #2563eb;
+}
+
+.rol-badge.rol-facilitador {
+  background: #dcfce7;
+  color: #16a34a;
+}
+
+.rol-badge.rol-tecnico_productivo {
+  background: #fef3c7;
+  color: #d97706;
+}
+
+.rol-badge.rol-tecnico_social {
+  background: #e0e7ff;
+  color: #4f46e5;
+}
+
+.rol-badge.rol-sembrador {
+  background: #ecfccb;
+  color: #65a30d;
+}
+
+.actions {
+  display: flex;
+  gap: 0.375rem;
+}
+
+.btn-action {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f3f4f6;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  color: #6b7280;
+  transition: all 0.2s;
+}
+
+.btn-action:hover {
+  background: #e5e7eb;
+}
+
+.btn-action.info {
+  background: #dbeafe;
+  color: #2563eb;
+}
+
+.btn-action.info:hover {
+  background: #bfdbfe;
+}
+
+.btn-action.danger {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+.btn-action.danger:hover {
+  background: #fecaca;
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem;
+  color: #9ca3af;
+}
+
+.empty-state h3 {
+  margin: 0.5rem 0 0.25rem 0;
+  font-size: 1rem;
+  color: #6b7280;
+}
+
+.empty-state p {
+  margin: 0;
+  font-size: 0.875rem;
+}
+
+.empty-icon {
+  width: 48px;
+  height: 48px;
+  color: #d1d5db;
 }
 
 .skeleton-line {
   height: 1rem;
-  background: linear-gradient(90deg, rgba(16, 185, 129, 0.1) 0%, rgba(16, 185, 129, 0.2) 50%, rgba(16, 185, 129, 0.1) 100%);
+  background: linear-gradient(90deg, #f3f4f6 0%, #e5e7eb 50%, #f3f4f6 100%);
   border-radius: 4px;
   background-size: 200% 100%;
   animation: shimmer 1.5s infinite;
@@ -1503,444 +1579,98 @@ onMounted(async () => {
   100% { background-position: 200% 0; }
 }
 
+/* Responsive table */
+@media (max-width: 1024px) {
+  .table-container {
+    overflow-x: auto;
+  }
+  
+  .data-table th,
+  .data-table td {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.75rem;
+  }
+  
+  .nombre {
+    max-width: 120px;
+  }
+  
+  .email {
+    max-width: 150px;
+    font-size: 0.75rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .filters-section {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .search-wrapper {
+    width: 100%;
+  }
+  
+  .stats-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.5rem;
+  }
+  
+  .stat-item {
+    padding: 0.75rem 0.5rem;
+  }
+  
+  .stat-value {
+    font-size: 1.25rem;
+  }
+  
+  .stat-label {
+    font-size: 0.6rem;
+  }
+  
+  .data-table th,
+  .data-table td {
+    padding: 0.5rem;
+    font-size: 0.7rem;
+  }
+  
+  .data-table th:nth-child(3),
+  .data-table td:nth-child(3),
+  .data-table th:nth-child(4),
+  .data-table td:nth-child(4),
+  .data-table th:nth-child(5),
+  .data-table td:nth-child(5) {
+    display: none;
+  }
+  
+  .nombre {
+    max-width: 100px;
+  }
+}
+
+@media (max-width: 480px) {
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.4rem;
+  }
+  
+  .stat-item {
+    padding: 0.6rem 0.4rem;
+    border-radius: 10px;
+  }
+  
+  .stat-value {
+    font-size: 1.1rem;
+  }
+  
+  .stat-label {
+    font-size: 0.55rem;
+  }
+}
+
 @keyframes pulse-loading {
   0%, 100% { opacity: 1; }
   50% { opacity: 0.5; }
-}
-
-.user-row {
-  border-bottom: 1px solid rgba(22, 163, 74, 0.1);
-  transition: all 0.3s ease;
-}
-
-.user-row:hover {
-  background: rgba(22, 163, 74, 0.05);
-  border-bottom-color: rgba(22, 163, 74, 0.2);
-}
-
-.users-table td {
-  padding: 0.4rem 0.35rem;
-  color: #374151;
-  font-size: 0.65rem;
-}
-
-@media (min-width: 1024px) {
-  .users-table td {
-    padding: 0.75rem 1rem;
-    font-size: 0.875rem;
-  }
-}
-
-/* Cell Styles */
-.cell-id {
-  width: 60px;
-}
-
-.id-badge {
-  display: inline-block;
-  background: rgba(22, 163, 74, 0.15);
-  color: #16a34a;
-  padding: 0.25rem 0.5rem;
-  border-radius: 5px;
-  font-weight: 600;
-  font-size: 0.65rem;
-}
-
-@media (min-width: 1024px) {
-  .id-badge {
-    padding: 0.35rem 0.65rem;
-    font-size: 0.8rem;
-  }
-}
-
-.cell-nombre {
-  font-weight: 500;
-}
-
-.nombre-content {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.nombre-avatar {
-  width: 26px;
-  height: 26px;
-  background: transparent;
-  border: 1.5px solid #84cc16;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #84cc16;
-  font-weight: 600;
-  font-size: 0.6rem;
-  text-shadow: 0 0 8px rgba(132, 204, 22, 0.5);
-}
-
-@media (min-width: 1024px) {
-  .nombre-avatar {
-    width: 32px;
-    height: 32px;
-    font-size: 0.75rem;
-  }
-}
-
-.cell-email {
-  color: #94a3b8;
-  font-size: 0.65rem;
-}
-
-@media (min-width: 1024px) {
-  .cell-email {
-    font-size: 0.875rem;
-  }
-}
-
-.cell-curp {
-  font-family: 'Courier New', monospace;
-  width: 120px;
-  text-align: center;
-}
-
-@media (min-width: 1024px) {
-  .cell-curp {
-    width: 180px;
-  }
-}
-
-.curp-badge {
-  display: inline-block;
-  background: rgba(59, 130, 246, 0.15);
-  color: #60a5fa;
-  padding: 0.25rem 0.5rem;
-  border-radius: 5px;
-  font-weight: 600;
-  font-size: 0.6rem;
-  letter-spacing: 0.04em;
-  border: 1px solid rgba(59, 130, 246, 0.3);
-}
-
-@media (min-width: 1024px) {
-  .curp-badge {
-    padding: 0.35rem 0.65rem;
-    font-size: 0.75rem;
-  }
-}
-
-.cell-telefono {
-  width: 90px;
-  text-align: center;
-}
-
-@media (min-width: 1024px) {
-  .cell-telefono {
-    width: 120px;
-  }
-}
-
-.telefono-text {
-  display: inline-block;
-  background: rgba(139, 92, 246, 0.15);
-  color: #a78bfa;
-  padding: 0.25rem 0.5rem;
-  border-radius: 5px;
-  font-weight: 500;
-  font-size: 0.6rem;
-  border: 1px solid rgba(139, 92, 246, 0.3);
-}
-
-@media (min-width: 1024px) {
-  .telefono-text {
-    padding: 0.35rem 0.65rem;
-    font-size: 0.75rem;
-  }
-}
-
-.cell-territorio {
-  width: 120px;
-  text-align: center;
-}
-
-@media (min-width: 1024px) {
-  .cell-territorio {
-    width: 160px;
-  }
-}
-
-.territorio-badge {
-  display: inline-block;
-  background: rgba(236, 72, 153, 0.15);
-  color: #f472b6;
-  padding: 0.25rem 0.5rem;
-  border-radius: 5px;
-  font-weight: 500;
-  font-size: 0.6rem;
-  border: 1px solid rgba(236, 72, 153, 0.3);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 110px;
-}
-
-@media (min-width: 1024px) {
-  .territorio-badge {
-    padding: 0.35rem 0.65rem;
-    font-size: 0.75rem;
-    max-width: 160px;
-  }
-}
-
-.cell-rol {
-  text-align: center;
-}
-
-.cell-actions {
-  text-align: center;
-  width: 80px;
-}
-
-@media (min-width: 1024px) {
-  .cell-actions {
-    width: 120px;
-  }
-}
-
-.action-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.35rem;
-  background: none;
-  border: none;
-  font-size: 1rem;
-  cursor: pointer;
-  padding: 0.2rem 0.35rem;
-  border-radius: 5px;
-  transition: all 0.2s ease;
-  margin: 0 0.15rem;
-}
-
-@media (min-width: 1024px) {
-  .action-btn {
-    padding: 0.4rem 0.5rem;
-    margin: 0 0.25rem;
-  }
-}
-
-.action-icon {
-  width: 15px;
-  height: 15px;
-}
-
-@media (min-width: 1024px) {
-  .action-icon {
-    width: 18px;
-    height: 18px;
-  }
-}
-
-.edit-btn:hover {
-  background: rgba(59, 130, 246, 0.1);
-  transform: scale(1.15);
-}
-
-.delete-btn:hover {
-  background: rgba(239, 68, 68, 0.1);
-  transform: scale(1.15);
-}
-
-.rol-badge {
-  display: inline-block;
-  padding: 0.25rem 0.65rem;
-  border-radius: 14px;
-  font-weight: 600;
-  font-size: 0.55rem;
-  letter-spacing: 0.04em;
-}
-
-@media (min-width: 1024px) {
-  .rol-badge {
-    padding: 0.35rem 0.85rem;
-    font-size: 0.7rem;
-  }
-}
-
-.rol-admin {
-  background: rgba(239, 68, 68, 0.2);
-  color: #ef4444;
-  border: 1px solid rgba(239, 68, 68, 0.3);
-}
-
-.rol-territorial {
-  background: rgba(139, 92, 246, 0.2);
-  color: #8b5cf6;
-  border: 1px solid rgba(139, 92, 246, 0.3);
-}
-
-.rol-facilitador {
-  background: rgba(59, 130, 246, 0.2);
-  color: #3b82f6;
-  border: 1px solid rgba(59, 130, 246, 0.3);
-}
-
-.rol-tecnico_productivo {
-  background: #15803d;
-  color: white;
-  border: none;
-}
-
-.rol-tecnico_social {
-  background: rgba(245, 158, 11, 0.2);
-  color: #f59e0b;
-  border: 1px solid rgba(245, 158, 11, 0.3);
-}
-
-.rol-usuario {
-  background: rgba(16, 185, 129, 0.2);
-  color: #10b981;
-}
-
-/* ========== CARDS (MOBILE) ========== */
-.cards-wrapper {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 0.75rem;
-}
-
-.skeleton-card {
-  padding: 1rem;
-  background: rgba(255, 255, 255, 0.9);
-  border: 1px solid rgba(22, 163, 74, 0.2);
-  border-radius: 10px;
-  animation: pulse-loading 2s ease-in-out infinite;
-}
-
-.user-card {
-  padding: 1rem;
-  background: rgba(255, 255, 255, 0.95);
-  border: 1px solid rgba(22, 163, 74, 0.2);
-  border-radius: 12px;
-  transition: all 0.3s ease;
-  backdrop-filter: blur(4px);
-}
-
-.user-card:hover {
-  background: white;
-  border-color: rgba(22, 163, 74, 0.4);
-  box-shadow: 0 6px 20px rgba(22, 163, 74, 0.12);
-}
-
-.card-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.75rem;
-  margin-bottom: 0.75rem;
-}
-
-.card-nombre {
-  display: flex;
-  align-items: center;
-  gap: 0.65rem;
-  flex: 1;
-}
-
-.card-avatar {
-  width: 36px;
-  height: 36px;
-  background: linear-gradient(135deg, rgba(132, 204, 22, 0.2), rgba(132, 204, 22, 0.1));
-  border: 2px solid #84cc16;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #84cc16;
-  font-weight: 700;
-  flex-shrink: 0;
-  font-size: 0.8rem;
-  text-shadow: 0 0 8px rgba(132, 204, 22, 0.5);
-  box-shadow: 0 0 10px rgba(132, 204, 22, 0.2);
-}
-
-.card-info {
-  display: flex;
-  flex-direction: column;
-  gap: 0.15rem;
-}
-
-.card-nombre h3 {
-  font-size: 0.85rem;
-  font-weight: 700;
-  color: #1e3a2f;
-  margin: 0;
-  line-height: 1.2;
-}
-
-.card-email {
-  font-size: 0.65rem;
-  color: #94a3b8;
-  margin: 0;
-  line-height: 1.2;
-}
-
-.card-details {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  padding-top: 0.75rem;
-  border-top: 1px solid rgba(132, 204, 22, 0.1);
-}
-
-.detail-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.detail-label {
-  font-size: 0.6rem;
-  font-weight: 600;
-  color: #94a3b8;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-}
-
-.detail-value {
-  font-size: 0.7rem;
-  color: #1e3a2f;
-  font-family: 'Courier New', monospace;
-  text-align: right;
-  flex: 1;
-}
-
-.card-actions {
-  display: none;
-}
-
-/* ========== EMPTY STATE ========== */
-.empty-state {
-  text-align: center;
-  padding: 2rem 1.5rem;
-  color: #64748b;
-}
-
-.empty-icon {
-  width: 40px;
-  height: 40px;
-  margin: 0 auto 0.75rem;
-  opacity: 0.5;
-}
-
-.empty-state h3 {
-  font-size: 1rem;
-  color: #94a3b8;
-  margin-bottom: 0.35rem;
-}
-
-.empty-state p {
-  font-size: 0.8rem;
 }
 
 /* ========== PAGINATION ========== */
@@ -1950,10 +1680,10 @@ onMounted(async () => {
   justify-content: center;
   gap: 1rem;
   padding: 0.75rem;
-  background: rgba(255, 255, 255, 0.9);
-  border: 1px solid rgba(22, 163, 74, 0.2);
+  background: white;
+  border: 1px solid #e5e7eb;
   border-radius: 10px;
-  backdrop-filter: blur(10px);
+  margin-top: 1rem;
   margin-bottom: 1rem;
 }
 
@@ -2010,461 +1740,112 @@ onMounted(async () => {
   color: #94a3b8;
 }
 
-/* ========== STATS SECTION ========== */
-.stats-section {
+/* ========== STATS GRID (Contadores) ========== */
+.stats-grid {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
   gap: 0.75rem;
-  justify-items: center;
-  max-width: 800px;
-  margin: 0 auto;
+  margin-bottom: 1rem;
 }
 
-@media (min-width: 1024px) {
-  .stats-section {
-    max-width: 100%;
-    gap: 1rem;
-    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-  }
-}
-
-.stat-card {
-  --card-rgb: 16, 185, 129;
-  background: rgba(var(--card-rgb), 0.12);
-  border: 1.5px solid rgba(var(--card-rgb), 0.25);
-  border-radius: 12px;
-  padding: 0.8rem 0.5rem;
-  text-align: center;
-  transition: all 0.3s ease;
-  backdrop-filter: blur(12px);
-  box-shadow: 
-    0 4px 16px rgba(var(--card-rgb), 0.12),
-    inset 0 0 30px rgba(var(--card-rgb), 0.05);
+.stat-item {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  min-width: 80px;
-  width: 100%;
-  max-width: 140px;
+  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 1rem 0.75rem;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
 }
 
-.stat-card:hover {
-  background: rgba(var(--card-rgb), 0.18);
-  border-color: rgba(var(--card-rgb), 0.4);
+.stat-item::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: currentColor;
+  opacity: 0.8;
+}
+
+.stat-item:hover {
   transform: translateY(-2px);
-  box-shadow: 
-    0 8px 24px rgba(var(--card-rgb), 0.2),
-    inset 0 0 40px rgba(var(--card-rgb), 0.08);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
-.stat-card.admin {
-  --card-rgb: 239, 68, 68;
-}
-
-.stat-card.territorial {
-  --card-rgb: 139, 92, 246;
-}
-
-.stat-card.facilitador {
-  --card-rgb: 59, 130, 246;
-}
-
-.stat-card.tecnico {
-  --card-rgb: 245, 158, 11;
-}
-
-.stat-icon {
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 0.4rem;
-  background: rgba(var(--card-rgb), 0.15);
-  backdrop-filter: blur(8px);
-  box-shadow: 
-    0 2px 8px rgba(var(--card-rgb), 0.2),
-    inset 0 1px 2px rgba(255, 255, 255, 0.3);
-}
-
-.stat-icon svg {
-  width: 14px;
-  height: 14px;
-  color: rgb(var(--card-rgb));
-}
-
-.stat-number {
-  font-size: 1.2rem;
-  font-weight: 700;
-  color: rgb(var(--card-rgb));
-  margin-bottom: 0.15rem;
+.stat-value {
+  font-size: 1.5rem;
+  font-weight: 800;
+  line-height: 1;
+  margin-bottom: 0.25rem;
 }
 
 .stat-label {
-  font-size: 0.6rem;
+  font-size: 0.7rem;
   color: #64748b;
+  font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.04em;
-  font-weight: 500;
+  letter-spacing: 0.03em;
 }
 
-/* ========== RESPONSIVE ========== */
-@media (max-width: 1200px) {
-  .stats-section {
-    grid-template-columns: repeat(5, 1fr);
-    gap: 0.6rem;
-  }
-  
-  .stat-card {
-    padding: 0.65rem 0.4rem;
-  }
-  
-  .stat-number {
-    font-size: 1.1rem;
-  }
-  
-  .stat-label {
-    font-size: 0.55rem;
-  }
+/* Colores por rol */
+.stat-item.admin {
+  color: #dc2626;
+  border-color: rgba(220, 38, 38, 0.2);
+  background: linear-gradient(135deg, #fef2f2 0%, #fff 100%);
+}
+.stat-item.admin .stat-value {
+  color: #dc2626;
 }
 
-@media (max-width: 1024px) {
-  .stats-section {
-    grid-template-columns: repeat(5, 1fr);
-    gap: 0.5rem;
-    max-width: 600px;
-  }
-  
-  .stat-card {
-    padding: 0.6rem 0.35rem;
-    min-width: 65px;
-  }
-  
-  .stat-icon {
-    width: 24px;
-    height: 24px;
-  }
-  
-  .stat-icon svg {
-    width: 12px;
-    height: 12px;
-  }
-  
-  .stat-number {
-    font-size: 1rem;
-  }
-  
-  .stat-label {
-    font-size: 0.5rem;
-  }
+.stat-item.territorial {
+  color: #7c3aed;
+  border-color: rgba(124, 58, 237, 0.2);
+  background: linear-gradient(135deg, #f5f3ff 0%, #fff 100%);
+}
+.stat-item.territorial .stat-value {
+  color: #7c3aed;
 }
 
-@media (max-width: 768px) {
-  .usuarios-header {
-    padding: 0.5rem 0.6rem;
-  }
-
-  .header-title {
-    font-size: 0.75rem;
-  }
-
-  .header-icon-small {
-    width: 22px;
-    height: 22px;
-  }
-
-  .icon-stat {
-    width: 14px;
-    height: 14px;
-  }
-
-  .header-subtitle {
-    font-size: 0.6rem;
-  }
-
-  .back-button,
-  .reload-button {
-    width: 30px;
-    height: 30px;
-  }
-
-  .back-icon,
-  .reload-icon {
-    width: 16px;
-    height: 16px;
-  }
-
-  .usuarios-content {
-    padding: 0.75rem 0.5rem;
-    margin-top: 55px;
-    height: calc(100vh - 55px);
-  }
-
-  .usuarios-card {
-    padding: 0.75rem;
-  }
-
-  .search-section {
-    flex-direction: column;
-    gap: 0.5rem;
-    margin-bottom: 0.75rem;
-  }
-
-  .results-info {
-    order: -1;
-    text-align: center;
-    width: 100%;
-    font-size: 0.65rem;
-  }
-
-  .pagination-section {
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    padding: 0.6rem;
-  }
-
-  .pagination-btn {
-    flex: 1;
-    min-width: 80px;
-    font-size: 0.65rem;
-    padding: 0.4rem 0.6rem;
-  }
-
-  .stats-section {
-    grid-template-columns: repeat(3, 1fr);
-    gap: 0.5rem;
-    max-width: 100%;
-  }
-  
-  .stat-card {
-    padding: 0.55rem 0.35rem;
-    min-width: auto;
-    max-width: none;
-  }
-  
-  .stat-icon {
-    width: 22px;
-    height: 22px;
-    margin-bottom: 0.3rem;
-  }
-  
-  .stat-icon svg {
-    width: 11px;
-    height: 11px;
-  }
-  
-  .stat-number {
-    font-size: 0.95rem;
-  }
-  
-  .stat-label {
-    font-size: 0.5rem;
-  }
+.stat-item.facilitador {
+  color: #2563eb;
+  border-color: rgba(37, 99, 235, 0.2);
+  background: linear-gradient(135deg, #eff6ff 0%, #fff 100%);
+}
+.stat-item.facilitador .stat-value {
+  color: #2563eb;
 }
 
-@media (max-width: 640px) {
-  .usuarios-content {
-    padding: 0.6rem 0.4rem;
-  }
-
-  .header-title {
-    font-size: 0.7rem;
-  }
-
-  .header-subtitle {
-    font-size: 0.55rem;
-  }
-
-  .usuarios-card {
-    padding: 0.65rem;
-    border-radius: 10px;
-  }
-
-  .search-input {
-    font-size: 16px; /* Previene zoom en iOS */
-    padding: 0.4rem 0.6rem 0.4rem 1.8rem;
-  }
-
-  .pagination-section {
-    padding: 0.5rem;
-  }
-
-  .pagination-btn {
-    padding: 0.35rem 0.5rem;
-    font-size: 0.6rem;
-  }
-
-  .pagination-info {
-    font-size: 0.7rem;
-  }
-
-  .page-current {
-    font-size: 0.9rem;
-  }
-
-  .card-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.5rem;
-  }
-
-  .rol-badge {
-    align-self: flex-start;
-  }
-  
-  .stats-section {
-    grid-template-columns: repeat(3, 1fr);
-    gap: 0.4rem;
-  }
-  
-  .stat-card {
-    padding: 0.5rem 0.3rem;
-  }
-  
-  .stat-icon {
-    width: 20px;
-    height: 20px;
-    margin-bottom: 0.25rem;
-  }
-  
-  .stat-icon svg {
-    width: 10px;
-    height: 10px;
-  }
-  
-  .stat-number {
-    font-size: 0.85rem;
-  }
-  
-  .stat-label {
-    font-size: 0.45rem;
-  }
+.stat-item.tecnico {
+  color: #d97706;
+  border-color: rgba(217, 119, 6, 0.2);
+  background: linear-gradient(135deg, #fffbeb 0%, #fff 100%);
+}
+.stat-item.tecnico .stat-value {
+  color: #d97706;
 }
 
-@media (max-width: 480px) {
-  .usuarios-header {
-    padding: 0.4rem 0.5rem;
-  }
-
-  .back-button {
-    width: 28px;
-    height: 28px;
-  }
-
-  .back-icon {
-    width: 14px;
-    height: 14px;
-  }
-
-  .header-icon-small {
-    width: 20px;
-    height: 20px;
-  }
-
-  .icon-stat {
-    width: 12px;
-    height: 12px;
-  }
-
-  .header-title {
-    font-size: 0.65rem;
-  }
-
-  .header-subtitle {
-    font-size: 0.5rem;
-  }
-
-  .reload-button {
-    width: 28px;
-    height: 28px;
-  }
-
-  .reload-icon {
-    width: 14px;
-    height: 14px;
-  }
-
-  .usuarios-content {
-    padding: 0.5rem 0.35rem;
-    margin-top: 50px;
-    height: calc(100vh - 50px);
-  }
-  
-  .usuarios-card {
-    padding: 0.5rem;
-  }
-  
-  .stats-section {
-    grid-template-columns: repeat(3, 1fr);
-    gap: 0.35rem;
-  }
-  
-  .stat-card {
-    padding: 0.4rem 0.25rem;
-    border-radius: 8px;
-  }
-  
-  .stat-icon {
-    width: 18px;
-    height: 18px;
-    margin-bottom: 0.2rem;
-    border-radius: 50%;
-  }
-  
-  .stat-icon svg {
-    width: 9px;
-    height: 9px;
-  }
-  
-  .stat-number {
-    font-size: 0.75rem;
-  }
-  
-  .stat-label {
-    font-size: 0.4rem;
-  }
+.stat-item.tecnico-social {
+  color: #0891b2;
+  border-color: rgba(8, 145, 178, 0.2);
+  background: linear-gradient(135deg, #ecfeff 0%, #fff 100%);
+}
+.stat-item.tecnico-social .stat-value {
+  color: #0891b2;
 }
 
-/* Modo landscape para móviles */
-@media (max-height: 500px) and (orientation: landscape) {
-  .usuarios-header {
-    padding: 0.35rem 0.5rem;
-  }
-  
-  .usuarios-content {
-    margin-top: 45px;
-    height: calc(100vh - 45px);
-    padding: 0.4rem;
-  }
-  
-  .usuarios-card {
-    padding: 0.5rem;
-  }
-  
-  .stats-section {
-    grid-template-columns: repeat(5, 1fr);
-    gap: 0.4rem;
-  }
-  
-  .stat-card {
-    padding: 0.35rem 0.25rem;
-  }
-  
-  .stat-icon {
-    width: 16px;
-    height: 16px;
-    margin-bottom: 0.15rem;
-  }
-  
-  .stat-number {
-    font-size: 0.7rem;
-  }
-  
-  .stat-label {
-    font-size: 0.4rem;
-  }
+.stat-item.total {
+  color: #059669;
+  border-color: rgba(5, 150, 105, 0.2);
+  background: linear-gradient(135deg, #ecfdf5 0%, #fff 100%);
+}
+.stat-item.total .stat-value {
+  color: #059669;
 }
 
 /* ========== HEADER ACTIONS ========== */
