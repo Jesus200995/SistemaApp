@@ -15,9 +15,6 @@
 
     <!-- ========== CONTENEDOR PRINCIPAL ========== -->
     <div class="main-wrapper">
-      <!-- Header/Breadcrumb para PC -->
-      <DesktopHeader />
-
       <!-- Header con botón de regreso (móvil) -->
       <header class="solicitudes-header mobile-header">
         <div class="header-wrapper">
@@ -591,7 +588,6 @@ import { useAuthStore } from '../stores/auth'
 import { getSecureApiUrl } from '../utils/api'
 import HamburgerMenu from '../components/HamburgerMenu.vue'
 import DesktopSidebar from '../components/DesktopSidebar.vue'
-import DesktopHeader from '../components/DesktopHeader.vue'
 import { FileText, Send, Check, X, ArrowLeft, UserCheck, MessageSquare, Eye, Calendar, User, Clock, History, CheckCircle, Bell, Search, Edit, SendHorizontal, RotateCw } from 'lucide-vue-next'
 
 const auth = useAuthStore()

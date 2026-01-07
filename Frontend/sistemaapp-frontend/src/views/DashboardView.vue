@@ -8,9 +8,6 @@
 
     <!-- ========== CONTENEDOR PRINCIPAL ========== -->
     <div class="main-wrapper">
-      <!-- Header/Breadcrumb para PC -->
-      <DesktopHeader />
-
       <!-- Header moderno con efecto vidrio líquido (móvil) -->
       <header class="dashboard-header mobile-header">
         <div class="header-content">
@@ -50,114 +47,194 @@
       <!-- Contenido principal -->
       <main class="dashboard-main">
         <div class="dashboard-content">
-        <!-- Etiqueta de perfil -->
-        <div class="profile-label">Mi Perfil</div>
-
-        <!-- Tarjeta de perfil -->
-        <div class="profile-card">
-          <!-- Avatar neon circle con iniciales -->
-          <div class="profile-header">
-            <div class="avatar-initials">
-              {{ getInitials(auth.user?.nombre || 'U') }}
-            </div>
-
-            <!-- Información del usuario -->
-            <div class="user-info-section">
-              <h2 class="user-full-name">{{ auth.user?.nombre || 'Usuario' }}</h2>
-              <div class="role-badge">{{ formatRole(auth.user?.rol || 'N/A') }}</div>
-              <p class="user-email">{{ auth.user?.email || 'N/A' }}</p>
+        
+        <!-- Bienvenida y Perfil (Siempre visible) -->
+        <section class="welcome-section">
+          <div class="welcome-card">
+            <div class="welcome-header">
+              <div class="avatar-circle">
+                {{ getInitials(auth.user?.nombre || 'U') }}
+              </div>
+              <div class="welcome-info">
+                <h2 class="welcome-title">¡Bienvenido, {{ auth.user?.nombre?.split(' ')[0] || 'Usuario' }}!</h2>
+                <div class="role-tag">{{ formatRole(auth.user?.rol || 'N/A') }}</div>
+              </div>
             </div>
           </div>
-        </div>
+        </section>
 
-        <!-- Sección de acciones -->
-        <div class="actions-section">
-          <h3 class="section-title">Acceso Rápido</h3>
+        <!-- Notificaciones Pendientes (Siempre visible si hay) -->
+        <section v-if="solicitudesPendientesLista.length > 0" class="alerts-section">
+          <div class="alerts-header">
+            <div class="alerts-title-row">
+              <Bell :size="20" class="alerts-icon" />
+              <h3 class="alerts-title">Solicitudes Pendientes</h3>
+            </div>
+            <span class="alerts-count">{{ solicitudesPendientesLista.length }}</span>
+          </div>
           
-          <div class="actions-grid">
-            <div
-              v-for="(action, index) in actions"
-              :key="action.title"
-              @click="goTo(action.route)"
-              class="action-card"
-            >
-              <!-- Badge de solicitudes pendientes -->
-              <div 
-                v-if="action.route === '/solicitudes' && solicitudesPendientes > 0" 
-                class="solicitudes-badge"
-              >
-                {{ solicitudesPendientes }}
-              </div>
-              <div class="action-icon-wrapper">
-                <component :is="action.icon" class="action-icon" />
-              </div>
-              <span class="action-title">{{ action.title }}</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Sección de notificaciones recientes -->
-        <div class="notifications-section">
-          <div class="notifications-header">
-            <div class="header-left-notif">
-              <Bell :size="18" class="header-bell-icon" />
-              <h3 class="section-title">Notificaciones Recientes</h3>
-            </div>
-            <div class="notifications-badge-glass">
-              {{ solicitudesPendientesLista.length }}
-            </div>
-          </div>
-
-          <div v-if="solicitudesPendientesLista.length === 0" class="notifications-empty">
-            <div class="empty-icon-wrapper">
-              <Bell :size="24" class="empty-icon" />
-            </div>
-            <p>Sin notificaciones pendientes</p>
-          </div>
-
-          <div v-else class="notifications-list">
+          <div class="alerts-list">
             <div 
               v-for="solicitud in solicitudesPendientesLista.slice(0, 3)"
-              :key="'notif-' + solicitud.id"
-              class="notif-card-pro"
+              :key="'alert-' + solicitud.id"
+              class="alert-card"
             >
-              <!-- Animación de fondo rojo -->
-              <div class="notif-bg-pulse"></div>
-              
-              <!-- Icono de solicitud a la izquierda -->
-              <div class="notif-icon-left">
-                <FileText :size="22" class="notif-main-icon" />
-                <span class="notif-icon-label">Solicitud</span>
+              <div class="alert-icon">
+                <FileText :size="20" />
               </div>
-              
-              <!-- Contenido -->
-              <div class="notif-card-content">
-                <!-- Fecha arriba del tipo -->
-                <span class="notif-fecha-top">{{ formatFechaCorta(solicitud.fecha) }}</span>
-                
-                <!-- Tipo de solicitud (completo y destacado) -->
-                <span class="notif-tipo-tag">{{ formatTipoSolicitud(solicitud.tipo) }}</span>
-                
-                <!-- Usuario y rol -->
-                <div class="notif-user-details">
-                  <span class="notif-user-name">{{ solicitud.solicitante?.nombre || 'Usuario' }}</span>
-                  <span class="notif-user-rol">{{ formatRolUsuario(solicitud.solicitante?.rol) }}</span>
-                </div>
-                
-                <!-- Descripción como mensaje con fondo vidrio -->
-                <div v-if="solicitud.descripcion" class="notif-mensaje-box">
-                  <p class="notif-mensaje-text">{{ truncateText(solicitud.descripcion, 60) }}</p>
-                </div>
+              <div class="alert-content">
+                <p class="alert-type">{{ formatTipoSolicitud(solicitud.tipo) }}</p>
+                <p class="alert-from">De: {{ solicitud.solicitante?.nombre || 'Usuario' }}</p>
+                <p class="alert-time">{{ formatTimeAgo(solicitud.fecha) }}</p>
               </div>
-              
-              <!-- Botón Ver medio círculo derecho -->
-              <router-link to="/solicitudes" class="notif-btn-semicircle">
-                <span class="semicircle-text">Ir</span>
+              <router-link to="/solicitudes" class="alert-action">
+                <ChevronRight :size="20" />
               </router-link>
             </div>
           </div>
-        </div>
+        </section>
 
+        <!-- Acceso Rápido: Solo Admin -->
+        <section v-if="auth.user?.rol === 'admin'" class="quick-access-section">
+          <h3 class="section-header">Panel de Administración</h3>
+          <div class="access-grid-admin">
+            <router-link to="/admin-panel" class="access-card admin-card">
+              <div class="access-icon-wrapper admin-icon">
+                <Settings :size="28" />
+              </div>
+              <div class="access-info">
+                <h4 class="access-title">Panel Global</h4>
+                <p class="access-desc">Control total del sistema</p>
+              </div>
+            </router-link>
+            
+            <router-link to="/usuarios" class="access-card">
+              <div class="access-icon-wrapper">
+                <Users :size="28" />
+              </div>
+              <div class="access-info">
+                <h4 class="access-title">Usuarios</h4>
+                <p class="access-desc">Gestionar todos los usuarios</p>
+              </div>
+            </router-link>
+            
+            <router-link to="/estadisticas" class="access-card">
+              <div class="access-icon-wrapper">
+                <BarChart3 :size="28" />
+              </div>
+              <div class="access-info">
+                <h4 class="access-title">Estadísticas</h4>
+                <p class="access-desc">Métricas y análisis</p>
+              </div>
+            </router-link>
+          </div>
+        </section>
+
+        <!-- Acceso Rápido: Territorial -->
+        <section v-if="auth.user?.rol === 'territorial'" class="quick-access-section">
+          <h3 class="section-header">Gestión Territorial</h3>
+          <div class="access-grid">
+            <router-link to="/usuarios" class="access-card">
+              <div class="access-icon-wrapper">
+                <Users :size="28" />
+              </div>
+              <div class="access-info">
+                <h4 class="access-title">Facilitadores</h4>
+                <p class="access-desc">Gestionar facilitadores</p>
+              </div>
+            </router-link>
+            
+            <router-link to="/estadisticas" class="access-card">
+              <div class="access-icon-wrapper">
+                <BarChart3 :size="28" />
+              </div>
+              <div class="access-info">
+                <h4 class="access-title">Estadísticas</h4>
+                <p class="access-desc">Análisis de datos</p>
+              </div>
+            </router-link>
+          </div>
+        </section>
+
+        <!-- Acceso Rápido: Facilitador -->
+        <section v-if="auth.user?.rol === 'facilitador'" class="quick-access-section">
+          <h3 class="section-header">Gestión de Facilitador</h3>
+          <div class="access-grid">
+            <router-link to="/usuarios" class="access-card">
+              <div class="access-icon-wrapper">
+                <Users :size="28" />
+              </div>
+              <div class="access-info">
+                <h4 class="access-title">Técnicos</h4>
+                <p class="access-desc">Gestionar técnicos</p>
+              </div>
+            </router-link>
+            
+            <router-link to="/estadisticas" class="access-card">
+              <div class="access-icon-wrapper">
+                <BarChart3 :size="28" />
+              </div>
+              <div class="access-info">
+                <h4 class="access-title">Estadísticas</h4>
+                <p class="access-desc">Ver métricas</p>
+              </div>
+            </router-link>
+          </div>
+        </section>
+
+        <!-- Acceso Rápido: Técnicos -->
+        <section v-if="auth.user?.rol?.includes('tecnico')" class="quick-access-section">
+          <h3 class="section-header">Herramientas de Trabajo</h3>
+          <div class="access-grid">
+            <router-link to="/seguimiento" class="access-card primary-card">
+              <div class="access-icon-wrapper primary-icon">
+                <Clipboard :size="28" />
+              </div>
+              <div class="access-info">
+                <h4 class="access-title">Seguimiento</h4>
+                <p class="access-desc">Registrar visitas</p>
+              </div>
+            </router-link>
+            
+            <router-link to="/sembradores" class="access-card">
+              <div class="access-icon-wrapper">
+                <Sprout :size="28" />
+              </div>
+              <div class="access-info">
+                <h4 class="access-title">Sembradores</h4>
+                <p class="access-desc">Mis sembradores</p>
+              </div>
+            </router-link>
+          </div>
+        </section>
+
+        <!-- Herramientas Comunes (Todos los roles) -->
+        <section class="common-tools-section">
+          <h3 class="section-header">Herramientas</h3>
+          <div class="tools-grid">
+            <router-link to="/solicitudes" class="tool-card">
+              <div class="tool-icon-wrapper">
+                <FileText :size="24" />
+                <span v-if="solicitudesPendientes > 0" class="tool-badge">{{ solicitudesPendientes }}</span>
+              </div>
+              <span class="tool-label">Solicitudes</span>
+            </router-link>
+            
+            <router-link to="/sembradores" class="tool-card">
+              <div class="tool-icon-wrapper">
+                <Sprout :size="24" />
+              </div>
+              <span class="tool-label">Sembradores</span>
+            </router-link>
+            
+            <router-link to="/mapa" class="tool-card">
+              <div class="tool-icon-wrapper">
+                <MapPin :size="24" />
+              </div>
+              <span class="tool-label">Mapa</span>
+            </router-link>
+          </div>
+        </section>
 
       </div>
     </main>
@@ -1152,54 +1229,6 @@ const getUsuariosDesc = (): string => {
 }
 
 .avatar-image {
-  display: none;
-}
-
-.welcome-section {
-  display: none;
-}
-
-.welcome-icon-wrapper {
-  display: none;
-}
-
-.welcome-icon {
-  display: none;
-}
-
-.welcome-title {
-  display: none;
-}
-
-.user-name {
-  display: none;
-}
-
-.info-box {
-  display: none;
-}
-
-.info-item {
-  display: none;
-}
-
-.info-icon {
-  display: none;
-}
-
-.info-text {
-  display: none;
-}
-
-.info-label {
-  display: none;
-}
-
-.info-value {
-  display: none;
-}
-
-.divider {
   display: none;
 }
 
@@ -3192,5 +3221,612 @@ const getUsuariosDesc = (): string => {
 
 .dashboard-main::-webkit-scrollbar-thumb {
   background: transparent;
+}
+
+/* ========== NUEVO DISEÑO JERÁRQUICO ========== */
+
+/* Welcome Section */
+.welcome-section {
+  margin-bottom: 1.5rem;
+}
+
+.welcome-card {
+  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+  border: 1.5px solid #e2e8f0;
+  border-radius: 20px;
+  padding: 2rem;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08), 0 4px 16px rgba(22, 163, 74, 0.1);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.welcome-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 200px;
+  height: 200px;
+  background: radial-gradient(circle, rgba(22, 163, 74, 0.08) 0%, transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.welcome-card:hover {
+  box-shadow: 0 6px 30px rgba(0, 0, 0, 0.1), 0 4px 12px rgba(22, 163, 74, 0.12);
+  transform: translateY(-2px);
+}
+
+.welcome-header {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  position: relative;
+  z-index: 1;
+}
+
+.avatar-circle {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #16a34a 0%, #22c55e 100%);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  font-weight: 700;
+  box-shadow: 0 6px 20px rgba(22, 163, 74, 0.3), inset 0 2px 4px rgba(255, 255, 255, 0.3);
+  flex-shrink: 0;
+  transition: all 0.3s ease;
+}
+
+.welcome-card:hover .avatar-circle {
+  transform: scale(1.05);
+  box-shadow: 0 8px 28px rgba(22, 163, 74, 0.4), inset 0 2px 4px rgba(255, 255, 255, 0.3);
+}
+
+.welcome-info {
+  flex: 1;
+}
+
+.welcome-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0 0 0.5rem 0;
+  letter-spacing: -0.5px;
+}
+
+.role-tag {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  background: linear-gradient(135deg, rgba(22, 163, 74, 0.15), rgba(22, 163, 74, 0.08));
+  color: #16a34a;
+  border-radius: 10px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  border: 1.5px solid rgba(22, 163, 74, 0.25);
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+}
+
+.welcome-card:hover .role-tag {
+  border-color: rgba(22, 163, 74, 0.4);
+  background: linear-gradient(135deg, rgba(22, 163, 74, 0.2), rgba(22, 163, 74, 0.12));
+}
+
+@media (min-width: 1024px) {
+  .welcome-card {
+    padding: 2rem;
+  }
+
+  .avatar-circle {
+    width: 80px;
+    height: 80px;
+    font-size: 2rem;
+  }
+
+  .welcome-title {
+    font-size: 1.75rem;
+  }
+
+  .role-tag {
+    font-size: 0.95rem;
+    padding: 0.5rem 1rem;
+  }
+}
+
+/* Alerts Section */
+.alerts-section {
+  margin-bottom: 1.5rem;
+}
+
+.alerts-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+  padding: 0 0.25rem;
+}
+
+.alerts-title-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.alerts-icon {
+  color: #ef4444;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.6;
+  }
+}
+
+.alerts-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0;
+}
+
+.alerts-count {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 28px;
+  height: 28px;
+  padding: 0 0.5rem;
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  color: white;
+  border-radius: 14px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
+  animation: bounce 2s infinite;
+}
+
+@keyframes bounce {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+}
+
+.alerts-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.alert-card {
+  background: linear-gradient(135deg, #fff5f5 0%, #fffbfb 100%);
+  border: 1.5px solid #fee2e2;
+  border-left: 5px solid #ef4444;
+  border-radius: 14px;
+  padding: 1rem 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.alert-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, transparent 0%, rgba(239, 68, 68, 0.05) 100%);
+  pointer-events: none;
+}
+
+.alert-card:hover {
+  border-color: #ef4444;
+  box-shadow: 0 6px 20px rgba(239, 68, 68, 0.15), 0 2px 8px rgba(239, 68, 68, 0.1);
+  transform: translateX(6px);
+  background: linear-gradient(135deg, #fff5f5 0%, #fef2f2 100%);
+}
+
+.alert-icon {
+  width: 44px;
+  height: 44px;
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.15), rgba(239, 68, 68, 0.08));
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ef4444;
+  flex-shrink: 0;
+  transition: all 0.3s ease;
+  box-shadow: inset 0 2px 4px rgba(239, 68, 68, 0.1);
+}
+
+.alert-card:hover .alert-icon {
+  transform: scale(1.1) rotate(5deg);
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.2), rgba(239, 68, 68, 0.12));
+}
+
+.alert-content {
+  flex: 1;
+  min-width: 0;
+  position: relative;
+  z-index: 1;
+}
+
+.alert-type {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #1e293b;
+  margin: 0 0 0.25rem 0;
+}
+
+.alert-from {
+  font-size: 0.8rem;
+  color: #64748b;
+  margin: 0 0 0.15rem 0;
+}
+
+.alert-time {
+  font-size: 0.75rem;
+  color: #94a3b8;
+  margin: 0;
+}
+
+.alert-action {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: #f8fafc;
+  border-radius: 8px;
+  color: #64748b;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.alert-action:hover {
+  background: #16a34a;
+  color: white;
+}
+
+/* Quick Access Section */
+.quick-access-section {
+  margin-bottom: 1.5rem;
+}
+
+.section-header {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0 0 1rem 0.25rem;
+}
+
+.access-grid,
+.access-grid-admin {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+@media (min-width: 640px) {
+  .access-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .access-grid-admin {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.access-card {
+  background: linear-gradient(135deg, #ffffff 0%, #f9fafb 100%);
+  border: 1.5px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  text-decoration: none;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.access-card::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 150px;
+  height: 150px;
+  background: radial-gradient(circle, rgba(22, 163, 74, 0.08) 0%, transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.access-card:hover {
+  border-color: #16a34a;
+  box-shadow: 0 10px 30px rgba(22, 163, 74, 0.18), 0 4px 10px rgba(22, 163, 74, 0.1);
+  transform: translateY(-4px);
+  background: linear-gradient(135deg, #ffffff 0%, #f0fdf4 100%);
+}
+
+.access-card.admin-card {
+  grid-column: span 1;
+  background: linear-gradient(135deg, rgba(22, 163, 74, 0.08), rgba(22, 163, 74, 0.03));
+  border-color: rgba(22, 163, 74, 0.35);
+}
+
+.access-card.admin-card:hover {
+  border-color: #16a34a;
+  box-shadow: 0 10px 30px rgba(22, 163, 74, 0.25), 0 4px 10px rgba(22, 163, 74, 0.12);
+  background: linear-gradient(135deg, rgba(22, 163, 74, 0.1), rgba(22, 163, 74, 0.05));
+}
+
+.access-card.primary-card {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.08), rgba(59, 130, 246, 0.03));
+  border-color: rgba(59, 130, 246, 0.35);
+}
+
+.access-card.primary-card:hover {
+  border-color: #3b82f6;
+  box-shadow: 0 10px 30px rgba(59, 130, 246, 0.25), 0 4px 10px rgba(59, 130, 246, 0.12);
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(59, 130, 246, 0.05));
+}
+
+.access-icon-wrapper {
+  width: 56px;
+  height: 56px;
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #16a34a;
+  flex-shrink: 0;
+  transition: all 0.3s ease;
+  position: relative;
+  z-index: 1;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.access-card:hover .access-icon-wrapper {
+  background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
+  color: white;
+  transform: scale(1.15);
+  box-shadow: 0 6px 16px rgba(22, 163, 74, 0.35), inset 0 2px 4px rgba(255, 255, 255, 0.2);
+}
+
+.access-icon-wrapper.admin-icon {
+  background: linear-gradient(135deg, rgba(22, 163, 74, 0.15), rgba(22, 163, 74, 0.08));
+  color: #16a34a;
+}
+
+.access-icon-wrapper.primary-icon {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(59, 130, 246, 0.08));
+  color: #3b82f6;
+}
+
+.access-card.primary-card:hover .access-icon-wrapper {
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  color: white;
+  box-shadow: 0 6px 16px rgba(59, 130, 246, 0.35), inset 0 2px 4px rgba(255, 255, 255, 0.2);
+}
+
+.access-info {
+  flex: 1;
+  position: relative;
+  z-index: 1;
+}
+
+.access-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0 0 0.35rem 0;
+  letter-spacing: -0.3px;
+}
+
+.access-desc {
+  font-size: 0.85rem;
+  color: #64748b;
+  margin: 0;
+  line-height: 1.4;
+}
+
+/* Common Tools Section */
+.common-tools-section {
+  margin-bottom: 1.5rem;
+}
+
+.tools-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+
+.tool-card {
+  background: linear-gradient(135deg, #ffffff 0%, #f9fafb 100%);
+  border: 1.5px solid #e2e8f0;
+  border-radius: 14px;
+  padding: 1.5rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  text-decoration: none;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.tool-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: -20px;
+  width: 100px;
+  height: 100px;
+  background: radial-gradient(circle, rgba(22, 163, 74, 0.1) 0%, transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.tool-card:hover {
+  border-color: #16a34a;
+  box-shadow: 0 8px 24px rgba(22, 163, 74, 0.16), 0 2px 6px rgba(22, 163, 74, 0.08);
+  transform: translateY(-4px);
+  background: linear-gradient(135deg, #ffffff 0%, #f0fdf4 100%);
+}
+
+.tool-icon-wrapper {
+  position: relative;
+  width: 52px;
+  height: 52px;
+  background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #16a34a;
+  transition: all 0.3s ease;
+  z-index: 1;
+  box-shadow: inset 0 2px 4px rgba(22, 163, 74, 0.1);
+}
+
+.tool-card:hover .tool-icon-wrapper {
+  background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
+  color: white;
+  transform: scale(1.15) rotate(-5deg);
+  box-shadow: 0 6px 16px rgba(22, 163, 74, 0.3), inset 0 2px 4px rgba(255, 255, 255, 0.2);
+}
+
+.tool-badge {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  min-width: 24px;
+  height: 24px;
+  padding: 0 0.4rem;
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  color: white;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
+  border: 2px solid white;
+  animation: pulse 2s infinite;
+}
+
+.tool-label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #1e293b;
+  text-align: center;
+  position: relative;
+  z-index: 1;
+  letter-spacing: -0.2px;
+}
+
+@media (min-width: 1024px) {
+  .dashboard-content {
+    gap: 2rem;
+  }
+
+  .welcome-section,
+  .alerts-section,
+  .quick-access-section,
+  .common-tools-section {
+    margin-bottom: 0;
+  }
+
+  .section-header {
+    font-size: 1.25rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .tools-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+  }
+
+  .tool-card {
+    padding: 1.75rem 1.5rem;
+    border-radius: 16px;
+  }
+
+  .tool-icon-wrapper {
+    width: 56px;
+    height: 56px;
+    font-size: 1.5rem;
+  }
+
+  .access-card {
+    padding: 2rem;
+    border-radius: 18px;
+    gap: 1.5rem;
+  }
+
+  .access-icon-wrapper {
+    width: 64px;
+    height: 64px;
+    border-radius: 16px;
+    font-size: 1.75rem;
+  }
+
+  .access-title {
+    font-size: 1.15rem;
+  }
+
+  .access-desc {
+    font-size: 0.9rem;
+  }
+
+  .welcome-card {
+    padding: 2.5rem;
+    border-radius: 20px;
+  }
+
+  .avatar-circle {
+    width: 88px;
+    height: 88px;
+    font-size: 2.2rem;
+  }
+
+  .welcome-title {
+    font-size: 1.875rem;
+  }
+
+  .role-tag {
+    font-size: 0.95rem;
+    padding: 0.6rem 1.2rem;
+  }
+
+  .alert-card {
+    padding: 1.25rem 1.5rem;
+    border-radius: 16px;
+  }
 }
 </style>

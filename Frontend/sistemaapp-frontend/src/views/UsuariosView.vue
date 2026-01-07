@@ -14,9 +14,6 @@
 
     <!-- ========== CONTENEDOR PRINCIPAL ========== -->
     <div class="main-wrapper">
-      <!-- Header/Breadcrumb para PC -->
-      <DesktopHeader />
-
       <!-- Header con botón de regreso (móvil) -->
       <header class="usuarios-header mobile-header">
         <div class="header-wrapper">
@@ -611,7 +608,6 @@ import { useAuthStore } from '../stores/auth'
 import { getSecureApiUrl } from '../utils/api'
 import HamburgerMenu from '../components/HamburgerMenu.vue'
 import DesktopSidebar from '../components/DesktopSidebar.vue'
-import DesktopHeader from '../components/DesktopHeader.vue'
 import Swal from 'sweetalert2'
 import 'sweetalert2/dist/sweetalert2.min.css'
 
