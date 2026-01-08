@@ -1138,22 +1138,21 @@ def dashboard_operativo(
 
 # ========== REPORTES - EXPORTACIÓN EXCEL/PDF ==========
 
-@router.get("/reportes/mis-solicitudes")
-def obtener_datos_reporte(
-    tipo_cambio: Optional[str] = None,
-    estatus: Optional[str] = None,
-    periodo: Optional[str] = None,  # semana, mes, trimestre, año, custom
-    anio: Optional[int] = None,
-    mes: Optional[int] = None,
-    semana: Optional[int] = None,
-    fecha_inicio: Optional[str] = None,
-    fecha_fin: Optional[str] = None,
-    current_user: dict = Depends(get_current_user),
-    db: Session = Depends(get_db)
+def _obtener_datos_reporte_interno(
+    tipo_cambio: Optional[str],
+    estatus: Optional[str],
+    periodo: Optional[str],
+    anio: Optional[int],
+    mes: Optional[int],
+    semana: Optional[int],
+    fecha_inicio: Optional[str],
+    fecha_fin: Optional[str],
+    current_user: dict,
+    db: Session
 ):
     """
-    Obtener datos para reportes del usuario actual.
-    Filtros por tipo (ALTA, BAJA, REASIGNACION), estatus, y período.
+    Función interna para obtener datos de reportes.
+    Usada tanto por el endpoint como por las exportaciones.
     """
     user_id = current_user["user_id"]
     rol = current_user["rol"]
@@ -1182,7 +1181,6 @@ def obtener_datos_reporte(
     ahora = datetime.utcnow()
     
     if periodo == "semana":
-        # Semana actual o semana especificada
         if anio and semana:
             inicio_semana = datetime.strptime(f'{anio}-W{semana}-1', "%Y-W%W-%w")
             fin_semana = inicio_semana + timedelta(days=7)
@@ -1197,7 +1195,6 @@ def obtener_datos_reporte(
         )
     
     elif periodo == "mes":
-        # Mes actual o mes especificado
         if anio and mes:
             inicio_mes = datetime(anio, mes, 1)
             if mes == 12:
@@ -1217,7 +1214,6 @@ def obtener_datos_reporte(
         )
     
     elif periodo == "trimestre":
-        # Trimestre actual
         trimestre = (ahora.month - 1) // 3
         inicio_trimestre = datetime(ahora.year, trimestre * 3 + 1, 1)
         if trimestre == 3:
@@ -1231,7 +1227,6 @@ def obtener_datos_reporte(
         )
     
     elif periodo == "anio":
-        # Año actual o año especificado
         year = anio if anio else ahora.year
         inicio_anio = datetime(year, 1, 1)
         fin_anio = datetime(year + 1, 1, 1)
@@ -1242,7 +1237,6 @@ def obtener_datos_reporte(
         )
     
     elif periodo == "custom" and fecha_inicio and fecha_fin:
-        # Rango personalizado
         try:
             inicio = datetime.strptime(fecha_inicio, "%Y-%m-%d")
             fin = datetime.strptime(fecha_fin, "%Y-%m-%d") + timedelta(days=1)
@@ -1259,7 +1253,6 @@ def obtener_datos_reporte(
     # Construir resultado con detalles
     result = []
     for c in cambios:
-        # Obtener nombres
         propuesto_por_nombre = ""
         if c.propuesto_por_id:
             u = db.query(User).filter(User.id == c.propuesto_por_id).first()
@@ -1323,6 +1316,36 @@ def obtener_datos_reporte(
     }
 
 
+@router.get("/reportes/mis-solicitudes")
+def obtener_datos_reporte_endpoint(
+    tipo_cambio: Optional[str] = None,
+    estatus: Optional[str] = None,
+    periodo: Optional[str] = None,
+    anio: Optional[int] = None,
+    mes: Optional[int] = None,
+    semana: Optional[int] = None,
+    fecha_inicio: Optional[str] = None,
+    fecha_fin: Optional[str] = None,
+    current_user: dict = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """
+    Endpoint para obtener datos de reportes del usuario actual.
+    """
+    return _obtener_datos_reporte_interno(
+        tipo_cambio=tipo_cambio,
+        estatus=estatus,
+        periodo=periodo,
+        anio=anio,
+        mes=mes,
+        semana=semana,
+        fecha_inicio=fecha_inicio,
+        fecha_fin=fecha_fin,
+        current_user=current_user,
+        db=db
+    )
+
+
 @router.get("/reportes/exportar-excel")
 def exportar_excel(
     tipo_cambio: Optional[str] = None,
@@ -1344,8 +1367,8 @@ def exportar_excel(
     except ImportError:
         raise HTTPException(status_code=500, detail="openpyxl no está instalado. Ejecuta: pip install openpyxl")
     
-    # Obtener datos
-    datos = obtener_datos_reporte(
+    # Obtener datos usando la función interna
+    datos = _obtener_datos_reporte_interno(
         tipo_cambio=tipo_cambio,
         estatus=estatus,
         periodo=periodo,
@@ -1483,8 +1506,8 @@ def exportar_pdf(
     except ImportError:
         raise HTTPException(status_code=500, detail="reportlab no está instalado. Ejecuta: pip install reportlab")
     
-    # Obtener datos
-    datos = obtener_datos_reporte(
+    # Obtener datos usando la función interna
+    datos = _obtener_datos_reporte_interno(
         tipo_cambio=tipo_cambio,
         estatus=estatus,
         periodo=periodo,

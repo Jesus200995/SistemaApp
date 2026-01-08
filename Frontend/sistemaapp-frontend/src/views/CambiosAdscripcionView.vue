@@ -281,42 +281,13 @@
             <div class="filtros-card">
               <h3><Calendar :size="16" /> Período</h3>
               <div class="filtro-grupo">
-                <label>Rango de tiempo</label>
-                <select v-model="reporteFiltros.periodo">
+                <label>Mes</label>
+                <select v-model="reporteFiltros.mesAnio">
                   <option value="">Todo el historial</option>
-                  <option value="semana">Esta semana</option>
-                  <option value="mes">Este mes</option>
-                  <option value="trimestre">Este trimestre</option>
-                  <option value="anio">Este año</option>
-                  <option value="custom">Personalizado</option>
+                  <option v-for="mes in mesesDisponibles" :key="mes.value" :value="mes.value">
+                    {{ mes.label }}
+                  </option>
                 </select>
-              </div>
-
-              <div v-if="reporteFiltros.periodo === 'mes'" class="filtro-grupo">
-                <label>Mes específico</label>
-                <select v-model="reporteFiltros.mes">
-                  <option value="">Mes actual</option>
-                  <option v-for="m in 12" :key="m" :value="m">{{ nombreMes(m) }}</option>
-                </select>
-              </div>
-
-              <div v-if="reporteFiltros.periodo === 'mes' || reporteFiltros.periodo === 'anio'" class="filtro-grupo">
-                <label>Año</label>
-                <select v-model="reporteFiltros.anio">
-                  <option value="">Año actual</option>
-                  <option v-for="a in aniosDisponibles" :key="a" :value="a">{{ a }}</option>
-                </select>
-              </div>
-
-              <div v-if="reporteFiltros.periodo === 'custom'" class="filtro-row">
-                <div class="filtro-grupo">
-                  <label>Desde</label>
-                  <input type="date" v-model="reporteFiltros.fechaInicio" />
-                </div>
-                <div class="filtro-grupo">
-                  <label>Hasta</label>
-                  <input type="date" v-model="reporteFiltros.fechaFin" />
-                </div>
               </div>
             </div>
 
@@ -367,11 +338,10 @@
           <!-- Vista previa -->
           <div class="reportes-preview">
             <div class="preview-header">
-              <h3><Eye :size="16" /> Vista Previa</h3>
-              <button @click="cargarVistaPrevia" class="btn-refresh-preview" :disabled="loadingPreview">
-                <RefreshCw :size="14" :class="{ 'spin': loadingPreview }" />
-                {{ loadingPreview ? 'Cargando...' : 'Actualizar' }}
-              </button>
+              <h3><Eye :size="16" /> Vista Previa en Tiempo Real</h3>
+              <span v-if="loadingPreview" class="preview-loading-text">
+                <RefreshCw :size="14" class="spin" /> Actualizando...
+              </span>
             </div>
 
             <!-- Resumen de estadísticas -->
@@ -885,7 +855,7 @@ import DesktopSidebar from '../components/DesktopSidebar.vue'
 import Swal from 'sweetalert2'
 import { 
   GitBranch, Plus, RefreshCw, Eye, Send, Check, X, PlayCircle,
-  AlertTriangle, ArrowRight, UserCheck, Search, Clock, SendHorizontal, History, XCircle, User, Calendar, FileText, Trash2, MailOpen, FileDown, Download, FileSpreadsheet
+  AlertTriangle, ArrowRight, UserCheck, Search, Clock, SendHorizontal, History, XCircle, User, Calendar, FileText, Trash2, MailOpen, FileDown, Download, FileSpreadsheet, Filter
 } from 'lucide-vue-next'
 
 const auth = useAuthStore()
@@ -940,12 +910,7 @@ const accionModal = ref({
 
 // === REPORTES ===
 const reporteFiltros = ref({
-  periodo: '',
-  anio: null,
-  mes: null,
-  semana: null,
-  fechaInicio: '',
-  fechaFin: '',
+  mesAnio: '', // Formato: 'mes-anio' ej: '1-2026' para Enero 2026
   tipoCambio: '',
   estatus: ''
 })
@@ -955,10 +920,30 @@ const loadingPreview = ref(false)
 const loadingExcel = ref(false)
 const loadingPDF = ref(false)
 
-// Años disponibles para filtros (últimos 5 años)
-const aniosDisponibles = computed(() => {
-  const currentYear = new Date().getFullYear()
-  return Array.from({ length: 5 }, (_, i) => currentYear - i)
+// Cargar vista previa cuando se entra a la pestaña de reportes
+watch(activeTab, (newTab) => {
+  if (newTab === 'reportes' && !reportePreview.value) {
+    cargarVistaPrevia()
+  }
+})
+
+// Generar lista de meses disponibles (últimos 24 meses en formato mexicano)
+const mesesDisponibles = computed(() => {
+  const meses = []
+  const ahora = new Date()
+  const nombresMeses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 
+                        'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
+  
+  for (let i = 0; i < 24; i++) {
+    const fecha = new Date(ahora.getFullYear(), ahora.getMonth() - i, 1)
+    const mes = fecha.getMonth() + 1
+    const anio = fecha.getFullYear()
+    meses.push({
+      value: `${mes}-${anio}`,
+      label: `${nombresMeses[mes - 1]} ${anio}`
+    })
+  }
+  return meses
 })
 
 // Nombre del mes
@@ -968,34 +953,30 @@ const nombreMes = (mes) => {
   return meses[mes] || ''
 }
 
+// Watch para actualizar vista previa en tiempo real cuando cambian los filtros
+watch(reporteFiltros, () => {
+  cargarVistaPrevia()
+}, { deep: true })
+
 // Cargar vista previa del reporte
 const cargarVistaPrevia = async () => {
   loadingPreview.value = true
   try {
     const params = new URLSearchParams()
     
-    if (reporteFiltros.value.periodo) {
-      params.append('periodo', reporteFiltros.value.periodo)
+    // Parsear mes-anio si está seleccionado
+    if (reporteFiltros.value.mesAnio) {
+      const [mes, anio] = reporteFiltros.value.mesAnio.split('-')
+      params.append('periodo', 'mes')
+      params.append('mes', mes)
+      params.append('anio', anio)
     }
-    if (reporteFiltros.value.anio) {
-      params.append('anio', reporteFiltros.value.anio)
-    }
-    if (reporteFiltros.value.mes) {
-      params.append('mes', reporteFiltros.value.mes)
-    }
+    
     if (reporteFiltros.value.tipoCambio) {
       params.append('tipo_cambio', reporteFiltros.value.tipoCambio)
     }
     if (reporteFiltros.value.estatus) {
       params.append('estatus', reporteFiltros.value.estatus)
-    }
-    if (reporteFiltros.value.periodo === 'custom') {
-      if (reporteFiltros.value.fechaInicio) {
-        params.append('fecha_inicio', reporteFiltros.value.fechaInicio)
-      }
-      if (reporteFiltros.value.fechaFin) {
-        params.append('fecha_fin', reporteFiltros.value.fechaFin)
-      }
     }
     
     const { data } = await axios.get(`${API_URL}/workflows/reportes/mis-solicitudes?${params.toString()}`, {
@@ -1005,12 +986,7 @@ const cargarVistaPrevia = async () => {
     reportePreview.value = data
   } catch (error) {
     console.error('Error cargando vista previa:', error)
-    await Swal.fire({
-      icon: 'error',
-      title: 'Error',
-      text: 'No se pudo cargar la vista previa del reporte.',
-      confirmButtonColor: '#dc2626'
-    })
+    // No mostrar alerta para no interrumpir - solo log
   } finally {
     loadingPreview.value = false
   }
@@ -1020,28 +996,19 @@ const cargarVistaPrevia = async () => {
 const construirUrlReporte = (baseUrl) => {
   const params = new URLSearchParams()
   
-  if (reporteFiltros.value.periodo) {
-    params.append('periodo', reporteFiltros.value.periodo)
+  // Parsear mes-anio si está seleccionado
+  if (reporteFiltros.value.mesAnio) {
+    const [mes, anio] = reporteFiltros.value.mesAnio.split('-')
+    params.append('periodo', 'mes')
+    params.append('mes', mes)
+    params.append('anio', anio)
   }
-  if (reporteFiltros.value.anio) {
-    params.append('anio', reporteFiltros.value.anio)
-  }
-  if (reporteFiltros.value.mes) {
-    params.append('mes', reporteFiltros.value.mes)
-  }
+  
   if (reporteFiltros.value.tipoCambio) {
     params.append('tipo_cambio', reporteFiltros.value.tipoCambio)
   }
   if (reporteFiltros.value.estatus) {
     params.append('estatus', reporteFiltros.value.estatus)
-  }
-  if (reporteFiltros.value.periodo === 'custom') {
-    if (reporteFiltros.value.fechaInicio) {
-      params.append('fecha_inicio', reporteFiltros.value.fechaInicio)
-    }
-    if (reporteFiltros.value.fechaFin) {
-      params.append('fecha_fin', reporteFiltros.value.fechaFin)
-    }
   }
   
   return `${baseUrl}?${params.toString()}`
@@ -4183,6 +4150,15 @@ tr.row-autorizado td .estatus-badge {
   font-size: 0.85rem;
   font-weight: 600;
   color: #374151;
+}
+
+.preview-loading-text {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.75rem;
+  color: #16a34a;
+  font-weight: 500;
 }
 
 .btn-refresh-preview {
