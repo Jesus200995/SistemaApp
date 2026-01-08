@@ -206,15 +206,6 @@
                     <X :size="16" />
                   </button>
                   
-                  <button 
-                    v-if="cambio.estatus === 'AUTORIZADO' && isAdmin"
-                    @click="abrirAccion(cambio, 'APLICAR')"
-                    class="btn-action success"
-                    title="Aplicar"
-                  >
-                    <PlayCircle :size="16" />
-                  </button>
-                  
                   <!-- Botón Eliminar - solo en historial y si NO está pendiente -->
                   <button 
                     v-if="activeTab === 'historial' && cambio.estatus !== 'EN_REVISION' && esPropietario(cambio)"
@@ -598,7 +589,7 @@
           </div>
         </div>
         
-        <!-- Footer con acciones -->
+        <!-- Footer con acciones - EN REVISION -->
         <div class="detalle-footer" v-if="cambioSeleccionado.estatus === 'EN_REVISION'">
           <button 
             v-if="esPropietarioCambio"
@@ -626,6 +617,21 @@
               <span>Aprobar</span>
             </button>
           </div>
+        </div>
+        
+        <!-- Footer con acciones - AUTORIZADO (para el propietario) -->
+        <div class="detalle-footer autorizado" v-if="cambioSeleccionado.estatus === 'AUTORIZADO' && esPropietarioCambio">
+          <div class="autorizado-mensaje">
+            <Check :size="18" class="icon-success" />
+            <span>Tu solicitud fue <strong>aprobada</strong>. Aplica los cambios para hacerlos efectivos.</span>
+          </div>
+          <button 
+            @click="abrirAccion(cambioSeleccionado, 'APLICAR'); cambioSeleccionado = null"
+            class="btn-accion aplicar"
+          >
+            <PlayCircle :size="16" />
+            <span>Aplicar Cambios</span>
+          </button>
         </div>
       </div>
     </div>
@@ -1118,8 +1124,10 @@ const esPropietario = (cambio) => {
 const esPropietarioCambio = computed(() => {
   if (!cambioSeleccionado.value) return false
   const userId = auth.user?.id
-  return cambioSeleccionado.value.propuesto_por?.persona_id === userId || 
-         cambioSeleccionado.value.propuesto_por_id === userId
+  // Verificar tanto propuesto_por_id como propuesto_por.id
+  return cambioSeleccionado.value.propuesto_por_id === userId || 
+         cambioSeleccionado.value.propuesto_por?.id === userId ||
+         cambioSeleccionado.value.propuesto_por?.persona_id === userId
 })
 
 const esDestinatarioCambio = computed(() => {
@@ -2941,6 +2949,42 @@ onMounted(() => {
 
 .btn-accion.aprobar:hover {
   background: linear-gradient(135deg, #15803d 0%, #166534 100%);
+}
+
+.btn-accion.aplicar {
+  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+  color: white;
+  padding: 0.75rem 1.5rem;
+  font-weight: 600;
+}
+
+.btn-accion.aplicar:hover {
+  background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+}
+
+.detalle-footer.autorizado {
+  flex-direction: column;
+  gap: 1rem;
+  background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+  border-top: 2px solid #16a34a;
+}
+
+.autorizado-mensaje {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #166534;
+  font-size: 0.9rem;
+}
+
+.autorizado-mensaje .icon-success {
+  color: #16a34a;
+}
+
+.autorizado-mensaje strong {
+  color: #15803d;
 }
 
 /* Responsive */

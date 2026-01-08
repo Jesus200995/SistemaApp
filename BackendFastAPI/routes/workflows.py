@@ -301,6 +301,7 @@ def obtener_cambio_adscripcion(
         "despues": despues,
         "fecha_efecto": cambio.fecha_efecto.isoformat() if cambio.fecha_efecto else None,
         "fecha_limite": cambio.fecha_limite.isoformat() if cambio.fecha_limite else None,
+        "propuesto_por_id": cambio.propuesto_por_id,
         "propuesto_por": propuesto_por,
         "autorizado_por": autorizado_por,
         "aplicado_por": aplicado_por,
@@ -459,8 +460,9 @@ def ejecutar_accion_cambio(
         if cambio.estatus != "AUTORIZADO":
             raise HTTPException(status_code=400, detail="Solo cambios autorizados pueden aplicarse")
         
-        if "ADMIN" not in rol:
-            raise HTTPException(status_code=403, detail="Solo admin puede aplicar cambios")
+        # Puede aplicar: el propietario (quien propuso) o un admin
+        if cambio.propuesto_por_id != user_id and "ADMIN" not in rol:
+            raise HTTPException(status_code=403, detail="Solo el propietario o admin puede aplicar cambios")
         
         # Ejecutar el cambio real
         _aplicar_cambio_adscripcion(cambio, db)
