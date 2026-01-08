@@ -1032,89 +1032,77 @@ onMounted(async () => {
   }
 }
 
-/* ========== MAIN WRAPPER ========== */
+/* ========== MAIN WRAPPER UNIFICADO ========== */
 .main-wrapper {
   flex: 1;
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  width: 100%;
+  margin-left: clamp(180px, 18vw, 220px);
+  width: calc(100% - clamp(180px, 18vw, 220px));
   overflow: hidden;
 }
 
-@media (min-width: 1024px) {
-  .main-wrapper {
-    margin-left: 220px;
-    width: calc(100% - 220px);
-  }
-}
-
-/* ========== VIEW HEADER (ESTILO BLANCO) ========== */
+/* ========== VIEW HEADER ========== */
 .view-header {
-  display: none;
+  display: block;
+  background: white;
+  padding: clamp(0.4rem, 1vw, 0.625rem) clamp(0.75rem, 2vw, 1.25rem);
+  border-bottom: 1px solid #e5e7eb;
 }
 
-@media (min-width: 1024px) {
-  .view-header {
-    display: block;
-    background: white;
-    padding: 0.625rem 1.25rem;
-    border-bottom: 1px solid #e5e7eb;
-  }
-  
-  .header-content {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  
-  .header-title {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
-  
-  .header-title h1 {
-    font-size: 1.1rem;
-    font-weight: 600;
-    color: #14532d;
-    margin: 0;
-  }
-  
-  .header-subtitle {
-    font-size: 0.75rem;
-    color: #6b7280;
-    margin: 0;
-  }
-  
-  .header-icon {
-    color: #16a34a;
-  }
-  
-  .header-actions {
-    display: flex;
-    gap: 0.5rem;
-  }
-  
-  .btn-primary {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.5rem 1rem;
-    background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
-    color: white;
-    border: none;
-    border-radius: 8px;
-    font-size: 0.875rem;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-  
-  .btn-primary:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(22, 163, 74, 0.35);
-  }
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.header-title h1 {
+  font-size: clamp(0.9rem, 2vw, 1.1rem);
+  font-weight: 600;
+  color: #14532d;
+  margin: 0;
+}
+
+.header-subtitle {
+  font-size: clamp(0.65rem, 1.2vw, 0.75rem);
+  color: #6b7280;
+  margin: 0;
+}
+
+.header-icon {
+  color: #16a34a;
+}
+
+.header-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.btn-primary {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(22, 163, 74, 0.35);
 }
 
 /* ========== USUARIOS MAIN ========== */
@@ -1124,13 +1112,8 @@ onMounted(async () => {
   overflow-x: hidden;
   position: relative;
   z-index: 5;
-}
-
-@media (min-width: 1024px) {
-  .usuarios-main {
-    padding: 1rem 1.5rem;
-    background: #f8fafc;
-  }
+  padding: clamp(0.75rem, 1.5vw, 1.5rem);
+  background: #f8fafc;
 }
 
 /* ========== BACKGROUND BLOBS ========== */

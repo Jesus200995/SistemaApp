@@ -1,49 +1,10 @@
 <template>
   <div class="dashboard-container">
-    <!-- Menú hamburguesa global (solo móvil) -->
-    <HamburgerMenu :pendingCount="solicitudesPendientes" class="mobile-only-menu" />
-
-    <!-- Sidebar para PC -->
+    <!-- Sidebar unificado (visible en TODAS las pantallas) -->
     <DesktopSidebar :pendingCount="solicitudesPendientes" />
 
     <!-- ========== CONTENEDOR PRINCIPAL ========== -->
     <div class="main-wrapper">
-      <!-- Header moderno con efecto vidrio líquido (móvil) -->
-      <header class="dashboard-header mobile-header">
-        <div class="header-content">
-          <div class="logo-section">
-            <div class="logo-icon">
-              <!-- Icono SVG: Flor girando -->
-              <svg viewBox="0 0 64 64" width="48" height="48" class="flower-logo-svg" xmlns="http://www.w3.org/2000/svg">
-                <!-- Pétalos de la flor -->
-                <g class="flower-petals">
-                  <!-- Pétalo 1 (arriba) -->
-                  <ellipse cx="32" cy="16" rx="8" ry="12" fill="#16a34a" opacity="0.9"/>
-                  <!-- Pétalo 2 (arriba-derecha) -->
-                  <ellipse cx="32" cy="16" rx="8" ry="12" fill="#22c55e" opacity="0.85" transform="rotate(60 32 32)"/>
-                  <!-- Pétalo 3 (abajo-derecha) -->
-                  <ellipse cx="32" cy="16" rx="8" ry="12" fill="#16a34a" opacity="0.9" transform="rotate(120 32 32)"/>
-                  <!-- Pétalo 4 (abajo) -->
-                  <ellipse cx="32" cy="16" rx="8" ry="12" fill="#22c55e" opacity="0.85" transform="rotate(180 32 32)"/>
-                  <!-- Pétalo 5 (abajo-izquierda) -->
-                  <ellipse cx="32" cy="16" rx="8" ry="12" fill="#16a34a" opacity="0.9" transform="rotate(240 32 32)"/>
-                  <!-- Pétalo 6 (arriba-izquierda) -->
-                  <ellipse cx="32" cy="16" rx="8" ry="12" fill="#22c55e" opacity="0.85" transform="rotate(300 32 32)"/>
-                </g>
-                <!-- Centro de la flor -->
-                <circle cx="32" cy="32" r="8" fill="#15803d"/>
-                <circle cx="32" cy="32" r="5" fill="#facc15"/>
-                <circle cx="32" cy="32" r="2.5" fill="#eab308"/>
-              </svg>
-            </div>
-            <div class="logo-text">
-              <h1 class="app-title">Sistema de Administración</h1>
-              <p class="app-subtitle">Panel de Control</p>
-            </div>
-          </div>
-        </div>
-      </header>
-
       <!-- Contenido principal -->
       <main class="dashboard-main">
         <div class="dashboard-content">
@@ -316,9 +277,7 @@ import { useAuthStore } from '../stores/auth'
 import { getSecureApiUrl, getSecureWsUrl } from '../utils/api'
 import { useRouter } from 'vue-router'
 import { LogOut, User, Mail, LayoutDashboard, BarChart3, Users, Settings, MapPin, Sprout, FileText, Smile, Clipboard, Check, Shield, Zap, Bell, Clock, CheckCircle, AlertCircle, Info, Eye, MessageSquare, Home, ChevronRight, Upload, GitBranch, Layers, Building2, Globe, MailOpen } from 'lucide-vue-next'
-import HamburgerMenu from '../components/HamburgerMenu.vue'
 import DesktopSidebar from '../components/DesktopSidebar.vue'
-import DesktopHeader from '../components/DesktopHeader.vue'
 import axios from 'axios'
 
 const auth = useAuthStore()
@@ -749,149 +708,53 @@ const getUsuariosDesc = (): string => {
   overflow-y: auto;
   overflow-x: hidden;
   -webkit-overflow-scrolling: touch;
-  padding-top: 54px;
+  padding-top: 0;
   box-sizing: border-box;
   position: relative;
   height: 100vh;
   will-change: scroll-position;
+  background: #f8fafc;
 }
 
-/* ========== LAYOUT PC ========== */
-@media (min-width: 1024px) {
-  .dashboard-container {
-    flex-direction: row;
-    padding-top: 0;
-    background: #f8fafc;
-  }
-
-  .mobile-only-menu {
-    display: none !important;
-  }
-
-  .mobile-header {
-    display: none !important;
-  }
-}
-
-/* ========== MAIN WRAPPER ========== */
+/* ========== MAIN WRAPPER - UNIFICADO ========== */
 .main-wrapper {
   flex: 1;
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  width: 100%;
+  width: calc(100% - clamp(180px, 18vw, 220px));
+  margin-left: clamp(180px, 18vw, 220px);
 }
 
-@media (min-width: 1024px) {
-  .main-wrapper {
-    margin-left: 220px;
-    width: calc(100% - 220px);
-  }
-}
-
-/* ========== HEADER (móvil) ========== */
-.dashboard-header {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 100;
-  backdrop-filter: blur(16px) saturate(180%);
-  background: linear-gradient(
-    135deg,
-    rgba(134, 239, 172, 0.35) 0%,
-    rgba(187, 247, 208, 0.4) 25%,
-    rgba(255, 255, 255, 0.5) 50%,
-    rgba(187, 247, 208, 0.4) 75%,
-    rgba(134, 239, 172, 0.35) 100%
-  );
-  border-bottom: 1px solid rgba(22, 163, 74, 0.25);
-  padding: 0;
-  box-shadow: 
-    0 4px 24px rgba(22, 163, 74, 0.15),
-    0 1px 3px rgba(22, 163, 74, 0.1),
-    inset 0 1px 0 rgba(255, 255, 255, 0.6),
-    inset 0 -1px 0 rgba(22, 163, 74, 0.1);
-  width: 100%;
-  height: 54px;
-  box-sizing: border-box;
-  /* Efecto de brillo líquido que se mueve */
-  overflow: hidden;
-}
-
-@media (min-width: 1024px) {
-  .dashboard-header.mobile-header {
-    display: none;
-  }
-}
-
-.dashboard-header::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 200%;
-  height: 100%;
-  background: linear-gradient(
-    90deg,
-    transparent 0%,
-    rgba(255, 255, 255, 0.4) 25%,
-    rgba(134, 239, 172, 0.3) 50%,
-    rgba(255, 255, 255, 0.4) 75%,
-    transparent 100%
-  );
-  animation: liquidShine 4s ease-in-out infinite;
-  pointer-events: none;
-}
-
-@keyframes liquidShine {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(50%); }
-}
-
-.header-content {
-  max-width: 100%;
-  margin: 0;
-  padding: 0 0.85rem;
-  padding-right: 60px; /* Espacio para el menú hamburguesa */
+/* ========== MAIN CONTENT - UNIFICADO ========== */
+.dashboard-main {
+  flex: 1;
   display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  gap: 0.5rem;
+  align-items: flex-start;
+  justify-content: center;
+  padding: clamp(0.75rem, 2vw, 1.5rem);
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
   width: 100%;
-  height: 54px;
+  min-height: calc(100vh);
+  box-sizing: border-box;
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+}
+
+.dashboard-content {
+  width: 100%;
+  max-width: 1200px;
+  padding: 0;
   box-sizing: border-box;
   position: relative;
   z-index: 1;
-}
-
-.logo-section {
   display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  gap: 0.6rem;
-  min-width: 0;
-  padding-left: 0.5rem;
+  flex-direction: column;
+  gap: clamp(1rem, 2.5vw, 1.5rem);
 }
 
-.logo-icon {
-  width: 40px;
-  height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  position: relative;
-  padding: 0;
-  margin: 0;
-}
-
-/* Flor girando */
-.flower-logo-svg {
-  width: 36px;
-  height: 36px;
-  filter: drop-shadow(0 2px 6px rgba(22, 163, 74, 0.4));
-}
+/* ========== PROFILE LABEL ========== */
 
 .flower-logo-svg .flower-petals {
   transform-origin: 32px 32px;

@@ -506,7 +506,8 @@ onMounted(() => {
 
 .main-wrapper {
   flex: 1;
-  margin-left: 220px;
+  margin-left: clamp(180px, 18vw, 220px);
+  width: calc(100% - clamp(180px, 18vw, 220px));
   display: flex;
   flex-direction: column;
 }
@@ -973,18 +974,5 @@ onMounted(() => {
   background: #e5e7eb;
 }
 
-@media (max-width: 1024px) {
-  .main-wrapper {
-    margin-left: 0;
-  }
-  
-  .three-column-layout {
-    grid-template-columns: 1fr;
-    height: auto;
-  }
-  
-  .column {
-    max-height: 400px;
-  }
-}
+/* Layout unificado - no media queries que cambien estructura */
 </style>

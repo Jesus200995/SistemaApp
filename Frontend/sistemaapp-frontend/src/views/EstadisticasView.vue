@@ -420,85 +420,73 @@ onMounted(() => {
   }
 }
 
-/* ========== MAIN WRAPPER ========== */
+/* ========== MAIN WRAPPER UNIFICADO ========== */
 .main-wrapper {
   flex: 1;
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  width: 100%;
+  margin-left: clamp(180px, 18vw, 220px);
+  width: calc(100% - clamp(180px, 18vw, 220px));
 }
 
-@media (min-width: 1024px) {
-  .main-wrapper {
-    margin-left: 220px;
-    width: calc(100% - 220px);
-  }
-}
-
-/* ========== VIEW HEADER (ESTILO BLANCO) ========== */
+/* ========== VIEW HEADER ========== */
 .view-header {
-  display: none;
+  display: block;
+  background: white;
+  padding: clamp(0.4rem, 1vw, 0.625rem) clamp(0.75rem, 2vw, 1.25rem);
+  border-bottom: 1px solid #e5e7eb;
 }
 
-@media (min-width: 1024px) {
-  .view-header {
-    display: block;
-    background: white;
-    padding: 0.625rem 1.25rem;
-    border-bottom: 1px solid #e5e7eb;
-  }
-  
-  .header-content {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  
-  .header-title {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
-  
-  .header-title h1 {
-    font-size: 1.1rem;
-    font-weight: 600;
-    color: #14532d;
-    margin: 0;
-  }
-  
-  .header-subtitle {
-    font-size: 0.75rem;
-    color: #6b7280;
-    margin: 0;
-  }
-  
-  .header-icon {
-    color: #16a34a;
-  }
-  
-  .header-actions {
-    display: flex;
-    gap: 0.5rem;
-  }
-  
-  .btn-secondary {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0.5rem;
-    background: #f3f4f6;
-    color: #374151;
-    border: 1px solid #e5e7eb;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-  
-  .btn-secondary:hover {
-    background: #e5e7eb;
-  }
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.header-title h1 {
+  font-size: clamp(0.9rem, 2vw, 1.1rem);
+  font-weight: 600;
+  color: #14532d;
+  margin: 0;
+}
+
+.header-subtitle {
+  font-size: clamp(0.65rem, 1.2vw, 0.75rem);
+  color: #6b7280;
+  margin: 0;
+}
+
+.header-icon {
+  color: #16a34a;
+}
+
+.header-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.btn-secondary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem;
+  background: #f3f4f6;
+  color: #374151;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-secondary:hover {
+  background: #e5e7eb;
 }
 
 /* ========== BLOBS ========== */

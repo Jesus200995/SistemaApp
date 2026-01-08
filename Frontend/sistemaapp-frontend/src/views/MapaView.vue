@@ -479,63 +479,51 @@ onMounted(() => {
   }
 }
 
-/* ========== MAIN WRAPPER ========== */
+/* ========== MAIN WRAPPER UNIFICADO ========== */
 .main-wrapper {
   flex: 1;
   display: flex;
   flex-direction: column;
   height: 100vh;
-  width: 100%;
+  margin-left: clamp(180px, 18vw, 220px);
+  width: calc(100% - clamp(180px, 18vw, 220px));
 }
 
-@media (min-width: 1024px) {
-  .main-wrapper {
-    margin-left: 220px;
-    width: calc(100% - 220px);
-  }
-}
-
-/* ========== VIEW HEADER (ESTILO BLANCO) ========== */
+/* ========== VIEW HEADER ========== */
 .view-header {
-  display: none;
+  display: block;
+  background: white;
+  padding: clamp(0.4rem, 1vw, 0.625rem) clamp(0.75rem, 2vw, 1.25rem);
+  border-bottom: 1px solid #e5e7eb;
 }
 
-@media (min-width: 1024px) {
-  .view-header {
-    display: block;
-    background: white;
-    padding: 0.625rem 1.25rem;
-    border-bottom: 1px solid #e5e7eb;
-  }
-  
-  .view-header .header-content {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  
-  .view-header .header-title {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
-  
-  .view-header .header-title h1 {
-    font-size: 1.1rem;
-    font-weight: 600;
-    color: #14532d;
-    margin: 0;
-  }
-  
-  .view-header .header-subtitle {
-    font-size: 0.75rem;
-    color: #6b7280;
-    margin: 0;
-  }
-  
-  .view-header .header-icon {
-    color: #16a34a;
-  }
+.view-header .header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.view-header .header-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.view-header .header-title h1 {
+  font-size: clamp(0.9rem, 2vw, 1.1rem);
+  font-weight: 600;
+  color: #14532d;
+  margin: 0;
+}
+
+.view-header .header-subtitle {
+  font-size: clamp(0.65rem, 1.2vw, 0.75rem);
+  color: #6b7280;
+  margin: 0;
+}
+
+.view-header .header-icon {
+  color: #16a34a;
 }
 
 /* ========== BACKGROUND BLOBS ========== */
@@ -901,19 +889,11 @@ onMounted(() => {
   position: relative;
   z-index: 10;
   overflow: hidden;
-  margin-left: 240px;
-}
-
-@media (min-width: 1024px) {
-  .map-section {
-    margin-left: 0;
-    margin: 1.5rem;
-    margin-left: 1rem;
-    border-radius: 12px;
-    border: 1px solid #e2e8f0;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-    overflow: hidden;
-  }
+  margin: clamp(0.5rem, 1.5vw, 1.5rem);
+  margin-left: clamp(0.5rem, 1.5vw, 1rem);
+  border-radius: clamp(8px, 1.5vw, 12px);
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
 }
 
 /* ========== LEGEND BOX ========== */

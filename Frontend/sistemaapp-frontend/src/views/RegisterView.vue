@@ -419,7 +419,7 @@ const showTerms = () => {
   overflow-x: hidden;
   font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   margin: 0;
-  padding: 2rem 0;
+  padding: clamp(1rem, 2.5vw, 2.5rem) 0;
 }
 
 /* ========== BACKGROUND BLOBS ========== */
@@ -474,10 +474,10 @@ const showTerms = () => {
 /* ========== BACK BUTTON ========== */
 .back-button {
   position: fixed;
-  top: 2rem;
-  left: 2rem;
-  width: 50px;
-  height: 50px;
+  top: clamp(1rem, 2.5vw, 2rem);
+  left: clamp(1rem, 2.5vw, 2rem);
+  width: clamp(36px, 5vw, 50px);
+  height: clamp(36px, 5vw, 50px);
   background: linear-gradient(135deg, #10b981 0%, #059669 100%);
   border-radius: 50%;
   display: flex;
@@ -500,8 +500,8 @@ const showTerms = () => {
 }
 
 .back-icon {
-  width: 24px;
-  height: 24px;
+  width: clamp(18px, 2.5vw, 24px);
+  height: clamp(18px, 2.5vw, 24px);
   color: white;
   stroke-width: 2.5;
 }
@@ -511,8 +511,8 @@ const showTerms = () => {
   position: relative;
   z-index: 10;
   width: 100%;
-  max-width: 290px;
-  padding: 0.6rem 0.4rem;
+  max-width: clamp(280px, 45vw, 450px);
+  padding: clamp(0.5rem, 1vw, 1rem) clamp(0.4rem, 1vw, 1rem);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -523,16 +523,16 @@ const showTerms = () => {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-bottom: 0.8rem;
+  margin-bottom: clamp(0.6rem, 1.5vw, 1.2rem);
   text-align: center;
   width: 100%;
 }
 
 /* Animación de maceta con flor */
 .flowerpot-animation {
-  width: 110px;
-  height: 130px;
-  margin-bottom: 1.25rem;
+  width: clamp(70px, 12vw, 120px);
+  height: clamp(85px, 14vw, 140px);
+  margin-bottom: clamp(0.75rem, 1.5vw, 1.5rem);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -603,19 +603,19 @@ const showTerms = () => {
 }
 
 .app-title {
-  font-size: 1.15rem;
+  font-size: clamp(1rem, 2vw, 1.5rem);
   font-weight: 700;
   background: linear-gradient(135deg, #15803d, #166534);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  margin-bottom: 0.2rem;
+  margin-bottom: clamp(0.15rem, 0.4vw, 0.3rem);
   letter-spacing: -0.02em;
   line-height: 1.2;
 }
 
 .app-subtitle {
-  font-size: 0.75rem;
+  font-size: clamp(0.65rem, 1.2vw, 0.9rem);
   color: #166534;
   font-weight: 400;
   letter-spacing: 0.01em;
@@ -626,27 +626,27 @@ const showTerms = () => {
   width: 100%;
   background: rgba(255, 255, 255, 0.9);
   border: 1px solid rgba(22, 163, 74, 0.2);
-  border-radius: 20px;
-  padding: 0.9rem 0.7rem;
+  border-radius: clamp(14px, 2.5vw, 24px);
+  padding: clamp(0.7rem, 1.5vw, 1.2rem) clamp(0.6rem, 1.2vw, 1rem);
   backdrop-filter: blur(10px);
   box-shadow: 0 8px 32px rgba(22, 163, 74, 0.1), 0 0 1px rgba(16, 185, 129, 0.2);
-  margin-bottom: 0.5rem;
+  margin-bottom: clamp(0.4rem, 0.8vw, 0.7rem);
 }
 
 .register-title {
-  font-size: 1.2rem;
+  font-size: clamp(1rem, 1.8vw, 1.4rem);
   font-weight: 700;
   color: #15803d;
-  margin-bottom: 0.25rem;
+  margin-bottom: clamp(0.15rem, 0.4vw, 0.35rem);
   text-align: center;
   letter-spacing: -0.01em;
 }
 
 .register-subtitle {
-  font-size: 0.75rem;
+  font-size: clamp(0.65rem, 1.2vw, 0.9rem);
   color: #166534;
   text-align: center;
-  margin-bottom: 1rem;
+  margin-bottom: clamp(0.7rem, 1.5vw, 1.2rem);
   font-weight: 400;
 }
 
@@ -654,17 +654,17 @@ const showTerms = () => {
 .register-form {
   display: flex;
   flex-direction: column;
-  gap: 0.65rem;
+  gap: clamp(0.5rem, 1vw, 0.8rem);
 }
 
 .form-group {
   display: flex;
   flex-direction: column;
-  gap: 0.4rem;
+  gap: clamp(0.25rem, 0.5vw, 0.45rem);
 }
 
 .form-label {
-  font-size: 0.7rem;
+  font-size: clamp(0.6rem, 1.1vw, 0.75rem);
   font-weight: 600;
   color: #15803d;
   text-transform: uppercase;
@@ -679,9 +679,9 @@ const showTerms = () => {
 
 .input-icon {
   position: absolute;
-  left: 12px;
-  width: 18px;
-  height: 18px;
+  left: clamp(8px, 1.5vw, 14px);
+  width: clamp(14px, 2vw, 20px);
+  height: clamp(14px, 2vw, 20px);
   color: #10b981;
   pointer-events: none;
 }
@@ -690,10 +690,10 @@ const showTerms = () => {
   width: 100%;
   background: rgba(255, 255, 255, 0.95);
   border: 1.5px solid rgba(22, 163, 74, 0.3);
-  border-radius: 10px;
-  padding: 0.55rem 0.8rem 0.55rem 2.2rem;
+  border-radius: clamp(8px, 1.5vw, 12px);
+  padding: clamp(0.45rem, 0.9vw, 0.65rem) clamp(0.7rem, 1.2vw, 1rem) clamp(0.45rem, 0.9vw, 0.65rem) clamp(1.8rem, 3vw, 2.5rem);
   color: #1e3a2f;
-  font-size: 0.75rem;
+  font-size: clamp(0.7rem, 1.3vw, 0.9rem);
   font-family: 'Inter', 'Segoe UI', sans-serif;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -718,9 +718,9 @@ const showTerms = () => {
 
 .select-icon {
   position: absolute;
-  left: 14px;
-  width: 20px;
-  height: 20px;
+  left: clamp(10px, 1.5vw, 14px);
+  width: clamp(15px, 2.2vw, 22px);
+  height: clamp(15px, 2.2vw, 22px);
   color: #10b981;
   pointer-events: none;
   z-index: 1;
@@ -730,10 +730,10 @@ const showTerms = () => {
   width: 100%;
   background: rgba(255, 255, 255, 0.95);
   border: 1.5px solid rgba(22, 163, 74, 0.3);
-  border-radius: 12px;
-  padding: 0.6rem 0.9rem 0.6rem 2.4rem;
+  border-radius: clamp(8px, 1.5vw, 14px);
+  padding: clamp(0.5rem, 0.9vw, 0.7rem) clamp(0.7rem, 1.2vw, 1rem) clamp(0.5rem, 0.9vw, 0.7rem) clamp(1.8rem, 3vw, 2.6rem);
   color: #1e3a2f;
-  font-size: 0.8rem;
+  font-size: clamp(0.7rem, 1.3vw, 0.9rem);
   font-family: 'Inter', 'Segoe UI', sans-serif;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   cursor: pointer;
@@ -758,17 +758,17 @@ const showTerms = () => {
 }
 
 .rol-hint {
-  font-size: 0.65rem;
+  font-size: clamp(0.55rem, 1vw, 0.7rem);
   color: #166534;
-  margin-top: 0.4rem;
+  margin-top: clamp(0.25rem, 0.5vw, 0.45rem);
   font-style: italic;
   line-height: 1.3;
 }
 
 .field-hint {
-  font-size: 0.65rem;
+  font-size: clamp(0.55rem, 1vw, 0.7rem);
   color: #166534;
-  margin-top: 0.3rem;
+  margin-top: clamp(0.2rem, 0.4vw, 0.35rem);
   font-style: italic;
 }
 
@@ -781,13 +781,13 @@ const showTerms = () => {
 .terms-group {
   display: flex;
   align-items: flex-start;
-  gap: 0.75rem;
-  margin-top: 1rem;
+  gap: clamp(0.5rem, 1vw, 0.85rem);
+  margin-top: clamp(0.7rem, 1.3vw, 1.2rem);
 }
 
 .terms-checkbox {
-  width: 18px;
-  height: 18px;
+  width: clamp(14px, 2vw, 20px);
+  height: clamp(14px, 2vw, 20px);
   accent-color: #10b981;
   cursor: pointer;
   border-radius: 4px;
@@ -796,7 +796,7 @@ const showTerms = () => {
 }
 
 .terms-label {
-  font-size: 0.75rem;
+  font-size: clamp(0.65rem, 1.2vw, 0.85rem);
   color: #166534;
   cursor: pointer;
   line-height: 1.4;
@@ -819,13 +819,13 @@ const showTerms = () => {
 .error-message {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: clamp(0.5rem, 1vw, 0.85rem);
   background: rgba(239, 68, 68, 0.1);
   border: 1px solid rgba(239, 68, 68, 0.3);
-  border-radius: 12px;
-  padding: 0.85rem 1.2rem;
+  border-radius: clamp(8px, 1.5vw, 14px);
+  padding: clamp(0.6rem, 1.2vw, 1rem) clamp(0.8rem, 1.5vw, 1.3rem);
   color: #fca5a5;
-  font-size: 0.875rem;
+  font-size: clamp(0.7rem, 1.3vw, 0.9rem);
   animation: slideDown 0.3s ease;
   font-weight: 500;
 }
@@ -834,21 +834,21 @@ const showTerms = () => {
 .success-message {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: clamp(0.5rem, 1vw, 0.85rem);
   background: rgba(16, 185, 129, 0.1);
   border: 1px solid rgba(16, 185, 129, 0.3);
-  border-radius: 12px;
-  padding: 0.85rem 1.2rem;
+  border-radius: clamp(8px, 1.5vw, 14px);
+  padding: clamp(0.6rem, 1.2vw, 1rem) clamp(0.8rem, 1.5vw, 1.3rem);
   color: #86efac;
-  font-size: 0.875rem;
+  font-size: clamp(0.7rem, 1.3vw, 0.9rem);
   animation: slideDown 0.3s ease;
   font-weight: 500;
 }
 
 .error-icon,
 .success-icon {
-  width: 18px;
-  height: 18px;
+  width: clamp(14px, 2vw, 20px);
+  height: clamp(14px, 2vw, 20px);
   flex-shrink: 0;
 }
 
@@ -868,18 +868,18 @@ const showTerms = () => {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
+  gap: clamp(0.35rem, 0.7vw, 0.6rem);
   background: linear-gradient(135deg, #10b981 0%, #059669 100%);
   color: white;
   border: none;
-  border-radius: 12px;
-  padding: 0.7rem 1.2rem;
-  font-size: 0.8rem;
+  border-radius: clamp(8px, 1.5vw, 14px);
+  padding: clamp(0.55rem, 1vw, 0.85rem) clamp(0.9rem, 1.5vw, 1.4rem);
+  font-size: clamp(0.7rem, 1.3vw, 0.95rem);
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   box-shadow: 0 4px 15px rgba(16, 185, 129, 0.35);
-  margin-top: 0.3rem;
+  margin-top: clamp(0.2rem, 0.5vw, 0.4rem);
   font-family: 'Inter', 'Segoe UI', sans-serif;
   letter-spacing: 0.01em;
 }
@@ -899,8 +899,8 @@ const showTerms = () => {
 }
 
 .button-icon {
-  width: 18px;
-  height: 18px;
+  width: clamp(14px, 2vw, 20px);
+  height: clamp(14px, 2vw, 20px);
 }
 
 /* ========== DIVIDER ========== */
@@ -908,7 +908,7 @@ const showTerms = () => {
   position: relative;
   height: 1px;
   background: rgba(22, 163, 74, 0.2);
-  margin: 1.75rem 0;
+  margin: clamp(1rem, 2vw, 2rem) 0;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -916,9 +916,9 @@ const showTerms = () => {
 
 .divider span {
   background: rgba(255, 255, 255, 0.9);
-  padding: 0 0.75rem;
+  padding: 0 clamp(0.5rem, 1vw, 0.85rem);
   color: #166534;
-  font-size: 0.8rem;
+  font-size: clamp(0.65rem, 1.2vw, 0.85rem);
   font-weight: 500;
 }
 
@@ -930,15 +930,15 @@ const showTerms = () => {
   background: rgba(22, 163, 74, 0.08);
   color: #15803d;
   border: 1.5px solid rgba(22, 163, 74, 0.4);
-  border-radius: 12px;
-  padding: 0.65rem 1.2rem;
-  font-size: 0.8rem;
+  border-radius: clamp(8px, 1.5vw, 14px);
+  padding: clamp(0.5rem, 0.9vw, 0.75rem) clamp(0.9rem, 1.5vw, 1.4rem);
+  font-size: clamp(0.7rem, 1.3vw, 0.9rem);
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   font-family: 'Inter', 'Segoe UI', sans-serif;
   text-decoration: none;
-  margin-top: 0.3rem;
+  margin-top: clamp(0.2rem, 0.5vw, 0.4rem);
 }
 
 .login-link:hover {
@@ -955,9 +955,9 @@ const showTerms = () => {
 /* ========== FOOTER ========== */
 .register-footer {
   text-align: center;
-  font-size: 0.65rem;
+  font-size: clamp(0.55rem, 1vw, 0.7rem);
   color: #166534;
-  margin-top: 0.7rem;
+  margin-top: clamp(0.5rem, 1vw, 0.8rem);
   font-weight: 500;
   letter-spacing: 0.01em;
 }
@@ -967,669 +967,8 @@ const showTerms = () => {
   font-weight: 700;
 }
 
-/* ========== RESPONSIVE - TABLET (768px - 1024px) ========== */
-@media (max-width: 1024px) {
-  .register-content {
-    max-width: 420px;
-  }
-
-  .app-title {
-    font-size: 1.6rem;
-  }
-
-  .back-button {
-    top: 1.5rem;
-    left: 1.5rem;
-    width: 46px;
-    height: 46px;
-  }
-
-  .back-icon {
-    width: 22px;
-    height: 22px;
-  }
-}
-
-/* ========== RESPONSIVE - TABLET (641px - 768px) ========== */
-@media (max-width: 768px) {
-  .register-container {
-    padding: 1rem 0;
-  }
-
-  .back-button {
-    top: 1.25rem;
-    left: 1.25rem;
-    width: 44px;
-    height: 44px;
-  }
-
-  .back-icon {
-    width: 20px;
-    height: 20px;
-  }
-
-  .register-content {
-    padding: 1.25rem 1rem;
-    max-width: 100%;
-  }
-
-  .logo-section {
-    margin-bottom: 1.75rem;
-  }
-
-  .app-title {
-    font-size: 1.5rem;
-    margin-bottom: 0.5rem;
-  }
-
-  .app-subtitle {
-    font-size: 0.9rem;
-  }
-
-  .flowerpot-animation {
-    width: 100px;
-    height: 120px;
-    margin-bottom: 1.25rem;
-  }
-
-  .register-card {
-    padding: 1.75rem 1.5rem;
-    margin-bottom: 1.25rem;
-    border-radius: 20px;
-  }
-
-  .register-title {
-    font-size: 1.35rem;
-  }
-
-  .register-subtitle {
-    font-size: 0.9rem;
-    margin-bottom: 1.75rem;
-  }
-
-  .register-form {
-    gap: 1.2rem;
-  }
-
-  .form-label {
-    font-size: 0.8rem;
-  }
-
-  .form-input,
-  .form-select {
-    padding: 0.75rem 1rem 0.75rem 2.4rem;
-    font-size: 0.9rem;
-    border-radius: 10px;
-  }
-
-  .input-icon,
-  .select-icon {
-    left: 12px;
-    width: 18px;
-    height: 18px;
-  }
-
-  .submit-button {
-    padding: 0.8rem 1.25rem;
-    font-size: 0.9rem;
-    border-radius: 10px;
-  }
-
-  .login-link {
-    padding: 0.8rem 1.25rem;
-    font-size: 0.9rem;
-    border-radius: 10px;
-  }
-
-  .register-footer {
-    font-size: 0.75rem;
-  }
-}
-
-/* ========== RESPONSIVE - MOBILE (577px - 640px) ========== */
-@media (max-width: 640px) {
-  .register-container {
-    padding: 0.75rem 0;
-  }
-
-  .back-button {
-    top: 1rem;
-    left: 1rem;
-    width: 42px;
-    height: 42px;
-  }
-
-  .back-icon {
-    width: 19px;
-    height: 19px;
-  }
-
-  .register-content {
-    padding: 1rem 0.75rem;
-    max-width: 100%;
-  }
-
-  .logo-section {
-    margin-bottom: 1.5rem;
-  }
-
-  .app-title {
-    font-size: 1.35rem;
-    margin-bottom: 0.4rem;
-  }
-
-  .app-subtitle {
-    font-size: 0.85rem;
-  }
-
-  .flowerpot-animation {
-    width: 90px;
-    height: 110px;
-    margin-bottom: 1rem;
-  }
-
-  .register-card {
-    padding: 1.5rem 1.25rem;
-    margin-bottom: 1rem;
-    border-radius: 18px;
-  }
-
-  .register-title {
-    font-size: 1.2rem;
-    margin-bottom: 0.4rem;
-  }
-
-  .register-subtitle {
-    font-size: 0.85rem;
-    margin-bottom: 1.5rem;
-  }
-
-  .register-form {
-    gap: 1rem;
-  }
-
-  .form-group {
-    gap: 0.4rem;
-  }
-
-  .form-label {
-    font-size: 0.75rem;
-    letter-spacing: 0.06em;
-  }
-
-  .form-input,
-  .form-select {
-    padding: 0.65rem 0.9rem 0.65rem 2.2rem;
-    font-size: 16px;
-    border-radius: 9px;
-  }
-
-  .input-icon,
-  .select-icon {
-    left: 11px;
-    width: 17px;
-    height: 17px;
-  }
-
-  .terms-group {
-    gap: 0.4rem;
-  }
-
-  .terms-checkbox {
-    width: 16px;
-    height: 16px;
-  }
-
-  .terms-label {
-    font-size: 0.8rem;
-  }
-
-  .submit-button {
-    padding: 0.7rem 1.1rem;
-    font-size: 0.85rem;
-    border-radius: 9px;
-    margin-top: 0.4rem;
-  }
-
-  .error-message,
-  .success-message {
-    font-size: 0.75rem;
-    padding: 0.6rem 0.9rem;
-    border-radius: 10px;
-  }
-
-  .divider {
-    margin: 1.2rem 0;
-  }
-
-  .divider span {
-    font-size: 0.75rem;
-  }
-
-  .login-link {
-    padding: 0.7rem 1.1rem;
-    font-size: 0.85rem;
-    border-radius: 9px;
-  }
-
-  .register-footer {
-    font-size: 0.7rem;
-    margin-top: 1rem;
-  }
-}
-
-/* ========== RESPONSIVE - MOBILE PEQUEÑO (481px - 576px) ========== */
-@media (max-width: 576px) {
-  .register-container {
-    padding: 0.5rem 0;
-  }
-
-  .back-button {
-    top: 0.9rem;
-    left: 0.9rem;
-    width: 40px;
-    height: 40px;
-  }
-
-  .back-icon {
-    width: 18px;
-    height: 18px;
-  }
-
-  .register-content {
-    padding: 0.9rem 0.7rem;
-    max-width: 100%;
-  }
-
-  .logo-section {
-    margin-bottom: 1.3rem;
-  }
-
-  .app-title {
-    font-size: 1.25rem;
-    margin-bottom: 0.3rem;
-    line-height: 1.2;
-  }
-
-  .app-subtitle {
-    font-size: 0.8rem;
-  }
-
-  .flowerpot-animation {
-    width: 80px;
-    height: 100px;
-    margin-bottom: 0.85rem;
-  }
-
-  .register-card {
-    padding: 1.4rem 1.1rem;
-    margin-bottom: 0.8rem;
-    border-radius: 16px;
-  }
-
-  .register-title {
-    font-size: 1.1rem;
-    margin-bottom: 0.3rem;
-  }
-
-  .register-subtitle {
-    font-size: 0.8rem;
-    margin-bottom: 1.3rem;
-  }
-
-  .register-form {
-    gap: 0.9rem;
-  }
-
-  .form-group {
-    gap: 0.35rem;
-  }
-
-  .form-label {
-    font-size: 0.7rem;
-    letter-spacing: 0.05em;
-  }
-
-  .form-input,
-  .form-select {
-    padding: 0.6rem 0.85rem 0.6rem 2.1rem;
-    font-size: 15px;
-    border-radius: 8px;
-  }
-
-  .input-icon,
-  .select-icon {
-    left: 10px;
-    width: 16px;
-    height: 16px;
-  }
-
-  .terms-group {
-    gap: 0.35rem;
-  }
-
-  .terms-checkbox {
-    width: 15px;
-    height: 15px;
-  }
-
-  .terms-label {
-    font-size: 0.75rem;
-  }
-
-  .submit-button {
-    padding: 0.65rem 1rem;
-    font-size: 0.8rem;
-    border-radius: 8px;
-    gap: 0.35rem;
-    margin-top: 0.3rem;
-  }
-
-  .error-message,
-  .success-message {
-    font-size: 0.7rem;
-    padding: 0.55rem 0.8rem;
-    border-radius: 8px;
-  }
-
-  .divider {
-    margin: 1rem 0;
-    height: 0.5px;
-  }
-
-  .divider span {
-    font-size: 0.7rem;
-    padding: 0 0.6rem;
-  }
-
-  .login-link {
-    padding: 0.65rem 1rem;
-    font-size: 0.8rem;
-    border-radius: 8px;
-  }
-
-  .register-footer {
-    font-size: 0.65rem;
-    margin-top: 0.8rem;
-  }
-}
-
-/* ========== RESPONSIVE - MOBILE ULTRA PEQUEÑO (320px - 480px) ========== */
-@media (max-width: 480px) {
-  .register-container {
-    padding: 0.75rem 0;
-    min-height: 100vh;
-    overflow-y: auto;
-    overflow-x: hidden;
-  }
-
-  .back-button {
-    top: 0.8rem;
-    left: 0.8rem;
-    width: 38px;
-    height: 38px;
-  }
-
-  .back-icon {
-    width: 17px;
-    height: 17px;
-  }
-
-  .register-content {
-    padding: 0.75rem 0.6rem;
-    max-width: 100%;
-  }
-
-  .logo-section {
-    margin-bottom: 1.15rem;
-  }
-
-  .app-title {
-    font-size: 1.1rem;
-    margin-bottom: 0.25rem;
-    line-height: 1.1;
-  }
-
-  .app-subtitle {
-    font-size: 0.75rem;
-  }
-
-  .flowerpot-animation {
-    width: 75px;
-    height: 95px;
-    margin-bottom: 0.75rem;
-  }
-
-  .register-card {
-    padding: 1.2rem 0.95rem;
-    margin-bottom: 0.7rem;
-    border-radius: 14px;
-  }
-
-  .register-title {
-    font-size: 1rem;
-    margin-bottom: 0.25rem;
-  }
-
-  .register-subtitle {
-    font-size: 0.75rem;
-    margin-bottom: 1.1rem;
-  }
-
-  .register-form {
-    gap: 0.8rem;
-  }
-
-  .form-group {
-    gap: 0.3rem;
-  }
-
-  .form-label {
-    font-size: 0.65rem;
-    letter-spacing: 0.04em;
-  }
-
-  .form-input,
-  .form-select {
-    padding: 0.55rem 0.8rem 0.55rem 2rem;
-    font-size: 14px;
-    border-radius: 7px;
-  }
-
-  .input-icon,
-  .select-icon {
-    left: 9px;
-    width: 15px;
-    height: 15px;
-  }
-
-  .terms-group {
-    gap: 0.3rem;
-  }
-
-  .terms-checkbox {
-    width: 14px;
-    height: 14px;
-  }
-
-  .terms-label {
-    font-size: 0.7rem;
-  }
-
-  .submit-button {
-    padding: 0.6rem 0.9rem;
-    font-size: 0.75rem;
-    border-radius: 7px;
-    gap: 0.3rem;
-    margin-top: 0.25rem;
-  }
-
-  .error-message,
-  .success-message {
-    font-size: 0.65rem;
-    padding: 0.5rem 0.75rem;
-    border-radius: 7px;
-  }
-
-  .divider {
-    margin: 0.9rem 0;
-    height: 0.5px;
-  }
-
-  .divider span {
-    font-size: 0.65rem;
-    padding: 0 0.5rem;
-  }
-
-  .login-link {
-    padding: 0.6rem 0.9rem;
-    font-size: 0.75rem;
-    border-radius: 7px;
-  }
-
-  .register-footer {
-    font-size: 0.6rem;
-    margin-top: 0.7rem;
-  }
-}
-
-/* ========== RESPONSIVE - MOBILE TINY (280px - 320px) ========== */
-@media (max-width: 320px) {
-  .register-container {
-    padding: 0.5rem 0;
-    min-height: 100vh;
-    overflow-y: auto;
-    overflow-x: hidden;
-  }
-
-  .back-button {
-    top: 0.7rem;
-    left: 0.7rem;
-    width: 36px;
-    height: 36px;
-  }
-
-  .back-icon {
-    width: 16px;
-    height: 16px;
-  }
-
-  .register-content {
-    padding: 0.65rem 0.5rem;
-    max-width: 100%;
-  }
-
-  .logo-section {
-    margin-bottom: 1rem;
-  }
-
-  .app-title {
-    font-size: 1rem;
-    margin-bottom: 0.2rem;
-    line-height: 1.1;
-  }
-
-  .app-subtitle {
-    font-size: 0.7rem;
-  }
-
-  .flowerpot-animation {
-    width: 65px;
-    height: 85px;
-    margin-bottom: 0.65rem;
-  }
-
-  .register-card {
-    padding: 1rem 0.8rem;
-    margin-bottom: 0.6rem;
-    border-radius: 12px;
-  }
-
-  .register-title {
-    font-size: 0.95rem;
-    margin-bottom: 0.2rem;
-  }
-
-  .register-subtitle {
-    font-size: 0.7rem;
-    margin-bottom: 1rem;
-  }
-
-  .register-form {
-    gap: 0.7rem;
-  }
-
-  .form-group {
-    gap: 0.25rem;
-  }
-
-  .form-label {
-    font-size: 0.6rem;
-    letter-spacing: 0.03em;
-  }
-
-  .form-input,
-  .form-select {
-    padding: 0.5rem 0.7rem 0.5rem 1.9rem;
-    font-size: 13px;
-    border-radius: 6px;
-  }
-
-  .input-icon,
-  .select-icon {
-    left: 8px;
-    width: 14px;
-    height: 14px;
-  }
-
-  .terms-group {
-    gap: 0.25rem;
-  }
-
-  .terms-checkbox {
-    width: 13px;
-    height: 13px;
-  }
-
-  .terms-label {
-    font-size: 0.65rem;
-  }
-
-  .submit-button {
-    padding: 0.55rem 0.8rem;
-    font-size: 0.7rem;
-    border-radius: 6px;
-    gap: 0.25rem;
-    margin-top: 0.2rem;
-  }
-
-  .error-message,
-  .success-message {
-    font-size: 0.6rem;
-    padding: 0.45rem 0.7rem;
-    border-radius: 6px;
-  }
-
-  .divider {
-    margin: 0.8rem 0;
-  }
-
-  .divider span {
-    font-size: 0.6rem;
-    padding: 0 0.4rem;
-  }
-
-  .login-link {
-    padding: 0.55rem 0.8rem;
-    font-size: 0.7rem;
-    border-radius: 6px;
-  }
-
-  .register-footer {
-    font-size: 0.55rem;
-    margin-top: 0.6rem;
-  }
-}
+/* ========== LAYOUT UNIFICADO - ESCALADO FLUIDO CON CLAMP() ========== */
+/* Sin media queries - misma vista en todos los dispositivos */
 
 /* ========== SCROLLBAR ========== */
 ::-webkit-scrollbar {

@@ -214,39 +214,34 @@ const logout = () => {
 </script>
 
 <style scoped>
+/* ===== SIDEBAR UNIFICADO - VISIBLE EN TODAS LAS PANTALLAS ===== */
 .desktop-sidebar {
-  display: none;
-}
-
-@media (min-width: 1024px) {
-  .desktop-sidebar {
-    display: flex;
-    flex-direction: column;
-    width: 220px;
-    min-width: 220px;
-    height: 100vh;
-    position: fixed;
-    left: 0;
-    top: 0;
-    background: linear-gradient(180deg, #14532d 0%, #166534 50%, #15803d 100%);
-    border-right: 1px solid rgba(22, 163, 74, 0.3);
-    z-index: 200;
-    transition: all 0.3s ease;
-    box-shadow: 4px 0 20px rgba(0, 0, 0, 0.15);
-  }
+  display: flex;
+  flex-direction: column;
+  width: clamp(180px, 18vw, 220px);
+  min-width: clamp(160px, 15vw, 180px);
+  height: 100vh;
+  position: fixed;
+  left: 0;
+  top: 0;
+  background: linear-gradient(180deg, #14532d 0%, #166534 50%, #15803d 100%);
+  border-right: 1px solid rgba(22, 163, 74, 0.3);
+  z-index: 200;
+  transition: all 0.3s ease;
+  box-shadow: 4px 0 20px rgba(0, 0, 0, 0.15);
 }
 
 .sidebar-header {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  padding: 1rem;
+  gap: clamp(0.4rem, 1vw, 0.75rem);
+  padding: clamp(0.6rem, 1.5vw, 1rem);
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .sidebar-logo {
-  width: 40px;
-  height: 40px;
+  width: clamp(28px, 5vw, 40px);
+  height: clamp(28px, 5vw, 40px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -254,8 +249,8 @@ const logout = () => {
 }
 
 .sidebar-flower-svg {
-  width: 36px;
-  height: 36px;
+  width: clamp(24px, 4.5vw, 36px);
+  height: clamp(24px, 4.5vw, 36px);
   filter: drop-shadow(0 2px 6px rgba(22, 163, 74, 0.4));
 }
 
@@ -275,7 +270,7 @@ const logout = () => {
 }
 
 .sidebar-app-name {
-  font-size: 1.1rem;
+  font-size: clamp(0.75rem, 1.5vw, 1.1rem);
   font-weight: 400;
   color: white;
   letter-spacing: 0.3px;
@@ -284,7 +279,7 @@ const logout = () => {
 }
 
 .sidebar-app-subtitle {
-  font-size: 1rem;
+  font-size: clamp(0.7rem, 1.3vw, 1rem);
   font-weight: 400;
   color: rgba(255, 255, 255, 0.9);
   display: block;
@@ -295,20 +290,20 @@ const logout = () => {
   flex: 1;
   display: flex;
   flex-direction: column;
-  padding: 1rem 0.75rem;
-  gap: 0.25rem;
+  padding: clamp(0.5rem, 1.5vw, 1rem) clamp(0.4rem, 1vw, 0.75rem);
+  gap: clamp(0.15rem, 0.5vw, 0.25rem);
   overflow-y: auto;
 }
 
 .sidebar-divider {
   display: flex;
   align-items: center;
-  margin: 0.75rem 0 0.5rem;
-  padding: 0 0.5rem;
+  margin: clamp(0.4rem, 1vw, 0.75rem) 0 clamp(0.25rem, 0.8vw, 0.5rem);
+  padding: 0 clamp(0.25rem, 0.8vw, 0.5rem);
 }
 
 .sidebar-divider span {
-  font-size: 0.65rem;
+  font-size: clamp(0.5rem, 1vw, 0.65rem);
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -318,9 +313,9 @@ const logout = () => {
 .sidebar-item {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  padding: 0.75rem 1rem;
-  border-radius: 10px;
+  gap: clamp(0.4rem, 1vw, 0.75rem);
+  padding: clamp(0.5rem, 1.2vw, 0.75rem) clamp(0.6rem, 1.5vw, 1rem);
+  border-radius: clamp(6px, 1.2vw, 10px);
   color: rgba(255, 255, 255, 0.7);
   text-decoration: none;
   transition: all 0.2s ease;
@@ -338,30 +333,32 @@ const logout = () => {
   color: white;
   border-left: 3px solid #22c55e;
   margin-left: -3px;
-  padding-left: calc(1rem + 3px);
+  padding-left: calc(clamp(0.6rem, 1.5vw, 1rem) + 3px);
 }
 
 .sidebar-icon {
   flex-shrink: 0;
-  width: 20px;
-  height: 20px;
+  width: clamp(16px, 2.5vw, 20px);
+  height: clamp(16px, 2.5vw, 20px);
 }
 
 .sidebar-text {
-  font-size: 0.9rem;
+  font-size: clamp(0.65rem, 1.3vw, 0.9rem);
   font-weight: 500;
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .sidebar-badge {
   margin-left: auto;
-  min-width: 20px;
-  height: 20px;
-  padding: 0 6px;
+  min-width: clamp(16px, 2.5vw, 20px);
+  height: clamp(16px, 2.5vw, 20px);
+  padding: 0 clamp(4px, 0.8vw, 6px);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.7rem;
+  font-size: clamp(0.55rem, 1vw, 0.7rem);
   font-weight: 700;
   color: white;
   background: linear-gradient(135deg, #ef4444, #dc2626);
@@ -371,21 +368,21 @@ const logout = () => {
 .sidebar-user {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  padding: 1rem;
+  gap: clamp(0.4rem, 1vw, 0.75rem);
+  padding: clamp(0.6rem, 1.5vw, 1rem);
   border-top: 1px solid rgba(255, 255, 255, 0.1);
   margin-top: auto;
 }
 
 .sidebar-user-avatar {
-  width: 36px;
-  height: 36px;
+  width: clamp(28px, 4vw, 36px);
+  height: clamp(28px, 4vw, 36px);
   border-radius: 50%;
   background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.85rem;
+  font-size: clamp(0.65rem, 1.2vw, 0.85rem);
   font-weight: 700;
   color: white;
   flex-shrink: 0;
@@ -399,7 +396,7 @@ const logout = () => {
 }
 
 .sidebar-user-name {
-  font-size: 0.85rem;
+  font-size: clamp(0.65rem, 1.2vw, 0.85rem);
   font-weight: 600;
   color: white;
   white-space: nowrap;
@@ -408,15 +405,15 @@ const logout = () => {
 }
 
 .sidebar-user-role {
-  font-size: 0.7rem;
+  font-size: clamp(0.55rem, 1vw, 0.7rem);
   color: rgba(255, 255, 255, 0.6);
 }
 
 .sidebar-logout {
   background: rgba(239, 68, 68, 0.2);
   border: 1px solid rgba(239, 68, 68, 0.3);
-  border-radius: 8px;
-  padding: 0.5rem;
+  border-radius: clamp(6px, 1vw, 8px);
+  padding: clamp(0.35rem, 0.8vw, 0.5rem);
   color: #fca5a5;
   cursor: pointer;
   transition: all 0.2s ease;

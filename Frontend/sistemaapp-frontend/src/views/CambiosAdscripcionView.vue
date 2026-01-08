@@ -1543,6 +1543,7 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
+/* === LAYOUT UNIFICADO === */
 .cambios-container {
   display: flex;
   min-height: 100vh;
@@ -1551,7 +1552,8 @@ onUnmounted(() => {
 
 .main-wrapper {
   flex: 1;
-  margin-left: 220px;
+  margin-left: clamp(180px, 18vw, 220px);
+  width: calc(100% - clamp(180px, 18vw, 220px));
   display: flex;
   flex-direction: column;
 }
@@ -2579,20 +2581,7 @@ tr.row-autorizado td .estatus-badge {
   color: #9ca3af;
 }
 
-@media (max-width: 1024px) {
-  .main-wrapper {
-    margin-left: 0;
-  }
-  
-  .filters-section {
-    flex-direction: column;
-    align-items: stretch;
-  }
-  
-  .table-container {
-    overflow-x: auto;
-  }
-}
+/* Ya no usamos media query - layout unificado */
 
 /* === ESTILOS DEL SELECTOR DE DESTINATARIOS === */
 .label-icon {

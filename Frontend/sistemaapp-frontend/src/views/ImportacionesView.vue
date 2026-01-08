@@ -502,7 +502,8 @@ onMounted(() => {
 
 .main-wrapper {
   flex: 1;
-  margin-left: 220px;
+  margin-left: clamp(180px, 18vw, 220px);
+  width: calc(100% - clamp(180px, 18vw, 220px));
   display: flex;
   flex-direction: column;
 }
@@ -995,17 +996,5 @@ onMounted(() => {
   color: #6b7280;
 }
 
-@media (max-width: 1024px) {
-  .main-wrapper {
-    margin-left: 0;
-  }
-  
-  .summary-cards {
-    grid-template-columns: repeat(2, 1fr);
-  }
-  
-  .form-row {
-    grid-template-columns: 1fr;
-  }
-}
+/* Layout unificado */
 </style>

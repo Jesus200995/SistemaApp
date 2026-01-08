@@ -681,7 +681,8 @@ onMounted(() => {
 
 .main-wrapper {
   flex: 1;
-  margin-left: 220px;
+  margin-left: clamp(180px, 18vw, 220px);
+  width: calc(100% - clamp(180px, 18vw, 220px));
   display: flex;
   flex-direction: column;
 }
@@ -1315,22 +1316,5 @@ tr.row-estatus-reasignacion {
   color: #dc2626;
 }
 
-@media (max-width: 1024px) {
-  .main-wrapper {
-    margin-left: 0;
-  }
-  
-  .filters-bar {
-    flex-direction: column;
-    align-items: stretch;
-  }
-  
-  .filter-group {
-    flex-wrap: wrap;
-  }
-  
-  .kpi-bar {
-    flex-wrap: wrap;
-  }
-}
+/* Layout unificado */
 </style>

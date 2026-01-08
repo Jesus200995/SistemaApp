@@ -326,8 +326,8 @@ const crearAdmin = async () => {
   position: relative;
   z-index: 10;
   width: 100%;
-  max-width: 290px;
-  padding: 0.6rem 0.4rem;
+  max-width: clamp(280px, 85vw, 420px);
+  padding: clamp(0.5rem, 2vw, 1rem) clamp(0.4rem, 2vw, 1rem);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -338,16 +338,16 @@ const crearAdmin = async () => {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-bottom: 0.8rem;
+  margin-bottom: clamp(0.6rem, 2vw, 1rem);
   text-align: center;
   width: 100%;
 }
 
 /* Animación de maceta con flor */
 .flowerpot-animation {
-  width: 75px;
-  height: 95px;
-  margin-bottom: 0.6rem;
+  width: clamp(60px, 12vw, 90px);
+  height: clamp(75px, 15vw, 110px);
+  margin-bottom: clamp(0.4rem, 1.5vw, 0.8rem);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -418,7 +418,7 @@ const crearAdmin = async () => {
 }
 
 .app-title {
-  font-size: 1.15rem;
+  font-size: clamp(1rem, 3vw, 1.25rem);
   font-weight: 600;
   background: linear-gradient(90deg, #15803d 0%, #166534 25%, #15803d 50%, #166534 75%, #15803d 100%);
   background-size: 200% 100%;
@@ -444,12 +444,12 @@ const crearAdmin = async () => {
 }
 
 .app-subtitle {
-  font-size: 0.75rem;
+  font-size: clamp(0.65rem, 1.5vw, 0.85rem);
   color: #84cc16;
   font-weight: 600;
   letter-spacing: 0.05em;
   text-transform: uppercase;
-  padding-bottom: 0.5rem;
+  padding-bottom: clamp(0.35rem, 1vw, 0.5rem);
   border-bottom: 1.5px solid rgba(132, 204, 22, 0.3);
   display: inline-block;
 }
@@ -459,27 +459,27 @@ const crearAdmin = async () => {
   width: 100%;
   background: rgba(255, 255, 255, 0.9);
   border: 1px solid rgba(22, 163, 74, 0.2);
-  border-radius: 20px;
-  padding: 0.9rem 0.7rem;
+  border-radius: clamp(14px, 3vw, 20px);
+  padding: clamp(0.7rem, 2.5vw, 1.25rem) clamp(0.6rem, 2vw, 1rem);
   backdrop-filter: blur(10px);
   box-shadow: 0 8px 32px rgba(22, 163, 74, 0.1), 0 0 1px rgba(16, 185, 129, 0.2);
-  margin-bottom: 0.5rem;
+  margin-bottom: clamp(0.4rem, 1.5vw, 0.6rem);
 }
 
 .login-title {
-  font-size: 1.1rem;
+  font-size: clamp(0.95rem, 2.5vw, 1.2rem);
   font-weight: 700;
   color: #15803d;
-  margin-bottom: 0.3rem;
+  margin-bottom: clamp(0.2rem, 0.8vw, 0.35rem);
   text-align: center;
   letter-spacing: -0.01em;
 }
 
 .login-subtitle {
-  font-size: 0.85rem;
+  font-size: clamp(0.75rem, 1.8vw, 0.9rem);
   color: #166534;
   text-align: center;
-  margin-bottom: 1.2rem;
+  margin-bottom: clamp(0.9rem, 2.5vw, 1.4rem);
   font-weight: 400;
 }
 
@@ -497,7 +497,7 @@ const crearAdmin = async () => {
 }
 
 .form-label {
-  font-size: 0.7rem;
+  font-size: clamp(0.6rem, 1.2vw, 0.75rem);
   font-weight: 600;
   color: #15803d;
   text-transform: uppercase;
@@ -512,9 +512,9 @@ const crearAdmin = async () => {
 
 .input-icon {
   position: absolute;
-  left: 12px;
-  width: 18px;
-  height: 18px;
+  left: clamp(8px, 1.5vw, 14px);
+  width: clamp(14px, 2vw, 20px);
+  height: clamp(14px, 2vw, 20px);
   color: #10b981;
   pointer-events: none;
 }
@@ -523,10 +523,10 @@ const crearAdmin = async () => {
   width: 100%;
   background: rgba(255, 255, 255, 0.95);
   border: 1.5px solid rgba(22, 163, 74, 0.3);
-  border-radius: 10px;
-  padding: 0.55rem 0.8rem 0.55rem 2.2rem;
+  border-radius: clamp(8px, 1.5vw, 12px);
+  padding: clamp(0.5rem, 1vw, 0.7rem) clamp(0.7rem, 1.2vw, 1rem) clamp(0.5rem, 1vw, 0.7rem) clamp(1.8rem, 3vw, 2.5rem);
   color: #1e3a2f;
-  font-size: 0.75rem;
+  font-size: clamp(0.75rem, 1.5vw, 0.95rem);
   font-family: 'Inter', 'Segoe UI', sans-serif;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -546,13 +546,13 @@ const crearAdmin = async () => {
 .remember-me {
   display: flex;
   align-items: center;
-  gap: 0.55rem;
-  font-size: 0.8rem;
+  gap: clamp(0.35rem, 0.8vw, 0.6rem);
+  font-size: clamp(0.7rem, 1.3vw, 0.85rem);
 }
 
 .checkbox-input {
-  width: 16px;
-  height: 16px;
+  width: clamp(14px, 2vw, 18px);
+  height: clamp(14px, 2vw, 18px);
   accent-color: #10b981;
   cursor: pointer;
   border-radius: 4px;
@@ -563,6 +563,7 @@ const crearAdmin = async () => {
   cursor: pointer;
   transition: color 0.3s ease;
   font-weight: 500;
+  font-size: clamp(0.7rem, 1.3vw, 0.85rem);
 }
 
 .checkbox-label:hover {
@@ -573,20 +574,20 @@ const crearAdmin = async () => {
 .error-message {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: clamp(0.5rem, 1vw, 0.85rem);
   background: rgba(239, 68, 68, 0.1);
   border: 1px solid rgba(239, 68, 68, 0.3);
-  border-radius: 12px;
-  padding: 0.85rem 1.2rem;
+  border-radius: clamp(8px, 1.5vw, 14px);
+  padding: clamp(0.6rem, 1.2vw, 1rem) clamp(0.8rem, 1.5vw, 1.3rem);
   color: #fca5a5;
-  font-size: 0.875rem;
+  font-size: clamp(0.7rem, 1.3vw, 0.9rem);
   animation: slideDown 0.3s ease;
   font-weight: 500;
 }
 
 .error-icon {
-  width: 18px;
-  height: 18px;
+  width: clamp(14px, 2vw, 20px);
+  height: clamp(14px, 2vw, 20px);
   flex-shrink: 0;
 }
 
@@ -606,18 +607,18 @@ const crearAdmin = async () => {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.65rem;
+  gap: clamp(0.4rem, 0.8vw, 0.7rem);
   background: linear-gradient(135deg, #10b981 0%, #059669 100%);
   color: white;
   border: none;
-  border-radius: 12px;
-  padding: 0.7rem 1.2rem;
-  font-size: 0.8rem;
+  border-radius: clamp(8px, 1.5vw, 14px);
+  padding: clamp(0.55rem, 1vw, 0.85rem) clamp(0.9rem, 1.5vw, 1.4rem);
+  font-size: clamp(0.75rem, 1.4vw, 0.95rem);
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   box-shadow: 0 4px 15px rgba(16, 185, 129, 0.35);
-  margin-top: 0.3rem;
+  margin-top: clamp(0.2rem, 0.5vw, 0.4rem);
   font-family: 'Inter', 'Segoe UI', sans-serif;
   letter-spacing: 0.01em;
 }
@@ -632,8 +633,8 @@ const crearAdmin = async () => {
 }
 
 .button-icon {
-  width: 18px;
-  height: 18px;
+  width: clamp(15px, 2vw, 20px);
+  height: clamp(15px, 2vw, 20px);
 }
 
 /* ========== DIVIDER ========== */
@@ -641,7 +642,7 @@ const crearAdmin = async () => {
   position: relative;
   height: 1px;
   background: rgba(22, 163, 74, 0.2);
-  margin: 1.2rem 0;
+  margin: clamp(0.8rem, 1.5vw, 1.4rem) 0;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -649,9 +650,9 @@ const crearAdmin = async () => {
 
 .divider span {
   background: rgba(255, 255, 255, 0.9);
-  padding: 0 0.75rem;
+  padding: 0 clamp(0.5rem, 1vw, 0.85rem);
   color: #166534;
-  font-size: 0.8rem;
+  font-size: clamp(0.65rem, 1.2vw, 0.85rem);
   font-weight: 500;
 }
 
@@ -661,9 +662,9 @@ const crearAdmin = async () => {
   background: rgba(22, 163, 74, 0.08);
   color: #15803d;
   border: 1.5px solid rgba(22, 163, 74, 0.4);
-  border-radius: 12px;
-  padding: 0.8rem 1.4rem;
-  font-size: 0.9rem;
+  border-radius: clamp(8px, 1.5vw, 14px);
+  padding: clamp(0.55rem, 1vw, 0.9rem) clamp(0.9rem, 1.5vw, 1.5rem);
+  font-size: clamp(0.75rem, 1.4vw, 0.95rem);
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -671,7 +672,7 @@ const crearAdmin = async () => {
   text-decoration: none;
   display: inline-block;
   text-align: center;
-  margin-top: 0.5rem;
+  margin-top: clamp(0.3rem, 0.6vw, 0.6rem);
 }
 
 .register-button:hover {
@@ -691,14 +692,14 @@ const crearAdmin = async () => {
   background: rgba(20, 184, 166, 0.1);
   color: #0d9488;
   border: 1.5px solid rgba(20, 184, 166, 0.3);
-  border-radius: 12px;
-  padding: 0.75rem 1.3rem;
-  font-size: 0.8rem;
+  border-radius: clamp(8px, 1.5vw, 14px);
+  padding: clamp(0.5rem, 0.9vw, 0.85rem) clamp(0.8rem, 1.4vw, 1.4rem);
+  font-size: clamp(0.7rem, 1.3vw, 0.9rem);
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   font-family: 'Inter', 'Segoe UI', sans-serif;
-  margin-top: 0.5rem;
+  margin-top: clamp(0.35rem, 0.7vw, 0.6rem);
 }
 
 .admin-button:hover {
@@ -715,9 +716,9 @@ const crearAdmin = async () => {
 /* ========== FOOTER ========== */
 .login-footer {
   text-align: center;
-  font-size: 0.65rem;
+  font-size: clamp(0.55rem, 1vw, 0.7rem);
   color: #166534;
-  margin-top: 0.7rem;
+  margin-top: clamp(0.5rem, 1vw, 0.8rem);
   font-weight: 500;
   letter-spacing: 0.01em;
 }
@@ -727,648 +728,8 @@ const crearAdmin = async () => {
   font-weight: 700;
 }
 
-/* ========== RESPONSIVE - TABLET (768px - 1024px) ========== */
-@media (max-width: 1024px) {
-  .login-content {
-    max-width: 420px;
-  }
-
-  .app-title {
-    font-size: 1.6rem;
-  }
-
-  .flowerpot-animation {
-    width: 80px;
-    height: 100px;
-    margin-bottom: 0.75rem;
-  }
-}
-
-/* ========== RESPONSIVE - TABLET (641px - 768px) ========== */
-@media (max-width: 768px) {
-  .login-container {
-    padding: 1rem 0;
-  }
-
-  .login-content {
-    padding: 1.25rem 1rem;
-    max-width: 100%;
-  }
-
-  .logo-section {
-    margin-bottom: 1.75rem;
-  }
-
-  .app-title {
-    font-size: 1.5rem;
-    margin-bottom: 0.5rem;
-  }
-
-  .app-subtitle {
-    font-size: 0.9rem;
-  }
-
-  .flowerpot-animation {
-    width: 90px;
-    height: 110px;
-    margin-bottom: 1rem;
-  }
-
-  .login-card {
-    padding: 1.75rem 1.5rem;
-    margin-bottom: 1.25rem;
-    border-radius: 20px;
-  }
-
-  .login-title {
-    font-size: 1.35rem;
-  }
-
-  .login-subtitle {
-    font-size: 0.9rem;
-    margin-bottom: 1.75rem;
-  }
-
-  .login-form {
-    gap: 1.2rem;
-  }
-
-  .form-label {
-    font-size: 0.8rem;
-  }
-
-  .form-input {
-    padding: 0.75rem 1rem 0.75rem 2.4rem;
-    font-size: 0.9rem;
-    border-radius: 10px;
-  }
-
-  .input-icon {
-    left: 12px;
-    width: 18px;
-    height: 18px;
-  }
-
-  .submit-button {
-    padding: 0.8rem 1.25rem;
-    font-size: 0.9rem;
-    border-radius: 10px;
-  }
-
-  .register-button {
-    padding: 0.8rem 1.25rem;
-    font-size: 0.9rem;
-    border-radius: 10px;
-  }
-
-  .admin-button {
-    padding: 0.7rem 1.2rem;
-    font-size: 0.8rem;
-    border-radius: 10px;
-    margin-top: 0.6rem;
-  }
-
-  .login-footer {
-    font-size: 0.75rem;
-  }
-}
-
-/* ========== RESPONSIVE - MOBILE (577px - 640px) ========== */
-@media (max-width: 640px) {
-  .login-container {
-    padding: 0.75rem 0;
-  }
-
-  .login-content {
-    padding: 1rem 0.75rem;
-    max-width: 100%;
-  }
-
-  .logo-section {
-    margin-bottom: 1.5rem;
-  }
-
-  .app-title {
-    font-size: 1.35rem;
-    margin-bottom: 0.4rem;
-  }
-
-  .app-subtitle {
-    font-size: 0.85rem;
-  }
-
-  .flowerpot-animation {
-    width: 80px;
-    height: 100px;
-    margin-bottom: 0.9rem;
-  }
-
-  .login-card {
-    padding: 1.5rem 1.25rem;
-    margin-bottom: 1rem;
-    border-radius: 18px;
-  }
-
-  .login-title {
-    font-size: 1.2rem;
-    margin-bottom: 0.4rem;
-  }
-
-  .login-subtitle {
-    font-size: 0.85rem;
-    margin-bottom: 1.5rem;
-  }
-
-  .login-form {
-    gap: 1rem;
-  }
-
-  .form-group {
-    gap: 0.4rem;
-  }
-
-  .form-label {
-    font-size: 0.75rem;
-    letter-spacing: 0.06em;
-  }
-
-  .form-input {
-    padding: 0.65rem 0.9rem 0.65rem 2.2rem;
-    font-size: 16px;
-    border-radius: 9px;
-  }
-
-  .input-icon {
-    left: 11px;
-    width: 17px;
-    height: 17px;
-  }
-
-  .remember-me {
-    font-size: 0.8rem;
-    gap: 0.4rem;
-  }
-
-  .checkbox-input {
-    width: 16px;
-    height: 16px;
-  }
-
-  .checkbox-label {
-    font-size: 0.8rem;
-  }
-
-  .submit-button {
-    padding: 0.7rem 1.1rem;
-    font-size: 0.85rem;
-    border-radius: 9px;
-    margin-top: 0.4rem;
-  }
-
-  .error-message {
-    font-size: 0.75rem;
-    padding: 0.6rem 0.9rem;
-    border-radius: 10px;
-  }
-
-  .divider {
-    margin: 1.2rem 0;
-  }
-
-  .divider span {
-    font-size: 0.75rem;
-  }
-
-  .register-button {
-    padding: 0.7rem 1.1rem;
-    font-size: 0.85rem;
-    border-radius: 9px;
-  }
-
-  .admin-button {
-    padding: 0.65rem 1rem;
-    font-size: 0.8rem;
-    border-radius: 9px;
-    margin-top: 0.5rem;
-  }
-
-  .login-footer {
-    font-size: 0.7rem;
-    margin-top: 1rem;
-  }
-}
-
-/* ========== RESPONSIVE - MOBILE PEQUEÑO (481px - 576px) ========== */
-@media (max-width: 576px) {
-  .login-container {
-    padding: 0.5rem 0;
-  }
-
-  .login-content {
-    padding: 0.9rem 0.7rem;
-    max-width: 100%;
-  }
-
-  .logo-section {
-    margin-bottom: 1.3rem;
-  }
-
-  .app-title {
-    font-size: 1.25rem;
-    margin-bottom: 0.3rem;
-    line-height: 1.2;
-  }
-
-  .app-subtitle {
-    font-size: 0.8rem;
-  }
-
-  .flowerpot-animation {
-    width: 75px;
-    height: 95px;
-    margin-bottom: 0.75rem;
-  }
-
-  .login-card {
-    padding: 1.4rem 1.1rem;
-    margin-bottom: 0.8rem;
-    border-radius: 16px;
-  }
-
-  .login-title {
-    font-size: 1.1rem;
-    margin-bottom: 0.3rem;
-  }
-
-  .login-subtitle {
-    font-size: 0.8rem;
-    margin-bottom: 1.3rem;
-  }
-
-  .login-form {
-    gap: 0.9rem;
-  }
-
-  .form-group {
-    gap: 0.35rem;
-  }
-
-  .form-label {
-    font-size: 0.7rem;
-    letter-spacing: 0.05em;
-  }
-
-  .form-input {
-    padding: 0.6rem 0.85rem 0.6rem 2.1rem;
-    font-size: 15px;
-    border-radius: 8px;
-  }
-
-  .input-icon {
-    left: 10px;
-    width: 16px;
-    height: 16px;
-  }
-
-  .remember-me {
-    font-size: 0.75rem;
-    gap: 0.35rem;
-  }
-
-  .checkbox-input {
-    width: 15px;
-    height: 15px;
-  }
-
-  .checkbox-label {
-    font-size: 0.75rem;
-  }
-
-  .submit-button {
-    padding: 0.65rem 1rem;
-    font-size: 0.8rem;
-    border-radius: 8px;
-    gap: 0.35rem;
-    margin-top: 0.3rem;
-  }
-
-  .button-icon {
-    width: 16px;
-    height: 16px;
-  }
-
-  .error-message {
-    font-size: 0.7rem;
-    padding: 0.55rem 0.8rem;
-    border-radius: 8px;
-  }
-
-  .error-icon {
-    width: 16px;
-    height: 16px;
-  }
-
-  .divider {
-    margin: 1rem 0;
-    height: 0.5px;
-  }
-
-  .divider span {
-    font-size: 0.7rem;
-    padding: 0 0.6rem;
-  }
-
-  .register-button {
-    padding: 0.65rem 1rem;
-    font-size: 0.8rem;
-    border-radius: 8px;
-  }
-
-  .admin-button {
-    padding: 0.6rem 0.9rem;
-    font-size: 0.75rem;
-    border-radius: 8px;
-    margin-top: 0.5rem;
-  }
-
-  .login-footer {
-    font-size: 0.65rem;
-    margin-top: 0.8rem;
-  }
-}
-
-/* ========== RESPONSIVE - MOBILE ULTRA PEQUEÑO (320px - 480px) ========== */
-@media (max-width: 480px) {
-  .login-container {
-    padding: 0.75rem 0;
-    min-height: 100vh;
-    overflow-y: auto;
-    overflow-x: hidden;
-  }
-
-  .login-content {
-    padding: 0.75rem 0.6rem;
-    max-width: 100%;
-  }
-
-  .logo-section {
-    margin-bottom: 1.15rem;
-  }
-
-  .app-title {
-    font-size: 1.1rem;
-    margin-bottom: 0.25rem;
-    line-height: 1.1;
-  }
-
-  .app-subtitle {
-    font-size: 0.75rem;
-  }
-
-  .flowerpot-animation {
-    width: 70px;
-    height: 90px;
-    margin-bottom: 0.65rem;
-  }
-
-  .login-card {
-    padding: 1.2rem 0.95rem;
-    margin-bottom: 0.7rem;
-    border-radius: 14px;
-  }
-
-  .login-title {
-    font-size: 1rem;
-    margin-bottom: 0.25rem;
-  }
-
-  .login-subtitle {
-    font-size: 0.75rem;
-    margin-bottom: 1.1rem;
-  }
-
-  .login-form {
-    gap: 0.8rem;
-  }
-
-  .form-group {
-    gap: 0.3rem;
-  }
-
-  .form-label {
-    font-size: 0.65rem;
-    letter-spacing: 0.04em;
-  }
-
-  .form-input {
-    padding: 0.55rem 0.8rem 0.55rem 2rem;
-    font-size: 14px;
-    border-radius: 7px;
-  }
-
-  .input-icon {
-    left: 9px;
-    width: 15px;
-    height: 15px;
-  }
-
-  .remember-me {
-    font-size: 0.7rem;
-    gap: 0.3rem;
-  }
-
-  .checkbox-input {
-    width: 14px;
-    height: 14px;
-  }
-
-  .checkbox-label {
-    font-size: 0.7rem;
-  }
-
-  .submit-button {
-    padding: 0.6rem 0.9rem;
-    font-size: 0.75rem;
-    border-radius: 7px;
-    gap: 0.3rem;
-    margin-top: 0.25rem;
-  }
-
-  .button-icon {
-    width: 15px;
-    height: 15px;
-  }
-
-  .error-message {
-    font-size: 0.65rem;
-    padding: 0.5rem 0.75rem;
-    border-radius: 7px;
-  }
-
-  .error-icon {
-    width: 15px;
-    height: 15px;
-  }
-
-  .divider {
-    margin: 0.9rem 0;
-    height: 0.5px;
-  }
-
-  .divider span {
-    font-size: 0.65rem;
-    padding: 0 0.5rem;
-  }
-
-  .register-button {
-    padding: 0.6rem 0.9rem;
-    font-size: 0.75rem;
-    border-radius: 7px;
-  }
-
-  .admin-button {
-    padding: 0.55rem 0.85rem;
-    font-size: 0.7rem;
-    border-radius: 7px;
-    margin-top: 0.4rem;
-  }
-
-  .login-footer {
-    font-size: 0.6rem;
-    margin-top: 0.7rem;
-  }
-}
-
-/* ========== RESPONSIVE - MOBILE TINY (280px - 320px) ========== */
-@media (max-width: 320px) {
-  .login-container {
-    padding: 0.5rem 0;
-    min-height: 100vh;
-    overflow-y: auto;
-    overflow-x: hidden;
-  }
-
-  .login-content {
-    padding: 0.65rem 0.5rem;
-    max-width: 100%;
-  }
-
-  .logo-section {
-    margin-bottom: 1rem;
-  }
-
-  .app-title {
-    font-size: 1rem;
-    margin-bottom: 0.2rem;
-    line-height: 1.1;
-  }
-
-  .app-subtitle {
-    font-size: 0.7rem;
-  }
-
-  .flowerpot-animation {
-    width: 60px;
-    height: 80px;
-    margin-bottom: 0.6rem;
-  }
-
-  .login-card {
-    padding: 1rem 0.8rem;
-    margin-bottom: 0.6rem;
-    border-radius: 12px;
-  }
-
-  .login-title {
-    font-size: 0.95rem;
-    margin-bottom: 0.2rem;
-  }
-
-  .login-subtitle {
-    font-size: 0.7rem;
-    margin-bottom: 1rem;
-  }
-
-  .login-form {
-    gap: 0.7rem;
-  }
-
-  .form-group {
-    gap: 0.25rem;
-  }
-
-  .form-label {
-    font-size: 0.6rem;
-    letter-spacing: 0.03em;
-  }
-
-  .form-input {
-    padding: 0.5rem 0.7rem 0.5rem 1.9rem;
-    font-size: 13px;
-    border-radius: 6px;
-  }
-
-  .input-icon {
-    left: 8px;
-    width: 14px;
-    height: 14px;
-  }
-
-  .remember-me {
-    font-size: 0.65rem;
-    gap: 0.25rem;
-  }
-
-  .checkbox-input {
-    width: 13px;
-    height: 13px;
-  }
-
-  .checkbox-label {
-    font-size: 0.65rem;
-  }
-
-  .submit-button {
-    padding: 0.55rem 0.8rem;
-    font-size: 0.7rem;
-    border-radius: 6px;
-    gap: 0.25rem;
-    margin-top: 0.2rem;
-  }
-
-  .error-message {
-    font-size: 0.6rem;
-    padding: 0.45rem 0.7rem;
-    border-radius: 6px;
-  }
-
-  .divider {
-    margin: 0.8rem 0;
-  }
-
-  .divider span {
-    font-size: 0.6rem;
-    padding: 0 0.4rem;
-  }
-
-  .register-button {
-    padding: 0.55rem 0.8rem;
-    font-size: 0.7rem;
-    border-radius: 6px;
-  }
-
-  .admin-button {
-    padding: 0.5rem 0.75rem;
-    font-size: 0.65rem;
-    border-radius: 6px;
-    margin-top: 0.35rem;
-  }
-
-  .login-footer {
-    font-size: 0.55rem;
-    margin-top: 0.6rem;
-  }
-}
+/* ========== LAYOUT UNIFICADO - ESCALADO FLUIDO CON CLAMP() ========== */
+/* Sin media queries - misma vista en todos los dispositivos */
 
 /* ========== SCROLLBAR ========== */
 ::-webkit-scrollbar {
@@ -1405,12 +766,12 @@ const crearAdmin = async () => {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 1.5rem;
+  gap: clamp(1rem, 2vw, 1.5rem);
 }
 
 .rotating-flower {
-  width: 80px;
-  height: 80px;
+  width: clamp(50px, 8vw, 80px);
+  height: clamp(50px, 8vw, 80px);
   animation: rotate-flower 3s linear infinite;
 }
 
@@ -1425,7 +786,7 @@ const crearAdmin = async () => {
 
 .loading-text {
   color: #22C55E;
-  font-size: 1.125rem;
+  font-size: clamp(0.8rem, 1.5vw, 1.125rem);
   font-weight: 500;
   letter-spacing: 1px;
   animation: pulse-text 1.5s ease-in-out infinite;
@@ -1449,61 +810,5 @@ const crearAdmin = async () => {
 .fade-loading-enter-from,
 .fade-loading-leave-to {
   opacity: 0;
-}
-
-/* ========== RESPONSIVE - LOADING ========== */
-@media (max-width: 1024px) {
-  .rotating-flower {
-    width: 70px;
-    height: 70px;
-  }
-  
-  .loading-text {
-    font-size: 1rem;
-  }
-}
-
-@media (max-width: 768px) {
-  .rotating-flower {
-    width: 65px;
-    height: 65px;
-  }
-  
-  .loading-text {
-    font-size: 0.95rem;
-  }
-}
-
-@media (max-width: 640px) {
-  .rotating-flower {
-    width: 60px;
-    height: 60px;
-  }
-  
-  .loading-text {
-    font-size: 0.9rem;
-  }
-}
-
-@media (max-width: 480px) {
-  .rotating-flower {
-    width: 55px;
-    height: 55px;
-  }
-  
-  .loading-text {
-    font-size: 0.85rem;
-  }
-}
-
-@media (max-width: 320px) {
-  .rotating-flower {
-    width: 50px;
-    height: 50px;
-  }
-  
-  .loading-text {
-    font-size: 0.8rem;
-  }
 }
 </style>

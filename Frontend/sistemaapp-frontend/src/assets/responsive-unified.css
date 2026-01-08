@@ -1,0 +1,437 @@
+/* ========================================
+   RESPONSIVE UNIFIED - MISMA VISTA EN TODOS LOS DISPOSITIVOS
+   Usa clamp() para escalado fluido sin media queries
+   ======================================== */
+
+/* ===== VARIABLES RESPONSIVAS ===== */
+:root {
+  /* Tamaños de fuente fluidos */
+  --font-xs: clamp(0.6rem, 1.2vw, 0.7rem);
+  --font-sm: clamp(0.7rem, 1.4vw, 0.8rem);
+  --font-base: clamp(0.8rem, 1.6vw, 0.95rem);
+  --font-md: clamp(0.9rem, 1.8vw, 1.1rem);
+  --font-lg: clamp(1rem, 2.2vw, 1.3rem);
+  --font-xl: clamp(1.2rem, 2.8vw, 1.6rem);
+  --font-2xl: clamp(1.5rem, 3.5vw, 2rem);
+  
+  /* Espaciado fluido */
+  --space-xs: clamp(0.25rem, 0.8vw, 0.4rem);
+  --space-sm: clamp(0.4rem, 1vw, 0.6rem);
+  --space-md: clamp(0.6rem, 1.5vw, 1rem);
+  --space-lg: clamp(0.8rem, 2vw, 1.25rem);
+  --space-xl: clamp(1rem, 2.5vw, 1.75rem);
+  --space-2xl: clamp(1.25rem, 3vw, 2.5rem);
+  
+  /* Border radius fluido */
+  --radius-sm: clamp(6px, 1vw, 8px);
+  --radius-md: clamp(8px, 1.5vw, 12px);
+  --radius-lg: clamp(12px, 2vw, 16px);
+  --radius-xl: clamp(16px, 2.5vw, 24px);
+  
+  /* Iconos fluidos */
+  --icon-xs: clamp(14px, 3vw, 18px);
+  --icon-sm: clamp(18px, 4vw, 22px);
+  --icon-md: clamp(22px, 5vw, 28px);
+  --icon-lg: clamp(28px, 6vw, 36px);
+  --icon-xl: clamp(36px, 8vw, 48px);
+  
+  /* Contenedores */
+  --container-max: min(100%, 1400px);
+  --content-padding: clamp(0.75rem, 2vw, 2rem);
+  
+  /* Header */
+  --header-height: clamp(48px, 8vh, 64px);
+  
+  /* Cards y componentes */
+  --card-padding: clamp(0.6rem, 1.5vw, 1.25rem);
+  --card-gap: clamp(0.4rem, 1vw, 0.75rem);
+  
+  /* Grids */
+  --grid-gap: clamp(0.5rem, 1.5vw, 1rem);
+  --grid-min-col: clamp(140px, 20vw, 200px);
+}
+
+/* ===== RESET DE VIEWPORT ===== */
+html, body {
+  overflow-x: hidden;
+  -webkit-text-size-adjust: 100%;
+}
+
+/* Evitar zoom en inputs en móvil */
+input, select, textarea {
+  font-size: max(16px, 1rem) !important;
+}
+
+/* ===== CLASES UTILITARIAS RESPONSIVAS ===== */
+
+/* Textos fluidos */
+.text-xs { font-size: var(--font-xs) !important; }
+.text-sm { font-size: var(--font-sm) !important; }
+.text-base { font-size: var(--font-base) !important; }
+.text-md { font-size: var(--font-md) !important; }
+.text-lg { font-size: var(--font-lg) !important; }
+.text-xl { font-size: var(--font-xl) !important; }
+.text-2xl { font-size: var(--font-2xl) !important; }
+
+/* Espaciado fluido */
+.p-xs { padding: var(--space-xs) !important; }
+.p-sm { padding: var(--space-sm) !important; }
+.p-md { padding: var(--space-md) !important; }
+.p-lg { padding: var(--space-lg) !important; }
+.p-xl { padding: var(--space-xl) !important; }
+
+.gap-xs { gap: var(--space-xs) !important; }
+.gap-sm { gap: var(--space-sm) !important; }
+.gap-md { gap: var(--space-md) !important; }
+.gap-lg { gap: var(--space-lg) !important; }
+.gap-xl { gap: var(--space-xl) !important; }
+
+/* ===== GRID FLUIDO UNIVERSAL ===== */
+.fluid-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(var(--grid-min-col), 1fr));
+  gap: var(--grid-gap);
+}
+
+.fluid-grid-2 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+  gap: var(--grid-gap);
+}
+
+.fluid-grid-3 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr));
+  gap: var(--grid-gap);
+}
+
+.fluid-grid-4 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 160px), 1fr));
+  gap: var(--grid-gap);
+}
+
+/* ===== CONTENEDOR UNIFICADO ===== */
+.unified-container {
+  width: 100%;
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding: var(--content-padding);
+  box-sizing: border-box;
+}
+
+/* ===== CARD UNIFICADA ===== */
+.unified-card {
+  background: linear-gradient(135deg, #ffffff 0%, #f9fafb 100%);
+  border: 1px solid #e2e8f0;
+  border-radius: var(--radius-lg);
+  padding: var(--card-padding);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.unified-card:hover {
+  border-color: #16a34a;
+  box-shadow: 0 6px 20px rgba(22, 163, 74, 0.12);
+  transform: translateY(-2px);
+}
+
+/* ===== BOTÓN UNIFICADO ===== */
+.unified-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+  padding: var(--space-sm) var(--space-lg);
+  font-size: var(--font-sm);
+  font-weight: 600;
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+}
+
+.unified-btn-primary {
+  background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
+  color: white;
+  box-shadow: 0 4px 12px rgba(22, 163, 74, 0.25);
+}
+
+.unified-btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(22, 163, 74, 0.35);
+}
+
+/* ===== INPUT UNIFICADO ===== */
+.unified-input {
+  width: 100%;
+  padding: var(--space-md) var(--space-lg);
+  font-size: var(--font-base);
+  border: 1.5px solid #e2e8f0;
+  border-radius: var(--radius-md);
+  background: white;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+}
+
+.unified-input:focus {
+  outline: none;
+  border-color: #16a34a;
+  box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.1);
+}
+
+/* ===== HEADER UNIFICADO ===== */
+.unified-header {
+  height: var(--header-height);
+  padding: 0 var(--content-padding);
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+}
+
+/* ===== TABLA RESPONSIVA UNIFICADA ===== */
+.unified-table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  border-radius: var(--radius-lg);
+  border: 1px solid #e2e8f0;
+}
+
+.unified-table {
+  width: 100%;
+  min-width: 600px; /* Mantiene el ancho mínimo, scrolleable */
+  border-collapse: collapse;
+}
+
+.unified-table th,
+.unified-table td {
+  padding: var(--space-md);
+  text-align: left;
+  font-size: var(--font-sm);
+  border-bottom: 1px solid #e2e8f0;
+  white-space: nowrap;
+}
+
+.unified-table th {
+  background: #f8fafc;
+  font-weight: 600;
+  color: #1e293b;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+/* ===== FORMULARIO UNIFICADO ===== */
+.unified-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+.unified-form-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr));
+  gap: var(--space-md);
+}
+
+.unified-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.unified-form-label {
+  font-size: var(--font-sm);
+  font-weight: 600;
+  color: #1e293b;
+}
+
+/* ===== MODAL UNIFICADO ===== */
+.unified-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-lg);
+  z-index: 1000;
+}
+
+.unified-modal {
+  width: 100%;
+  max-width: min(90vw, 500px);
+  max-height: 90vh;
+  overflow-y: auto;
+  background: white;
+  border-radius: var(--radius-xl);
+  padding: var(--space-xl);
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+}
+
+/* ===== LISTA UNIFICADA ===== */
+.unified-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.unified-list-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  padding: var(--space-md);
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: var(--radius-md);
+  transition: all 0.2s ease;
+}
+
+.unified-list-item:hover {
+  border-color: #16a34a;
+  transform: translateX(4px);
+}
+
+/* ===== BADGE UNIFICADO ===== */
+.unified-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: clamp(18px, 4vw, 24px);
+  height: clamp(18px, 4vw, 24px);
+  padding: 0 var(--space-xs);
+  font-size: var(--font-xs);
+  font-weight: 700;
+  border-radius: 12px;
+}
+
+.unified-badge-success {
+  background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
+  color: white;
+}
+
+.unified-badge-danger {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  color: white;
+}
+
+/* ===== ICONOS WRAPPER UNIFICADO ===== */
+.unified-icon-wrapper {
+  width: clamp(36px, 8vw, 48px);
+  height: clamp(36px, 8vw, 48px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+  border-radius: var(--radius-md);
+  color: #16a34a;
+  transition: all 0.3s ease;
+}
+
+/* ===== SECCIÓN UNIFICADA ===== */
+.unified-section {
+  margin-bottom: var(--space-xl);
+}
+
+.unified-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-md);
+  margin-bottom: var(--space-lg);
+  flex-wrap: wrap;
+}
+
+.unified-section-title {
+  font-size: var(--font-lg);
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0;
+}
+
+/* ===== AVATAR UNIFICADO ===== */
+.unified-avatar {
+  width: clamp(36px, 8vw, 56px);
+  height: clamp(36px, 8vw, 56px);
+  border-radius: 50%;
+  background: linear-gradient(135deg, #16a34a 0%, #22c55e 100%);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: clamp(0.9rem, 2vw, 1.4rem);
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+/* ===== FILTROS UNIFICADOS ===== */
+.unified-filters {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 180px), 1fr));
+  gap: var(--space-md);
+  padding: var(--space-lg);
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  border-radius: var(--radius-lg);
+  border: 1px solid #e2e8f0;
+}
+
+/* ===== SCROLL HORIZONTAL PARA TABLAS ===== */
+.scroll-x {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.scroll-x::-webkit-scrollbar {
+  height: 6px;
+}
+
+.scroll-x::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 3px;
+}
+
+.scroll-x::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 3px;
+}
+
+.scroll-x::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* ===== ELIMINAR ZOOM AUTOMÁTICO EN MÓVIL ===== */
+@media (max-width: 768px) {
+  /* Prevenir comportamientos móviles no deseados */
+  * {
+    -webkit-tap-highlight-color: transparent;
+  }
+  
+  /* Asegurar que todo siga igual que en PC */
+  body {
+    -webkit-text-size-adjust: 100%;
+  }
+}
+
+/* ===== SOPORTE LANDSCAPE ===== */
+@media (orientation: landscape) and (max-height: 500px) {
+  :root {
+    --header-height: clamp(44px, 8vh, 56px);
+    --content-padding: clamp(0.5rem, 1.5vw, 1rem);
+  }
+}
+
+/* ===== PANTALLAS MUY ANCHAS ===== */
+@media (min-width: 1600px) {
+  :root {
+    --font-xs: 0.75rem;
+    --font-sm: 0.85rem;
+    --font-base: 1rem;
+    --font-md: 1.15rem;
+    --font-lg: 1.4rem;
+    --font-xl: 1.75rem;
+    --font-2xl: 2.25rem;
+  }
+}
