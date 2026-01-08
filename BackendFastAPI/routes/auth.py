@@ -267,17 +267,32 @@ def create_user_hierarchical(
     # ✅ Hashear contraseña
     hashed = bcrypt.hashpw(request.password.encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
     
-    # ✅ Crear nuevo usuario con superior_id (nombre en MAYÚSCULAS)
+    # ✅ Heredar territorio del usuario creador si no se especifica
+    territorio_id_heredado = None
+    territorio_heredado = territorio  # El que viene del request
+    
+    if current_user.territorio_id:
+        territorio_id_heredado = current_user.territorio_id
+        print(f"📍 Heredando territorio_id del creador: {territorio_id_heredado}")
+    
+    if not territorio_heredado and current_user.territorio:
+        territorio_heredado = current_user.territorio
+        print(f"📍 Heredando territorio (nombre) del creador: {territorio_heredado}")
+    
+    # ✅ Crear nuevo usuario con superior_id y territorio heredado (nombre en MAYÚSCULAS)
     nuevo = User(
         nombre=request.nombre.strip().upper(),
         email=request.email.strip().lower(),
         password=hashed,
         rol=rol_nuevo,
         curp=curp,
-        territorio=territorio,
+        territorio=territorio_heredado,
+        territorio_id=territorio_id_heredado,
         telefono=telefono,
         superior_id=current_user_id  # Asignar usuario creador como superior
     )
+    
+    print(f"✅ Creando usuario: {nuevo.nombre}, rol: {nuevo.rol}, territorio_id: {nuevo.territorio_id}, territorio: {nuevo.territorio}, superior_id: {nuevo.superior_id}")
     
     db.add(nuevo)
     db.commit()
@@ -304,6 +319,8 @@ def create_user_hierarchical(
         "email": nuevo.email,
         "rol": nuevo.rol,
         "superior_id": nuevo.superior_id,
+        "territorio": nuevo.territorio,
+        "territorio_id": nuevo.territorio_id,
         "message": f"Usuario {nuevo.nombre} creado exitosamente como {rol_nuevo.upper().replace('_', ' ')}"
     }
 

@@ -218,16 +218,33 @@ def obtener_usuarios_subordinados(
     print(f"🎯 Buscando usuarios con roles: {categorias_subordinados}")
     
     # Consultar usuarios - NO filtrar por activo para incluir ambos
+    from sqlalchemy import or_
+    
     query = db.query(User).filter(User.id != user_id)
     
-    # Si es Territorial o Facilitador, filtrar por territorio
+    # Si es Territorial o Facilitador, filtrar por:
+    # 1. Mismo territorio_id O
+    # 2. Mismo territorio (nombre) O
+    # 3. superior_id = usuario actual (subordinados directos)
     if categoria_rol in ["territorial", "facilitador"] and usuario_actual:
+        condiciones = []
+        
+        # Condición 1: Mismo territorio_id
         if usuario_actual.territorio_id:
-            print(f"🌍 Filtrando por territorio_id: {usuario_actual.territorio_id}")
-            query = query.filter(User.territorio_id == usuario_actual.territorio_id)
-        elif usuario_actual.territorio:
-            print(f"🌍 Filtrando por territorio (nombre): {usuario_actual.territorio}")
-            query = query.filter(User.territorio == usuario_actual.territorio)
+            print(f"🌍 Condición: territorio_id = {usuario_actual.territorio_id}")
+            condiciones.append(User.territorio_id == usuario_actual.territorio_id)
+        
+        # Condición 2: Mismo territorio (nombre)
+        if usuario_actual.territorio:
+            print(f"🌍 Condición: territorio = '{usuario_actual.territorio}'")
+            condiciones.append(User.territorio == usuario_actual.territorio)
+        
+        # Condición 3: Subordinados directos (superior_id = usuario actual)
+        print(f"👥 Condición: superior_id = {user_id}")
+        condiciones.append(User.superior_id == user_id)
+        
+        if condiciones:
+            query = query.filter(or_(*condiciones))
     
     todos_usuarios = query.all()
     print(f"📊 Total usuarios encontrados (antes de filtrar por rol): {len(todos_usuarios)}")
