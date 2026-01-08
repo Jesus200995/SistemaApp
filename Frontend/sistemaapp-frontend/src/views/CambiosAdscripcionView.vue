@@ -1047,12 +1047,14 @@ const esDestinatario = (cambio) => {
   return cambio.destino_id === userId
 }
 
-// Cambios pendientes: EN_REVISION dirigidos a MÍ (solicitudes que debo revisar/autorizar)
+// Cambios recibidos: 
+// - EN_REVISION dirigidos a MÍ (solicitudes que debo revisar/autorizar)
+// - AUTORIZADO donde YO soy el propietario (solicitudes aprobadas que debo aplicar)
 const cambiosPendientes = computed(() => {
   const userId = auth.user?.id
   return cambios.value.filter(c => 
-    c.estatus === 'EN_REVISION' && 
-    c.destino_id === userId
+    (c.estatus === 'EN_REVISION' && c.destino_id === userId) ||
+    (c.estatus === 'AUTORIZADO' && (c.propuesto_por?.persona_id === userId || c.propuesto_por_id === userId))
   )
 })
 
