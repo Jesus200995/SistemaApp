@@ -198,6 +198,13 @@ def listar_cambios_adscripcion(
             if u:
                 destinatario = {"persona_id": u.id, "nombre_completo": u.nombre}
         
+        # Obtener persona afectada
+        persona_afectada = None
+        if c.persona_id:
+            u = db.query(User).filter(User.id == c.persona_id).first()
+            if u:
+                persona_afectada = {"id": u.id, "nombre": u.nombre, "rol": u.rol, "activo": u.activo}
+        
         # Verificar si está vencido
         vencido = False
         if c.fecha_limite and c.estatus in ["EN_REVISION", "AUTORIZADO"]:
@@ -217,6 +224,8 @@ def listar_cambios_adscripcion(
             "propuesto_por_id": c.propuesto_por_id,
             "destino_id": c.destino_id,
             "destinatario": destinatario,
+            "persona_id": c.persona_id,
+            "persona_afectada": persona_afectada,
             "created_at": c.created_at.isoformat() if c.created_at else None
         })
     
@@ -477,11 +486,94 @@ def ejecutar_accion_cambio(
 
 
 def _aplicar_cambio_adscripcion(cambio: CambioAdscripcion, db: Session):
-    """Aplica los cambios reales en las tablas según el tipo de cambio"""
+    """
+    Aplica los cambios reales en las tablas según el tipo de cambio.
     
-    if cambio.objeto == "PERSONA_CAC":
-        # Reasignar persona de una CAC a otra
-        if cambio.tipo_cambio == "REASIGNACION":
+    Tipos de cambio:
+    - ALTA: Activa un usuario (activo=True) y/o lo asigna a CAC/Ruta/Territorio
+    - BAJA: Desactiva un usuario (activo=False) y lo desvincula de asignaciones
+    - REASIGNACION: Cambia la asignación de un usuario de un lugar a otro
+    """
+    
+    # Obtener la persona afectada
+    persona = None
+    if cambio.persona_id:
+        persona = db.query(User).filter(User.id == cambio.persona_id).first()
+    
+    # === ALTA DE USUARIO ===
+    if cambio.tipo_cambio == "ALTA":
+        if persona:
+            # Activar el usuario
+            persona.activo = True
+            print(f"✅ Usuario {persona.nombre} activado (activo=True)")
+        
+        # Si es PERSONA_CAC, asignar a la CAC destino
+        if cambio.objeto == "PERSONA_CAC" and cambio.cac_destino_id and persona:
+            cac = db.query(CAC).filter(CAC.id == cambio.cac_destino_id).first()
+            if cac:
+                if "SOCIAL" in (persona.perfil_operativo or "").upper():
+                    cac.tecnico_social_id = persona.id
+                    print(f"📍 Asignado como Técnico Social a CAC {cac.nombre}")
+                else:
+                    cac.tecnico_productivo_id = persona.id
+                    print(f"📍 Asignado como Técnico Productivo a CAC {cac.nombre}")
+                
+                # Actualizar estatus CAC
+                if cac.tecnico_social_id and cac.tecnico_productivo_id:
+                    cac.estatus = "OK"
+        
+        # Si es PERSONA_RUTA, asignar como facilitador
+        if cambio.objeto == "PERSONA_RUTA" and cambio.ruta_destino_id and persona:
+            ruta = db.query(Ruta).filter(Ruta.id == cambio.ruta_destino_id).first()
+            if ruta:
+                if not ruta.facilitador_principal_id:
+                    ruta.facilitador_principal_id = persona.id
+                    print(f"📍 Asignado como Facilitador Principal a Ruta {ruta.nombre}")
+                else:
+                    ruta.facilitador_apoyo_id = persona.id
+                    print(f"📍 Asignado como Facilitador de Apoyo a Ruta {ruta.nombre}")
+        
+        # Si es PERSONA_TERRITORIO, asignar territorio
+        if cambio.objeto == "PERSONA_TERRITORIO" and cambio.territorio_destino_id and persona:
+            territorio = db.query(Territorio).filter(Territorio.id == cambio.territorio_destino_id).first()
+            if territorio:
+                persona.territorio_id = territorio.id
+                persona.territorio = territorio.nombre
+                print(f"📍 Asignado a Territorio {territorio.nombre}")
+    
+    # === BAJA DE USUARIO ===
+    elif cambio.tipo_cambio == "BAJA":
+        if persona:
+            # Desactivar el usuario
+            persona.activo = False
+            print(f"❌ Usuario {persona.nombre} desactivado (activo=False)")
+        
+        # Quitar de CAC origen
+        if cambio.objeto == "PERSONA_CAC" and cambio.cac_origen_id:
+            cac = db.query(CAC).filter(CAC.id == cambio.cac_origen_id).first()
+            if cac:
+                if cac.tecnico_social_id == cambio.persona_id:
+                    cac.tecnico_social_id = None
+                    print(f"🔓 Removido como Técnico Social de CAC {cac.nombre}")
+                if cac.tecnico_productivo_id == cambio.persona_id:
+                    cac.tecnico_productivo_id = None
+                    print(f"🔓 Removido como Técnico Productivo de CAC {cac.nombre}")
+                cac.estatus = "VACANTE"
+        
+        # Quitar de Ruta origen
+        if cambio.objeto == "PERSONA_RUTA" and cambio.ruta_origen_id:
+            ruta = db.query(Ruta).filter(Ruta.id == cambio.ruta_origen_id).first()
+            if ruta:
+                if ruta.facilitador_principal_id == cambio.persona_id:
+                    ruta.facilitador_principal_id = None
+                    print(f"🔓 Removido como Facilitador Principal de Ruta {ruta.nombre}")
+                if ruta.facilitador_apoyo_id == cambio.persona_id:
+                    ruta.facilitador_apoyo_id = None
+                    print(f"🔓 Removido como Facilitador de Apoyo de Ruta {ruta.nombre}")
+    
+    # === REASIGNACION DE USUARIO ===
+    elif cambio.tipo_cambio == "REASIGNACION":
+        if cambio.objeto == "PERSONA_CAC":
             # Quitar de CAC origen
             if cambio.cac_origen_id:
                 cac_orig = db.query(CAC).filter(CAC.id == cambio.cac_origen_id).first()
@@ -491,49 +583,61 @@ def _aplicar_cambio_adscripcion(cambio: CambioAdscripcion, db: Session):
                     if cac_orig.tecnico_productivo_id == cambio.persona_id:
                         cac_orig.tecnico_productivo_id = None
                     cac_orig.estatus = "VACANTE"
+                    print(f"🔓 Removido de CAC origen {cac_orig.nombre}")
             
             # Agregar a CAC destino
-            if cambio.cac_destino_id and cambio.persona_id:
+            if cambio.cac_destino_id and persona:
                 cac_dest = db.query(CAC).filter(CAC.id == cambio.cac_destino_id).first()
-                persona = db.query(User).filter(User.id == cambio.persona_id).first()
-                if cac_dest and persona:
+                if cac_dest:
                     if "SOCIAL" in (persona.perfil_operativo or "").upper():
                         cac_dest.tecnico_social_id = persona.id
                     else:
                         cac_dest.tecnico_productivo_id = persona.id
                     
-                    # Actualizar estatus
                     if cac_dest.tecnico_social_id and cac_dest.tecnico_productivo_id:
                         cac_dest.estatus = "OK"
+                    print(f"📍 Asignado a CAC destino {cac_dest.nombre}")
         
-        elif cambio.tipo_cambio == "BAJA":
-            if cambio.cac_origen_id:
+        elif cambio.objeto == "PERSONA_RUTA":
+            # Quitar de Ruta origen
+            if cambio.ruta_origen_id:
+                ruta_orig = db.query(Ruta).filter(Ruta.id == cambio.ruta_origen_id).first()
+                if ruta_orig:
+                    if ruta_orig.facilitador_principal_id == cambio.persona_id:
+                        ruta_orig.facilitador_principal_id = None
+                    if ruta_orig.facilitador_apoyo_id == cambio.persona_id:
+                        ruta_orig.facilitador_apoyo_id = None
+                    print(f"🔓 Removido de Ruta origen {ruta_orig.nombre}")
+            
+            # Agregar a Ruta destino
+            if cambio.ruta_destino_id and persona:
+                ruta_dest = db.query(Ruta).filter(Ruta.id == cambio.ruta_destino_id).first()
+                if ruta_dest:
+                    if not ruta_dest.facilitador_principal_id:
+                        ruta_dest.facilitador_principal_id = persona.id
+                    else:
+                        ruta_dest.facilitador_apoyo_id = persona.id
+                    print(f"📍 Asignado a Ruta destino {ruta_dest.nombre}")
+        
+        elif cambio.objeto == "PERSONA_TERRITORIO":
+            # Cambiar territorio
+            if cambio.territorio_destino_id and persona:
+                territorio = db.query(Territorio).filter(Territorio.id == cambio.territorio_destino_id).first()
+                if territorio:
+                    persona.territorio_id = territorio.id
+                    persona.territorio = territorio.nombre
+                    print(f"📍 Reasignado a Territorio {territorio.nombre}")
+        
+        elif cambio.objeto == "CAC_RUTA":
+            # Mover CAC de una ruta a otra
+            if cambio.cac_origen_id and cambio.ruta_destino_id:
                 cac = db.query(CAC).filter(CAC.id == cambio.cac_origen_id).first()
                 if cac:
-                    if cac.tecnico_social_id == cambio.persona_id:
-                        cac.tecnico_social_id = None
-                    if cac.tecnico_productivo_id == cambio.persona_id:
-                        cac.tecnico_productivo_id = None
-                    cac.estatus = "VACANTE"
-        
-        elif cambio.tipo_cambio == "ALTA":
-            if cambio.cac_destino_id and cambio.persona_id:
-                cac = db.query(CAC).filter(CAC.id == cambio.cac_destino_id).first()
-                persona = db.query(User).filter(User.id == cambio.persona_id).first()
-                if cac and persona:
-                    if "SOCIAL" in (persona.perfil_operativo or "").upper():
-                        cac.tecnico_social_id = persona.id
-                    else:
-                        cac.tecnico_productivo_id = persona.id
-    
-    elif cambio.objeto == "CAC_RUTA":
-        # Mover CAC de una ruta a otra
-        if cambio.cac_origen_id and cambio.ruta_destino_id:
-            cac = db.query(CAC).filter(CAC.id == cambio.cac_origen_id).first()
-            if cac:
-                cac.ruta_id = cambio.ruta_destino_id
+                    cac.ruta_id = cambio.ruta_destino_id
+                    print(f"📍 CAC {cac.nombre} movido a nueva ruta")
     
     db.commit()
+    print(f"✅ Cambio aplicado exitosamente: {cambio.tipo_cambio} - {cambio.objeto}")
 
 
 # ========== ACTUALIZACIONES DE ESTRUCTURA ENDPOINTS ==========

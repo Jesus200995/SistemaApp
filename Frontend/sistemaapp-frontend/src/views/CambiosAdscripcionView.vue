@@ -127,11 +127,10 @@
               <tr>
                 <th>Folio</th>
                 <th>Tipo</th>
-                <th>Objeto</th>
-                <th>Resumen</th>
-                <th>{{ activeTab === 'enviadas' ? 'Dirigido a' : 'Propuesto por' }}</th>
-                <th>Fecha Efecto</th>
-                <th>SLA</th>
+                <th class="hide-mobile">Objeto</th>
+                <th>Usuario Afectado</th>
+                <th class="hide-mobile">{{ activeTab === 'enviadas' ? 'Dirigido a' : 'Propuesto por' }}</th>
+                <th class="hide-tablet">SLA</th>
                 <th>Estatus</th>
                 <th>Acciones</th>
               </tr>
@@ -148,13 +147,18 @@
                     {{ cambio.tipo_cambio }}
                   </span>
                 </td>
-                <td class="objeto">{{ formatObjeto(cambio.objeto) }}</td>
-                <td class="resumen">{{ cambio.resumen || '-' }}</td>
-                <td>{{ activeTab === 'enviadas' 
+                <td class="objeto hide-mobile">{{ formatObjeto(cambio.objeto) }}</td>
+                <td class="usuario-afectado-cell">
+                  <div v-if="cambio.persona_afectada" class="usuario-afectado-mini">
+                    <span class="nombre-corto">{{ cambio.persona_afectada.nombre?.split(' ')[0] }}</span>
+                    <span v-if="!cambio.persona_afectada.activo" class="mini-badge inactivo">I</span>
+                  </div>
+                  <span v-else class="sin-usuario">-</span>
+                </td>
+                <td class="hide-mobile">{{ activeTab === 'enviadas' 
                     ? (cambio.destinatario?.nombre_completo?.split(' ')[0] || '-') 
                     : (cambio.propuesto_por?.nombre_completo?.split(' ')[0] || '-') }}</td>
-                <td>{{ formatDate(cambio.fecha_efecto) }}</td>
-                <td>
+                <td class="hide-tablet">
                   <span v-if="cambio.vencido" class="sla-badge vencido">
                     <AlertTriangle :size="14" />
                     Vencido
@@ -249,7 +253,7 @@
           <div class="form-row">
             <div class="form-group">
               <label>Tipo de Cambio</label>
-              <select v-model="nuevoCambio.tipo_cambio" required>
+              <select v-model="nuevoCambio.tipo_cambio" required @change="onTipoCambioChange">
                 <option value="">Seleccionar...</option>
                 <option value="ALTA">Alta</option>
                 <option value="BAJA">Baja</option>
@@ -265,6 +269,83 @@
                 <option value="PERSONA_RUTA">Persona ↔ Ruta</option>
                 <option value="CAC_RUTA">CAC ↔ Ruta</option>
               </select>
+            </div>
+          </div>
+          
+          <!-- Selector de Usuario Afectado (solo para ALTA, BAJA, REASIGNACION que afecten personas) -->
+          <div class="form-group" v-if="mostrarSelectorUsuarioAfectado">
+            <label>
+              <User :size="14" class="label-icon" />
+              Usuario Afectado *
+              <span class="label-hint">
+                {{ nuevoCambio.tipo_cambio === 'ALTA' ? '(Usuario a activar)' : 
+                   nuevoCambio.tipo_cambio === 'BAJA' ? '(Usuario a dar de baja)' : 
+                   '(Usuario a reasignar)' }}
+              </span>
+            </label>
+            
+            <!-- Contenedor del selector de usuario afectado -->
+            <div class="persona-selector persona-selector-afectado">
+              <!-- Búsqueda de usuario afectado -->
+              <div class="search-input-wrapper">
+                <input 
+                  type="text" 
+                  v-model="busquedaUsuarioAfectado" 
+                  placeholder="Buscar usuario por nombre..."
+                  class="search-input with-icon"
+                />
+                <button 
+                  v-if="busquedaUsuarioAfectado" 
+                  @click="busquedaUsuarioAfectado = ''" 
+                  class="clear-search"
+                  type="button"
+                >
+                  <X :size="14" />
+                </button>
+              </div>
+              
+              <!-- Lista de usuarios subordinados -->
+              <div class="personas-list personas-list-afectado">
+              <div 
+                v-for="usuario in usuariosAfectadosFiltrados" 
+                :key="usuario.id"
+                class="persona-item"
+                :class="{ 
+                  'selected': nuevoCambio.persona_id === usuario.id,
+                  'inactivo': !usuario.activo 
+                }"
+                @click="seleccionarUsuarioAfectado(usuario)"
+              >
+                <div class="persona-avatar" :class="{ 'avatar-inactivo': !usuario.activo }">
+                  {{ getInitials(usuario.nombre) }}
+                </div>
+                <div class="persona-info">
+                  <span class="persona-nombre">
+                    {{ usuario.nombre }}
+                    <span v-if="!usuario.activo" class="badge-inactivo">Inactivo</span>
+                  </span>
+                  <span class="persona-territorio">
+                    {{ formatRolDisplay(usuario.rol) }} • {{ usuario.territorio || 'Sin territorio' }}
+                  </span>
+                </div>
+                <div v-if="nuevoCambio.persona_id === usuario.id" class="persona-check">
+                  <Check :size="16" />
+                </div>
+              </div>
+              <div v-if="usuariosAfectadosFiltrados.length === 0" class="personas-empty">
+                {{ loadingSubordinados ? 'Cargando usuarios...' : 'No se encontraron usuarios' }}
+              </div>
+            </div>
+            </div>
+            
+            <!-- Usuario afectado seleccionado -->
+            <div v-if="usuarioAfectadoSeleccionadoInfo" class="usuario-seleccionado afectado">
+              <User :size="14" class="check-icon" />
+              <span>Usuario afectado: <strong>{{ usuarioAfectadoSeleccionadoInfo.nombre }}</strong></span>
+              <span class="rol-mini">{{ formatRolDisplay(usuarioAfectadoSeleccionadoInfo.rol) }}</span>
+              <button type="button" @click="limpiarUsuarioAfectado" class="btn-limpiar">
+                <X :size="14" />
+              </button>
             </div>
           </div>
           
@@ -300,12 +381,11 @@
             <!-- Paso 2: Seleccionar Destinatario (con búsqueda) -->
             <div v-if="rolSeleccionado" class="persona-selector">
               <div class="search-input-wrapper">
-                <Search :size="16" class="search-icon" />
                 <input 
                   type="text" 
                   v-model="busquedaPersona" 
                   placeholder="Buscar destinatario por nombre o territorio..."
-                  class="search-input"
+                  class="search-input with-icon"
                 />
                 <button 
                   v-if="busquedaPersona" 
@@ -467,6 +547,27 @@
             </div>
           </div>
           
+          <!-- Usuario Afectado -->
+          <div class="usuario-afectado-section" v-if="cambioSeleccionado.persona_afectada">
+            <div class="seccion-titulo-row">
+              <User :size="16" />
+              <h4 class="seccion-titulo">Usuario Afectado</h4>
+            </div>
+            <div class="usuario-afectado-card">
+              <div class="avatar-circle amber">
+                {{ getInitials(cambioSeleccionado.persona_afectada?.nombre) }}
+              </div>
+              <div class="usuario-afectado-info">
+                <span class="nombre">{{ cambioSeleccionado.persona_afectada?.nombre }}</span>
+                <span class="detalle">
+                  {{ formatRolDisplay(cambioSeleccionado.persona_afectada?.rol) }}
+                  <span v-if="!cambioSeleccionado.persona_afectada?.activo" class="status-inactivo">• Inactivo</span>
+                  <span v-else class="status-activo">• Activo</span>
+                </span>
+              </div>
+            </div>
+          </div>
+          
           <!-- Descripción -->
           <div class="seccion-texto" v-if="cambioSeleccionado.resumen">
             <h4 class="seccion-titulo">Descripción</h4>
@@ -597,7 +698,8 @@ const nuevoCambio = ref({
   objeto: '',
   resumen: '',
   fecha_efecto: '',
-  destino_id: null
+  destino_id: null,
+  persona_id: null  // Usuario afectado por la solicitud
 })
 
 const accionModal = ref({
@@ -622,6 +724,97 @@ const normalizarRol = (rol) => {
   if (rolLower.includes('facilitador')) return 'facilitador'
   if (rolLower.includes('tecnico') || rolLower.includes('técnico')) return 'tecnico'
   return rol
+}
+
+// === SELECTOR DE USUARIO AFECTADO ===
+const usuariosSubordinados = ref([])
+const loadingSubordinados = ref(false)
+const busquedaUsuarioAfectado = ref('')
+
+// Mostrar selector solo si el objeto afecta personas (no CAC_RUTA)
+const mostrarSelectorUsuarioAfectado = computed(() => {
+  const objeto = nuevoCambio.value.objeto
+  return objeto && objeto !== 'CAC_RUTA' && nuevoCambio.value.tipo_cambio
+})
+
+// Filtrar usuarios subordinados según búsqueda y tipo de cambio
+const usuariosAfectadosFiltrados = computed(() => {
+  let lista = usuariosSubordinados.value
+  
+  // Si es ALTA, mostrar solo usuarios inactivos
+  // Si es BAJA o REASIGNACION, mostrar solo activos
+  if (nuevoCambio.value.tipo_cambio === 'ALTA') {
+    lista = lista.filter(u => !u.activo)
+  } else if (nuevoCambio.value.tipo_cambio === 'BAJA' || nuevoCambio.value.tipo_cambio === 'REASIGNACION') {
+    lista = lista.filter(u => u.activo)
+  }
+  
+  // Filtrar por búsqueda
+  const busqueda = busquedaUsuarioAfectado.value.toLowerCase().trim()
+  if (busqueda) {
+    lista = lista.filter(u => 
+      u.nombre?.toLowerCase().includes(busqueda) || 
+      u.territorio?.toLowerCase().includes(busqueda) ||
+      u.rol?.toLowerCase().includes(busqueda)
+    )
+  }
+  
+  return lista
+})
+
+// Info del usuario afectado seleccionado
+const usuarioAfectadoSeleccionadoInfo = computed(() => {
+  if (!nuevoCambio.value.persona_id) return null
+  return usuariosSubordinados.value.find(u => u.id === nuevoCambio.value.persona_id)
+})
+
+// Formatear rol para mostrar
+const formatRolDisplay = (rol) => {
+  if (!rol) return ''
+  const roles = {
+    admin: 'Admin',
+    territorial: 'Territorial',
+    facilitador: 'Facilitador',
+    tecnico_productivo: 'Téc. Productivo',
+    tecnico_social: 'Téc. Social',
+    tecnico: 'Técnico'
+  }
+  const rolNorm = rol.toLowerCase().replace(/[\s-]/g, '_')
+  return roles[rolNorm] || rol
+}
+
+// Seleccionar usuario afectado
+const seleccionarUsuarioAfectado = (usuario) => {
+  nuevoCambio.value.persona_id = usuario.id
+}
+
+// Limpiar usuario afectado
+const limpiarUsuarioAfectado = () => {
+  nuevoCambio.value.persona_id = null
+  busquedaUsuarioAfectado.value = ''
+}
+
+// Cuando cambia el tipo de cambio
+const onTipoCambioChange = () => {
+  // Limpiar usuario afectado al cambiar tipo
+  nuevoCambio.value.persona_id = null
+  busquedaUsuarioAfectado.value = ''
+}
+
+// Cargar usuarios subordinados
+const cargarUsuariosSubordinados = async () => {
+  loadingSubordinados.value = true
+  try {
+    const res = await axios.get(`${API_URL}/users/subordinados`, {
+      headers: { Authorization: `Bearer ${auth.token}` }
+    })
+    usuariosSubordinados.value = res.data.items || []
+  } catch (err) {
+    console.error('Error al cargar subordinados:', err)
+    usuariosSubordinados.value = []
+  } finally {
+    loadingSubordinados.value = false
+  }
 }
 
 // Agrupar usuarios por rol (normalizado)
@@ -733,7 +926,8 @@ const limpiarSeleccion = () => {
 const cerrarModalCrear = () => {
   showCrearCambio.value = false
   limpiarSeleccion()
-  nuevoCambio.value = { tipo_cambio: '', objeto: '', resumen: '', fecha_efecto: '', destino_id: null }
+  limpiarUsuarioAfectado()
+  nuevoCambio.value = { tipo_cambio: '', objeto: '', resumen: '', fecha_efecto: '', destino_id: null, persona_id: null }
 }
 
 // Cargar usuarios disponibles
@@ -758,10 +952,17 @@ const puedeAutorizar = computed(() => ['admin', 'territorial'].includes(auth.use
 
 // Validar que se puede enviar la solicitud (todos los campos requeridos llenos)
 const puedeEnviar = computed(() => {
-  return nuevoCambio.value.tipo_cambio && 
+  const tieneBase = nuevoCambio.value.tipo_cambio && 
          nuevoCambio.value.objeto && 
          nuevoCambio.value.destino_id && 
          nuevoCambio.value.resumen?.trim()
+  
+  // Si afecta personas (no CAC_RUTA), requiere persona_id
+  if (nuevoCambio.value.objeto && nuevoCambio.value.objeto !== 'CAC_RUTA') {
+    return tieneBase && nuevoCambio.value.persona_id
+  }
+  
+  return tieneBase
 })
 
 // Verificar si el usuario actual es el destinatario del cambio
@@ -1079,6 +1280,7 @@ const ejecutarAccion = async () => {
 onMounted(() => {
   cargarCambios()
   cargarUsuariosDisponibles()
+  cargarUsuariosSubordinados()
 })
 </script>
 
@@ -1335,6 +1537,55 @@ onMounted(() => {
   white-space: nowrap;
 }
 
+/* Usuario afectado en tabla */
+.usuario-afectado-cell {
+  min-width: 100px;
+}
+
+.usuario-afectado-mini {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.usuario-afectado-mini .nombre-corto {
+  font-weight: 500;
+  color: #374151;
+}
+
+.mini-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  font-size: 0.6rem;
+  font-weight: 700;
+}
+
+.mini-badge.inactivo {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.sin-usuario {
+  color: #9ca3af;
+}
+
+/* Ocultar en móvil */
+@media (max-width: 768px) {
+  .hide-mobile {
+    display: none;
+  }
+}
+
+@media (max-width: 1024px) {
+  .hide-tablet {
+    display: none;
+  }
+}
+
 .tipo-badge {
   display: inline-block;
   padding: 0.25rem 0.5rem;
@@ -1459,20 +1710,38 @@ onMounted(() => {
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.5);
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 1000;
+  padding: 1rem;
+  box-sizing: border-box;
 }
 
 .modal-content {
   background: white;
-  border-radius: 12px;
+  border-radius: 16px;
   width: 100%;
-  max-width: 480px;
+  max-width: 520px;
   max-height: 90vh;
-  overflow: auto;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  animation: modalSlideIn 0.2s ease-out;
+}
+
+@keyframes modalSlideIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
 }
 
 .modal-content.modal-lg {
@@ -1483,79 +1752,98 @@ onMounted(() => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1rem 1.5rem;
+  padding: 1rem 1.25rem;
   border-bottom: 1px solid #e5e7eb;
-  position: sticky;
-  top: 0;
-  background: white;
+  background: linear-gradient(to bottom, #f9fafb, white);
+  flex-shrink: 0;
 }
 
 .modal-header h3 {
   margin: 0;
-  font-size: 1.125rem;
+  font-size: 1.1rem;
   font-weight: 600;
+  color: #111827;
 }
 
 .btn-close {
-  background: none;
+  background: #f3f4f6;
   border: none;
   cursor: pointer;
   color: #6b7280;
+  padding: 0.5rem;
+  border-radius: 8px;
+  transition: all 0.15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-close:hover {
+  background: #e5e7eb;
+  color: #374151;
 }
 
 .modal-form {
-  padding: 1.5rem;
+  padding: 1.25rem;
+  overflow-y: auto;
+  flex: 1;
 }
 
 .form-group {
-  margin-bottom: 1rem;
+  margin-bottom: 0.875rem;
 }
 
 .form-group label {
-  display: block;
-  font-size: 0.875rem;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.8rem;
   font-weight: 500;
-  margin-bottom: 0.375rem;
+  margin-bottom: 0.35rem;
   color: #374151;
+  flex-wrap: wrap;
 }
 
 .form-group input,
 .form-group select,
 .form-group textarea {
   width: 100%;
-  padding: 0.625rem 0.75rem;
+  padding: 0.5rem 0.625rem;
   border: 1px solid #d1d5db;
   border-radius: 6px;
-  font-size: 0.875rem;
+  font-size: 0.8rem;
 }
 
 .form-group textarea {
   resize: vertical;
+  min-height: 60px;
 }
 
 .form-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 1rem;
+  gap: 0.75rem;
 }
 
 .form-actions {
   display: flex;
   justify-content: flex-end;
-  gap: 0.75rem;
-  margin-top: 1.5rem;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  flex-wrap: wrap;
 }
 
 .btn-primary {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem 1rem;
+  gap: 0.35rem;
+  padding: 0.45rem 0.875rem;
   background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
   color: white;
   border: none;
   border-radius: 8px;
   font-weight: 500;
+  font-size: 0.8rem;
   cursor: pointer;
 }
 
@@ -1564,11 +1852,161 @@ onMounted(() => {
 }
 
 .btn-secondary {
-  padding: 0.5rem 1rem;
+  padding: 0.45rem 0.875rem;
   background: #f3f4f6;
   border: 1px solid #d1d5db;
   border-radius: 6px;
   cursor: pointer;
+  font-size: 0.8rem;
+}
+
+/* === RESPONSIVE MODAL === */
+@media (max-width: 640px) {
+  .modal-overlay {
+    padding: 0.75rem;
+  }
+  
+  .modal-content {
+    max-height: 85vh;
+    border-radius: 12px;
+  }
+  
+  .modal-content.modal-lg {
+    max-width: 100%;
+  }
+  
+  .modal-header {
+    padding: 0.875rem 1rem;
+  }
+  
+  .modal-header h3 {
+    font-size: 1rem;
+  }
+  
+  .modal-form {
+    padding: 1rem;
+  }
+  
+  .form-row {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+  
+  .search-input-wrapper {
+    padding: 0.625rem;
+  }
+  
+  .search-input {
+    padding: 0.5rem 2.25rem 0.5rem 2.5rem;
+    font-size: 0.8rem;
+  }
+  
+  .persona-item {
+    padding: 0.5rem 0.75rem;
+    gap: 0.625rem;
+  }
+  
+  .persona-avatar {
+    width: 32px;
+    height: 32px;
+    font-size: 0.65rem;
+  }
+  
+  .persona-nombre {
+    font-size: 0.8rem;
+  }
+  
+  .persona-territorio {
+    font-size: 0.7rem;
+  }
+  
+  .personas-list {
+    max-height: 150px;
+  }
+  
+  .usuario-seleccionado {
+    padding: 0.625rem 0.875rem;
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-height: 700px) {
+  .modal-content {
+    max-height: 92vh;
+  }
+  
+  .personas-list {
+    max-height: 140px;
+  }
+  
+  .personas-list-afectado {
+    max-height: 120px;
+  }
+}
+
+@media (max-height: 550px) {
+  .modal-content {
+    max-height: 95vh;
+  }
+  
+  .modal-header {
+    padding: 0.625rem 1rem;
+  }
+  
+  .modal-form {
+    padding: 0.75rem 1rem;
+  }
+  
+  .form-group {
+    margin-bottom: 0.625rem;
+  }
+  
+  .personas-list,
+  .personas-list-afectado {
+    max-height: 100px;
+  }
+  
+  .search-input-wrapper {
+    padding: 0.5rem;
+  }
+}
+
+/* Landscape en móviles */
+@media (max-height: 450px) and (orientation: landscape) {
+  .modal-content {
+    flex-direction: row;
+    max-width: 95%;
+    max-height: 95vh;
+  }
+  
+  .modal-header {
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    transform: rotate(180deg);
+    padding: 1rem 0.5rem;
+    border-bottom: none;
+    border-right: 1px solid #e5e7eb;
+    flex-shrink: 0;
+  }
+  
+  .modal-header h3 {
+    font-size: 0.9rem;
+  }
+  
+  .modal-form {
+    flex: 1;
+    overflow-y: auto;
+    padding: 0.75rem;
+  }
+  
+  .form-row {
+    grid-template-columns: 1fr 1fr;
+  }
+  
+  .personas-list,
+  .personas-list-afectado {
+    max-height: 80px;
+  }
 }
 
 .detalle-content {
@@ -1709,58 +2147,89 @@ onMounted(() => {
 .persona-selector {
   margin-top: 0.75rem;
   border: 1px solid #e5e7eb;
-  border-radius: 8px;
+  border-radius: 10px;
   overflow: hidden;
+  background: #fafafa;
 }
 
 .search-input-wrapper {
   position: relative;
-  padding: 0.5rem;
-  background: #f9fafb;
+  padding: 0.75rem;
+  background: white;
   border-bottom: 1px solid #e5e7eb;
-}
-
-.search-icon {
-  position: absolute;
-  left: 1rem;
-  top: 50%;
-  transform: translateY(-50%);
-  color: #9ca3af;
 }
 
 .search-input {
   width: 100%;
-  padding: 0.5rem 2rem;
-  padding-left: 2.25rem;
-  border: 1px solid #d1d5db;
-  border-radius: 6px;
-  font-size: 0.875rem;
+  padding: 0.625rem 2.5rem 0.625rem 0.75rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  background: #f9fafb;
+  transition: all 0.15s;
+  box-sizing: border-box;
+}
+
+.search-input.with-icon {
+  padding-left: 2.5rem;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%239ca3af' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'%3E%3C/circle%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'%3E%3C/line%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: 0.75rem center;
+  background-size: 16px 16px;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: #16a34a;
+  background-color: white;
+  box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.1);
+}
+
+.search-input::placeholder {
+  color: #9ca3af;
 }
 
 .clear-search {
   position: absolute;
-  right: 1rem;
+  right: 1.25rem;
   top: 50%;
   transform: translateY(-50%);
-  background: none;
+  background: #e5e7eb;
   border: none;
-  color: #9ca3af;
+  color: #6b7280;
   cursor: pointer;
   padding: 0.25rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s;
+  z-index: 5;
+}
+
+.clear-search:hover {
+  background: #d1d5db;
+  color: #374151;
 }
 
 .personas-list {
-  max-height: 200px;
+  max-height: 180px;
   overflow-y: auto;
+  background: white;
 }
 
 .persona-item {
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  padding: 0.75rem 1rem;
+  padding: 0.625rem 0.875rem;
   cursor: pointer;
-  transition: background 0.15s;
+  transition: all 0.15s;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.persona-item:last-child {
+  border-bottom: none;
 }
 
 .persona-item:hover {
@@ -1768,7 +2237,8 @@ onMounted(() => {
 }
 
 .persona-item.selected {
-  background: #dcfce7;
+  background: linear-gradient(to right, #dcfce7, #f0fdf4);
+  border-left: 3px solid #16a34a;
 }
 
 .persona-avatar {
@@ -1783,34 +2253,47 @@ onMounted(() => {
   font-size: 0.75rem;
   font-weight: 600;
   flex-shrink: 0;
+  box-shadow: 0 2px 4px rgba(22, 163, 74, 0.2);
 }
 
 .persona-info {
   flex: 1;
   display: flex;
   flex-direction: column;
+  gap: 0.125rem;
+  min-width: 0;
 }
 
 .persona-nombre {
   font-weight: 500;
   color: #1f2937;
   font-size: 0.875rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .persona-territorio {
   font-size: 0.75rem;
   color: #6b7280;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .persona-check {
   color: #16a34a;
+  flex-shrink: 0;
+  background: #dcfce7;
+  border-radius: 50%;
+  padding: 0.25rem;
 }
 
 .personas-empty {
-  padding: 1rem;
+  padding: 1.25rem;
   text-align: center;
   color: #9ca3af;
-  font-size: 0.875rem;
+  font-size: 0.85rem;
 }
 
 .usuario-seleccionado {
@@ -1819,14 +2302,90 @@ onMounted(() => {
   gap: 0.5rem;
   margin-top: 0.75rem;
   padding: 0.75rem 1rem;
-  background: #dcfce7;
-  border-radius: 8px;
-  color: #16a34a;
-  font-size: 0.875rem;
+  background: linear-gradient(to right, #dcfce7, #f0fdf4);
+  border: 1px solid #bbf7d0;
+  border-radius: 10px;
+  color: #15803d;
+  font-size: 0.85rem;
+  flex-wrap: wrap;
+}
+
+.usuario-seleccionado.afectado {
+  background: linear-gradient(to right, #fef3c7, #fffbeb);
+  border-color: #fcd34d;
+  color: #92400e;
+}
+
+.usuario-seleccionado .rol-mini {
+  background: rgba(0, 0, 0, 0.08);
+  padding: 0.2rem 0.5rem;
+  border-radius: 6px;
+  font-size: 0.7rem;
+  font-weight: 600;
 }
 
 .usuario-seleccionado .check-icon {
   flex-shrink: 0;
+}
+
+.btn-limpiar {
+  margin-left: auto;
+  background: rgba(0, 0, 0, 0.08);
+  border: none;
+  border-radius: 50%;
+  padding: 0.25rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: inherit;
+  transition: all 0.15s;
+}
+
+.btn-limpiar:hover {
+  background: rgba(0, 0, 0, 0.15);
+}
+
+.personas-list-afectado {
+  max-height: 180px;
+}
+
+.persona-selector-afectado {
+  background: #fffbeb;
+  border-color: #fcd34d;
+}
+
+.persona-selector-afectado .search-input:focus {
+  border-color: #f59e0b;
+  box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.1);
+}
+
+.persona-item.inactivo {
+  opacity: 0.8;
+  border-left: 3px solid #f59e0b;
+}
+
+.avatar-inactivo {
+  background: #fef3c7 !important;
+  color: #92400e !important;
+}
+
+.badge-inactivo {
+  display: inline-block;
+  background: #f59e0b;
+  color: white;
+  font-size: 0.6rem;
+  padding: 0.1rem 0.3rem;
+  border-radius: 4px;
+  margin-left: 0.5rem;
+  font-weight: 600;
+}
+
+.label-hint {
+  font-weight: 400;
+  color: #6b7280;
+  font-size: 0.75rem;
+  margin-left: 0.5rem;
 }
 
 .btn-limpiar {
@@ -2167,6 +2726,62 @@ onMounted(() => {
   line-height: 1.5;
   white-space: pre-wrap;
   word-break: break-word;
+}
+
+/* Usuario Afectado */
+.usuario-afectado-section {
+  margin-bottom: 1rem;
+}
+
+.seccion-titulo-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+  color: #92400e;
+}
+
+.seccion-titulo-row .seccion-titulo {
+  margin: 0;
+}
+
+.usuario-afectado-card {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: #fffbeb;
+  border: 1px solid #fcd34d;
+  border-radius: 10px;
+  padding: 0.75rem 1rem;
+}
+
+.avatar-circle.amber {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+}
+
+.usuario-afectado-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.usuario-afectado-info .nombre {
+  font-weight: 600;
+  color: #78350f;
+}
+
+.usuario-afectado-info .detalle {
+  font-size: 0.75rem;
+  color: #92400e;
+}
+
+.status-inactivo {
+  color: #dc2626;
+  font-weight: 600;
+}
+
+.status-activo {
+  color: #16a34a;
+  font-weight: 600;
 }
 
 /* Fechas */

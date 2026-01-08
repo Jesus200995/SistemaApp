@@ -154,6 +154,108 @@ def obtener_mi_superior(
     }
 
 
+@router.get("/subordinados")
+def obtener_usuarios_subordinados(
+    current_user: dict = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """
+    Obtiene la lista de usuarios subordinados (debajo en la jerarquía) que pueden
+    ser afectados por una solicitud de Alta/Baja/Reasignación.
+    
+    Jerarquía (de mayor a menor):
+    - Admin → puede afectar a Territorial, Facilitador, Técnico
+    - Territorial → puede afectar a Facilitador, Técnico (de su territorio)
+    - Facilitador → puede afectar a Técnico (de su ruta)
+    - Técnico → no puede afectar a nadie
+    
+    Retorna lista de usuarios con id, nombre, rol, territorio, activo
+    """
+    rol_actual = current_user["rol"]
+    user_id = current_user["user_id"]
+    
+    # Obtener datos del usuario actual
+    usuario_actual = db.query(User).filter(User.id == user_id).first()
+    
+    print(f"🔍 Usuario {user_id} con rol '{rol_actual}' solicitando subordinados")
+    
+    # Normalizar rol
+    rol_normalizado = rol_actual.lower().strip().replace(" ", "_").replace("-", "_")
+    
+    # Mapeo de roles normalizados a categorías
+    if "tecnico" in rol_normalizado or "técnico" in rol_normalizado:
+        categoria_rol = "tecnico"
+    elif "facilitador" in rol_normalizado:
+        categoria_rol = "facilitador"
+    elif "territorial" in rol_normalizado:
+        categoria_rol = "territorial"
+    elif "admin" in rol_normalizado:
+        categoria_rol = "admin"
+    else:
+        categoria_rol = rol_normalizado
+    
+    print(f"📂 Rol normalizado: '{rol_normalizado}' -> Categoría: '{categoria_rol}'")
+    
+    # Definir qué roles pueden ser afectados por cada categoría
+    roles_subordinados = {
+        "admin": ["territorial", "facilitador", "tecnico"],
+        "territorial": ["facilitador", "tecnico"],
+        "facilitador": ["tecnico"],
+        "tecnico": []
+    }
+    
+    categorias_subordinados = roles_subordinados.get(categoria_rol, [])
+    
+    if not categorias_subordinados:
+        print(f"⚠️ No hay subordinados para el rol '{categoria_rol}'")
+        return {"items": [], "mensaje": f"No tienes usuarios subordinados"}
+    
+    print(f"🎯 Buscando usuarios con roles: {categorias_subordinados}")
+    
+    # Consultar usuarios (según rol y territorio si aplica)
+    query = db.query(User).filter(User.id != user_id)
+    
+    # Si no es admin, filtrar por territorio
+    if categoria_rol == "territorial" and usuario_actual and usuario_actual.territorio_id:
+        query = query.filter(User.territorio_id == usuario_actual.territorio_id)
+    
+    todos_usuarios = query.all()
+    
+    # Filtrar usuarios cuyo rol coincida con categorías subordinadas
+    resultado = []
+    for u in todos_usuarios:
+        rol_usuario = u.rol.lower().strip().replace(" ", "_").replace("-", "_") if u.rol else ""
+        
+        # Verificar si el rol del usuario pertenece a alguna categoría subordinada
+        es_subordinado = False
+        for cat in categorias_subordinados:
+            if cat in rol_usuario or rol_usuario == cat:
+                es_subordinado = True
+                break
+        
+        if es_subordinado:
+            resultado.append({
+                "id": u.id,
+                "nombre": u.nombre,
+                "rol": u.rol,
+                "perfil_operativo": u.perfil_operativo,
+                "territorio": u.territorio or "Sin territorio",
+                "email": u.email,
+                "activo": u.activo,
+                "curp": u.curp
+            })
+    
+    # Ordenar por rol y nombre
+    resultado.sort(key=lambda x: (x["rol"], x["nombre"]))
+    
+    print(f"✅ Encontrados {len(resultado)} usuarios subordinados")
+    
+    return {
+        "items": resultado,
+        "total": len(resultado)
+    }
+
+
 @router.get("/me")
 def obtener_mi_perfil(
     current_user: dict = Depends(get_current_user),
