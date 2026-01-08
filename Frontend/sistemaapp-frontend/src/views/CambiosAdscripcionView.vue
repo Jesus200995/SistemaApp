@@ -265,67 +265,65 @@
 
         <!-- Sección de Reportes -->
         <div v-if="activeTab === 'reportes'" class="reportes-section">
+          <!-- Header con título -->
           <div class="reportes-header">
             <div class="reportes-title">
-              <FileDown :size="24" class="reportes-icon" />
+              <FileDown :size="28" class="reportes-icon" />
               <div>
-                <h2>Centro de Reportes</h2>
-                <p>Descarga tus solicitudes en Excel o PDF con filtros avanzados</p>
+                <h2>Mis Reportes</h2>
+                <p>Genera y descarga reportes de tus solicitudes</p>
               </div>
             </div>
           </div>
 
-          <!-- Filtros de Reportes -->
+          <!-- Filtros en cards -->
           <div class="reportes-filtros">
             <div class="filtros-card">
               <h3><Calendar :size="16" /> Período</h3>
               <div class="filtro-grupo">
-                <label>Tipo de período</label>
+                <label>Rango de tiempo</label>
                 <select v-model="reporteFiltros.periodo">
-                  <option value="">Sin filtro de fecha</option>
+                  <option value="">Todo el historial</option>
                   <option value="semana">Esta semana</option>
                   <option value="mes">Este mes</option>
                   <option value="trimestre">Este trimestre</option>
                   <option value="anio">Este año</option>
-                  <option value="custom">Rango personalizado</option>
+                  <option value="custom">Personalizado</option>
                 </select>
               </div>
 
               <div v-if="reporteFiltros.periodo === 'mes'" class="filtro-grupo">
-                <label>Seleccionar mes</label>
-                <div class="filtro-row">
-                  <select v-model="reporteFiltros.mes">
-                    <option value="">Mes actual</option>
-                    <option v-for="m in 12" :key="m" :value="m">{{ nombreMes(m) }}</option>
-                  </select>
-                  <select v-model="reporteFiltros.anio">
-                    <option value="">Año actual</option>
-                    <option v-for="a in aniosDisponibles" :key="a" :value="a">{{ a }}</option>
-                  </select>
-                </div>
+                <label>Mes específico</label>
+                <select v-model="reporteFiltros.mes">
+                  <option value="">Mes actual</option>
+                  <option v-for="m in 12" :key="m" :value="m">{{ nombreMes(m) }}</option>
+                </select>
               </div>
 
-              <div v-if="reporteFiltros.periodo === 'anio'" class="filtro-grupo">
-                <label>Seleccionar año</label>
+              <div v-if="reporteFiltros.periodo === 'mes' || reporteFiltros.periodo === 'anio'" class="filtro-grupo">
+                <label>Año</label>
                 <select v-model="reporteFiltros.anio">
                   <option value="">Año actual</option>
                   <option v-for="a in aniosDisponibles" :key="a" :value="a">{{ a }}</option>
                 </select>
               </div>
 
-              <div v-if="reporteFiltros.periodo === 'custom'" class="filtro-grupo">
-                <label>Rango de fechas</label>
-                <div class="filtro-row">
-                  <input type="date" v-model="reporteFiltros.fechaInicio" placeholder="Desde" />
-                  <input type="date" v-model="reporteFiltros.fechaFin" placeholder="Hasta" />
+              <div v-if="reporteFiltros.periodo === 'custom'" class="filtro-row">
+                <div class="filtro-grupo">
+                  <label>Desde</label>
+                  <input type="date" v-model="reporteFiltros.fechaInicio" />
+                </div>
+                <div class="filtro-grupo">
+                  <label>Hasta</label>
+                  <input type="date" v-model="reporteFiltros.fechaFin" />
                 </div>
               </div>
             </div>
 
             <div class="filtros-card">
-              <h3><GitBranch :size="16" /> Tipo de Solicitud</h3>
+              <h3><Filter :size="16" /> Filtros</h3>
               <div class="filtro-grupo">
-                <label>Filtrar por tipo</label>
+                <label>Tipo de solicitud</label>
                 <select v-model="reporteFiltros.tipoCambio">
                   <option value="">Todos los tipos</option>
                   <option value="ALTA">Altas</option>
@@ -333,28 +331,46 @@
                   <option value="REASIGNACION">Reasignaciones</option>
                 </select>
               </div>
-
               <div class="filtro-grupo">
-                <label>Filtrar por estatus</label>
+                <label>Estatus</label>
                 <select v-model="reporteFiltros.estatus">
                   <option value="">Todos los estatus</option>
                   <option value="APLICADO">Aplicados</option>
                   <option value="EN_REVISION">Pendientes</option>
                   <option value="AUTORIZADO">Autorizados</option>
                   <option value="RECHAZADO">Rechazados</option>
-                  <option value="CANCELADO">Cancelados</option>
                 </select>
               </div>
             </div>
           </div>
 
-          <!-- Vista previa y acciones -->
+          <!-- Botones de descarga -->
+          <div class="descarga-actions">
+            <button @click="descargarExcel" class="btn-descarga excel" :disabled="loadingExcel">
+              <FileSpreadsheet :size="24" />
+              <div class="btn-descarga-content">
+                <span class="btn-descarga-title">{{ loadingExcel ? 'Generando...' : 'Descargar Excel' }}</span>
+                <span class="btn-descarga-desc">Archivo .xlsx con formato</span>
+              </div>
+              <Download :size="18" class="download-icon" />
+            </button>
+            <button @click="descargarPDF" class="btn-descarga pdf" :disabled="loadingPDF">
+              <FileText :size="24" />
+              <div class="btn-descarga-content">
+                <span class="btn-descarga-title">{{ loadingPDF ? 'Generando...' : 'Descargar PDF' }}</span>
+                <span class="btn-descarga-desc">Documento para imprimir</span>
+              </div>
+              <Download :size="18" class="download-icon" />
+            </button>
+          </div>
+
+          <!-- Vista previa -->
           <div class="reportes-preview">
             <div class="preview-header">
-              <h3><FileText :size="16" /> Vista previa del reporte</h3>
+              <h3><Eye :size="16" /> Vista Previa</h3>
               <button @click="cargarVistaPrevia" class="btn-refresh-preview" :disabled="loadingPreview">
                 <RefreshCw :size="14" :class="{ 'spin': loadingPreview }" />
-                Actualizar
+                {{ loadingPreview ? 'Cargando...' : 'Actualizar' }}
               </button>
             </div>
 
@@ -362,7 +378,7 @@
             <div v-if="reportePreview" class="resumen-stats">
               <div class="stat-card total">
                 <span class="stat-numero">{{ reportePreview.resumen.total }}</span>
-                <span class="stat-label">Total Registros</span>
+                <span class="stat-label">Total</span>
               </div>
               <div class="stat-card alta">
                 <span class="stat-numero">{{ reportePreview.resumen.por_tipo.altas }}</span>
@@ -378,7 +394,7 @@
               </div>
             </div>
 
-            <!-- Tabla preview -->
+            <!-- Tabla de vista previa -->
             <div class="preview-table-container">
               <table v-if="reportePreview && reportePreview.items.length > 0" class="preview-table">
                 <thead>
@@ -387,24 +403,16 @@
                     <th>Tipo</th>
                     <th>Estatus</th>
                     <th>Fecha</th>
-                    <th>Persona Afectada</th>
+                    <th class="hide-mobile">Persona Afectada</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr v-for="item in reportePreview.items.slice(0, 10)" :key="item.id">
-                    <td class="folio">{{ item.folio }}</td>
-                    <td>
-                      <span :class="['tipo-badge', item.tipo_cambio?.toLowerCase()]">
-                        {{ item.tipo_cambio }}
-                      </span>
-                    </td>
-                    <td>
-                      <span :class="['estatus-badge', item.estatus?.toLowerCase()]">
-                        {{ formatEstatus(item.estatus) }}
-                      </span>
-                    </td>
-                    <td>{{ item.fecha_creacion?.substring(0, 10) }}</td>
-                    <td>{{ item.persona_afectada || '-' }}</td>
+                    <td class="folio-cell">{{ item.folio }}</td>
+                    <td><span :class="['tipo-badge-sm', item.tipo_cambio?.toLowerCase()]">{{ item.tipo_cambio }}</span></td>
+                    <td><span :class="['estatus-badge-sm', item.estatus?.toLowerCase()]">{{ formatEstatus(item.estatus) }}</span></td>
+                    <td class="fecha-cell">{{ formatFecha(item.fecha_creacion) }}</td>
+                    <td class="hide-mobile">{{ item.persona_afectada || '-' }}</td>
                   </tr>
                 </tbody>
               </table>
@@ -415,43 +423,14 @@
               </div>
 
               <div v-else class="preview-empty">
-                <FileText :size="48" />
-                <p>Selecciona filtros y haz clic en "Actualizar" para ver una vista previa</p>
+                <Eye :size="40" />
+                <p>Haz clic en "Actualizar" para ver una vista previa de tus solicitudes</p>
               </div>
-
-              <p v-if="reportePreview && reportePreview.items.length > 10" class="preview-more">
-                Mostrando 10 de {{ reportePreview.items.length }} registros. Descarga el archivo completo para ver todos.
-              </p>
             </div>
-          </div>
 
-          <!-- Botones de descarga -->
-          <div class="descarga-actions">
-            <button 
-              @click="descargarExcel" 
-              class="btn-descarga excel"
-              :disabled="loadingExcel || !reportePreview?.items?.length"
-            >
-              <FileSpreadsheet :size="20" />
-              <div class="btn-descarga-content">
-                <span class="btn-descarga-title">{{ loadingExcel ? 'Generando...' : 'Descargar Excel' }}</span>
-                <span class="btn-descarga-desc">Archivo .xlsx para análisis</span>
-              </div>
-              <Download :size="18" class="download-icon" />
-            </button>
-
-            <button 
-              @click="descargarPDF" 
-              class="btn-descarga pdf"
-              :disabled="loadingPDF || !reportePreview?.items?.length"
-            >
-              <FileText :size="20" />
-              <div class="btn-descarga-content">
-                <span class="btn-descarga-title">{{ loadingPDF ? 'Generando...' : 'Descargar PDF' }}</span>
-                <span class="btn-descarga-desc">Documento profesional</span>
-              </div>
-              <Download :size="18" class="download-icon" />
-            </button>
+            <p v-if="reportePreview && reportePreview.items.length > 10" class="preview-more">
+              Mostrando 10 de {{ reportePreview.items.length }} registros. Descarga el archivo completo para ver todos.
+            </p>
           </div>
         </div>
       </main>
@@ -4006,69 +3985,69 @@ tr.row-autorizado td .estatus-badge {
 .reportes-section {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 1rem;
 }
 
 .reportes-header {
   background: linear-gradient(135deg, #ffffff 0%, #f0fdf4 100%);
-  border-radius: 16px;
-  padding: 1.5rem;
+  border-radius: 12px;
+  padding: 1rem 1.25rem;
   border: 1px solid #bbf7d0;
 }
 
 .reportes-title {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 0.75rem;
 }
 
 .reportes-icon {
   color: #16a34a;
   background: #dcfce7;
-  padding: 0.75rem;
-  border-radius: 12px;
+  padding: 0.5rem;
+  border-radius: 10px;
 }
 
 .reportes-title h2 {
   margin: 0;
-  font-size: 1.25rem;
+  font-size: 1.1rem;
   font-weight: 600;
   color: #14532d;
 }
 
 .reportes-title p {
-  margin: 0.25rem 0 0;
-  font-size: 0.875rem;
+  margin: 0.2rem 0 0;
+  font-size: 0.8rem;
   color: #6b7280;
 }
 
 /* Filtros de Reportes */
 .reportes-filtros {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 0.75rem;
 }
 
 .filtros-card {
   background: white;
-  border-radius: 12px;
-  padding: 1.25rem;
+  border-radius: 10px;
+  padding: 1rem;
   border: 1px solid #e5e7eb;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
 }
 
 .filtros-card h3 {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  margin: 0 0 1rem;
-  font-size: 0.95rem;
+  gap: 0.4rem;
+  margin: 0 0 0.75rem;
+  font-size: 0.85rem;
   font-weight: 600;
   color: #374151;
 }
 
 .filtro-grupo {
-  margin-bottom: 0.875rem;
+  margin-bottom: 0.65rem;
 }
 
 .filtro-grupo:last-child {
@@ -4077,21 +4056,21 @@ tr.row-autorizado td .estatus-badge {
 
 .filtro-grupo label {
   display: block;
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   font-weight: 500;
   color: #6b7280;
-  margin-bottom: 0.375rem;
+  margin-bottom: 0.3rem;
   text-transform: uppercase;
-  letter-spacing: 0.03em;
+  letter-spacing: 0.02em;
 }
 
 .filtro-grupo select,
 .filtro-grupo input {
   width: 100%;
-  padding: 0.625rem 0.875rem;
+  padding: 0.5rem 0.7rem;
   border: 1px solid #d1d5db;
-  border-radius: 8px;
-  font-size: 0.875rem;
+  border-radius: 6px;
+  font-size: 0.8rem;
   background: #f9fafb;
   transition: all 0.15s;
 }
@@ -4101,7 +4080,7 @@ tr.row-autorizado td .estatus-badge {
   outline: none;
   border-color: #16a34a;
   background: white;
-  box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.1);
+  box-shadow: 0 0 0 2px rgba(22, 163, 74, 0.1);
 }
 
 .filtro-row {
@@ -4110,186 +4089,19 @@ tr.row-autorizado td .estatus-badge {
   gap: 0.5rem;
 }
 
-/* Vista previa del reporte */
-.reportes-preview {
-  background: white;
-  border-radius: 12px;
-  border: 1px solid #e5e7eb;
-  overflow: hidden;
-}
-
-.preview-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1rem 1.25rem;
-  border-bottom: 1px solid #e5e7eb;
-  background: #f9fafb;
-}
-
-.preview-header h3 {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  margin: 0;
-  font-size: 0.95rem;
-  font-weight: 600;
-  color: #374151;
-}
-
-.btn-refresh-preview {
-  display: flex;
-  align-items: center;
-  gap: 0.375rem;
-  padding: 0.5rem 0.875rem;
-  background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
-  color: white;
-  border: none;
-  border-radius: 8px;
-  font-size: 0.8rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.btn-refresh-preview:hover:not(:disabled) {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(22, 163, 74, 0.35);
-}
-
-.btn-refresh-preview:disabled {
-  opacity: 0.7;
-  cursor: not-allowed;
-}
-
-.spin {
-  animation: spin 1s linear infinite;
-}
-
-/* Resumen de estadísticas */
-.resumen-stats {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-  gap: 0.75rem;
-  padding: 1rem 1.25rem;
-  background: linear-gradient(135deg, #f9fafb 0%, #f0fdf4 100%);
-  border-bottom: 1px solid #e5e7eb;
-}
-
-.stat-card {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 1rem;
-  background: white;
-  border-radius: 10px;
-  border: 1px solid #e5e7eb;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
-}
-
-.stat-card .stat-numero {
-  font-size: 1.5rem;
-  font-weight: 700;
-}
-
-.stat-card .stat-label {
-  font-size: 0.7rem;
-  color: #6b7280;
-  text-transform: uppercase;
-  letter-spacing: 0.03em;
-  margin-top: 0.25rem;
-}
-
-.stat-card.total .stat-numero {
-  color: #16a34a;
-}
-
-.stat-card.alta .stat-numero {
-  color: #22c55e;
-}
-
-.stat-card.baja .stat-numero {
-  color: #dc2626;
-}
-
-.stat-card.reasignacion .stat-numero {
-  color: #2563eb;
-}
-
-/* Tabla de preview */
-.preview-table-container {
-  max-height: 400px;
-  overflow-y: auto;
-}
-
-.preview-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-.preview-table th,
-.preview-table td {
-  padding: 0.75rem 1rem;
-  text-align: left;
-  border-bottom: 1px solid #e5e7eb;
-  font-size: 0.85rem;
-}
-
-.preview-table th {
-  background: #f9fafb;
-  font-weight: 600;
-  color: #6b7280;
-  font-size: 0.75rem;
-  text-transform: uppercase;
-  position: sticky;
-  top: 0;
-  z-index: 1;
-}
-
-.preview-table tr:hover {
-  background: #f9fafb;
-}
-
-.preview-loading,
-.preview-empty {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 3rem;
-  color: #9ca3af;
-  text-align: center;
-}
-
-.preview-loading p,
-.preview-empty p {
-  margin-top: 1rem;
-  font-size: 0.9rem;
-}
-
-.preview-more {
-  padding: 0.75rem 1.25rem;
-  margin: 0;
-  background: #fffbeb;
-  color: #92400e;
-  font-size: 0.8rem;
-  text-align: center;
-  border-top: 1px solid #fcd34d;
-}
-
 /* Botones de descarga */
 .descarga-actions {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 0.75rem;
 }
 
 .btn-descarga {
   display: flex;
   align-items: center;
-  gap: 1rem;
-  padding: 1.25rem 1.5rem;
-  border-radius: 12px;
+  gap: 0.75rem;
+  padding: 0.9rem 1.1rem;
+  border-radius: 10px;
   border: 2px solid;
   cursor: pointer;
   transition: all 0.2s;
@@ -4310,7 +4122,7 @@ tr.row-autorizado td .estatus-badge {
 .btn-descarga.excel:hover:not(:disabled) {
   background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);
   transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(22, 163, 74, 0.25);
+  box-shadow: 0 6px 16px rgba(22, 163, 74, 0.2);
 }
 
 .btn-descarga.pdf {
@@ -4322,7 +4134,7 @@ tr.row-autorizado td .estatus-badge {
 .btn-descarga.pdf:hover:not(:disabled) {
   background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
   transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(220, 38, 38, 0.25);
+  box-shadow: 0 6px 16px rgba(220, 38, 38, 0.2);
 }
 
 .btn-descarga-content {
@@ -4332,18 +4144,209 @@ tr.row-autorizado td .estatus-badge {
 .btn-descarga-title {
   display: block;
   font-weight: 600;
-  font-size: 1rem;
+  font-size: 0.9rem;
 }
 
 .btn-descarga-desc {
   display: block;
-  font-size: 0.8rem;
+  font-size: 0.7rem;
   opacity: 0.8;
-  margin-top: 0.25rem;
+  margin-top: 0.15rem;
 }
 
 .download-icon {
   opacity: 0.7;
+}
+
+/* Vista previa del reporte */
+.reportes-preview {
+  background: white;
+  border-radius: 10px;
+  border: 1px solid #e5e7eb;
+  overflow: hidden;
+}
+
+.preview-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid #e5e7eb;
+  background: #f9fafb;
+}
+
+.preview-header h3 {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin: 0;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #374151;
+}
+
+.btn-refresh-preview {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.4rem 0.7rem;
+  background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-refresh-preview:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 3px 10px rgba(22, 163, 74, 0.3);
+}
+
+.btn-refresh-preview:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.spin {
+  animation: spin 1s linear infinite;
+}
+
+/* Resumen de estadísticas */
+.resumen-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  background: linear-gradient(135deg, #f9fafb 0%, #f0fdf4 100%);
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.stat-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0.6rem;
+  background: white;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03);
+}
+
+.stat-card .stat-numero {
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
+.stat-card .stat-label {
+  font-size: 0.6rem;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  margin-top: 0.15rem;
+}
+
+.stat-card.total .stat-numero { color: #16a34a; }
+.stat-card.alta .stat-numero { color: #22c55e; }
+.stat-card.baja .stat-numero { color: #dc2626; }
+.stat-card.reasignacion .stat-numero { color: #2563eb; }
+
+/* Tabla de preview */
+.preview-table-container {
+  max-height: 280px;
+  overflow-y: auto;
+}
+
+.preview-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.preview-table th,
+.preview-table td {
+  padding: 0.55rem 0.75rem;
+  text-align: left;
+  border-bottom: 1px solid #e5e7eb;
+  font-size: 0.8rem;
+}
+
+.preview-table th {
+  background: #f9fafb;
+  font-weight: 600;
+  color: #6b7280;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.preview-table tr:hover {
+  background: #f9fafb;
+}
+
+.folio-cell {
+  font-family: monospace;
+  font-size: 0.75rem;
+  color: #374151;
+}
+
+.fecha-cell {
+  font-size: 0.75rem;
+  color: #6b7280;
+}
+
+/* Badges pequeños */
+.tipo-badge-sm,
+.estatus-badge-sm {
+  display: inline-block;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.65rem;
+  font-weight: 600;
+}
+
+.tipo-badge-sm.alta { background: #dcfce7; color: #16a34a; }
+.tipo-badge-sm.baja { background: #fee2e2; color: #dc2626; }
+.tipo-badge-sm.reasignacion { background: #dbeafe; color: #2563eb; }
+
+.estatus-badge-sm.aplicado { background: #dcfce7; color: #16a34a; }
+.estatus-badge-sm.en_revision { background: #fef3c7; color: #d97706; }
+.estatus-badge-sm.autorizado { background: #dbeafe; color: #2563eb; }
+.estatus-badge-sm.rechazado { background: #fee2e2; color: #dc2626; }
+.estatus-badge-sm.cancelado { background: #f3f4f6; color: #6b7280; }
+
+.preview-loading,
+.preview-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  color: #9ca3af;
+  text-align: center;
+}
+
+.preview-loading p,
+.preview-empty p {
+  margin-top: 0.75rem;
+  font-size: 0.8rem;
+}
+
+.preview-more {
+  padding: 0.6rem 1rem;
+  margin: 0;
+  background: #fffbeb;
+  color: #92400e;
+  font-size: 0.75rem;
+  text-align: center;
+  border-top: 1px solid #fcd34d;
+}
+
+.hide-mobile {
+  display: table-cell;
 }
 
 /* Responsive para reportes */
@@ -4356,47 +4359,69 @@ tr.row-autorizado td .estatus-badge {
     grid-template-columns: 1fr;
   }
   
-  .resumen-stats {
-    grid-template-columns: repeat(2, 1fr);
-  }
-  
   .descarga-actions {
     grid-template-columns: 1fr;
   }
   
-  .btn-descarga {
-    padding: 1rem 1.25rem;
+  .resumen-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .hide-mobile {
+    display: none;
   }
 }
 
 @media (max-width: 480px) {
   .reportes-header {
-    padding: 1rem;
+    padding: 0.75rem;
   }
   
   .reportes-title {
     flex-direction: column;
     text-align: center;
-  }
-  
-  .resumen-stats {
-    grid-template-columns: 1fr 1fr;
-    padding: 0.75rem;
     gap: 0.5rem;
   }
   
-  .stat-card {
+  .filtros-card {
     padding: 0.75rem;
   }
   
+  .btn-descarga {
+    padding: 0.75rem;
+  }
+  
+  .btn-descarga-title {
+    font-size: 0.85rem;
+  }
+  
+  .resumen-stats {
+    padding: 0.5rem;
+    gap: 0.4rem;
+  }
+  
+  .stat-card {
+    padding: 0.5rem;
+  }
+  
   .stat-card .stat-numero {
-    font-size: 1.25rem;
+    font-size: 1rem;
   }
   
   .preview-table th,
   .preview-table td {
-    padding: 0.5rem 0.75rem;
-    font-size: 0.75rem;
+    padding: 0.4rem 0.5rem;
+    font-size: 0.7rem;
+  }
+  
+  .preview-header {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .btn-refresh-preview {
+    width: 100%;
+    justify-content: center;
   }
 }
 </style>
