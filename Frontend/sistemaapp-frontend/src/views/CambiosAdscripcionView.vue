@@ -1308,7 +1308,56 @@ const crearCambio = async () => {
   }
 }
 
-const abrirAccion = (cambio, accion) => {
+const abrirAccion = async (cambio, accion) => {
+  // Si es APLICAR, usar SweetAlert directamente sin modal de observaciones
+  if (accion === 'APLICAR') {
+    const result = await Swal.fire({
+      title: '¿Aplicar cambios?',
+      html: `
+        <div style="text-align: center;">
+          <p>Esta acción aplicará los cambios de la solicitud <strong>${cambio.folio}</strong> de forma definitiva.</p>
+          <p style="margin-top: 10px; color: #6b7280; font-size: 0.9rem;">El usuario afectado será actualizado con el nuevo estatus.</p>
+        </div>
+      `,
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonColor: '#2563eb',
+      cancelButtonColor: '#6b7280',
+      confirmButtonText: 'Sí, Aplicar',
+      cancelButtonText: 'Cancelar'
+    })
+    
+    if (result.isConfirmed) {
+      try {
+        ejecutando.value = true
+        await axios.post(
+          `${API_URL}/workflows/cambios-adscripcion/${cambio.cambio_adscripcion_id}/accion`,
+          { accion: 'APLICAR', observaciones: '' },
+          { headers: { Authorization: `Bearer ${auth.token}` } }
+        )
+        cargarCambios()
+        await Swal.fire({
+          icon: 'success',
+          title: '¡Cambios aplicados!',
+          text: 'Los cambios han sido aplicados exitosamente.',
+          confirmButtonColor: '#16a34a'
+        })
+      } catch (error) {
+        console.error('Error aplicando cambios:', error)
+        await Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: error.response?.data?.detail || 'No se pudieron aplicar los cambios.',
+          confirmButtonColor: '#dc2626'
+        })
+      } finally {
+        ejecutando.value = false
+      }
+    }
+    return
+  }
+  
+  // Para otras acciones, usar el modal normal
   accionModal.value = {
     show: true,
     cambio,

@@ -521,7 +521,7 @@ def _aplicar_cambio_adscripcion(cambio: CambioAdscripcion, db: Session):
             persona.fecha_alta = ahora
             persona.fecha_baja = None  # Limpiar fecha de baja si existía
             persona.fecha_ultima_accion = ahora
-            persona.motivo_ultima_accion = cambio.justificacion
+            persona.motivo_ultima_accion = cambio.resumen
             persona.tipo_ultima_accion = "ALTA"
             print(f"✅ Usuario {persona.nombre} activado (activo=True, estatus_laboral=ACTIVO)")
         
@@ -567,7 +567,7 @@ def _aplicar_cambio_adscripcion(cambio: CambioAdscripcion, db: Session):
             persona.estatus_laboral = "BAJA"
             persona.fecha_baja = ahora
             persona.fecha_ultima_accion = ahora
-            persona.motivo_ultima_accion = cambio.justificacion
+            persona.motivo_ultima_accion = cambio.resumen
             persona.tipo_ultima_accion = "BAJA"
             print(f"❌ Usuario {persona.nombre} dado de baja (activo=False, estatus_laboral=BAJA)")
         
@@ -599,7 +599,7 @@ def _aplicar_cambio_adscripcion(cambio: CambioAdscripcion, db: Session):
         if persona:
             # Actualizar campos de seguimiento (el usuario sigue activo)
             persona.fecha_ultima_accion = ahora
-            persona.motivo_ultima_accion = cambio.justificacion
+            persona.motivo_ultima_accion = cambio.resumen
             persona.tipo_ultima_accion = "REASIGNACION"
             print(f"🔄 Reasignación de {persona.nombre}")
         
