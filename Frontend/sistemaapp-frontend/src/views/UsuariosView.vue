@@ -923,7 +923,7 @@ const abrirConfirmarEliminar = (id, nombre) => {
     },
     background: 'white',
     didOpen: () => {
-      const popup = document.querySelector('.swal2-popup');
+      const popup = document.querySelector('.swal2-popup') as HTMLElement | null;
       if (popup) {
         popup.style.border = '1.5px solid rgba(239, 68, 68, 0.3)';
         popup.style.boxShadow = '0 20px 60px rgba(239, 68, 68, 0.2)';
