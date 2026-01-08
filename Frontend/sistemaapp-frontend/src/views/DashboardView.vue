@@ -63,12 +63,12 @@
           </div>
         </section>
 
-        <!-- Cambios de Adscripción Pendientes (TIEMPO REAL) -->
+        <!-- Solicitudes Pendientes (TIEMPO REAL) -->
         <section v-if="cambiosAdscripcion.length > 0" class="alerts-section cambios-section">
           <div class="alerts-header">
             <div class="alerts-title-row">
               <GitBranch :size="16" class="alerts-icon cambios-icon" />
-              <h3 class="alerts-title">Cambios de Adscripción</h3>
+              <h3 class="alerts-title">Solicitudes</h3>
             </div>
             <span class="alerts-count cambios-count">{{ cambiosAdscripcion.length }}</span>
           </div>
@@ -91,37 +91,6 @@
                 </div>
                 <p class="alert-from">{{ cambio.persona?.nombre || 'Usuario' }}</p>
                 <p class="alert-time">{{ formatTimeAgo(cambio.fecha_creacion) }}</p>
-              </div>
-              <router-link to="/cambios-adscripcion" class="alert-action">
-                <ChevronRight :size="16" />
-              </router-link>
-            </div>
-          </div>
-        </section>
-
-        <!-- Notificaciones Pendientes (Siempre visible si hay) -->
-        <section v-if="solicitudesPendientesLista.length > 0" class="alerts-section">
-          <div class="alerts-header">
-            <div class="alerts-title-row">
-              <Bell :size="16" class="alerts-icon" />
-              <h3 class="alerts-title">Otras Solicitudes</h3>
-            </div>
-            <span class="alerts-count">{{ solicitudesPendientesLista.length }}</span>
-          </div>
-          
-          <div class="alerts-list">
-            <div 
-              v-for="solicitud in solicitudesPendientesLista.slice(0, 3)"
-              :key="'alert-' + solicitud.id"
-              class="alert-card"
-            >
-              <div class="alert-icon">
-                <FileText :size="16" />
-              </div>
-              <div class="alert-content">
-                <p class="alert-type">{{ formatTipoSolicitud(solicitud.tipo) }}</p>
-                <p class="alert-from">De: {{ solicitud.solicitante?.nombre || 'Usuario' }}</p>
-                <p class="alert-time">{{ formatTimeAgo(solicitud.fecha) }}</p>
               </div>
               <router-link to="/cambios-adscripcion" class="alert-action">
                 <ChevronRight :size="16" />
@@ -279,7 +248,7 @@
             <router-link to="/cambios-adscripcion" class="module-card highlight">
               <div class="module-card-icon">
                 <GitBranch :size="24" />
-                <span v-if="solicitudesPendientes > 0" class="module-badge-count">{{ solicitudesPendientes }}</span>
+                <span v-if="cambiosAdscripcion.length > 0" class="module-badge-count">{{ cambiosAdscripcion.length }}</span>
               </div>
               <div class="module-card-info">
                 <h4>Solicitudes</h4>
@@ -308,7 +277,7 @@
             <router-link to="/cambios-adscripcion" class="tool-card">
               <div class="tool-icon-wrapper">
                 <GitBranch :size="24" />
-                <span v-if="solicitudesPendientes > 0" class="tool-badge">{{ solicitudesPendientes }}</span>
+                <span v-if="cambiosAdscripcion.length > 0" class="tool-badge">{{ cambiosAdscripcion.length }}</span>
               </div>
               <span class="tool-label">Solicitudes</span>
             </router-link>
