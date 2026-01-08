@@ -109,6 +109,7 @@
                 <th>CURP</th>
                 <th>Rol</th>
                 <th>Perfil</th>
+                <th>Estatus</th>
                 <th>Territorio</th>
                 <th>Ruta</th>
                 <th>CAC</th>
@@ -117,7 +118,11 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="persona in personal" :key="persona.id">
+              <tr 
+                v-for="persona in personal" 
+                :key="persona.id"
+                :class="getEstatusRowClass(persona)"
+              >
                 <td class="nombre">
                   <div class="persona-name">
                     <span class="avatar">{{ getInitials(persona.nombre) }}</span>
@@ -135,6 +140,11 @@
                     {{ formatPerfil(persona.perfil_operativo) }}
                   </span>
                   <span v-else class="na">-</span>
+                </td>
+                <td>
+                  <span :class="['estatus-badge', getEstatusBadgeClass(persona)]">
+                    {{ getEstatusLabel(persona) }}
+                  </span>
                 </td>
                 <td>{{ persona.territorio_nombre || '-' }}</td>
                 <td>{{ persona.ruta_nombre || '-' }}</td>
@@ -617,6 +627,25 @@ const formatRol = (rol) => {
   return map[rol.toLowerCase()] || rol
 }
 
+// Funciones de estatus laboral
+const getEstatusLabel = (u) => {
+  if (u.estatus_laboral === 'BAJA' || !u.activo) return 'Baja'
+  if (u.tipo_ultima_accion === 'REASIGNACION') return 'Reasignación'
+  return 'Activo'
+}
+
+const getEstatusBadgeClass = (u) => {
+  if (u.estatus_laboral === 'BAJA' || !u.activo) return 'estatus-baja'
+  if (u.tipo_ultima_accion === 'REASIGNACION') return 'estatus-reasignacion'
+  return 'estatus-activo'
+}
+
+const getEstatusRowClass = (u) => {
+  if (u.estatus_laboral === 'BAJA' || !u.activo) return 'row-estatus-baja'
+  if (u.tipo_ultima_accion === 'REASIGNACION') return 'row-estatus-reasignacion'
+  return 'row-estatus-activo'
+}
+
 const formatDate = (dateStr) => {
   if (!dateStr) return '-'
   return new Date(dateStr).toLocaleDateString('es-MX', { 
@@ -890,6 +919,47 @@ onMounted(() => {
 .rol-badge.tecnico-productivo {
   background: #fce7f3;
   color: #db2777;
+}
+
+/* Estilos de estatus laboral */
+.estatus-badge {
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-transform: capitalize;
+}
+
+.estatus-activo {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.estatus-baja {
+  background: #f3f4f6;
+  color: #6b7280;
+}
+
+.estatus-reasignacion {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+/* Estilos de filas según estatus */
+tr.row-estatus-baja {
+  background: #f9fafb !important;
+}
+
+tr.row-estatus-baja td {
+  color: #9ca3af;
+}
+
+tr.row-estatus-activo {
+  background: #f0fdf4 !important;
+}
+
+tr.row-estatus-reasignacion {
+  background: #fffbeb !important;
 }
 
 .perfil-badge {

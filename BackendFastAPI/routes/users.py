@@ -271,7 +271,13 @@ def obtener_usuarios_subordinados(
                 "territorio_id": u.territorio_id,
                 "email": u.email,
                 "activo": u.activo if u.activo is not None else True,
-                "curp": u.curp
+                "curp": u.curp,
+                # Nuevos campos de estatus
+                "estatus_laboral": getattr(u, 'estatus_laboral', 'ACTIVO') or 'ACTIVO',
+                "fecha_alta": u.fecha_alta.isoformat() if getattr(u, 'fecha_alta', None) else None,
+                "fecha_baja": u.fecha_baja.isoformat() if getattr(u, 'fecha_baja', None) else None,
+                "fecha_ultima_accion": u.fecha_ultima_accion.isoformat() if getattr(u, 'fecha_ultima_accion', None) else None,
+                "tipo_ultima_accion": getattr(u, 'tipo_ultima_accion', None)
             })
     
     # Ordenar por activo (activos primero), rol y nombre

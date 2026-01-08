@@ -312,20 +312,25 @@
                 class="persona-item"
                 :class="{ 
                   'selected': nuevoCambio.persona_id === usuario.id,
-                  'inactivo': !usuario.activo 
+                  'inactivo': !usuario.activo,
+                  'baja': usuario.estatus_laboral === 'BAJA'
                 }"
                 @click="seleccionarUsuarioAfectado(usuario)"
               >
-                <div class="persona-avatar" :class="{ 'avatar-inactivo': !usuario.activo }">
+                <div class="persona-avatar" :class="{ 'avatar-inactivo': !usuario.activo || usuario.estatus_laboral === 'BAJA' }">
                   {{ getInitials(usuario.nombre) }}
                 </div>
                 <div class="persona-info">
                   <span class="persona-nombre">
                     {{ usuario.nombre }}
-                    <span v-if="!usuario.activo" class="badge-inactivo">Inactivo</span>
+                    <span v-if="usuario.estatus_laboral === 'BAJA'" class="badge-baja">Baja</span>
+                    <span v-else-if="!usuario.activo" class="badge-inactivo">Inactivo</span>
                   </span>
                   <span class="persona-territorio">
                     {{ formatRolDisplay(usuario.rol) }} • {{ usuario.territorio || 'Sin territorio' }}
+                    <span v-if="usuario.fecha_baja" class="fecha-accion">
+                      • Baja: {{ formatFecha(usuario.fecha_baja) }}
+                    </span>
                   </span>
                 </div>
                 <div v-if="nuevoCambio.persona_id === usuario.id" class="persona-check">
@@ -787,6 +792,21 @@ const formatRolDisplay = (rol) => {
   }
   const rolNorm = rol.toLowerCase().replace(/[\s-]/g, '_')
   return roles[rolNorm] || rol
+}
+
+// Formatear fecha corta
+const formatFecha = (fecha) => {
+  if (!fecha) return ''
+  try {
+    const d = new Date(fecha)
+    return d.toLocaleDateString('es-MX', { 
+      day: '2-digit', 
+      month: 'short', 
+      year: 'numeric' 
+    })
+  } catch {
+    return fecha
+  }
 }
 
 // Seleccionar usuario afectado
@@ -2412,6 +2432,32 @@ onMounted(() => {
   border-radius: 4px;
   margin-left: 0.5rem;
   font-weight: 600;
+}
+
+.badge-baja {
+  display: inline-block;
+  background: #dc2626;
+  color: white;
+  font-size: 0.6rem;
+  padding: 0.1rem 0.3rem;
+  border-radius: 4px;
+  margin-left: 0.5rem;
+  font-weight: 600;
+}
+
+.persona-item.baja {
+  background: #fef2f2;
+  border-left: 3px solid #dc2626;
+}
+
+.persona-item.baja:hover {
+  background: #fee2e2;
+}
+
+.fecha-accion {
+  font-size: 0.65rem;
+  color: #9ca3af;
+  font-style: italic;
 }
 
 .label-hint {

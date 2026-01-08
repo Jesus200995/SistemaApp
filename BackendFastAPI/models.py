@@ -73,6 +73,15 @@ class User(Base):
     correo_contacto = Column(String(100), nullable=True)  # Correo de contacto adicional
     activo = Column(Boolean, default=True)
     superior_id = Column(Integer, ForeignKey("users.id"), nullable=True)  # 🔑 Jerarquía
+    
+    # === CAMPOS DE ESTATUS Y SEGUIMIENTO ===
+    estatus_laboral = Column(String(30), default="ACTIVO")  # ACTIVO, BAJA, SUSPENDIDO, PENDIENTE_ALTA
+    fecha_alta = Column(DateTime(timezone=True), nullable=True)  # Fecha cuando fue dado de alta
+    fecha_baja = Column(DateTime(timezone=True), nullable=True)  # Fecha cuando fue dado de baja
+    fecha_ultima_accion = Column(DateTime(timezone=True), nullable=True)  # Última acción (alta/baja/reasignación)
+    motivo_ultima_accion = Column(Text, nullable=True)  # Justificación de la última acción
+    tipo_ultima_accion = Column(String(30), nullable=True)  # ALTA, BAJA, REASIGNACION
+    
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
 

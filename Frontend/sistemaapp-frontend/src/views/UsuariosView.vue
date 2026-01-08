@@ -451,19 +451,24 @@
                   <th>Teléfono</th>
                   <th>Territorio</th>
                   <th>Rol</th>
+                  <th>Estatus</th>
                   <th>Acciones</th>
                 </tr>
               </thead>
               <tbody>
                 <!-- Skeleton loader -->
                 <tr v-if="loading" v-for="n in limit" :key="'skeleton-' + n">
-                  <td colspan="8">
+                  <td colspan="9">
                     <div class="skeleton-line"></div>
                   </td>
                 </tr>
 
                 <!-- Datos reales -->
-                <tr v-for="u in filteredUsuarios" :key="u.id">
+                <tr 
+                  v-for="u in filteredUsuarios" 
+                  :key="u.id"
+                  :class="getEstatusRowClass(u)"
+                >
                   <td class="folio">{{ u.id }}</td>
                   <td class="nombre">{{ u.nombre }}</td>
                   <td class="email">{{ u.email }}</td>
@@ -475,6 +480,11 @@
                   <td>
                     <span :class="['rol-badge', `rol-${u.rol}`]">
                       {{ formatRolTabla(u.rol) }}
+                    </span>
+                  </td>
+                  <td>
+                    <span :class="['estatus-badge', getEstatusBadgeClass(u)]">
+                      {{ getEstatusLabel(u) }}
                     </span>
                   </td>
                   <td class="actions">
@@ -824,6 +834,25 @@ const formatRolTabla = (rol: string): string => {
     sembrador: 'Sembrador'
   }
   return roles[rol?.toLowerCase()] || rol?.replace(/_/g, ' ').toUpperCase() || '-'
+}
+
+// Funciones de estatus laboral
+const getEstatusLabel = (u: any): string => {
+  if (u.estatus_laboral === 'BAJA' || !u.activo) return 'Baja'
+  if (u.tipo_ultima_accion === 'REASIGNACION') return 'Reasignación'
+  return 'Activo'
+}
+
+const getEstatusBadgeClass = (u: any): string => {
+  if (u.estatus_laboral === 'BAJA' || !u.activo) return 'estatus-baja'
+  if (u.tipo_ultima_accion === 'REASIGNACION') return 'estatus-reasignacion'
+  return 'estatus-activo'
+}
+
+const getEstatusRowClass = (u: any): string => {
+  if (u.estatus_laboral === 'BAJA' || !u.activo) return 'row-estatus-baja'
+  if (u.tipo_ultima_accion === 'REASIGNACION') return 'row-estatus-reasignacion'
+  return 'row-estatus-activo'
 }
 
 const nextPage = () => {
@@ -1497,6 +1526,47 @@ onMounted(async () => {
 .rol-badge.rol-sembrador {
   background: #ecfccb;
   color: #65a30d;
+}
+
+/* Estilos de estatus laboral */
+.estatus-badge {
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-transform: capitalize;
+}
+
+.estatus-activo {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.estatus-baja {
+  background: #f3f4f6;
+  color: #6b7280;
+}
+
+.estatus-reasignacion {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+/* Estilos de filas según estatus */
+tr.row-estatus-baja {
+  background: #f9fafb !important;
+}
+
+tr.row-estatus-baja td {
+  color: #9ca3af;
+}
+
+tr.row-estatus-activo {
+  background: #f0fdf4 !important;
+}
+
+tr.row-estatus-reasignacion {
+  background: #fffbeb !important;
 }
 
 .actions {

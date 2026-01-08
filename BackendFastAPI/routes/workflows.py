@@ -493,19 +493,35 @@ def _aplicar_cambio_adscripcion(cambio: CambioAdscripcion, db: Session):
     - ALTA: Activa un usuario (activo=True) y/o lo asigna a CAC/Ruta/Territorio
     - BAJA: Desactiva un usuario (activo=False) y lo desvincula de asignaciones
     - REASIGNACION: Cambia la asignación de un usuario de un lugar a otro
+    
+    También actualiza los campos de seguimiento:
+    - estatus_laboral: ACTIVO, BAJA, SUSPENDIDO
+    - fecha_alta/fecha_baja: Fecha de la acción
+    - fecha_ultima_accion: Timestamp de la última acción
+    - motivo_ultima_accion: Justificación del cambio
+    - tipo_ultima_accion: ALTA, BAJA, REASIGNACION
     """
+    from datetime import datetime
     
     # Obtener la persona afectada
     persona = None
     if cambio.persona_id:
         persona = db.query(User).filter(User.id == cambio.persona_id).first()
     
+    ahora = datetime.now()
+    
     # === ALTA DE USUARIO ===
     if cambio.tipo_cambio == "ALTA":
         if persona:
             # Activar el usuario
             persona.activo = True
-            print(f"✅ Usuario {persona.nombre} activado (activo=True)")
+            persona.estatus_laboral = "ACTIVO"
+            persona.fecha_alta = ahora
+            persona.fecha_baja = None  # Limpiar fecha de baja si existía
+            persona.fecha_ultima_accion = ahora
+            persona.motivo_ultima_accion = cambio.justificacion
+            persona.tipo_ultima_accion = "ALTA"
+            print(f"✅ Usuario {persona.nombre} activado (activo=True, estatus_laboral=ACTIVO)")
         
         # Si es PERSONA_CAC, asignar a la CAC destino
         if cambio.objeto == "PERSONA_CAC" and cambio.cac_destino_id and persona:
@@ -544,9 +560,14 @@ def _aplicar_cambio_adscripcion(cambio: CambioAdscripcion, db: Session):
     # === BAJA DE USUARIO ===
     elif cambio.tipo_cambio == "BAJA":
         if persona:
-            # Desactivar el usuario
+            # Desactivar el usuario (NO se elimina, solo se marca como baja)
             persona.activo = False
-            print(f"❌ Usuario {persona.nombre} desactivado (activo=False)")
+            persona.estatus_laboral = "BAJA"
+            persona.fecha_baja = ahora
+            persona.fecha_ultima_accion = ahora
+            persona.motivo_ultima_accion = cambio.justificacion
+            persona.tipo_ultima_accion = "BAJA"
+            print(f"❌ Usuario {persona.nombre} dado de baja (activo=False, estatus_laboral=BAJA)")
         
         # Quitar de CAC origen
         if cambio.objeto == "PERSONA_CAC" and cambio.cac_origen_id:
@@ -573,6 +594,13 @@ def _aplicar_cambio_adscripcion(cambio: CambioAdscripcion, db: Session):
     
     # === REASIGNACION DE USUARIO ===
     elif cambio.tipo_cambio == "REASIGNACION":
+        if persona:
+            # Actualizar campos de seguimiento (el usuario sigue activo)
+            persona.fecha_ultima_accion = ahora
+            persona.motivo_ultima_accion = cambio.justificacion
+            persona.tipo_ultima_accion = "REASIGNACION"
+            print(f"🔄 Reasignación de {persona.nombre}")
+        
         if cambio.objeto == "PERSONA_CAC":
             # Quitar de CAC origen
             if cambio.cac_origen_id:
