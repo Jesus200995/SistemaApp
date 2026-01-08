@@ -14,7 +14,7 @@
           </div>
           
           <div class="header-actions">
-            <button @click="showCrearCambio = true" class="btn-primary">
+            <button @click="abrirModalCrear" class="btn-primary">
               <Plus :size="18" />
               Agregar Solicitud
             </button>
@@ -741,13 +741,17 @@ const mostrarSelectorUsuarioAfectado = computed(() => {
 const usuariosAfectadosFiltrados = computed(() => {
   let lista = usuariosSubordinados.value
   
-  // Si es ALTA, mostrar solo usuarios inactivos
-  // Si es BAJA o REASIGNACION, mostrar solo activos
-  if (nuevoCambio.value.tipo_cambio === 'ALTA') {
-    lista = lista.filter(u => !u.activo)
-  } else if (nuevoCambio.value.tipo_cambio === 'BAJA' || nuevoCambio.value.tipo_cambio === 'REASIGNACION') {
+  console.log('🔍 Filtrando usuarios - Tipo:', nuevoCambio.value.tipo_cambio)
+  console.log('   - Total subordinados:', lista.length)
+  
+  // ALTA: Puede ser para activar usuarios inactivos O asignar usuarios sin asignación actual
+  // Por ahora mostramos TODOS los usuarios subordinados para ALTA
+  // BAJA y REASIGNACION: Solo usuarios activos
+  if (nuevoCambio.value.tipo_cambio === 'BAJA' || nuevoCambio.value.tipo_cambio === 'REASIGNACION') {
     lista = lista.filter(u => u.activo)
+    console.log('   - Después de filtrar activos:', lista.length)
   }
+  // Para ALTA no filtramos por activo/inactivo, mostramos todos
   
   // Filtrar por búsqueda
   const busqueda = busquedaUsuarioAfectado.value.toLowerCase().trim()
@@ -757,8 +761,10 @@ const usuariosAfectadosFiltrados = computed(() => {
       u.territorio?.toLowerCase().includes(busqueda) ||
       u.rol?.toLowerCase().includes(busqueda)
     )
+    console.log('   - Después de filtrar por búsqueda "' + busqueda + '":', lista.length)
   }
   
+  console.log('   - Lista final:', lista)
   return lista
 })
 
@@ -809,12 +815,39 @@ const cargarUsuariosSubordinados = async () => {
       headers: { Authorization: `Bearer ${auth.token}` }
     })
     usuariosSubordinados.value = res.data.items || []
+    console.log('📋 Usuarios subordinados cargados:', usuariosSubordinados.value.length)
+    console.log('   - Activos:', usuariosSubordinados.value.filter(u => u.activo).length)
+    console.log('   - Inactivos:', usuariosSubordinados.value.filter(u => !u.activo).length)
+    console.log('   - Lista completa:', usuariosSubordinados.value)
   } catch (err) {
     console.error('Error al cargar subordinados:', err)
     usuariosSubordinados.value = []
   } finally {
     loadingSubordinados.value = false
   }
+}
+
+// Abrir modal de crear solicitud (y recargar datos)
+const abrirModalCrear = () => {
+  console.log('🔓 Abriendo modal de crear solicitud...')
+  // Resetear formulario
+  nuevoCambio.value = {
+    tipo_cambio: '',
+    objeto: '',
+    destino_id: null,
+    justificacion: '',
+    persona_id: null
+  }
+  rolSeleccionado.value = ''
+  busquedaPersona.value = ''
+  busquedaUsuarioAfectado.value = ''
+  
+  // Recargar usuarios subordinados
+  cargarUsuariosSubordinados()
+  cargarUsuariosDisponibles()
+  
+  // Abrir modal
+  showCrearCambio.value = true
 }
 
 // Agrupar usuarios por rol (normalizado)
