@@ -48,17 +48,53 @@
       <main class="dashboard-main">
         <div class="dashboard-content">
         
-        <!-- Bienvenida y Perfil (Siempre visible) -->
+        <!-- Bienvenida y Perfil (Compacto) -->
         <section class="welcome-section">
-          <div class="welcome-card">
+          <div class="welcome-card compact">
             <div class="welcome-header">
               <div class="avatar-circle">
                 {{ getInitials(auth.user?.nombre || 'U') }}
               </div>
               <div class="welcome-info">
-                <h2 class="welcome-title">¡Bienvenido, {{ auth.user?.nombre?.split(' ')[0] || 'Usuario' }}!</h2>
+                <h2 class="welcome-title">¡Hola, {{ auth.user?.nombre?.split(' ')[0] || 'Usuario' }}!</h2>
                 <div class="role-tag">{{ formatRole(auth.user?.rol || 'N/A') }}</div>
               </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Cambios de Adscripción Pendientes (TIEMPO REAL) -->
+        <section v-if="cambiosAdscripcion.length > 0" class="alerts-section cambios-section">
+          <div class="alerts-header">
+            <div class="alerts-title-row">
+              <GitBranch :size="16" class="alerts-icon cambios-icon" />
+              <h3 class="alerts-title">Cambios de Adscripción</h3>
+            </div>
+            <span class="alerts-count cambios-count">{{ cambiosAdscripcion.length }}</span>
+          </div>
+          
+          <div class="alerts-list">
+            <div 
+              v-for="cambio in cambiosAdscripcion.slice(0, 4)"
+              :key="'cambio-' + cambio.id"
+              class="alert-card cambio-card"
+              :class="{ 'autorizado': cambio.estatus === 'AUTORIZADO' }"
+            >
+              <div class="alert-icon" :class="{ 'icon-autorizado': cambio.estatus === 'AUTORIZADO' }">
+                <MailOpen v-if="cambio.estatus === 'AUTORIZADO'" :size="16" />
+                <GitBranch v-else :size="16" />
+              </div>
+              <div class="alert-content">
+                <div class="cambio-header-row">
+                  <span class="cambio-tipo">{{ formatTipoCambio(cambio.tipo_cambio) }}</span>
+                  <span class="cambio-estatus" :class="cambio.estatus.toLowerCase()">{{ formatEstatusCambio(cambio.estatus) }}</span>
+                </div>
+                <p class="alert-from">{{ cambio.persona?.nombre || 'Usuario' }}</p>
+                <p class="alert-time">{{ formatTimeAgo(cambio.fecha_creacion) }}</p>
+              </div>
+              <router-link to="/cambios-adscripcion" class="alert-action">
+                <ChevronRight :size="16" />
+              </router-link>
             </div>
           </div>
         </section>
@@ -67,8 +103,8 @@
         <section v-if="solicitudesPendientesLista.length > 0" class="alerts-section">
           <div class="alerts-header">
             <div class="alerts-title-row">
-              <Bell :size="20" class="alerts-icon" />
-              <h3 class="alerts-title">Solicitudes Pendientes</h3>
+              <Bell :size="16" class="alerts-icon" />
+              <h3 class="alerts-title">Otras Solicitudes</h3>
             </div>
             <span class="alerts-count">{{ solicitudesPendientesLista.length }}</span>
           </div>
@@ -80,7 +116,7 @@
               class="alert-card"
             >
               <div class="alert-icon">
-                <FileText :size="20" />
+                <FileText :size="16" />
               </div>
               <div class="alert-content">
                 <p class="alert-type">{{ formatTipoSolicitud(solicitud.tipo) }}</p>
@@ -88,7 +124,7 @@
                 <p class="alert-time">{{ formatTimeAgo(solicitud.fecha) }}</p>
               </div>
               <router-link to="/cambios-adscripcion" class="alert-action">
-                <ChevronRight :size="20" />
+                <ChevronRight :size="16" />
               </router-link>
             </div>
           </div>
@@ -310,7 +346,7 @@ import { onMounted, ref, computed, onUnmounted } from 'vue'
 import { useAuthStore } from '../stores/auth'
 import { getSecureApiUrl, getSecureWsUrl } from '../utils/api'
 import { useRouter } from 'vue-router'
-import { LogOut, User, Mail, LayoutDashboard, BarChart3, Users, Settings, MapPin, Sprout, FileText, Smile, Clipboard, Check, Shield, Zap, Bell, Clock, CheckCircle, AlertCircle, Info, Eye, MessageSquare, Home, ChevronRight, Upload, GitBranch, Layers, Building2, Globe } from 'lucide-vue-next'
+import { LogOut, User, Mail, LayoutDashboard, BarChart3, Users, Settings, MapPin, Sprout, FileText, Smile, Clipboard, Check, Shield, Zap, Bell, Clock, CheckCircle, AlertCircle, Info, Eye, MessageSquare, Home, ChevronRight, Upload, GitBranch, Layers, Building2, Globe, MailOpen } from 'lucide-vue-next'
 import HamburgerMenu from '../components/HamburgerMenu.vue'
 import DesktopSidebar from '../components/DesktopSidebar.vue'
 import DesktopHeader from '../components/DesktopHeader.vue'
@@ -322,6 +358,7 @@ const notificaciones = ref<any[]>([])
 const ws = ref<WebSocket | null>(null)
 const solicitudesPendientes = ref(0)
 const solicitudesRecientes = ref<any[]>([])
+const cambiosAdscripcion = ref<any[]>([])
 
 // Intervalo para actualizar solicitudes en tiempo real
 let solicitudesInterval: ReturnType<typeof setInterval> | null = null
@@ -331,8 +368,12 @@ onMounted(() => {
   getNotificaciones()
   connectWebSocket()
   getSolicitudesPendientes()
-  // Actualizar cada 30 segundos
-  solicitudesInterval = setInterval(getSolicitudesPendientes, 30000)
+  getCambiosAdscripcion()
+  // Actualizar cada 15 segundos para tiempo real
+  solicitudesInterval = setInterval(() => {
+    getSolicitudesPendientes()
+    getCambiosAdscripcion()
+  }, 15000)
 })
 
 onUnmounted(() => {
@@ -444,6 +485,30 @@ const getSolicitudesPendientes = async () => {
   }
 }
 
+// Obtener cambios de adscripción pendientes
+const getCambiosAdscripcion = async () => {
+  try {
+    const token = localStorage.getItem('token') || auth.token
+    const apiUrl = getSecureApiUrl()
+    const response = await axios.get(
+      `${apiUrl}/workflows/cambios-adscripcion`,
+      { headers: { Authorization: `Bearer ${token}` } }
+    )
+    const cambios = response.data?.items || []
+    const userId = auth.user?.id
+    
+    // Filtrar: EN_REVISION que me llegaron, o AUTORIZADO que yo envié
+    cambiosAdscripcion.value = cambios.filter((c: any) => 
+      (c.estatus === 'EN_REVISION' && c.destino_id === userId) ||
+      (c.estatus === 'AUTORIZADO' && c.propuesto_por_id === userId)
+    ).sort((a: any, b: any) => new Date(b.fecha_creacion).getTime() - new Date(a.fecha_creacion).getTime())
+    
+    console.log('📋 Cambios adscripción pendientes:', cambiosAdscripcion.value.length)
+  } catch (error) {
+    console.error('❌ Error cargando cambios adscripción:', error)
+  }
+}
+
 // Funciones auxiliares para solicitudes
 const formatTipoSolicitud = (tipo: string): string => {
   const tipos: Record<string, string> = {
@@ -463,6 +528,26 @@ const formatEstadoSolicitud = (estado: string): string => {
     rechazada: 'Rechazada'
   }
   return estados[estado] || estado
+}
+
+const formatTipoCambio = (tipo: string): string => {
+  const tipos: Record<string, string> = {
+    ALTA: 'Alta',
+    BAJA: 'Baja',
+    REASIGNACION: 'Reasignación'
+  }
+  return tipos[tipo] || tipo
+}
+
+const formatEstatusCambio = (estatus: string): string => {
+  const estatuses: Record<string, string> = {
+    EN_REVISION: 'En Revisión',
+    AUTORIZADO: 'Autorizado',
+    APLICADO: 'Aplicado',
+    RECHAZADO: 'Rechazado',
+    CANCELADO: 'Cancelado'
+  }
+  return estatuses[estatus] || estatus
 }
 
 const truncateText = (text: string, maxLength: number): string => {
@@ -3282,20 +3367,24 @@ const getUsuariosDesc = (): string => {
 
 /* ========== NUEVO DISEÑO JERÁRQUICO ========== */
 
-/* Welcome Section */
+/* Welcome Section - Compacto */
 .welcome-section {
-  margin-bottom: 1.5rem;
+  margin-bottom: clamp(0.75rem, 2vw, 1rem);
 }
 
 .welcome-card {
   background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
-  border: 1.5px solid #e2e8f0;
-  border-radius: 20px;
-  padding: 2rem;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08), 0 4px 16px rgba(22, 163, 74, 0.1);
+  border: 1px solid #e2e8f0;
+  border-radius: clamp(12px, 2vw, 16px);
+  padding: clamp(0.75rem, 2vw, 1.25rem);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   overflow: hidden;
+}
+
+.welcome-card.compact {
+  padding: clamp(0.6rem, 1.5vw, 1rem);
 }
 
 .welcome-card::before {
@@ -3303,45 +3392,45 @@ const getUsuariosDesc = (): string => {
   position: absolute;
   top: 0;
   right: 0;
-  width: 200px;
-  height: 200px;
-  background: radial-gradient(circle, rgba(22, 163, 74, 0.08) 0%, transparent 70%);
+  width: 120px;
+  height: 120px;
+  background: radial-gradient(circle, rgba(22, 163, 74, 0.06) 0%, transparent 70%);
   border-radius: 50%;
   pointer-events: none;
 }
 
 .welcome-card:hover {
-  box-shadow: 0 6px 30px rgba(0, 0, 0, 0.1), 0 4px 12px rgba(22, 163, 74, 0.12);
-  transform: translateY(-2px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  transform: translateY(-1px);
 }
 
 .welcome-header {
   display: flex;
   align-items: center;
-  gap: 1.25rem;
+  gap: clamp(0.6rem, 1.5vw, 1rem);
   position: relative;
   z-index: 1;
 }
 
 .avatar-circle {
-  width: 64px;
-  height: 64px;
+  width: clamp(40px, 8vw, 52px);
+  height: clamp(40px, 8vw, 52px);
   border-radius: 50%;
   background: linear-gradient(135deg, #16a34a 0%, #22c55e 100%);
   color: white;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.5rem;
+  font-size: clamp(1rem, 2vw, 1.25rem);
   font-weight: 700;
-  box-shadow: 0 6px 20px rgba(22, 163, 74, 0.3), inset 0 2px 4px rgba(255, 255, 255, 0.3);
+  box-shadow: 0 4px 12px rgba(22, 163, 74, 0.25);
   flex-shrink: 0;
   transition: all 0.3s ease;
 }
 
 .welcome-card:hover .avatar-circle {
-  transform: scale(1.05);
-  box-shadow: 0 8px 28px rgba(22, 163, 74, 0.4), inset 0 2px 4px rgba(255, 255, 255, 0.3);
+  transform: scale(1.03);
+  box-shadow: 0 5px 16px rgba(22, 163, 74, 0.3);
 }
 
 .welcome-info {
@@ -3349,74 +3438,77 @@ const getUsuariosDesc = (): string => {
 }
 
 .welcome-title {
-  font-size: 1.5rem;
+  font-size: clamp(1rem, 3vw, 1.35rem);
   font-weight: 700;
   color: #1e293b;
-  margin: 0 0 0.5rem 0;
-  letter-spacing: -0.5px;
+  margin: 0 0 0.25rem 0;
+  letter-spacing: -0.3px;
 }
 
 .role-tag {
   display: inline-block;
-  padding: 0.5rem 1rem;
-  background: linear-gradient(135deg, rgba(22, 163, 74, 0.15), rgba(22, 163, 74, 0.08));
+  padding: clamp(0.25rem, 0.8vw, 0.4rem) clamp(0.5rem, 1.2vw, 0.75rem);
+  background: linear-gradient(135deg, rgba(22, 163, 74, 0.12), rgba(22, 163, 74, 0.06));
   color: #16a34a;
-  border-radius: 10px;
-  font-size: 0.85rem;
+  border-radius: 8px;
+  font-size: clamp(0.65rem, 1.5vw, 0.75rem);
   font-weight: 600;
-  border: 1.5px solid rgba(22, 163, 74, 0.25);
+  border: 1px solid rgba(22, 163, 74, 0.2);
   transition: all 0.3s ease;
-  backdrop-filter: blur(10px);
 }
 
 .welcome-card:hover .role-tag {
-  border-color: rgba(22, 163, 74, 0.4);
-  background: linear-gradient(135deg, rgba(22, 163, 74, 0.2), rgba(22, 163, 74, 0.12));
+  border-color: rgba(22, 163, 74, 0.35);
+  background: linear-gradient(135deg, rgba(22, 163, 74, 0.15), rgba(22, 163, 74, 0.08));
 }
 
 @media (min-width: 1024px) {
   .welcome-card {
-    padding: 2rem;
+    padding: clamp(1rem, 2vw, 1.5rem);
   }
 
   .avatar-circle {
-    width: 80px;
-    height: 80px;
-    font-size: 2rem;
+    width: 56px;
+    height: 56px;
+    font-size: 1.35rem;
   }
 
   .welcome-title {
-    font-size: 1.75rem;
+    font-size: 1.4rem;
   }
 
   .role-tag {
-    font-size: 0.95rem;
-    padding: 0.5rem 1rem;
+    font-size: 0.8rem;
+    padding: 0.35rem 0.75rem;
   }
 }
 
-/* Alerts Section */
+/* Alerts Section - Compacto */
 .alerts-section {
-  margin-bottom: 1.5rem;
+  margin-bottom: clamp(0.75rem, 2vw, 1rem);
 }
 
 .alerts-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 1rem;
-  padding: 0 0.25rem;
+  margin-bottom: clamp(0.5rem, 1.5vw, 0.75rem);
+  padding: 0 0.15rem;
 }
 
 .alerts-title-row {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.4rem;
 }
 
 .alerts-icon {
   color: #ef4444;
   animation: pulse 2s infinite;
+}
+
+.alerts-icon.cambios-icon {
+  color: #16a34a;
 }
 
 @keyframes pulse {
@@ -3429,7 +3521,7 @@ const getUsuariosDesc = (): string => {
 }
 
 .alerts-title {
-  font-size: 1.1rem;
+  font-size: clamp(0.85rem, 2vw, 1rem);
   font-weight: 700;
   color: #1e293b;
   margin: 0;
@@ -3439,16 +3531,21 @@ const getUsuariosDesc = (): string => {
   display: flex;
   align-items: center;
   justify-content: center;
-  min-width: 28px;
-  height: 28px;
-  padding: 0 0.5rem;
+  min-width: clamp(20px, 4vw, 24px);
+  height: clamp(20px, 4vw, 24px);
+  padding: 0 0.35rem;
   background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
   color: white;
-  border-radius: 14px;
-  font-size: 0.8rem;
+  border-radius: 12px;
+  font-size: clamp(0.65rem, 1.5vw, 0.75rem);
   font-weight: 700;
-  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
+  box-shadow: 0 3px 8px rgba(239, 68, 68, 0.35);
   animation: bounce 2s infinite;
+}
+
+.alerts-count.cambios-count {
+  background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
+  box-shadow: 0 3px 8px rgba(22, 163, 74, 0.35);
 }
 
 @keyframes bounce {
@@ -3456,25 +3553,25 @@ const getUsuariosDesc = (): string => {
     transform: scale(1);
   }
   50% {
-    transform: scale(1.1);
+    transform: scale(1.08);
   }
 }
 
 .alerts-list {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: clamp(0.4rem, 1vw, 0.6rem);
 }
 
 .alert-card {
   background: linear-gradient(135deg, #fff5f5 0%, #fffbfb 100%);
-  border: 1.5px solid #fee2e2;
-  border-left: 5px solid #ef4444;
-  border-radius: 14px;
-  padding: 1rem 1.25rem;
+  border: 1px solid #fee2e2;
+  border-left: 4px solid #ef4444;
+  border-radius: clamp(10px, 2vw, 12px);
+  padding: clamp(0.5rem, 1.5vw, 0.75rem) clamp(0.6rem, 1.5vw, 0.9rem);
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: clamp(0.5rem, 1.5vw, 0.75rem);
   transition: all 0.3s ease;
   cursor: pointer;
   position: relative;
@@ -3488,34 +3585,71 @@ const getUsuariosDesc = (): string => {
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(135deg, transparent 0%, rgba(239, 68, 68, 0.05) 100%);
+  background: linear-gradient(135deg, transparent 0%, rgba(239, 68, 68, 0.03) 100%);
   pointer-events: none;
 }
 
 .alert-card:hover {
   border-color: #ef4444;
-  box-shadow: 0 6px 20px rgba(239, 68, 68, 0.15), 0 2px 8px rgba(239, 68, 68, 0.1);
-  transform: translateX(6px);
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.12);
+  transform: translateX(4px);
   background: linear-gradient(135deg, #fff5f5 0%, #fef2f2 100%);
 }
 
+/* Tarjeta de Cambios de Adscripción */
+.alert-card.cambio-card {
+  background: linear-gradient(135deg, #f0fdf4 0%, #fafff7 100%);
+  border: 1px solid #dcfce7;
+  border-left: 4px solid #16a34a;
+}
+
+.alert-card.cambio-card::before {
+  background: linear-gradient(135deg, transparent 0%, rgba(22, 163, 74, 0.03) 100%);
+}
+
+.alert-card.cambio-card:hover {
+  border-color: #16a34a;
+  box-shadow: 0 4px 12px rgba(22, 163, 74, 0.12);
+  background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
+}
+
+.alert-card.cambio-card.autorizado {
+  background: linear-gradient(135deg, #fffbeb 0%, #fefce8 100%);
+  border: 1px solid #fef08a;
+  border-left: 4px solid #f59e0b;
+  animation: gold-pulse 2s ease-in-out infinite;
+}
+
+@keyframes gold-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0); }
+  50% { box-shadow: 0 0 8px 2px rgba(245, 158, 11, 0.15); }
+}
+
 .alert-icon {
-  width: 44px;
-  height: 44px;
-  background: linear-gradient(135deg, rgba(239, 68, 68, 0.15), rgba(239, 68, 68, 0.08));
-  border-radius: 12px;
+  width: clamp(32px, 7vw, 38px);
+  height: clamp(32px, 7vw, 38px);
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.12), rgba(239, 68, 68, 0.06));
+  border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
   color: #ef4444;
   flex-shrink: 0;
   transition: all 0.3s ease;
-  box-shadow: inset 0 2px 4px rgba(239, 68, 68, 0.1);
+}
+
+.cambio-card .alert-icon {
+  background: linear-gradient(135deg, rgba(22, 163, 74, 0.12), rgba(22, 163, 74, 0.06));
+  color: #16a34a;
+}
+
+.alert-icon.icon-autorizado {
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.15), rgba(245, 158, 11, 0.08));
+  color: #f59e0b;
 }
 
 .alert-card:hover .alert-icon {
-  transform: scale(1.1) rotate(5deg);
-  background: linear-gradient(135deg, rgba(239, 68, 68, 0.2), rgba(239, 68, 68, 0.12));
+  transform: scale(1.08);
 }
 
 .alert-content {
@@ -3525,21 +3659,57 @@ const getUsuariosDesc = (): string => {
   z-index: 1;
 }
 
-.alert-type {
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: #1e293b;
-  margin: 0 0 0.25rem 0;
+/* Estilos para fila de header de cambio */
+.cambio-header-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.15rem;
 }
 
-.alert-from {
-  font-size: 0.8rem;
-  color: #64748b;
+.cambio-tipo {
+  font-size: clamp(0.7rem, 1.6vw, 0.8rem);
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.cambio-estatus {
+  font-size: clamp(0.55rem, 1.2vw, 0.65rem);
+  font-weight: 600;
+  padding: 0.1rem 0.4rem;
+  border-radius: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.cambio-estatus.en_revision {
+  background: rgba(59, 130, 246, 0.12);
+  color: #3b82f6;
+}
+
+.cambio-estatus.autorizado {
+  background: rgba(245, 158, 11, 0.12);
+  color: #f59e0b;
+}
+
+.alert-type {
+  font-size: clamp(0.7rem, 1.6vw, 0.8rem);
+  font-weight: 600;
+  color: #1e293b;
   margin: 0 0 0.15rem 0;
 }
 
+.alert-from {
+  font-size: clamp(0.65rem, 1.4vw, 0.75rem);
+  color: #64748b;
+  margin: 0 0 0.1rem 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .alert-time {
-  font-size: 0.75rem;
+  font-size: clamp(0.6rem, 1.2vw, 0.7rem);
   color: #94a3b8;
   margin: 0;
 }
@@ -3548,8 +3718,8 @@ const getUsuariosDesc = (): string => {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
-  height: 32px;
+  width: clamp(26px, 5vw, 30px);
+  height: clamp(26px, 5vw, 30px);
   background: #f8fafc;
   border-radius: 8px;
   color: #64748b;
@@ -3562,23 +3732,23 @@ const getUsuariosDesc = (): string => {
   color: white;
 }
 
-/* Quick Access Section */
+/* Quick Access Section - Compacto */
 .quick-access-section {
-  margin-bottom: 1.5rem;
+  margin-bottom: clamp(0.75rem, 2vw, 1rem);
 }
 
 .section-header {
-  font-size: 1.1rem;
+  font-size: clamp(0.85rem, 2vw, 1rem);
   font-weight: 700;
   color: #1e293b;
-  margin: 0 0 1rem 0.25rem;
+  margin: 0 0 clamp(0.5rem, 1.5vw, 0.75rem) 0.15rem;
 }
 
 .access-grid,
 .access-grid-admin {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 1rem;
+  gap: clamp(0.5rem, 1.5vw, 0.75rem);
 }
 
 @media (min-width: 640px) {
@@ -3593,12 +3763,12 @@ const getUsuariosDesc = (): string => {
 
 .access-card {
   background: linear-gradient(135deg, #ffffff 0%, #f9fafb 100%);
-  border: 1.5px solid #e2e8f0;
-  border-radius: 16px;
-  padding: 1.5rem;
+  border: 1px solid #e2e8f0;
+  border-radius: clamp(10px, 2vw, 14px);
+  padding: clamp(0.75rem, 2vw, 1rem);
   display: flex;
   align-items: center;
-  gap: 1.25rem;
+  gap: clamp(0.6rem, 1.5vw, 0.9rem);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   text-decoration: none;
   cursor: pointer;
@@ -3611,17 +3781,17 @@ const getUsuariosDesc = (): string => {
   position: absolute;
   top: 0;
   right: 0;
-  width: 150px;
-  height: 150px;
-  background: radial-gradient(circle, rgba(22, 163, 74, 0.08) 0%, transparent 70%);
+  width: 100px;
+  height: 100px;
+  background: radial-gradient(circle, rgba(22, 163, 74, 0.06) 0%, transparent 70%);
   border-radius: 50%;
   pointer-events: none;
 }
 
 .access-card:hover {
   border-color: #16a34a;
-  box-shadow: 0 10px 30px rgba(22, 163, 74, 0.18), 0 4px 10px rgba(22, 163, 74, 0.1);
-  transform: translateY(-4px);
+  box-shadow: 0 6px 16px rgba(22, 163, 74, 0.12);
+  transform: translateY(-2px);
   background: linear-gradient(135deg, #ffffff 0%, #f0fdf4 100%);
 }
 
@@ -3633,7 +3803,7 @@ const getUsuariosDesc = (): string => {
 
 .access-card.admin-card:hover {
   border-color: #16a34a;
-  box-shadow: 0 10px 30px rgba(22, 163, 74, 0.25), 0 4px 10px rgba(22, 163, 74, 0.12);
+  box-shadow: 0 6px 16px rgba(22, 163, 74, 0.18);
   background: linear-gradient(135deg, rgba(22, 163, 74, 0.1), rgba(22, 163, 74, 0.05));
 }
 
@@ -3644,15 +3814,15 @@ const getUsuariosDesc = (): string => {
 
 .access-card.primary-card:hover {
   border-color: #3b82f6;
-  box-shadow: 0 10px 30px rgba(59, 130, 246, 0.25), 0 4px 10px rgba(59, 130, 246, 0.12);
+  box-shadow: 0 6px 16px rgba(59, 130, 246, 0.18);
   background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(59, 130, 246, 0.05));
 }
 
 .access-icon-wrapper {
-  width: 56px;
-  height: 56px;
+  width: clamp(36px, 8vw, 44px);
+  height: clamp(36px, 8vw, 44px);
   background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
-  border-radius: 14px;
+  border-radius: clamp(8px, 1.5vw, 12px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -3661,30 +3831,29 @@ const getUsuariosDesc = (): string => {
   transition: all 0.3s ease;
   position: relative;
   z-index: 1;
-  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
 .access-card:hover .access-icon-wrapper {
   background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
   color: white;
-  transform: scale(1.15);
-  box-shadow: 0 6px 16px rgba(22, 163, 74, 0.35), inset 0 2px 4px rgba(255, 255, 255, 0.2);
+  transform: scale(1.08);
+  box-shadow: 0 4px 10px rgba(22, 163, 74, 0.3);
 }
 
 .access-icon-wrapper.admin-icon {
-  background: linear-gradient(135deg, rgba(22, 163, 74, 0.15), rgba(22, 163, 74, 0.08));
+  background: linear-gradient(135deg, rgba(22, 163, 74, 0.12), rgba(22, 163, 74, 0.06));
   color: #16a34a;
 }
 
 .access-icon-wrapper.primary-icon {
-  background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(59, 130, 246, 0.08));
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.12), rgba(59, 130, 246, 0.06));
   color: #3b82f6;
 }
 
 .access-card.primary-card:hover .access-icon-wrapper {
   background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
   color: white;
-  box-shadow: 0 6px 16px rgba(59, 130, 246, 0.35), inset 0 2px 4px rgba(255, 255, 255, 0.2);
+  box-shadow: 0 4px 10px rgba(59, 130, 246, 0.3);
 }
 
 .access-info {
@@ -3694,41 +3863,41 @@ const getUsuariosDesc = (): string => {
 }
 
 .access-title {
-  font-size: 1rem;
+  font-size: clamp(0.8rem, 1.8vw, 0.9rem);
   font-weight: 700;
   color: #1e293b;
-  margin: 0 0 0.35rem 0;
-  letter-spacing: -0.3px;
+  margin: 0 0 0.2rem 0;
+  letter-spacing: -0.2px;
 }
 
 .access-desc {
-  font-size: 0.85rem;
+  font-size: clamp(0.65rem, 1.4vw, 0.75rem);
   color: #64748b;
   margin: 0;
-  line-height: 1.4;
+  line-height: 1.3;
 }
 
-/* Common Tools Section */
+/* Common Tools Section - Compacto */
 .common-tools-section {
-  margin-bottom: 1.5rem;
+  margin-bottom: clamp(0.75rem, 2vw, 1rem);
 }
 
 .tools-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 1rem;
+  gap: clamp(0.5rem, 1.5vw, 0.75rem);
 }
 
 .tool-card {
   background: linear-gradient(135deg, #ffffff 0%, #f9fafb 100%);
-  border: 1.5px solid #e2e8f0;
-  border-radius: 14px;
-  padding: 1.5rem 1.25rem;
+  border: 1px solid #e2e8f0;
+  border-radius: clamp(10px, 2vw, 12px);
+  padding: clamp(0.75rem, 2vw, 1rem) clamp(0.5rem, 1.5vw, 0.75rem);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 0.75rem;
+  gap: clamp(0.4rem, 1vw, 0.6rem);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   text-decoration: none;
   cursor: pointer;
@@ -3740,65 +3909,64 @@ const getUsuariosDesc = (): string => {
   content: '';
   position: absolute;
   top: 0;
-  right: -20px;
-  width: 100px;
-  height: 100px;
-  background: radial-gradient(circle, rgba(22, 163, 74, 0.1) 0%, transparent 70%);
+  right: -15px;
+  width: 60px;
+  height: 60px;
+  background: radial-gradient(circle, rgba(22, 163, 74, 0.08) 0%, transparent 70%);
   border-radius: 50%;
   pointer-events: none;
 }
 
 .tool-card:hover {
   border-color: #16a34a;
-  box-shadow: 0 8px 24px rgba(22, 163, 74, 0.16), 0 2px 6px rgba(22, 163, 74, 0.08);
-  transform: translateY(-4px);
+  box-shadow: 0 4px 12px rgba(22, 163, 74, 0.12);
+  transform: translateY(-2px);
   background: linear-gradient(135deg, #ffffff 0%, #f0fdf4 100%);
 }
 
 .tool-icon-wrapper {
   position: relative;
-  width: 52px;
-  height: 52px;
+  width: clamp(36px, 8vw, 44px);
+  height: clamp(36px, 8vw, 44px);
   background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
-  border-radius: 12px;
+  border-radius: clamp(8px, 1.5vw, 10px);
   display: flex;
   align-items: center;
   justify-content: center;
   color: #16a34a;
   transition: all 0.3s ease;
   z-index: 1;
-  box-shadow: inset 0 2px 4px rgba(22, 163, 74, 0.1);
 }
 
 .tool-card:hover .tool-icon-wrapper {
   background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
   color: white;
-  transform: scale(1.15) rotate(-5deg);
-  box-shadow: 0 6px 16px rgba(22, 163, 74, 0.3), inset 0 2px 4px rgba(255, 255, 255, 0.2);
+  transform: scale(1.08);
+  box-shadow: 0 4px 10px rgba(22, 163, 74, 0.25);
 }
 
 .tool-badge {
   position: absolute;
-  top: -8px;
-  right: -8px;
-  min-width: 24px;
-  height: 24px;
-  padding: 0 0.4rem;
+  top: -5px;
+  right: -5px;
+  min-width: clamp(16px, 3vw, 20px);
+  height: clamp(16px, 3vw, 20px);
+  padding: 0 0.25rem;
   background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
   color: white;
-  border-radius: 12px;
-  font-size: 0.75rem;
+  border-radius: 10px;
+  font-size: clamp(0.55rem, 1.2vw, 0.65rem);
   font-weight: 700;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
+  box-shadow: 0 2px 8px rgba(239, 68, 68, 0.35);
   border: 2px solid white;
   animation: pulse 2s infinite;
 }
 
 .tool-label {
-  font-size: 0.85rem;
+  font-size: clamp(0.65rem, 1.5vw, 0.75rem);
   font-weight: 600;
   color: #1e293b;
   text-align: center;

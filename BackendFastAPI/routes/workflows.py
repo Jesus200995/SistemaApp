@@ -7,7 +7,7 @@ Workflows:
 2. Actualizaciones de Estructura: Crear/Editar/Inactivar maestros (persona/CAC/ruta/territorio)
 """
 
-from fastapi import APIRouter, HTTPException, Depends, Security, Query
+from fastapi import APIRouter, HTTPException, Depends, Security, Query, BackgroundTasks
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from sqlalchemy.orm import Session
 from sqlalchemy import func, or_, and_
@@ -23,12 +23,43 @@ import os
 from dotenv import load_dotenv
 from datetime import datetime, timedelta
 import uuid
+import asyncio
 
 load_dotenv()
 SECRET = os.getenv("JWT_SECRET", "mi_clave_jwt_2025")
 
 router = APIRouter(prefix="/workflows", tags=["Workflows"])
 bearer_scheme = HTTPBearer()
+
+
+# ========== BROADCAST HELPER ==========
+
+async def _broadcast_cambio_notificacion(tipo: str, cambio_id: int, accion: str, user_id: int):
+    """Enviar notificación WebSocket sobre cambios de adscripción"""
+    try:
+        from routes.notificaciones import broadcast_notification
+        data = {
+            "tipo": "cambio_adscripcion",
+            "cambio_id": cambio_id,
+            "accion": accion,
+            "user_id": user_id,
+            "timestamp": datetime.now().isoformat(),
+            "mensaje": f"Cambio de adscripción {accion.lower()}"
+        }
+        await broadcast_notification(data)
+        print(f"📡 Broadcast enviado: {accion} en cambio {cambio_id}")
+    except Exception as e:
+        print(f"⚠️ Error en broadcast: {e}")
+
+def broadcast_sync(tipo: str, cambio_id: int, accion: str, user_id: int):
+    """Wrapper síncrono para enviar broadcast"""
+    try:
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        loop.run_until_complete(_broadcast_cambio_notificacion(tipo, cambio_id, accion, user_id))
+        loop.close()
+    except Exception as e:
+        print(f"⚠️ Error en broadcast sync: {e}")
 
 
 # ========== PYDANTIC MODELS ==========
@@ -350,6 +381,12 @@ def crear_cambio_adscripcion(
     db.commit()
     db.refresh(cambio)
     
+    # 📡 Broadcast WebSocket para notificar creación
+    try:
+        broadcast_sync("cambio_adscripcion", cambio.id, "CREADO", current_user["user_id"])
+    except Exception as e:
+        print(f"⚠️ Error broadcast: {e}")
+    
     return {"mensaje": "Cambio de adscripción creado", "id": cambio.id, "folio": folio}
 
 
@@ -409,6 +446,12 @@ def enviar_a_revision(
     )
     db.add(notif)
     db.commit()
+    
+    # 📡 Broadcast WebSocket
+    try:
+        broadcast_sync("cambio_adscripcion", cambio_id, "ENVIADO", current_user["user_id"])
+    except Exception as e:
+        print(f"⚠️ Error broadcast: {e}")
     
     return {"mensaje": "Cambio enviado a revisión"}
 
@@ -484,6 +527,13 @@ def ejecutar_accion_cambio(
         raise HTTPException(status_code=400, detail=f"Acción {accion} no válida")
     
     db.commit()
+    
+    # 📡 Enviar notificación WebSocket en tiempo real
+    try:
+        broadcast_sync("cambio_adscripcion", cambio_id, accion, user_id)
+    except Exception as e:
+        print(f"⚠️ Error broadcast: {e}")
+    
     return {"mensaje": f"Cambio {accion.lower()} exitosamente"}
 
 

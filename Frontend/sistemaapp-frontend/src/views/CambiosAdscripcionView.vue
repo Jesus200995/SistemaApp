@@ -698,9 +698,9 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, watch } from 'vue'
+import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
 import { useAuthStore } from '../stores/auth'
-import { getSecureApiUrl } from '../utils/api'
+import { getSecureApiUrl, getSecureWsUrl } from '../utils/api'
 import axios from 'axios'
 import DesktopSidebar from '../components/DesktopSidebar.vue'
 import Swal from 'sweetalert2'
@@ -712,11 +712,18 @@ import {
 const auth = useAuthStore()
 const API_URL = getSecureApiUrl()
 
+// WebSocket para tiempo real
+let ws = null
+let pollingInterval = null
+let reconnectAttempts = 0
+const maxReconnectAttempts = 5
+
 // Estado
 const cambios = ref([])
 const pendientesCambios = ref(0)
 const cambioSeleccionado = ref(null)
 const activeTab = ref('pendientes')
+const lastUpdate = ref(new Date())
 
 // Filtros
 const filtros = ref({
@@ -1431,10 +1438,107 @@ const ejecutarAccion = async () => {
   }
 }
 
+// === TIEMPO REAL: WebSocket + Polling ===
+const connectWebSocket = () => {
+  try {
+    const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:'
+    const apiUrl = getSecureApiUrl()
+    
+    let wsUrl = ''
+    if (apiUrl.startsWith('/')) {
+      wsUrl = `${protocol}//${window.location.host}${apiUrl}/notificaciones/ws`
+    } else {
+      const host = apiUrl.replace(/^(https?:\/\/)/, '').replace(/\/$/, '')
+      wsUrl = `${protocol}//${host}/notificaciones/ws`
+    }
+    
+    console.log('🔌 Solicitudes: Conectando WebSocket...', wsUrl)
+    ws = new WebSocket(wsUrl)
+    
+    ws.onopen = () => {
+      console.log('✅ Solicitudes: WebSocket conectado')
+      reconnectAttempts = 0
+      // Ping cada 30 segundos para mantener conexión
+      setInterval(() => {
+        if (ws?.readyState === WebSocket.OPEN) {
+          ws.send('ping')
+        }
+      }, 30000)
+    }
+    
+    ws.onmessage = (event) => {
+      try {
+        const data = JSON.parse(event.data)
+        console.log('📨 Solicitudes: Mensaje recibido', data)
+        
+        // Si el mensaje está relacionado con cambios de adscripción, recargar
+        if (data.tipo === 'solicitud' || 
+            data.tipo === 'cambio_adscripcion' || 
+            data.mensaje?.includes('solicitud') ||
+            data.mensaje?.includes('cambio') ||
+            data.mensaje?.includes('adscripción')) {
+          console.log('🔄 Solicitudes: Actualizando datos por notificación...')
+          cargarCambios()
+          lastUpdate.value = new Date()
+        }
+      } catch (error) {
+        // No es JSON, ignorar
+      }
+    }
+    
+    ws.onerror = (error) => {
+      console.error('❌ Solicitudes: Error WebSocket:', error)
+    }
+    
+    ws.onclose = () => {
+      console.log('🔌 Solicitudes: WebSocket desconectado')
+      // Intentar reconectar
+      if (reconnectAttempts < maxReconnectAttempts) {
+        reconnectAttempts++
+        console.log(`🔄 Intentando reconexión ${reconnectAttempts}/${maxReconnectAttempts}...`)
+        setTimeout(connectWebSocket, 3000 * reconnectAttempts)
+      }
+    }
+  } catch (error) {
+    console.error('Error conectando WebSocket:', error)
+  }
+}
+
+// Polling como respaldo (cada 10 segundos)
+const startPolling = () => {
+  pollingInterval = setInterval(() => {
+    cargarCambios()
+    lastUpdate.value = new Date()
+  }, 10000)
+}
+
+const stopPolling = () => {
+  if (pollingInterval) {
+    clearInterval(pollingInterval)
+    pollingInterval = null
+  }
+}
+
+const disconnectWebSocket = () => {
+  if (ws) {
+    ws.close()
+    ws = null
+  }
+}
+
 onMounted(() => {
   cargarCambios()
   cargarUsuariosDisponibles()
   cargarUsuariosSubordinados()
+  // Iniciar tiempo real
+  connectWebSocket()
+  startPolling()
+})
+
+onUnmounted(() => {
+  // Limpiar al salir
+  stopPolling()
+  disconnectWebSocket()
 })
 </script>
 
