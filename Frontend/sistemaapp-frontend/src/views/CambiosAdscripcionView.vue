@@ -32,7 +32,7 @@
               @click="activeTab = 'pendientes'"
             >
               <Clock :size="18" />
-              <span>Pendientes</span>
+              <span>Recibidos</span>
               <span v-if="cambiosPendientes.length > 0" class="tab-badge">
                 {{ cambiosPendientes.length }}
               </span>
@@ -59,7 +59,7 @@
           </div>
           <div class="tabs-stats">
             <div class="stat-item">
-              <span class="stat-label">Pendientes:</span>
+              <span class="stat-label">Recibidos:</span>
               <span class="stat-value pending">{{ cambiosPendientes.length }}</span>
             </div>
             <div class="stat-item">
@@ -131,15 +131,18 @@
                 <th>Usuario Afectado</th>
                 <th class="hide-mobile">{{ activeTab === 'enviadas' ? 'Dirigido a' : 'Propuesto por' }}</th>
                 <th class="hide-tablet">SLA</th>
-                <th>Estatus</th>
-                <th>Acciones</th>
+                <th class="text-center">Estatus</th>
+                <th class="text-center">Acciones</th>
               </tr>
             </thead>
             <tbody>
               <tr 
                 v-for="cambio in cambiosFiltradosTab" 
                 :key="cambio.cambio_adscripcion_id"
-                :class="{ vencido: cambio.vencido }"
+                :class="{ 
+                  vencido: cambio.vencido,
+                  'row-autorizado': cambio.estatus === 'AUTORIZADO' && esPropietario(cambio)
+                }"
               >
                 <td class="folio">{{ cambio.folio }}</td>
                 <td>
@@ -168,13 +171,27 @@
                   </span>
                   <span v-else>-</span>
                 </td>
-                <td>
+                <td class="text-center">
                   <span :class="['estatus-badge', cambio.estatus?.toLowerCase()]">
                     {{ formatEstatus(cambio.estatus) }}
                   </span>
                 </td>
-                <td class="actions">
-                  <button @click="verDetalle(cambio)" class="btn-action info" title="Ver detalle">
+                <td class="actions text-center">
+                  <!-- Botón Ver - icono especial animado si está AUTORIZADO -->
+                  <button 
+                    v-if="cambio.estatus === 'AUTORIZADO' && esPropietario(cambio)"
+                    @click="verDetalle(cambio)" 
+                    class="btn-action gold-glow" 
+                    title="¡Solicitud Aprobada! Haz clic para aplicar"
+                  >
+                    <MailOpen :size="16" class="mail-open-animation" />
+                  </button>
+                  <button 
+                    v-else
+                    @click="verDetalle(cambio)" 
+                    class="btn-action info" 
+                    title="Ver detalle"
+                  >
                     <Eye :size="16" />
                   </button>
                   
@@ -206,9 +223,9 @@
                     <X :size="16" />
                   </button>
                   
-                  <!-- Botón Eliminar - solo en historial y si NO está pendiente -->
+                  <!-- Botón Eliminar - solo en historial, si está APLICADO o CANCELADO -->
                   <button 
-                    v-if="activeTab === 'historial' && cambio.estatus !== 'EN_REVISION' && esPropietario(cambio)"
+                    v-if="activeTab === 'historial' && ['APLICADO', 'CANCELADO'].includes(cambio.estatus) && esPropietario(cambio)"
                     @click="eliminarSolicitud(cambio)"
                     class="btn-action danger"
                     title="Eliminar del historial"
@@ -222,7 +239,7 @@
           
           <div v-if="cambiosFiltradosTab.length === 0" class="empty-state">
             <GitBranch :size="48" />
-            <p v-if="activeTab === 'pendientes'">No hay cambios pendientes por revisar</p>
+            <p v-if="activeTab === 'pendientes'">No hay cambios recibidos por revisar</p>
             <p v-else-if="activeTab === 'enviadas'">No has enviado propuestas de cambio</p>
             <p v-else>No hay cambios en el historial</p>
           </div>
@@ -679,7 +696,7 @@ import DesktopSidebar from '../components/DesktopSidebar.vue'
 import Swal from 'sweetalert2'
 import { 
   GitBranch, Plus, RefreshCw, Eye, Send, Check, X, PlayCircle,
-  AlertTriangle, ArrowRight, UserCheck, Search, Clock, SendHorizontal, History, XCircle, User, Calendar, FileText, Trash2
+  AlertTriangle, ArrowRight, UserCheck, Search, Clock, SendHorizontal, History, XCircle, User, Calendar, FileText, Trash2, MailOpen
 } from 'lucide-vue-next'
 
 const auth = useAuthStore()
@@ -1626,6 +1643,11 @@ onMounted(() => {
   color: #6b7280;
 }
 
+.data-table th.text-center,
+.data-table td.text-center {
+  text-align: center;
+}
+
 .data-table tr:hover {
   background: #f9fafb;
 }
@@ -1772,6 +1794,8 @@ onMounted(() => {
 .actions {
   display: flex;
   gap: 0.375rem;
+  justify-content: center;
+  align-items: center;
 }
 
 .btn-action {
@@ -1800,6 +1824,82 @@ onMounted(() => {
 .btn-action.success {
   background: #dcfce7;
   color: #16a34a;
+}
+
+/* Botón dorado brillante para solicitud autorizada */
+.btn-action.gold-glow {
+  background: linear-gradient(135deg, #fef3c7 0%, #fcd34d 50%, #f59e0b 100%);
+  color: #92400e;
+  box-shadow: 0 0 15px rgba(245, 158, 11, 0.5);
+  animation: gold-pulse 1.5s ease-in-out infinite;
+  border: 1px solid #f59e0b;
+}
+
+@keyframes gold-pulse {
+  0%, 100% {
+    box-shadow: 0 0 10px rgba(245, 158, 11, 0.4), 0 0 20px rgba(245, 158, 11, 0.2);
+    transform: scale(1);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(245, 158, 11, 0.6), 0 0 40px rgba(245, 158, 11, 0.3);
+    transform: scale(1.08);
+  }
+}
+
+/* Animación de sobre abriéndose */
+.mail-open-animation {
+  animation: mail-open 2s ease-in-out infinite;
+  transform-origin: center bottom;
+}
+
+@keyframes mail-open {
+  0%, 100% {
+    transform: rotateX(0deg) scale(1);
+  }
+  25% {
+    transform: rotateX(-15deg) scale(1.1);
+  }
+  50% {
+    transform: rotateX(0deg) scale(1.15);
+  }
+  75% {
+    transform: rotateX(10deg) scale(1.1);
+  }
+}
+
+/* Fila con solicitud autorizada - animación dorada notoria */
+tr.row-autorizado {
+  background: linear-gradient(90deg, 
+    rgba(254, 243, 199, 0.3) 0%, 
+    rgba(252, 211, 77, 0.4) 25%,
+    rgba(245, 158, 11, 0.3) 50%,
+    rgba(252, 211, 77, 0.4) 75%,
+    rgba(254, 243, 199, 0.3) 100%) !important;
+  background-size: 200% 100%;
+  animation: gold-shimmer 2s ease-in-out infinite;
+  border-left: 4px solid #f59e0b;
+  box-shadow: inset 0 0 20px rgba(245, 158, 11, 0.1);
+}
+
+@keyframes gold-shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+tr.row-autorizado td {
+  font-weight: 600;
+  color: #92400e;
+}
+
+tr.row-autorizado td .estatus-badge {
+  background: linear-gradient(135deg, #fcd34d 0%, #f59e0b 100%);
+  color: #78350f;
+  font-weight: 700;
+  box-shadow: 0 2px 8px rgba(245, 158, 11, 0.3);
 }
 
 .btn-action.danger {
@@ -2574,49 +2674,51 @@ onMounted(() => {
   background: #dbeafe;
 }
 
-/* === MODAL DETALLE NUEVO - RESPONSIVO === */
+/* === MODAL DETALLE NUEVO - FULL RESPONSIVO SIN SCROLL === */
 .modal-detalle-nuevo {
-  width: 95%;
+  width: 95vw;
   max-width: 540px;
-  max-height: 90vh;
-  overflow-y: auto;
-  border-radius: 16px;
+  height: auto;
+  max-height: 95vh;
+  overflow: hidden;
+  border-radius: clamp(8px, 2vw, 16px);
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  display: flex;
+  flex-direction: column;
+  font-size: clamp(0.7rem, 1.5vw, 0.875rem);
 }
 
 .detalle-header-nuevo {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1rem 1.25rem;
+  padding: clamp(0.5rem, 2vw, 1rem) clamp(0.75rem, 2vw, 1.25rem);
   border-bottom: 1px solid #e5e7eb;
-  position: sticky;
-  top: 0;
   background: white;
-  z-index: 10;
+  flex-shrink: 0;
 }
 
 .header-left {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: clamp(0.25rem, 1vw, 0.75rem);
   flex-wrap: wrap;
 }
 
 .folio-tag {
   background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
   color: white;
-  padding: 0.375rem 0.75rem;
+  padding: clamp(0.2rem, 0.5vw, 0.375rem) clamp(0.4rem, 1vw, 0.75rem);
   border-radius: 6px;
   font-weight: 600;
-  font-size: 0.8rem;
+  font-size: clamp(0.6rem, 1.2vw, 0.8rem);
 }
 
 .estatus-tag {
-  padding: 0.375rem 0.75rem;
+  padding: clamp(0.2rem, 0.5vw, 0.375rem) clamp(0.4rem, 1vw, 0.75rem);
   border-radius: 20px;
   font-weight: 600;
-  font-size: 0.75rem;
+  font-size: clamp(0.6rem, 1.2vw, 0.75rem);
   text-transform: uppercase;
 }
 
@@ -2661,35 +2763,38 @@ onMounted(() => {
   color: #374151;
 }
 
-/* Body del detalle */
+/* Body del detalle - Responsivo */
 .detalle-body {
-  padding: 1.25rem;
+  padding: clamp(0.75rem, 2vw, 1.25rem);
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;
+  gap: clamp(0.5rem, 1.5vw, 1rem);
+  overflow-y: auto;
+  flex: 1;
+  min-height: 0;
 }
 
-/* Grid de información */
+/* Grid de información - Responsivo */
 .info-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: 0.75rem;
+  grid-template-columns: repeat(auto-fit, minmax(min(120px, 100%), 1fr));
+  gap: clamp(0.4rem, 1vw, 0.75rem);
 }
 
 .info-item {
   display: flex;
   align-items: flex-start;
-  gap: 0.75rem;
-  padding: 0.875rem;
+  gap: clamp(0.4rem, 1vw, 0.75rem);
+  padding: clamp(0.5rem, 1.5vw, 0.875rem);
   background: #f9fafb;
-  border-radius: 10px;
+  border-radius: clamp(6px, 1.5vw, 10px);
   border: 1px solid #e5e7eb;
 }
 
 .info-icon-box {
-  width: 36px;
-  height: 36px;
-  border-radius: 8px;
+  width: clamp(28px, 5vw, 36px);
+  height: clamp(28px, 5vw, 36px);
+  border-radius: clamp(4px, 1vw, 8px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -2719,7 +2824,7 @@ onMounted(() => {
 }
 
 .info-label-sm {
-  font-size: 0.65rem;
+  font-size: clamp(0.55rem, 1vw, 0.65rem);
   color: #9ca3af;
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -2729,7 +2834,7 @@ onMounted(() => {
 .info-value-lg {
   font-weight: 600;
   color: #1f2937;
-  font-size: 0.85rem;
+  font-size: clamp(0.7rem, 1.3vw, 0.85rem);
   word-break: break-word;
 }
 
@@ -2756,23 +2861,23 @@ onMounted(() => {
   color: #1d4ed8;
 }
 
-/* Sección de personas */
+/* Sección de personas - Responsivo */
 .personas-section {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: clamp(0.4rem, 1vw, 0.75rem);
   flex-wrap: wrap;
   justify-content: center;
 }
 
 .persona-box {
   flex: 1;
-  min-width: 140px;
-  max-width: 200px;
+  min-width: min(120px, 100%);
+  max-width: 180px;
   background: white;
   border: 1px solid #e5e7eb;
-  border-radius: 10px;
-  padding: 0.875rem;
+  border-radius: clamp(6px, 1.5vw, 10px);
+  padding: clamp(0.5rem, 1.5vw, 0.875rem);
   text-align: center;
 }
 
@@ -2802,13 +2907,13 @@ onMounted(() => {
 }
 
 .avatar-circle {
-  width: 36px;
-  height: 36px;
+  width: clamp(28px, 5vw, 36px);
+  height: clamp(28px, 5vw, 36px);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.75rem;
+  font-size: clamp(0.6rem, 1.2vw, 0.75rem);
   font-weight: 600;
   color: white;
   flex-shrink: 0;
@@ -3001,16 +3106,80 @@ onMounted(() => {
 }
 
 .btn-accion.aplicar {
-  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
-  color: white;
-  padding: 0.75rem 1.5rem;
-  font-weight: 600;
+  background: linear-gradient(135deg, 
+    rgba(134, 239, 172, 0.9) 0%, 
+    rgba(74, 222, 128, 0.95) 25%,
+    rgba(34, 197, 94, 1) 50%,
+    rgba(74, 222, 128, 0.95) 75%,
+    rgba(134, 239, 172, 0.9) 100%);
+  background-size: 200% 200%;
+  animation: liquid-flow 3s ease-in-out infinite;
+  color: #ffffff;
+  padding: 0.875rem 2rem;
+  font-weight: 700;
+  font-size: 0.95rem;
+  letter-spacing: 0.02em;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 12px;
+  box-shadow: 
+    0 4px 15px rgba(34, 197, 94, 0.4),
+    0 0 30px rgba(74, 222, 128, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10px);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3), 0 0 10px rgba(255, 255, 255, 0.2);
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-accion.aplicar::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.4),
+    transparent
+  );
+  animation: glass-shine 2s ease-in-out infinite;
+}
+
+@keyframes liquid-flow {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+@keyframes glass-shine {
+  0% {
+    left: -100%;
+  }
+  50%, 100% {
+    left: 100%;
+  }
 }
 
 .btn-accion.aplicar:hover {
-  background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+  background: linear-gradient(135deg, 
+    rgba(74, 222, 128, 1) 0%, 
+    rgba(34, 197, 94, 1) 25%,
+    rgba(22, 163, 74, 1) 50%,
+    rgba(34, 197, 94, 1) 75%,
+    rgba(74, 222, 128, 1) 100%);
+  background-size: 200% 200%;
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 
+    0 8px 25px rgba(34, 197, 94, 0.5),
+    0 0 40px rgba(74, 222, 128, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.6),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.15);
 }
 
 .detalle-footer.autorizado {
@@ -3039,40 +3208,49 @@ onMounted(() => {
 /* Responsive */
 @media (max-width: 500px) {
   .modal-detalle-nuevo {
-    width: 100%;
+    width: 100vw;
+    height: 100vh;
     max-height: 100vh;
     border-radius: 0;
+    font-size: clamp(0.65rem, 3vw, 0.8rem);
   }
   
   .detalle-header-nuevo {
-    padding: 1rem;
+    padding: 0.75rem;
   }
   
   .header-left {
-    gap: 0.5rem;
+    gap: 0.4rem;
   }
   
   .folio-tag {
-    font-size: 0.7rem;
-    padding: 0.25rem 0.5rem;
+    font-size: 0.65rem;
+    padding: 0.2rem 0.4rem;
   }
   
   .detalle-body {
-    padding: 1rem;
-    gap: 1rem;
+    padding: 0.75rem;
+    gap: 0.75rem;
   }
   
   .info-grid {
     grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
+  
+  .info-item {
+    padding: 0.5rem;
   }
   
   .personas-section {
     flex-direction: column;
+    gap: 0.5rem;
   }
   
   .persona-box {
     width: 100%;
     max-width: none;
+    padding: 0.5rem;
   }
   
   .arrow-icon {
@@ -3081,7 +3259,8 @@ onMounted(() => {
   
   .detalle-footer {
     flex-direction: column;
-    padding: 1rem;
+    padding: 0.75rem;
+    gap: 0.5rem;
   }
   
   .acciones-derecha {
@@ -3092,11 +3271,52 @@ onMounted(() => {
   .btn-accion {
     flex: 1;
     justify-content: center;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.75rem;
   }
   
   .btn-accion.cancelar {
     width: 100%;
     justify-content: center;
+  }
+  
+  .usuario-afectado-card {
+    padding: 0.5rem 0.75rem;
+  }
+  
+  .seccion-texto {
+    padding: 0.75rem;
+  }
+  
+  .texto-contenido {
+    font-size: 0.75rem;
+  }
+}
+
+/* Landscape en móvil */
+@media (max-height: 500px) and (orientation: landscape) {
+  .modal-detalle-nuevo {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+  
+  .detalle-header-nuevo {
+    width: 100%;
+    padding: 0.5rem 1rem;
+  }
+  
+  .detalle-body {
+    flex: 1;
+    padding: 0.5rem 1rem;
+  }
+  
+  .detalle-footer {
+    width: 100%;
+    padding: 0.5rem 1rem;
+  }
+  
+  .info-grid {
+    grid-template-columns: repeat(3, 1fr);
   }
 }
 </style>
