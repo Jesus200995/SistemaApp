@@ -73,51 +73,61 @@
           </div>
         </div>
 
-        <!-- Filtros -->
+        <!-- Filtros Modernos -->
         <div class="filters-section">
-          <div class="filter-group">
-            <label>Estatus</label>
-            <select v-model="filtros.estatus">
-              <option value="">Todos</option>
-              <option value="EN_REVISION">En Revisión</option>
-              <option value="AUTORIZADO">Autorizado</option>
-              <option value="APLICADO">Aplicado</option>
-              <option value="RECHAZADO">Rechazado</option>
-              <option value="CANCELADO">Cancelado</option>
-            </select>
+          <div class="filters-grid">
+            <div class="filter-group">
+              <label><Search :size="12" /> Estatus</label>
+              <select v-model="filtros.estatus">
+                <option value="">Todos</option>
+                <option value="EN_REVISION">En Revisión</option>
+                <option value="AUTORIZADO">Autorizado</option>
+                <option value="APLICADO">Aplicado</option>
+                <option value="RECHAZADO">Rechazado</option>
+                <option value="CANCELADO">Cancelado</option>
+              </select>
+            </div>
+            
+            <div class="filter-group">
+              <label><GitBranch :size="12" /> Tipo</label>
+              <select v-model="filtros.tipo_cambio">
+                <option value="">Todos</option>
+                <option value="ALTA">Alta</option>
+                <option value="BAJA">Baja</option>
+                <option value="REASIGNACION">Reasignación</option>
+              </select>
+            </div>
+            
+            <div class="filter-group">
+              <label><ArrowRight :size="12" /> Objeto</label>
+              <select v-model="filtros.objeto">
+                <option value="">Todos</option>
+                <option value="PERSONA_CAC">Persona ↔ CAC</option>
+                <option value="PERSONA_RUTA">Persona ↔ Ruta</option>
+                <option value="CAC_RUTA">CAC ↔ Ruta</option>
+              </select>
+            </div>
+            
+            <div class="filter-group filter-check">
+              <label class="checkbox-modern">
+                <input type="checkbox" v-model="filtros.vencidos" />
+                <span class="checkmark"></span>
+                <AlertTriangle :size="12" />
+                Vencidos
+              </label>
+            </div>
           </div>
           
-          <div class="filter-group">
-            <label>Tipo</label>
-            <select v-model="filtros.tipo_cambio">
-              <option value="">Todos</option>
-              <option value="ALTA">Alta</option>
-              <option value="BAJA">Baja</option>
-              <option value="REASIGNACION">Reasignación</option>
-            </select>
+          <div class="filter-actions">
+            <button @click="limpiarFiltros" class="btn-filter-clear" title="Limpiar filtros">
+              <X :size="14" />
+              <span class="hide-mobile-text">Limpiar</span>
+            </button>
+            <button @click="cargarCambios" class="btn-filter-refresh" title="Actualizar">
+              <RefreshCw :size="14" />
+              <span class="hide-mobile-text">Actualizar</span>
+            </button>
           </div>
-          
-          <div class="filter-group">
-            <label>Objeto</label>
-            <select v-model="filtros.objeto">
-              <option value="">Todos</option>
-              <option value="PERSONA_CAC">Persona ↔ CAC</option>
-              <option value="PERSONA_RUTA">Persona ↔ Ruta</option>
-              <option value="CAC_RUTA">CAC ↔ Ruta</option>
-            </select>
-          </div>
-          
-          <div class="filter-group">
-            <label class="checkbox-label">
-              <input type="checkbox" v-model="filtros.vencidos" />
-              Solo vencidos
-            </label>
-          </div>
-          
-          <button @click="cargarCambios" class="btn-filter">
-            <RefreshCw :size="16" />
-            Actualizar
-          </button>
         </div>
 
         <!-- Tabla de Cambios -->
@@ -223,9 +233,9 @@
                     <X :size="16" />
                   </button>
                   
-                  <!-- Botón Eliminar - solo en historial, si está APLICADO o CANCELADO -->
+                  <!-- Botón Eliminar - solo en historial, si está CANCELADO -->
                   <button 
-                    v-if="activeTab === 'historial' && ['APLICADO', 'CANCELADO'].includes(cambio.estatus) && esPropietario(cambio)"
+                    v-if="activeTab === 'historial' && cambio.estatus === 'CANCELADO' && esPropietario(cambio)"
                     @click="eliminarSolicitud(cambio)"
                     class="btn-action danger"
                     title="Eliminar del historial"
@@ -688,7 +698,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 import { useAuthStore } from '../stores/auth'
 import { getSecureApiUrl } from '../utils/api'
 import axios from 'axios'
@@ -715,6 +725,11 @@ const filtros = ref({
   objeto: '',
   vencidos: false
 })
+
+// Watch para filtros en tiempo real
+watch(filtros, () => {
+  cargarCambios()
+}, { deep: true })
 
 // Modales
 const showCrearCambio = ref(false)
@@ -1092,6 +1107,16 @@ const cambiosFiltradosTab = computed(() => {
 })
 
 // Métodos
+const limpiarFiltros = () => {
+  filtros.value = {
+    estatus: '',
+    tipo_cambio: '',
+    objeto: '',
+    vencidos: false
+  }
+  cargarCambios()
+}
+
 const cargarCambios = async () => {
   try {
     const params = {}
@@ -1573,50 +1598,203 @@ onMounted(() => {
   display: flex;
   flex-wrap: wrap;
   gap: 1rem;
-  align-items: flex-end;
-  background: white;
-  padding: 1rem;
-  border-radius: 12px;
+  align-items: center;
+  justify-content: space-between;
+  background: linear-gradient(135deg, #ffffff 0%, #f9fafb 100%);
+  padding: clamp(0.75rem, 2vw, 1.25rem);
+  border-radius: 16px;
   margin-bottom: 1rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  border: 1px solid #e5e7eb;
+}
+
+.filters-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: clamp(0.5rem, 1.5vw, 1rem);
+  align-items: flex-end;
+  flex: 1;
 }
 
 .filter-group {
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
+  gap: 0.35rem;
+  min-width: 0;
 }
 
 .filter-group label {
-  font-size: 0.75rem;
-  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: clamp(0.65rem, 1.2vw, 0.75rem);
+  font-weight: 600;
   color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
 }
 
 .filter-group select {
-  padding: 0.5rem 0.75rem;
-  border: 1px solid #d1d5db;
-  border-radius: 6px;
-  font-size: 0.875rem;
-  min-width: 140px;
+  padding: clamp(0.4rem, 1vw, 0.6rem) clamp(0.5rem, 1.2vw, 0.875rem);
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  font-size: clamp(0.75rem, 1.3vw, 0.875rem);
+  min-width: clamp(100px, 15vw, 150px);
+  background: white;
+  color: #374151;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.5rem center;
+  padding-right: 2rem;
 }
 
-.checkbox-label {
+.filter-group select:hover {
+  border-color: #16a34a;
+  box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.1);
+}
+
+.filter-group select:focus {
+  outline: none;
+  border-color: #16a34a;
+  box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.15);
+}
+
+.filter-check {
+  justify-content: flex-end;
+}
+
+.checkbox-modern {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  font-size: 0.875rem;
+  font-size: clamp(0.7rem, 1.2vw, 0.8rem);
+  font-weight: 500;
+  color: #4b5563;
   cursor: pointer;
+  padding: clamp(0.4rem, 1vw, 0.5rem) clamp(0.6rem, 1.2vw, 0.875rem);
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  transition: all 0.2s ease;
 }
 
-.btn-filter {
+.checkbox-modern:hover {
+  border-color: #f59e0b;
+  background: #fffbeb;
+}
+
+.checkbox-modern input {
+  display: none;
+}
+
+.checkbox-modern .checkmark {
+  width: 16px;
+  height: 16px;
+  border: 2px solid #d1d5db;
+  border-radius: 4px;
   display: flex;
   align-items: center;
-  gap: 0.375rem;
-  padding: 0.5rem 0.75rem;
-  background: #f3f4f6;
-  border: 1px solid #d1d5db;
-  border-radius: 6px;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.checkbox-modern input:checked + .checkmark {
+  background: #f59e0b;
+  border-color: #f59e0b;
+}
+
+.checkbox-modern input:checked + .checkmark::after {
+  content: '✓';
+  color: white;
+  font-size: 10px;
+  font-weight: bold;
+}
+
+.filter-actions {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.btn-filter-clear,
+.btn-filter-refresh {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: clamp(0.4rem, 1vw, 0.6rem) clamp(0.6rem, 1.2vw, 0.875rem);
+  border-radius: 10px;
+  font-size: clamp(0.7rem, 1.2vw, 0.8rem);
+  font-weight: 500;
   cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-filter-clear {
+  background: #f3f4f6;
+  border: 1px solid #e5e7eb;
+  color: #6b7280;
+}
+
+.btn-filter-clear:hover {
+  background: #fee2e2;
+  border-color: #fecaca;
+  color: #dc2626;
+}
+
+.btn-filter-refresh {
+  background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
+  border: none;
+  color: white;
+  box-shadow: 0 2px 6px rgba(22, 163, 74, 0.25);
+}
+
+.btn-filter-refresh:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(22, 163, 74, 0.35);
+}
+
+.hide-mobile-text {
+  display: inline;
+}
+
+@media (max-width: 600px) {
+  .filters-section {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .filters-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+  }
+  
+  .filter-group select {
+    width: 100%;
+    min-width: unset;
+  }
+  
+  .filter-check {
+    grid-column: span 2;
+  }
+  
+  .filter-actions {
+    width: 100%;
+    justify-content: stretch;
+  }
+  
+  .btn-filter-clear,
+  .btn-filter-refresh {
+    flex: 1;
+    justify-content: center;
+  }
+  
+  .hide-mobile-text {
+    display: none;
+  }
 }
 
 .table-container {
