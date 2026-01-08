@@ -299,6 +299,7 @@
                   <option value="">Todos los tipos</option>
                   <option value="ALTA">Altas</option>
                   <option value="BAJA">Bajas</option>
+                  <option value="BAJA_VIGENTE">Bajas vigentes (siguen inactivos)</option>
                   <option value="REASIGNACION">Reasignaciones</option>
                 </select>
               </div>
@@ -972,9 +973,14 @@ const cargarVistaPrevia = async () => {
       params.append('anio', anio)
     }
     
-    if (reporteFiltros.value.tipoCambio) {
+    // Manejar el filtro especial de BAJA_VIGENTE
+    if (reporteFiltros.value.tipoCambio === 'BAJA_VIGENTE') {
+      params.append('tipo_cambio', 'BAJA')
+      params.append('solo_vigentes', 'true')
+    } else if (reporteFiltros.value.tipoCambio) {
       params.append('tipo_cambio', reporteFiltros.value.tipoCambio)
     }
+    
     if (reporteFiltros.value.estatus) {
       params.append('estatus', reporteFiltros.value.estatus)
     }
@@ -1004,9 +1010,14 @@ const construirUrlReporte = (baseUrl) => {
     params.append('anio', anio)
   }
   
-  if (reporteFiltros.value.tipoCambio) {
+  // Manejar el filtro especial de BAJA_VIGENTE
+  if (reporteFiltros.value.tipoCambio === 'BAJA_VIGENTE') {
+    params.append('tipo_cambio', 'BAJA')
+    params.append('solo_vigentes', 'true')
+  } else if (reporteFiltros.value.tipoCambio) {
     params.append('tipo_cambio', reporteFiltros.value.tipoCambio)
   }
+  
   if (reporteFiltros.value.estatus) {
     params.append('estatus', reporteFiltros.value.estatus)
   }
