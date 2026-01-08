@@ -1147,17 +1147,12 @@ def _obtener_datos_reporte_interno(
     semana: Optional[int],
     fecha_inicio: Optional[str],
     fecha_fin: Optional[str],
-    solo_vigentes: Optional[bool],  # NUEVO: Para filtrar bajas/altas vigentes
     current_user: dict,
     db: Session
 ):
     """
     Función interna para obtener datos de reportes.
     Usada tanto por el endpoint como por las exportaciones.
-    
-    solo_vigentes: Si es True, filtra para mostrar solo cambios "vigentes":
-    - Para BAJA: Solo personas que siguen inactivas (no fueron dadas de alta después)
-    - Para ALTA: Solo personas que siguen activas (no fueron dadas de baja después)
     """
     user_id = current_user["user_id"]
     rol = current_user["rol"]
@@ -1270,24 +1265,11 @@ def _obtener_datos_reporte_interno(
         
         persona_afectada_nombre = ""
         persona_afectada_curp = ""
-        persona_activa = True  # Estado actual de la persona
         if c.persona_id:
             u = db.query(User).filter(User.id == c.persona_id).first()
             if u:
                 persona_afectada_nombre = u.nombre
                 persona_afectada_curp = u.curp or ""
-                persona_activa = u.is_active if hasattr(u, 'is_active') else True
-        
-        # Filtrar por vigencia si se solicita
-        if solo_vigentes:
-            # Para BAJA: solo incluir si la persona sigue inactiva
-            if c.tipo_cambio == "BAJA" and c.estatus == "APLICADO":
-                if persona_activa:
-                    continue  # Persona fue reactivada, omitir
-            # Para ALTA: solo incluir si la persona sigue activa
-            elif c.tipo_cambio == "ALTA" and c.estatus == "APLICADO":
-                if not persona_activa:
-                    continue  # Persona fue dada de baja después, omitir
         
         result.append({
             "id": c.id,
@@ -1302,8 +1284,7 @@ def _obtener_datos_reporte_interno(
             "destinatario": destinatario_nombre,
             "persona_afectada": persona_afectada_nombre,
             "curp_afectado": persona_afectada_curp,
-            "observaciones": c.observaciones or "",
-            "persona_activa": persona_activa  # Estado actual
+            "observaciones": c.observaciones or ""
         })
     
     # Estadísticas resumidas
@@ -1315,10 +1296,6 @@ def _obtener_datos_reporte_interno(
     pendientes = len([r for r in result if r["estatus"] in ["EN_REVISION", "AUTORIZADO"]])
     rechazados = len([r for r in result if r["estatus"] == "RECHAZADO"])
     cancelados = len([r for r in result if r["estatus"] == "CANCELADO"])
-    
-    # Contadores de vigencia (bajas donde la persona sigue inactiva, altas donde sigue activa)
-    bajas_vigentes = len([r for r in result if r["tipo_cambio"] == "BAJA" and r["estatus"] == "APLICADO" and not r.get("persona_activa", True)])
-    altas_vigentes = len([r for r in result if r["tipo_cambio"] == "ALTA" and r["estatus"] == "APLICADO" and r.get("persona_activa", True)])
     
     return {
         "items": result,
@@ -1334,10 +1311,6 @@ def _obtener_datos_reporte_interno(
                 "pendientes": pendientes,
                 "rechazados": rechazados,
                 "cancelados": cancelados
-            },
-            "vigentes": {
-                "bajas_vigentes": bajas_vigentes,
-                "altas_vigentes": altas_vigentes
             }
         }
     }
@@ -1353,16 +1326,11 @@ def obtener_datos_reporte_endpoint(
     semana: Optional[int] = None,
     fecha_inicio: Optional[str] = None,
     fecha_fin: Optional[str] = None,
-    solo_vigentes: Optional[bool] = False,  # NUEVO: Filtrar solo bajas/altas vigentes
     current_user: dict = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
     """
     Endpoint para obtener datos de reportes del usuario actual.
-    
-    solo_vigentes: Si es True, filtra para mostrar solo:
-    - Bajas donde la persona sigue inactiva
-    - Altas donde la persona sigue activa
     """
     return _obtener_datos_reporte_interno(
         tipo_cambio=tipo_cambio,
@@ -1373,7 +1341,6 @@ def obtener_datos_reporte_endpoint(
         semana=semana,
         fecha_inicio=fecha_inicio,
         fecha_fin=fecha_fin,
-        solo_vigentes=solo_vigentes,
         current_user=current_user,
         db=db
     )
@@ -1389,7 +1356,6 @@ def exportar_excel(
     semana: Optional[int] = None,
     fecha_inicio: Optional[str] = None,
     fecha_fin: Optional[str] = None,
-    solo_vigentes: Optional[bool] = False,
     current_user: dict = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
@@ -1413,7 +1379,6 @@ def exportar_excel(
             semana=semana,
             fecha_inicio=fecha_inicio,
             fecha_fin=fecha_fin,
-            solo_vigentes=solo_vigentes,
             current_user=current_user,
             db=db
         )
@@ -1536,7 +1501,6 @@ def exportar_pdf(
     semana: Optional[int] = None,
     fecha_inicio: Optional[str] = None,
     fecha_fin: Optional[str] = None,
-    solo_vigentes: Optional[bool] = False,
     current_user: dict = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
@@ -1563,7 +1527,6 @@ def exportar_pdf(
             semana=semana,
             fecha_inicio=fecha_inicio,
             fecha_fin=fecha_fin,
-            solo_vigentes=solo_vigentes,
             current_user=current_user,
             db=db
         )
