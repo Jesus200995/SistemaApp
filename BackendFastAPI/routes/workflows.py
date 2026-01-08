@@ -1364,122 +1364,131 @@ def exportar_excel(
         import openpyxl
         from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
         from openpyxl.utils import get_column_letter
-    except ImportError:
-        raise HTTPException(status_code=500, detail="openpyxl no está instalado. Ejecuta: pip install openpyxl")
+    except ImportError as e:
+        print(f"❌ Error importando openpyxl: {e}")
+        raise HTTPException(status_code=500, detail="La librería openpyxl no está instalada en el servidor. Contacte al administrador.")
     
-    # Obtener datos usando la función interna
-    datos = _obtener_datos_reporte_interno(
-        tipo_cambio=tipo_cambio,
-        estatus=estatus,
-        periodo=periodo,
-        anio=anio,
-        mes=mes,
-        semana=semana,
-        fecha_inicio=fecha_inicio,
-        fecha_fin=fecha_fin,
-        current_user=current_user,
-        db=db
-    )
-    
-    # Crear workbook
-    wb = openpyxl.Workbook()
-    ws = wb.active
-    ws.title = "Reporte Solicitudes"
-    
-    # Estilos
-    header_font = Font(bold=True, color="FFFFFF", size=11)
-    header_fill = PatternFill(start_color="16A34A", end_color="16A34A", fill_type="solid")
-    header_alignment = Alignment(horizontal="center", vertical="center", wrap_text=True)
-    cell_alignment = Alignment(horizontal="left", vertical="center", wrap_text=True)
-    thin_border = Border(
-        left=Side(style='thin', color='E5E7EB'),
-        right=Side(style='thin', color='E5E7EB'),
-        top=Side(style='thin', color='E5E7EB'),
-        bottom=Side(style='thin', color='E5E7EB')
-    )
-    
-    # Título del reporte
-    ws.merge_cells('A1:K1')
-    ws['A1'] = "REPORTE DE SOLICITUDES - SISTEMA DE GESTIÓN"
-    ws['A1'].font = Font(bold=True, size=14, color="16A34A")
-    ws['A1'].alignment = Alignment(horizontal="center")
-    
-    # Fecha de generación
-    ws.merge_cells('A2:K2')
-    ws['A2'] = f"Generado: {datetime.now().strftime('%d/%m/%Y %H:%M')}"
-    ws['A2'].font = Font(italic=True, size=10, color="6B7280")
-    ws['A2'].alignment = Alignment(horizontal="center")
-    
-    # Resumen
-    resumen = datos["resumen"]
-    ws['A4'] = "RESUMEN:"
-    ws['A4'].font = Font(bold=True, size=11)
-    ws['A5'] = f"Total: {resumen['total']} | Altas: {resumen['por_tipo']['altas']} | Bajas: {resumen['por_tipo']['bajas']} | Reasignaciones: {resumen['por_tipo']['reasignaciones']}"
-    ws['A6'] = f"Aplicados: {resumen['por_estatus']['aplicados']} | Pendientes: {resumen['por_estatus']['pendientes']} | Rechazados: {resumen['por_estatus']['rechazados']} | Cancelados: {resumen['por_estatus']['cancelados']}"
-    
-    # Encabezados de la tabla
-    headers = ["Folio", "Tipo", "Objeto", "Estatus", "Fecha Creación", "Persona Afectada", "CURP", "Solicitante", "Destinatario", "Descripción", "Observaciones"]
-    
-    for col, header in enumerate(headers, 1):
-        cell = ws.cell(row=8, column=col, value=header)
-        cell.font = header_font
-        cell.fill = header_fill
-        cell.alignment = header_alignment
-        cell.border = thin_border
-    
-    # Datos
-    for row_idx, item in enumerate(datos["items"], 9):
-        ws.cell(row=row_idx, column=1, value=item["folio"]).border = thin_border
-        ws.cell(row=row_idx, column=2, value=item["tipo_cambio"]).border = thin_border
-        ws.cell(row=row_idx, column=3, value=item["objeto"]).border = thin_border
-        ws.cell(row=row_idx, column=4, value=item["estatus"]).border = thin_border
-        ws.cell(row=row_idx, column=5, value=item["fecha_creacion"]).border = thin_border
-        ws.cell(row=row_idx, column=6, value=item["persona_afectada"]).border = thin_border
-        ws.cell(row=row_idx, column=7, value=item["curp_afectado"]).border = thin_border
-        ws.cell(row=row_idx, column=8, value=item["propuesto_por"]).border = thin_border
-        ws.cell(row=row_idx, column=9, value=item["destinatario"]).border = thin_border
-        ws.cell(row=row_idx, column=10, value=item["resumen"]).border = thin_border
-        ws.cell(row=row_idx, column=11, value=item["observaciones"]).border = thin_border
+    try:
+        # Obtener datos usando la función interna
+        datos = _obtener_datos_reporte_interno(
+            tipo_cambio=tipo_cambio,
+            estatus=estatus,
+            periodo=periodo,
+            anio=anio,
+            mes=mes,
+            semana=semana,
+            fecha_inicio=fecha_inicio,
+            fecha_fin=fecha_fin,
+            current_user=current_user,
+            db=db
+        )
         
-        # Aplicar colores según estatus
-        estatus_cell = ws.cell(row=row_idx, column=4)
-        if item["estatus"] == "APLICADO":
-            estatus_cell.fill = PatternFill(start_color="DCFCE7", end_color="DCFCE7", fill_type="solid")
-        elif item["estatus"] == "EN_REVISION":
-            estatus_cell.fill = PatternFill(start_color="FEF3C7", end_color="FEF3C7", fill_type="solid")
-        elif item["estatus"] == "RECHAZADO":
-            estatus_cell.fill = PatternFill(start_color="FEE2E2", end_color="FEE2E2", fill_type="solid")
-        elif item["estatus"] == "AUTORIZADO":
-            estatus_cell.fill = PatternFill(start_color="DBEAFE", end_color="DBEAFE", fill_type="solid")
+        # Crear workbook
+        wb = openpyxl.Workbook()
+        ws = wb.active
+        ws.title = "Reporte Solicitudes"
         
-        # Colores según tipo
-        tipo_cell = ws.cell(row=row_idx, column=2)
-        if item["tipo_cambio"] == "ALTA":
-            tipo_cell.fill = PatternFill(start_color="DCFCE7", end_color="DCFCE7", fill_type="solid")
-        elif item["tipo_cambio"] == "BAJA":
-            tipo_cell.fill = PatternFill(start_color="FEE2E2", end_color="FEE2E2", fill_type="solid")
-        elif item["tipo_cambio"] == "REASIGNACION":
-            tipo_cell.fill = PatternFill(start_color="DBEAFE", end_color="DBEAFE", fill_type="solid")
-    
-    # Ajustar ancho de columnas
-    column_widths = [18, 14, 16, 14, 18, 25, 20, 22, 22, 35, 35]
-    for i, width in enumerate(column_widths, 1):
-        ws.column_dimensions[get_column_letter(i)].width = width
-    
-    # Guardar en buffer
-    buffer = io.BytesIO()
-    wb.save(buffer)
-    buffer.seek(0)
-    
-    # Generar nombre de archivo
-    fecha_str = datetime.now().strftime("%Y%m%d_%H%M%S")
-    filename = f"reporte_solicitudes_{fecha_str}.xlsx"
-    
-    return StreamingResponse(
-        buffer,
-        media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-        headers={"Content-Disposition": f"attachment; filename={filename}"}
-    )
+        # Estilos
+        header_font = Font(bold=True, color="FFFFFF", size=11)
+        header_fill = PatternFill(start_color="16A34A", end_color="16A34A", fill_type="solid")
+        header_alignment = Alignment(horizontal="center", vertical="center", wrap_text=True)
+        cell_alignment = Alignment(horizontal="left", vertical="center", wrap_text=True)
+        thin_border = Border(
+            left=Side(style='thin', color='E5E7EB'),
+            right=Side(style='thin', color='E5E7EB'),
+            top=Side(style='thin', color='E5E7EB'),
+            bottom=Side(style='thin', color='E5E7EB')
+        )
+        
+        # Título del reporte
+        ws.merge_cells('A1:K1')
+        ws['A1'] = "REPORTE DE SOLICITUDES - SISTEMA DE GESTIÓN"
+        ws['A1'].font = Font(bold=True, size=14, color="16A34A")
+        ws['A1'].alignment = Alignment(horizontal="center")
+        
+        # Fecha de generación
+        ws.merge_cells('A2:K2')
+        ws['A2'] = f"Generado: {datetime.now().strftime('%d/%m/%Y %H:%M')}"
+        ws['A2'].font = Font(italic=True, size=10, color="6B7280")
+        ws['A2'].alignment = Alignment(horizontal="center")
+        
+        # Resumen
+        resumen = datos["resumen"]
+        ws['A4'] = "RESUMEN:"
+        ws['A4'].font = Font(bold=True, size=11)
+        ws['A5'] = f"Total: {resumen['total']} | Altas: {resumen['por_tipo']['altas']} | Bajas: {resumen['por_tipo']['bajas']} | Reasignaciones: {resumen['por_tipo']['reasignaciones']}"
+        ws['A6'] = f"Aplicados: {resumen['por_estatus']['aplicados']} | Pendientes: {resumen['por_estatus']['pendientes']} | Rechazados: {resumen['por_estatus']['rechazados']} | Cancelados: {resumen['por_estatus']['cancelados']}"
+        
+        # Encabezados de la tabla
+        headers = ["Folio", "Tipo", "Objeto", "Estatus", "Fecha Creación", "Persona Afectada", "CURP", "Solicitante", "Destinatario", "Descripción", "Observaciones"]
+        
+        for col, header in enumerate(headers, 1):
+            cell = ws.cell(row=8, column=col, value=header)
+            cell.font = header_font
+            cell.fill = header_fill
+            cell.alignment = header_alignment
+            cell.border = thin_border
+        
+        # Datos
+        for row_idx, item in enumerate(datos["items"], 9):
+            ws.cell(row=row_idx, column=1, value=item["folio"]).border = thin_border
+            ws.cell(row=row_idx, column=2, value=item["tipo_cambio"]).border = thin_border
+            ws.cell(row=row_idx, column=3, value=item["objeto"]).border = thin_border
+            ws.cell(row=row_idx, column=4, value=item["estatus"]).border = thin_border
+            ws.cell(row=row_idx, column=5, value=item["fecha_creacion"]).border = thin_border
+            ws.cell(row=row_idx, column=6, value=item["persona_afectada"]).border = thin_border
+            ws.cell(row=row_idx, column=7, value=item["curp_afectado"]).border = thin_border
+            ws.cell(row=row_idx, column=8, value=item["propuesto_por"]).border = thin_border
+            ws.cell(row=row_idx, column=9, value=item["destinatario"]).border = thin_border
+            ws.cell(row=row_idx, column=10, value=item["resumen"]).border = thin_border
+            ws.cell(row=row_idx, column=11, value=item["observaciones"]).border = thin_border
+            
+            # Aplicar colores según estatus
+            estatus_cell = ws.cell(row=row_idx, column=4)
+            if item["estatus"] == "APLICADO":
+                estatus_cell.fill = PatternFill(start_color="DCFCE7", end_color="DCFCE7", fill_type="solid")
+            elif item["estatus"] == "EN_REVISION":
+                estatus_cell.fill = PatternFill(start_color="FEF3C7", end_color="FEF3C7", fill_type="solid")
+            elif item["estatus"] == "RECHAZADO":
+                estatus_cell.fill = PatternFill(start_color="FEE2E2", end_color="FEE2E2", fill_type="solid")
+            elif item["estatus"] == "AUTORIZADO":
+                estatus_cell.fill = PatternFill(start_color="DBEAFE", end_color="DBEAFE", fill_type="solid")
+            
+            # Colores según tipo
+            tipo_cell = ws.cell(row=row_idx, column=2)
+            if item["tipo_cambio"] == "ALTA":
+                tipo_cell.fill = PatternFill(start_color="DCFCE7", end_color="DCFCE7", fill_type="solid")
+            elif item["tipo_cambio"] == "BAJA":
+                tipo_cell.fill = PatternFill(start_color="FEE2E2", end_color="FEE2E2", fill_type="solid")
+            elif item["tipo_cambio"] == "REASIGNACION":
+                tipo_cell.fill = PatternFill(start_color="DBEAFE", end_color="DBEAFE", fill_type="solid")
+        
+        # Ajustar ancho de columnas
+        column_widths = [18, 14, 16, 14, 18, 25, 20, 22, 22, 35, 35]
+        for i, width in enumerate(column_widths, 1):
+            ws.column_dimensions[get_column_letter(i)].width = width
+        
+        # Guardar en buffer
+        buffer = io.BytesIO()
+        wb.save(buffer)
+        buffer.seek(0)
+        
+        # Generar nombre de archivo
+        fecha_str = datetime.now().strftime("%Y%m%d_%H%M%S")
+        filename = f"reporte_solicitudes_{fecha_str}.xlsx"
+        
+        return StreamingResponse(
+            buffer,
+            media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            headers={"Content-Disposition": f"attachment; filename={filename}"}
+        )
+    except HTTPException:
+        raise
+    except Exception as e:
+        print(f"❌ Error generando Excel: {str(e)}")
+        import traceback
+        traceback.print_exc()
+        raise HTTPException(status_code=500, detail=f"Error al generar el archivo Excel: {str(e)}")
 
 
 @router.get("/reportes/exportar-pdf")
@@ -1503,126 +1512,135 @@ def exportar_pdf(
         from reportlab.lib.units import inch
         from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer
         from reportlab.lib.enums import TA_CENTER, TA_LEFT
-    except ImportError:
-        raise HTTPException(status_code=500, detail="reportlab no está instalado. Ejecuta: pip install reportlab")
+    except ImportError as e:
+        print(f"❌ Error importando reportlab: {e}")
+        raise HTTPException(status_code=500, detail="La librería reportlab no está instalada en el servidor. Contacte al administrador.")
     
-    # Obtener datos usando la función interna
-    datos = _obtener_datos_reporte_interno(
-        tipo_cambio=tipo_cambio,
-        estatus=estatus,
-        periodo=periodo,
-        anio=anio,
-        mes=mes,
-        semana=semana,
-        fecha_inicio=fecha_inicio,
-        fecha_fin=fecha_fin,
-        current_user=current_user,
-        db=db
-    )
-    
-    # Crear buffer
-    buffer = io.BytesIO()
-    doc = SimpleDocTemplate(buffer, pagesize=landscape(letter), topMargin=0.5*inch, bottomMargin=0.5*inch)
-    
-    elements = []
-    styles = getSampleStyleSheet()
-    
-    # Estilos personalizados
-    title_style = ParagraphStyle(
-        'CustomTitle',
-        parent=styles['Heading1'],
-        fontSize=16,
-        textColor=colors.HexColor('#16A34A'),
-        alignment=TA_CENTER,
-        spaceAfter=12
-    )
-    
-    subtitle_style = ParagraphStyle(
-        'CustomSubtitle',
-        parent=styles['Normal'],
-        fontSize=10,
-        textColor=colors.HexColor('#6B7280'),
-        alignment=TA_CENTER,
-        spaceAfter=20
-    )
-    
-    # Título
-    elements.append(Paragraph("REPORTE DE SOLICITUDES", title_style))
-    elements.append(Paragraph(f"Sistema de Gestión - Generado: {datetime.now().strftime('%d/%m/%Y %H:%M')}", subtitle_style))
-    
-    # Resumen
-    resumen = datos["resumen"]
-    resumen_text = f"""
-    <b>Total:</b> {resumen['total']} solicitudes | 
-    <b>Altas:</b> {resumen['por_tipo']['altas']} | 
-    <b>Bajas:</b> {resumen['por_tipo']['bajas']} | 
-    <b>Reasignaciones:</b> {resumen['por_tipo']['reasignaciones']}<br/>
-    <b>Aplicados:</b> {resumen['por_estatus']['aplicados']} | 
-    <b>Pendientes:</b> {resumen['por_estatus']['pendientes']} | 
-    <b>Rechazados:</b> {resumen['por_estatus']['rechazados']} | 
-    <b>Cancelados:</b> {resumen['por_estatus']['cancelados']}
-    """
-    elements.append(Paragraph(resumen_text, styles['Normal']))
-    elements.append(Spacer(1, 20))
-    
-    # Tabla de datos
-    table_data = [["Folio", "Tipo", "Estatus", "Fecha", "Persona Afectada", "Solicitante", "Descripción"]]
-    
-    for item in datos["items"]:
-        table_data.append([
-            item["folio"],
-            item["tipo_cambio"],
-            item["estatus"],
-            item["fecha_creacion"][:10] if item["fecha_creacion"] else "",
-            item["persona_afectada"][:25] if item["persona_afectada"] else "",
-            item["propuesto_por"][:20] if item["propuesto_por"] else "",
-            item["resumen"][:40] + "..." if len(item["resumen"]) > 40 else item["resumen"]
-        ])
-    
-    if len(table_data) > 1:
-        table = Table(table_data, colWidths=[1.3*inch, 1*inch, 1*inch, 1*inch, 1.8*inch, 1.5*inch, 2.4*inch])
+    try:
+        # Obtener datos usando la función interna
+        datos = _obtener_datos_reporte_interno(
+            tipo_cambio=tipo_cambio,
+            estatus=estatus,
+            periodo=periodo,
+            anio=anio,
+            mes=mes,
+            semana=semana,
+            fecha_inicio=fecha_inicio,
+            fecha_fin=fecha_fin,
+            current_user=current_user,
+            db=db
+        )
         
-        table.setStyle(TableStyle([
-            # Encabezado
-            ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#16A34A')),
-            ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
-            ('ALIGN', (0, 0), (-1, 0), 'CENTER'),
-            ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-            ('FONTSIZE', (0, 0), (-1, 0), 9),
-            ('BOTTOMPADDING', (0, 0), (-1, 0), 10),
-            ('TOPPADDING', (0, 0), (-1, 0), 10),
-            
-            # Cuerpo
-            ('BACKGROUND', (0, 1), (-1, -1), colors.white),
-            ('TEXTCOLOR', (0, 1), (-1, -1), colors.HexColor('#374151')),
-            ('ALIGN', (0, 1), (-1, -1), 'LEFT'),
-            ('FONTNAME', (0, 1), (-1, -1), 'Helvetica'),
-            ('FONTSIZE', (0, 1), (-1, -1), 8),
-            ('TOPPADDING', (0, 1), (-1, -1), 6),
-            ('BOTTOMPADDING', (0, 1), (-1, -1), 6),
-            
-            # Bordes
-            ('GRID', (0, 0), (-1, -1), 0.5, colors.HexColor('#E5E7EB')),
-            
-            # Alternar colores de filas
-            *[('BACKGROUND', (0, i), (-1, i), colors.HexColor('#F9FAFB')) for i in range(2, len(table_data), 2)]
-        ]))
+        # Crear buffer
+        buffer = io.BytesIO()
+        doc = SimpleDocTemplate(buffer, pagesize=landscape(letter), topMargin=0.5*inch, bottomMargin=0.5*inch)
         
-        elements.append(table)
-    else:
-        elements.append(Paragraph("No hay datos para mostrar con los filtros seleccionados.", styles['Normal']))
-    
-    # Construir PDF
-    doc.build(elements)
-    buffer.seek(0)
-    
-    # Generar nombre de archivo
-    fecha_str = datetime.now().strftime("%Y%m%d_%H%M%S")
-    filename = f"reporte_solicitudes_{fecha_str}.pdf"
-    
-    return StreamingResponse(
-        buffer,
-        media_type="application/pdf",
-        headers={"Content-Disposition": f"attachment; filename={filename}"}
-    )
+        elements = []
+        styles = getSampleStyleSheet()
+        
+        # Estilos personalizados
+        title_style = ParagraphStyle(
+            'CustomTitle',
+            parent=styles['Heading1'],
+            fontSize=16,
+            textColor=colors.HexColor('#16A34A'),
+            alignment=TA_CENTER,
+            spaceAfter=12
+        )
+        
+        subtitle_style = ParagraphStyle(
+            'CustomSubtitle',
+            parent=styles['Normal'],
+            fontSize=10,
+            textColor=colors.HexColor('#6B7280'),
+            alignment=TA_CENTER,
+            spaceAfter=20
+        )
+        
+        # Título
+        elements.append(Paragraph("REPORTE DE SOLICITUDES", title_style))
+        elements.append(Paragraph(f"Sistema de Gestión - Generado: {datetime.now().strftime('%d/%m/%Y %H:%M')}", subtitle_style))
+        
+        # Resumen
+        resumen = datos["resumen"]
+        resumen_text = f"""
+        <b>Total:</b> {resumen['total']} solicitudes | 
+        <b>Altas:</b> {resumen['por_tipo']['altas']} | 
+        <b>Bajas:</b> {resumen['por_tipo']['bajas']} | 
+        <b>Reasignaciones:</b> {resumen['por_tipo']['reasignaciones']}<br/>
+        <b>Aplicados:</b> {resumen['por_estatus']['aplicados']} | 
+        <b>Pendientes:</b> {resumen['por_estatus']['pendientes']} | 
+        <b>Rechazados:</b> {resumen['por_estatus']['rechazados']} | 
+        <b>Cancelados:</b> {resumen['por_estatus']['cancelados']}
+        """
+        elements.append(Paragraph(resumen_text, styles['Normal']))
+        elements.append(Spacer(1, 20))
+        
+        # Tabla de datos
+        table_data = [["Folio", "Tipo", "Estatus", "Fecha", "Persona Afectada", "Solicitante", "Descripción"]]
+        
+        for item in datos["items"]:
+            table_data.append([
+                item["folio"],
+                item["tipo_cambio"],
+                item["estatus"],
+                item["fecha_creacion"][:10] if item["fecha_creacion"] else "",
+                item["persona_afectada"][:25] if item["persona_afectada"] else "",
+                item["propuesto_por"][:20] if item["propuesto_por"] else "",
+                item["resumen"][:40] + "..." if len(item["resumen"]) > 40 else item["resumen"]
+            ])
+        
+        if len(table_data) > 1:
+            table = Table(table_data, colWidths=[1.3*inch, 1*inch, 1*inch, 1*inch, 1.8*inch, 1.5*inch, 2.4*inch])
+            
+            table.setStyle(TableStyle([
+                # Encabezado
+                ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#16A34A')),
+                ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
+                ('ALIGN', (0, 0), (-1, 0), 'CENTER'),
+                ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+                ('FONTSIZE', (0, 0), (-1, 0), 9),
+                ('BOTTOMPADDING', (0, 0), (-1, 0), 10),
+                ('TOPPADDING', (0, 0), (-1, 0), 10),
+                
+                # Cuerpo
+                ('BACKGROUND', (0, 1), (-1, -1), colors.white),
+                ('TEXTCOLOR', (0, 1), (-1, -1), colors.HexColor('#374151')),
+                ('ALIGN', (0, 1), (-1, -1), 'LEFT'),
+                ('FONTNAME', (0, 1), (-1, -1), 'Helvetica'),
+                ('FONTSIZE', (0, 1), (-1, -1), 8),
+                ('TOPPADDING', (0, 1), (-1, -1), 6),
+                ('BOTTOMPADDING', (0, 1), (-1, -1), 6),
+                
+                # Bordes
+                ('GRID', (0, 0), (-1, -1), 0.5, colors.HexColor('#E5E7EB')),
+                
+                # Alternar colores de filas
+                *[('BACKGROUND', (0, i), (-1, i), colors.HexColor('#F9FAFB')) for i in range(2, len(table_data), 2)]
+            ]))
+            
+            elements.append(table)
+        else:
+            elements.append(Paragraph("No hay datos para mostrar con los filtros seleccionados.", styles['Normal']))
+        
+        # Construir PDF
+        doc.build(elements)
+        buffer.seek(0)
+        
+        # Generar nombre de archivo
+        fecha_str = datetime.now().strftime("%Y%m%d_%H%M%S")
+        filename = f"reporte_solicitudes_{fecha_str}.pdf"
+        
+        return StreamingResponse(
+            buffer,
+            media_type="application/pdf",
+            headers={"Content-Disposition": f"attachment; filename={filename}"}
+        )
+    except HTTPException:
+        raise
+    except Exception as e:
+        print(f"❌ Error generando PDF: {str(e)}")
+        import traceback
+        traceback.print_exc()
+        raise HTTPException(status_code=500, detail=f"Error al generar el archivo PDF: {str(e)}")
 
