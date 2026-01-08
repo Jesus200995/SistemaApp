@@ -163,10 +163,15 @@ def obtener_usuarios_subordinados(
     Obtiene la lista de usuarios subordinados (debajo en la jerarquía) que pueden
     ser afectados por una solicitud de Alta/Baja/Reasignación.
     
+    INCLUYE usuarios activos E inactivos para que el frontend pueda filtrar:
+    - ALTA: muestra solo inactivos (para activarlos)
+    - BAJA: muestra solo activos (para desactivarlos)
+    - REASIGNACION: muestra solo activos
+    
     Jerarquía (de mayor a menor):
-    - Admin → puede afectar a Territorial, Facilitador, Técnico
+    - Admin → puede afectar a Territorial, Facilitador, Técnico (todos)
     - Territorial → puede afectar a Facilitador, Técnico (de su territorio)
-    - Facilitador → puede afectar a Técnico (de su ruta)
+    - Facilitador → puede afectar a Técnico (de su territorio)
     - Técnico → no puede afectar a nadie
     
     Retorna lista de usuarios con id, nombre, rol, territorio, activo
@@ -212,14 +217,20 @@ def obtener_usuarios_subordinados(
     
     print(f"🎯 Buscando usuarios con roles: {categorias_subordinados}")
     
-    # Consultar usuarios (según rol y territorio si aplica)
+    # Consultar usuarios - NO filtrar por activo para incluir ambos
     query = db.query(User).filter(User.id != user_id)
     
-    # Si no es admin, filtrar por territorio
-    if categoria_rol == "territorial" and usuario_actual and usuario_actual.territorio_id:
-        query = query.filter(User.territorio_id == usuario_actual.territorio_id)
+    # Si es Territorial o Facilitador, filtrar por territorio
+    if categoria_rol in ["territorial", "facilitador"] and usuario_actual:
+        if usuario_actual.territorio_id:
+            print(f"🌍 Filtrando por territorio_id: {usuario_actual.territorio_id}")
+            query = query.filter(User.territorio_id == usuario_actual.territorio_id)
+        elif usuario_actual.territorio:
+            print(f"🌍 Filtrando por territorio (nombre): {usuario_actual.territorio}")
+            query = query.filter(User.territorio == usuario_actual.territorio)
     
     todos_usuarios = query.all()
+    print(f"📊 Total usuarios encontrados (antes de filtrar por rol): {len(todos_usuarios)}")
     
     # Filtrar usuarios cuyo rol coincida con categorías subordinadas
     resultado = []
@@ -240,15 +251,19 @@ def obtener_usuarios_subordinados(
                 "rol": u.rol,
                 "perfil_operativo": u.perfil_operativo,
                 "territorio": u.territorio or "Sin territorio",
+                "territorio_id": u.territorio_id,
                 "email": u.email,
-                "activo": u.activo,
+                "activo": u.activo if u.activo is not None else True,
                 "curp": u.curp
             })
     
-    # Ordenar por rol y nombre
-    resultado.sort(key=lambda x: (x["rol"], x["nombre"]))
+    # Ordenar por activo (activos primero), rol y nombre
+    resultado.sort(key=lambda x: (not x["activo"], x["rol"] or "", x["nombre"] or ""))
     
     print(f"✅ Encontrados {len(resultado)} usuarios subordinados")
+    activos = len([u for u in resultado if u["activo"]])
+    inactivos = len([u for u in resultado if not u["activo"]])
+    print(f"   - Activos: {activos}, Inactivos: {inactivos}")
     
     return {
         "items": resultado,
