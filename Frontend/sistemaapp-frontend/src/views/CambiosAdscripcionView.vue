@@ -56,6 +56,14 @@
               <History :size="18" />
               <span>Historial</span>
             </button>
+            <button 
+              class="tab-btn" 
+              :class="{ active: activeTab === 'reportes' }"
+              @click="activeTab = 'reportes'"
+            >
+              <FileDown :size="18" />
+              <span>Reportes</span>
+            </button>
           </div>
           <div class="tabs-stats">
             <div class="stat-item">
@@ -73,8 +81,8 @@
           </div>
         </div>
 
-        <!-- Filtros Modernos -->
-        <div class="filters-section">
+        <!-- Filtros Modernos (ocultos en pestaña reportes) -->
+        <div class="filters-section" v-if="activeTab !== 'reportes'">
           <div class="filters-grid">
             <div class="filter-group">
               <label><Search :size="12" /> Estatus</label>
@@ -130,8 +138,8 @@
           </div>
         </div>
 
-        <!-- Tabla de Cambios -->
-        <div class="table-container">
+        <!-- Tabla de Cambios (oculta en pestaña reportes) -->
+        <div class="table-container" v-if="activeTab !== 'reportes'">
           <table class="data-table">
             <thead>
               <tr>
@@ -252,6 +260,198 @@
             <p v-if="activeTab === 'pendientes'">No hay cambios recibidos por revisar</p>
             <p v-else-if="activeTab === 'enviadas'">No has enviado propuestas de cambio</p>
             <p v-else>No hay cambios en el historial</p>
+          </div>
+        </div>
+
+        <!-- Sección de Reportes -->
+        <div v-if="activeTab === 'reportes'" class="reportes-section">
+          <div class="reportes-header">
+            <div class="reportes-title">
+              <FileDown :size="24" class="reportes-icon" />
+              <div>
+                <h2>Centro de Reportes</h2>
+                <p>Descarga tus solicitudes en Excel o PDF con filtros avanzados</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Filtros de Reportes -->
+          <div class="reportes-filtros">
+            <div class="filtros-card">
+              <h3><Calendar :size="16" /> Período</h3>
+              <div class="filtro-grupo">
+                <label>Tipo de período</label>
+                <select v-model="reporteFiltros.periodo">
+                  <option value="">Sin filtro de fecha</option>
+                  <option value="semana">Esta semana</option>
+                  <option value="mes">Este mes</option>
+                  <option value="trimestre">Este trimestre</option>
+                  <option value="anio">Este año</option>
+                  <option value="custom">Rango personalizado</option>
+                </select>
+              </div>
+
+              <div v-if="reporteFiltros.periodo === 'mes'" class="filtro-grupo">
+                <label>Seleccionar mes</label>
+                <div class="filtro-row">
+                  <select v-model="reporteFiltros.mes">
+                    <option value="">Mes actual</option>
+                    <option v-for="m in 12" :key="m" :value="m">{{ nombreMes(m) }}</option>
+                  </select>
+                  <select v-model="reporteFiltros.anio">
+                    <option value="">Año actual</option>
+                    <option v-for="a in aniosDisponibles" :key="a" :value="a">{{ a }}</option>
+                  </select>
+                </div>
+              </div>
+
+              <div v-if="reporteFiltros.periodo === 'anio'" class="filtro-grupo">
+                <label>Seleccionar año</label>
+                <select v-model="reporteFiltros.anio">
+                  <option value="">Año actual</option>
+                  <option v-for="a in aniosDisponibles" :key="a" :value="a">{{ a }}</option>
+                </select>
+              </div>
+
+              <div v-if="reporteFiltros.periodo === 'custom'" class="filtro-grupo">
+                <label>Rango de fechas</label>
+                <div class="filtro-row">
+                  <input type="date" v-model="reporteFiltros.fechaInicio" placeholder="Desde" />
+                  <input type="date" v-model="reporteFiltros.fechaFin" placeholder="Hasta" />
+                </div>
+              </div>
+            </div>
+
+            <div class="filtros-card">
+              <h3><GitBranch :size="16" /> Tipo de Solicitud</h3>
+              <div class="filtro-grupo">
+                <label>Filtrar por tipo</label>
+                <select v-model="reporteFiltros.tipoCambio">
+                  <option value="">Todos los tipos</option>
+                  <option value="ALTA">Altas</option>
+                  <option value="BAJA">Bajas</option>
+                  <option value="REASIGNACION">Reasignaciones</option>
+                </select>
+              </div>
+
+              <div class="filtro-grupo">
+                <label>Filtrar por estatus</label>
+                <select v-model="reporteFiltros.estatus">
+                  <option value="">Todos los estatus</option>
+                  <option value="APLICADO">Aplicados</option>
+                  <option value="EN_REVISION">Pendientes</option>
+                  <option value="AUTORIZADO">Autorizados</option>
+                  <option value="RECHAZADO">Rechazados</option>
+                  <option value="CANCELADO">Cancelados</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Vista previa y acciones -->
+          <div class="reportes-preview">
+            <div class="preview-header">
+              <h3><FileText :size="16" /> Vista previa del reporte</h3>
+              <button @click="cargarVistaPrevia" class="btn-refresh-preview" :disabled="loadingPreview">
+                <RefreshCw :size="14" :class="{ 'spin': loadingPreview }" />
+                Actualizar
+              </button>
+            </div>
+
+            <!-- Resumen de estadísticas -->
+            <div v-if="reportePreview" class="resumen-stats">
+              <div class="stat-card total">
+                <span class="stat-numero">{{ reportePreview.resumen.total }}</span>
+                <span class="stat-label">Total Registros</span>
+              </div>
+              <div class="stat-card alta">
+                <span class="stat-numero">{{ reportePreview.resumen.por_tipo.altas }}</span>
+                <span class="stat-label">Altas</span>
+              </div>
+              <div class="stat-card baja">
+                <span class="stat-numero">{{ reportePreview.resumen.por_tipo.bajas }}</span>
+                <span class="stat-label">Bajas</span>
+              </div>
+              <div class="stat-card reasignacion">
+                <span class="stat-numero">{{ reportePreview.resumen.por_tipo.reasignaciones }}</span>
+                <span class="stat-label">Reasignaciones</span>
+              </div>
+            </div>
+
+            <!-- Tabla preview -->
+            <div class="preview-table-container">
+              <table v-if="reportePreview && reportePreview.items.length > 0" class="preview-table">
+                <thead>
+                  <tr>
+                    <th>Folio</th>
+                    <th>Tipo</th>
+                    <th>Estatus</th>
+                    <th>Fecha</th>
+                    <th>Persona Afectada</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="item in reportePreview.items.slice(0, 10)" :key="item.id">
+                    <td class="folio">{{ item.folio }}</td>
+                    <td>
+                      <span :class="['tipo-badge', item.tipo_cambio?.toLowerCase()]">
+                        {{ item.tipo_cambio }}
+                      </span>
+                    </td>
+                    <td>
+                      <span :class="['estatus-badge', item.estatus?.toLowerCase()]">
+                        {{ formatEstatus(item.estatus) }}
+                      </span>
+                    </td>
+                    <td>{{ item.fecha_creacion?.substring(0, 10) }}</td>
+                    <td>{{ item.persona_afectada || '-' }}</td>
+                  </tr>
+                </tbody>
+              </table>
+
+              <div v-else-if="loadingPreview" class="preview-loading">
+                <RefreshCw :size="32" class="spin" />
+                <p>Cargando vista previa...</p>
+              </div>
+
+              <div v-else class="preview-empty">
+                <FileText :size="48" />
+                <p>Selecciona filtros y haz clic en "Actualizar" para ver una vista previa</p>
+              </div>
+
+              <p v-if="reportePreview && reportePreview.items.length > 10" class="preview-more">
+                Mostrando 10 de {{ reportePreview.items.length }} registros. Descarga el archivo completo para ver todos.
+              </p>
+            </div>
+          </div>
+
+          <!-- Botones de descarga -->
+          <div class="descarga-actions">
+            <button 
+              @click="descargarExcel" 
+              class="btn-descarga excel"
+              :disabled="loadingExcel || !reportePreview?.items?.length"
+            >
+              <FileSpreadsheet :size="20" />
+              <div class="btn-descarga-content">
+                <span class="btn-descarga-title">{{ loadingExcel ? 'Generando...' : 'Descargar Excel' }}</span>
+                <span class="btn-descarga-desc">Archivo .xlsx para análisis</span>
+              </div>
+              <Download :size="18" class="download-icon" />
+            </button>
+
+            <button 
+              @click="descargarPDF" 
+              class="btn-descarga pdf"
+              :disabled="loadingPDF || !reportePreview?.items?.length"
+            >
+              <FileText :size="20" />
+              <div class="btn-descarga-content">
+                <span class="btn-descarga-title">{{ loadingPDF ? 'Generando...' : 'Descargar PDF' }}</span>
+                <span class="btn-descarga-desc">Documento profesional</span>
+              </div>
+              <Download :size="18" class="download-icon" />
+            </button>
           </div>
         </div>
       </main>
@@ -706,7 +906,7 @@ import DesktopSidebar from '../components/DesktopSidebar.vue'
 import Swal from 'sweetalert2'
 import { 
   GitBranch, Plus, RefreshCw, Eye, Send, Check, X, PlayCircle,
-  AlertTriangle, ArrowRight, UserCheck, Search, Clock, SendHorizontal, History, XCircle, User, Calendar, FileText, Trash2, MailOpen
+  AlertTriangle, ArrowRight, UserCheck, Search, Clock, SendHorizontal, History, XCircle, User, Calendar, FileText, Trash2, MailOpen, FileDown, Download, FileSpreadsheet
 } from 'lucide-vue-next'
 
 const auth = useAuthStore()
@@ -758,6 +958,215 @@ const accionModal = ref({
   accion: '',
   observaciones: ''
 })
+
+// === REPORTES ===
+const reporteFiltros = ref({
+  periodo: '',
+  anio: null,
+  mes: null,
+  semana: null,
+  fechaInicio: '',
+  fechaFin: '',
+  tipoCambio: '',
+  estatus: ''
+})
+
+const reportePreview = ref(null)
+const loadingPreview = ref(false)
+const loadingExcel = ref(false)
+const loadingPDF = ref(false)
+
+// Años disponibles para filtros (últimos 5 años)
+const aniosDisponibles = computed(() => {
+  const currentYear = new Date().getFullYear()
+  return Array.from({ length: 5 }, (_, i) => currentYear - i)
+})
+
+// Nombre del mes
+const nombreMes = (mes) => {
+  const meses = ['', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 
+                 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
+  return meses[mes] || ''
+}
+
+// Cargar vista previa del reporte
+const cargarVistaPrevia = async () => {
+  loadingPreview.value = true
+  try {
+    const params = new URLSearchParams()
+    
+    if (reporteFiltros.value.periodo) {
+      params.append('periodo', reporteFiltros.value.periodo)
+    }
+    if (reporteFiltros.value.anio) {
+      params.append('anio', reporteFiltros.value.anio)
+    }
+    if (reporteFiltros.value.mes) {
+      params.append('mes', reporteFiltros.value.mes)
+    }
+    if (reporteFiltros.value.tipoCambio) {
+      params.append('tipo_cambio', reporteFiltros.value.tipoCambio)
+    }
+    if (reporteFiltros.value.estatus) {
+      params.append('estatus', reporteFiltros.value.estatus)
+    }
+    if (reporteFiltros.value.periodo === 'custom') {
+      if (reporteFiltros.value.fechaInicio) {
+        params.append('fecha_inicio', reporteFiltros.value.fechaInicio)
+      }
+      if (reporteFiltros.value.fechaFin) {
+        params.append('fecha_fin', reporteFiltros.value.fechaFin)
+      }
+    }
+    
+    const { data } = await axios.get(`${API_URL}/workflows/reportes/mis-solicitudes?${params.toString()}`, {
+      headers: { Authorization: `Bearer ${auth.token}` }
+    })
+    
+    reportePreview.value = data
+  } catch (error) {
+    console.error('Error cargando vista previa:', error)
+    await Swal.fire({
+      icon: 'error',
+      title: 'Error',
+      text: 'No se pudo cargar la vista previa del reporte.',
+      confirmButtonColor: '#dc2626'
+    })
+  } finally {
+    loadingPreview.value = false
+  }
+}
+
+// Construir URL con parámetros
+const construirUrlReporte = (baseUrl) => {
+  const params = new URLSearchParams()
+  
+  if (reporteFiltros.value.periodo) {
+    params.append('periodo', reporteFiltros.value.periodo)
+  }
+  if (reporteFiltros.value.anio) {
+    params.append('anio', reporteFiltros.value.anio)
+  }
+  if (reporteFiltros.value.mes) {
+    params.append('mes', reporteFiltros.value.mes)
+  }
+  if (reporteFiltros.value.tipoCambio) {
+    params.append('tipo_cambio', reporteFiltros.value.tipoCambio)
+  }
+  if (reporteFiltros.value.estatus) {
+    params.append('estatus', reporteFiltros.value.estatus)
+  }
+  if (reporteFiltros.value.periodo === 'custom') {
+    if (reporteFiltros.value.fechaInicio) {
+      params.append('fecha_inicio', reporteFiltros.value.fechaInicio)
+    }
+    if (reporteFiltros.value.fechaFin) {
+      params.append('fecha_fin', reporteFiltros.value.fechaFin)
+    }
+  }
+  
+  return `${baseUrl}?${params.toString()}`
+}
+
+// Descargar Excel
+const descargarExcel = async () => {
+  loadingExcel.value = true
+  try {
+    const url = construirUrlReporte(`${API_URL}/workflows/reportes/exportar-excel`)
+    
+    const response = await axios.get(url, {
+      headers: { Authorization: `Bearer ${auth.token}` },
+      responseType: 'blob'
+    })
+    
+    // Crear link de descarga
+    const blob = new Blob([response.data], { 
+      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' 
+    })
+    const link = document.createElement('a')
+    link.href = window.URL.createObjectURL(blob)
+    
+    // Obtener nombre del archivo del header o generar uno
+    const contentDisposition = response.headers['content-disposition']
+    let filename = 'reporte_solicitudes.xlsx'
+    if (contentDisposition) {
+      const match = contentDisposition.match(/filename=(.+)/)
+      if (match) filename = match[1]
+    }
+    
+    link.download = filename
+    link.click()
+    window.URL.revokeObjectURL(link.href)
+    
+    await Swal.fire({
+      icon: 'success',
+      title: '¡Descarga completada!',
+      text: 'El archivo Excel se ha descargado correctamente.',
+      confirmButtonColor: '#16a34a',
+      timer: 2000,
+      showConfirmButton: false
+    })
+  } catch (error) {
+    console.error('Error descargando Excel:', error)
+    await Swal.fire({
+      icon: 'error',
+      title: 'Error',
+      text: error.response?.data?.detail || 'No se pudo generar el archivo Excel.',
+      confirmButtonColor: '#dc2626'
+    })
+  } finally {
+    loadingExcel.value = false
+  }
+}
+
+// Descargar PDF
+const descargarPDF = async () => {
+  loadingPDF.value = true
+  try {
+    const url = construirUrlReporte(`${API_URL}/workflows/reportes/exportar-pdf`)
+    
+    const response = await axios.get(url, {
+      headers: { Authorization: `Bearer ${auth.token}` },
+      responseType: 'blob'
+    })
+    
+    // Crear link de descarga
+    const blob = new Blob([response.data], { type: 'application/pdf' })
+    const link = document.createElement('a')
+    link.href = window.URL.createObjectURL(blob)
+    
+    // Obtener nombre del archivo del header o generar uno
+    const contentDisposition = response.headers['content-disposition']
+    let filename = 'reporte_solicitudes.pdf'
+    if (contentDisposition) {
+      const match = contentDisposition.match(/filename=(.+)/)
+      if (match) filename = match[1]
+    }
+    
+    link.download = filename
+    link.click()
+    window.URL.revokeObjectURL(link.href)
+    
+    await Swal.fire({
+      icon: 'success',
+      title: '¡Descarga completada!',
+      text: 'El archivo PDF se ha descargado correctamente.',
+      confirmButtonColor: '#16a34a',
+      timer: 2000,
+      showConfirmButton: false
+    })
+  } catch (error) {
+    console.error('Error descargando PDF:', error)
+    await Swal.fire({
+      icon: 'error',
+      title: 'Error',
+      text: error.response?.data?.detail || 'No se pudo generar el archivo PDF.',
+      confirmButtonColor: '#dc2626'
+    })
+  } finally {
+    loadingPDF.value = false
+  }
+}
 
 // === SELECTOR DE DESTINATARIOS ===
 const usuariosDisponibles = ref([])
@@ -3590,6 +3999,404 @@ tr.row-autorizado td .estatus-badge {
   
   .info-grid {
     grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* ========== SECCIÓN DE REPORTES ========== */
+.reportes-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.reportes-header {
+  background: linear-gradient(135deg, #ffffff 0%, #f0fdf4 100%);
+  border-radius: 16px;
+  padding: 1.5rem;
+  border: 1px solid #bbf7d0;
+}
+
+.reportes-title {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.reportes-icon {
+  color: #16a34a;
+  background: #dcfce7;
+  padding: 0.75rem;
+  border-radius: 12px;
+}
+
+.reportes-title h2 {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #14532d;
+}
+
+.reportes-title p {
+  margin: 0.25rem 0 0;
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+
+/* Filtros de Reportes */
+.reportes-filtros {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1rem;
+}
+
+.filtros-card {
+  background: white;
+  border-radius: 12px;
+  padding: 1.25rem;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.filtros-card h3 {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0 0 1rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #374151;
+}
+
+.filtro-grupo {
+  margin-bottom: 0.875rem;
+}
+
+.filtro-grupo:last-child {
+  margin-bottom: 0;
+}
+
+.filtro-grupo label {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #6b7280;
+  margin-bottom: 0.375rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.filtro-grupo select,
+.filtro-grupo input {
+  width: 100%;
+  padding: 0.625rem 0.875rem;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  background: #f9fafb;
+  transition: all 0.15s;
+}
+
+.filtro-grupo select:focus,
+.filtro-grupo input:focus {
+  outline: none;
+  border-color: #16a34a;
+  background: white;
+  box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.1);
+}
+
+.filtro-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+}
+
+/* Vista previa del reporte */
+.reportes-preview {
+  background: white;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+  overflow: hidden;
+}
+
+.preview-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid #e5e7eb;
+  background: #f9fafb;
+}
+
+.preview-header h3 {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #374151;
+}
+
+.btn-refresh-preview {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.5rem 0.875rem;
+  background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-refresh-preview:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(22, 163, 74, 0.35);
+}
+
+.btn-refresh-preview:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.spin {
+  animation: spin 1s linear infinite;
+}
+
+/* Resumen de estadísticas */
+.resumen-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 0.75rem;
+  padding: 1rem 1.25rem;
+  background: linear-gradient(135deg, #f9fafb 0%, #f0fdf4 100%);
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.stat-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1rem;
+  background: white;
+  border-radius: 10px;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+}
+
+.stat-card .stat-numero {
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.stat-card .stat-label {
+  font-size: 0.7rem;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  margin-top: 0.25rem;
+}
+
+.stat-card.total .stat-numero {
+  color: #16a34a;
+}
+
+.stat-card.alta .stat-numero {
+  color: #22c55e;
+}
+
+.stat-card.baja .stat-numero {
+  color: #dc2626;
+}
+
+.stat-card.reasignacion .stat-numero {
+  color: #2563eb;
+}
+
+/* Tabla de preview */
+.preview-table-container {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.preview-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.preview-table th,
+.preview-table td {
+  padding: 0.75rem 1rem;
+  text-align: left;
+  border-bottom: 1px solid #e5e7eb;
+  font-size: 0.85rem;
+}
+
+.preview-table th {
+  background: #f9fafb;
+  font-weight: 600;
+  color: #6b7280;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.preview-table tr:hover {
+  background: #f9fafb;
+}
+
+.preview-loading,
+.preview-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem;
+  color: #9ca3af;
+  text-align: center;
+}
+
+.preview-loading p,
+.preview-empty p {
+  margin-top: 1rem;
+  font-size: 0.9rem;
+}
+
+.preview-more {
+  padding: 0.75rem 1.25rem;
+  margin: 0;
+  background: #fffbeb;
+  color: #92400e;
+  font-size: 0.8rem;
+  text-align: center;
+  border-top: 1px solid #fcd34d;
+}
+
+/* Botones de descarga */
+.descarga-actions {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1rem;
+}
+
+.btn-descarga {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.25rem 1.5rem;
+  border-radius: 12px;
+  border: 2px solid;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: left;
+}
+
+.btn-descarga:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn-descarga.excel {
+  background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+  border-color: #16a34a;
+  color: #14532d;
+}
+
+.btn-descarga.excel:hover:not(:disabled) {
+  background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(22, 163, 74, 0.25);
+}
+
+.btn-descarga.pdf {
+  background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+  border-color: #dc2626;
+  color: #7f1d1d;
+}
+
+.btn-descarga.pdf:hover:not(:disabled) {
+  background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(220, 38, 38, 0.25);
+}
+
+.btn-descarga-content {
+  flex: 1;
+}
+
+.btn-descarga-title {
+  display: block;
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.btn-descarga-desc {
+  display: block;
+  font-size: 0.8rem;
+  opacity: 0.8;
+  margin-top: 0.25rem;
+}
+
+.download-icon {
+  opacity: 0.7;
+}
+
+/* Responsive para reportes */
+@media (max-width: 768px) {
+  .reportes-filtros {
+    grid-template-columns: 1fr;
+  }
+  
+  .filtro-row {
+    grid-template-columns: 1fr;
+  }
+  
+  .resumen-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .descarga-actions {
+    grid-template-columns: 1fr;
+  }
+  
+  .btn-descarga {
+    padding: 1rem 1.25rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .reportes-header {
+    padding: 1rem;
+  }
+  
+  .reportes-title {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .resumen-stats {
+    grid-template-columns: 1fr 1fr;
+    padding: 0.75rem;
+    gap: 0.5rem;
+  }
+  
+  .stat-card {
+    padding: 0.75rem;
+  }
+  
+  .stat-card .stat-numero {
+    font-size: 1.25rem;
+  }
+  
+  .preview-table th,
+  .preview-table td {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.75rem;
   }
 }
 </style>

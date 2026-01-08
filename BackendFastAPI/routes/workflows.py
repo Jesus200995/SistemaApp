@@ -8,9 +8,10 @@ Workflows:
 """
 
 from fastapi import APIRouter, HTTPException, Depends, Security, Query, BackgroundTasks
+from fastapi.responses import StreamingResponse
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from sqlalchemy.orm import Session
-from sqlalchemy import func, or_, and_
+from sqlalchemy import func, or_, and_, extract
 from pydantic import BaseModel
 from typing import Optional, List, Any, Dict
 from database import get_db
@@ -20,8 +21,9 @@ from models import (
 )
 import jwt
 import os
+import io
 from dotenv import load_dotenv
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 import uuid
 import asyncio
 
@@ -1132,3 +1134,472 @@ def dashboard_operativo(
         "top_territorios_pendientes": [{"territorio": t[0], "pendientes": t[1]} for t in top_territorios],
         "movimientos_recientes": movimientos_list
     }
+
+
+# ========== REPORTES - EXPORTACIÓN EXCEL/PDF ==========
+
+@router.get("/reportes/mis-solicitudes")
+def obtener_datos_reporte(
+    tipo_cambio: Optional[str] = None,
+    estatus: Optional[str] = None,
+    periodo: Optional[str] = None,  # semana, mes, trimestre, año, custom
+    anio: Optional[int] = None,
+    mes: Optional[int] = None,
+    semana: Optional[int] = None,
+    fecha_inicio: Optional[str] = None,
+    fecha_fin: Optional[str] = None,
+    current_user: dict = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """
+    Obtener datos para reportes del usuario actual.
+    Filtros por tipo (ALTA, BAJA, REASIGNACION), estatus, y período.
+    """
+    user_id = current_user["user_id"]
+    rol = current_user["rol"]
+    
+    query = db.query(CambioAdscripcion)
+    
+    # Filtrar por usuario (excepto admin que ve todo)
+    if "ADMIN" not in rol:
+        query = query.filter(
+            or_(
+                CambioAdscripcion.propuesto_por_id == user_id,
+                CambioAdscripcion.destino_id == user_id,
+                CambioAdscripcion.persona_id == user_id
+            )
+        )
+    
+    # Filtrar por tipo de cambio
+    if tipo_cambio:
+        query = query.filter(CambioAdscripcion.tipo_cambio == tipo_cambio.upper())
+    
+    # Filtrar por estatus
+    if estatus:
+        query = query.filter(CambioAdscripcion.estatus == estatus.upper())
+    
+    # Filtrar por período
+    ahora = datetime.utcnow()
+    
+    if periodo == "semana":
+        # Semana actual o semana especificada
+        if anio and semana:
+            inicio_semana = datetime.strptime(f'{anio}-W{semana}-1', "%Y-W%W-%w")
+            fin_semana = inicio_semana + timedelta(days=7)
+        else:
+            inicio_semana = ahora - timedelta(days=ahora.weekday())
+            inicio_semana = inicio_semana.replace(hour=0, minute=0, second=0, microsecond=0)
+            fin_semana = inicio_semana + timedelta(days=7)
+        
+        query = query.filter(
+            CambioAdscripcion.created_at >= inicio_semana,
+            CambioAdscripcion.created_at < fin_semana
+        )
+    
+    elif periodo == "mes":
+        # Mes actual o mes especificado
+        if anio and mes:
+            inicio_mes = datetime(anio, mes, 1)
+            if mes == 12:
+                fin_mes = datetime(anio + 1, 1, 1)
+            else:
+                fin_mes = datetime(anio, mes + 1, 1)
+        else:
+            inicio_mes = ahora.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+            if ahora.month == 12:
+                fin_mes = datetime(ahora.year + 1, 1, 1)
+            else:
+                fin_mes = ahora.replace(month=ahora.month + 1, day=1, hour=0, minute=0, second=0, microsecond=0)
+        
+        query = query.filter(
+            CambioAdscripcion.created_at >= inicio_mes,
+            CambioAdscripcion.created_at < fin_mes
+        )
+    
+    elif periodo == "trimestre":
+        # Trimestre actual
+        trimestre = (ahora.month - 1) // 3
+        inicio_trimestre = datetime(ahora.year, trimestre * 3 + 1, 1)
+        if trimestre == 3:
+            fin_trimestre = datetime(ahora.year + 1, 1, 1)
+        else:
+            fin_trimestre = datetime(ahora.year, (trimestre + 1) * 3 + 1, 1)
+        
+        query = query.filter(
+            CambioAdscripcion.created_at >= inicio_trimestre,
+            CambioAdscripcion.created_at < fin_trimestre
+        )
+    
+    elif periodo == "anio":
+        # Año actual o año especificado
+        year = anio if anio else ahora.year
+        inicio_anio = datetime(year, 1, 1)
+        fin_anio = datetime(year + 1, 1, 1)
+        
+        query = query.filter(
+            CambioAdscripcion.created_at >= inicio_anio,
+            CambioAdscripcion.created_at < fin_anio
+        )
+    
+    elif periodo == "custom" and fecha_inicio and fecha_fin:
+        # Rango personalizado
+        try:
+            inicio = datetime.strptime(fecha_inicio, "%Y-%m-%d")
+            fin = datetime.strptime(fecha_fin, "%Y-%m-%d") + timedelta(days=1)
+            query = query.filter(
+                CambioAdscripcion.created_at >= inicio,
+                CambioAdscripcion.created_at < fin
+            )
+        except ValueError:
+            raise HTTPException(status_code=400, detail="Formato de fecha inválido (usar YYYY-MM-DD)")
+    
+    # Ordenar por fecha
+    cambios = query.order_by(CambioAdscripcion.created_at.desc()).all()
+    
+    # Construir resultado con detalles
+    result = []
+    for c in cambios:
+        # Obtener nombres
+        propuesto_por_nombre = ""
+        if c.propuesto_por_id:
+            u = db.query(User).filter(User.id == c.propuesto_por_id).first()
+            propuesto_por_nombre = u.nombre if u else ""
+        
+        destinatario_nombre = ""
+        if c.destino_id:
+            u = db.query(User).filter(User.id == c.destino_id).first()
+            destinatario_nombre = u.nombre if u else ""
+        
+        persona_afectada_nombre = ""
+        persona_afectada_curp = ""
+        if c.persona_id:
+            u = db.query(User).filter(User.id == c.persona_id).first()
+            if u:
+                persona_afectada_nombre = u.nombre
+                persona_afectada_curp = u.curp or ""
+        
+        result.append({
+            "id": c.id,
+            "folio": c.folio,
+            "tipo_cambio": c.tipo_cambio,
+            "objeto": c.objeto,
+            "estatus": c.estatus,
+            "resumen": c.resumen or "",
+            "fecha_creacion": c.created_at.strftime("%Y-%m-%d %H:%M") if c.created_at else "",
+            "fecha_efecto": c.fecha_efecto.strftime("%Y-%m-%d") if c.fecha_efecto else "",
+            "propuesto_por": propuesto_por_nombre,
+            "destinatario": destinatario_nombre,
+            "persona_afectada": persona_afectada_nombre,
+            "curp_afectado": persona_afectada_curp,
+            "observaciones": c.observaciones or ""
+        })
+    
+    # Estadísticas resumidas
+    total = len(result)
+    altas = len([r for r in result if r["tipo_cambio"] == "ALTA"])
+    bajas = len([r for r in result if r["tipo_cambio"] == "BAJA"])
+    reasignaciones = len([r for r in result if r["tipo_cambio"] == "REASIGNACION"])
+    aplicados = len([r for r in result if r["estatus"] == "APLICADO"])
+    pendientes = len([r for r in result if r["estatus"] in ["EN_REVISION", "AUTORIZADO"]])
+    rechazados = len([r for r in result if r["estatus"] == "RECHAZADO"])
+    cancelados = len([r for r in result if r["estatus"] == "CANCELADO"])
+    
+    return {
+        "items": result,
+        "resumen": {
+            "total": total,
+            "por_tipo": {
+                "altas": altas,
+                "bajas": bajas,
+                "reasignaciones": reasignaciones
+            },
+            "por_estatus": {
+                "aplicados": aplicados,
+                "pendientes": pendientes,
+                "rechazados": rechazados,
+                "cancelados": cancelados
+            }
+        }
+    }
+
+
+@router.get("/reportes/exportar-excel")
+def exportar_excel(
+    tipo_cambio: Optional[str] = None,
+    estatus: Optional[str] = None,
+    periodo: Optional[str] = None,
+    anio: Optional[int] = None,
+    mes: Optional[int] = None,
+    semana: Optional[int] = None,
+    fecha_inicio: Optional[str] = None,
+    fecha_fin: Optional[str] = None,
+    current_user: dict = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """Exportar reporte a Excel (.xlsx)"""
+    try:
+        import openpyxl
+        from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
+        from openpyxl.utils import get_column_letter
+    except ImportError:
+        raise HTTPException(status_code=500, detail="openpyxl no está instalado. Ejecuta: pip install openpyxl")
+    
+    # Obtener datos
+    datos = obtener_datos_reporte(
+        tipo_cambio=tipo_cambio,
+        estatus=estatus,
+        periodo=periodo,
+        anio=anio,
+        mes=mes,
+        semana=semana,
+        fecha_inicio=fecha_inicio,
+        fecha_fin=fecha_fin,
+        current_user=current_user,
+        db=db
+    )
+    
+    # Crear workbook
+    wb = openpyxl.Workbook()
+    ws = wb.active
+    ws.title = "Reporte Solicitudes"
+    
+    # Estilos
+    header_font = Font(bold=True, color="FFFFFF", size=11)
+    header_fill = PatternFill(start_color="16A34A", end_color="16A34A", fill_type="solid")
+    header_alignment = Alignment(horizontal="center", vertical="center", wrap_text=True)
+    cell_alignment = Alignment(horizontal="left", vertical="center", wrap_text=True)
+    thin_border = Border(
+        left=Side(style='thin', color='E5E7EB'),
+        right=Side(style='thin', color='E5E7EB'),
+        top=Side(style='thin', color='E5E7EB'),
+        bottom=Side(style='thin', color='E5E7EB')
+    )
+    
+    # Título del reporte
+    ws.merge_cells('A1:K1')
+    ws['A1'] = "REPORTE DE SOLICITUDES - SISTEMA DE GESTIÓN"
+    ws['A1'].font = Font(bold=True, size=14, color="16A34A")
+    ws['A1'].alignment = Alignment(horizontal="center")
+    
+    # Fecha de generación
+    ws.merge_cells('A2:K2')
+    ws['A2'] = f"Generado: {datetime.now().strftime('%d/%m/%Y %H:%M')}"
+    ws['A2'].font = Font(italic=True, size=10, color="6B7280")
+    ws['A2'].alignment = Alignment(horizontal="center")
+    
+    # Resumen
+    resumen = datos["resumen"]
+    ws['A4'] = "RESUMEN:"
+    ws['A4'].font = Font(bold=True, size=11)
+    ws['A5'] = f"Total: {resumen['total']} | Altas: {resumen['por_tipo']['altas']} | Bajas: {resumen['por_tipo']['bajas']} | Reasignaciones: {resumen['por_tipo']['reasignaciones']}"
+    ws['A6'] = f"Aplicados: {resumen['por_estatus']['aplicados']} | Pendientes: {resumen['por_estatus']['pendientes']} | Rechazados: {resumen['por_estatus']['rechazados']} | Cancelados: {resumen['por_estatus']['cancelados']}"
+    
+    # Encabezados de la tabla
+    headers = ["Folio", "Tipo", "Objeto", "Estatus", "Fecha Creación", "Persona Afectada", "CURP", "Solicitante", "Destinatario", "Descripción", "Observaciones"]
+    
+    for col, header in enumerate(headers, 1):
+        cell = ws.cell(row=8, column=col, value=header)
+        cell.font = header_font
+        cell.fill = header_fill
+        cell.alignment = header_alignment
+        cell.border = thin_border
+    
+    # Datos
+    for row_idx, item in enumerate(datos["items"], 9):
+        ws.cell(row=row_idx, column=1, value=item["folio"]).border = thin_border
+        ws.cell(row=row_idx, column=2, value=item["tipo_cambio"]).border = thin_border
+        ws.cell(row=row_idx, column=3, value=item["objeto"]).border = thin_border
+        ws.cell(row=row_idx, column=4, value=item["estatus"]).border = thin_border
+        ws.cell(row=row_idx, column=5, value=item["fecha_creacion"]).border = thin_border
+        ws.cell(row=row_idx, column=6, value=item["persona_afectada"]).border = thin_border
+        ws.cell(row=row_idx, column=7, value=item["curp_afectado"]).border = thin_border
+        ws.cell(row=row_idx, column=8, value=item["propuesto_por"]).border = thin_border
+        ws.cell(row=row_idx, column=9, value=item["destinatario"]).border = thin_border
+        ws.cell(row=row_idx, column=10, value=item["resumen"]).border = thin_border
+        ws.cell(row=row_idx, column=11, value=item["observaciones"]).border = thin_border
+        
+        # Aplicar colores según estatus
+        estatus_cell = ws.cell(row=row_idx, column=4)
+        if item["estatus"] == "APLICADO":
+            estatus_cell.fill = PatternFill(start_color="DCFCE7", end_color="DCFCE7", fill_type="solid")
+        elif item["estatus"] == "EN_REVISION":
+            estatus_cell.fill = PatternFill(start_color="FEF3C7", end_color="FEF3C7", fill_type="solid")
+        elif item["estatus"] == "RECHAZADO":
+            estatus_cell.fill = PatternFill(start_color="FEE2E2", end_color="FEE2E2", fill_type="solid")
+        elif item["estatus"] == "AUTORIZADO":
+            estatus_cell.fill = PatternFill(start_color="DBEAFE", end_color="DBEAFE", fill_type="solid")
+        
+        # Colores según tipo
+        tipo_cell = ws.cell(row=row_idx, column=2)
+        if item["tipo_cambio"] == "ALTA":
+            tipo_cell.fill = PatternFill(start_color="DCFCE7", end_color="DCFCE7", fill_type="solid")
+        elif item["tipo_cambio"] == "BAJA":
+            tipo_cell.fill = PatternFill(start_color="FEE2E2", end_color="FEE2E2", fill_type="solid")
+        elif item["tipo_cambio"] == "REASIGNACION":
+            tipo_cell.fill = PatternFill(start_color="DBEAFE", end_color="DBEAFE", fill_type="solid")
+    
+    # Ajustar ancho de columnas
+    column_widths = [18, 14, 16, 14, 18, 25, 20, 22, 22, 35, 35]
+    for i, width in enumerate(column_widths, 1):
+        ws.column_dimensions[get_column_letter(i)].width = width
+    
+    # Guardar en buffer
+    buffer = io.BytesIO()
+    wb.save(buffer)
+    buffer.seek(0)
+    
+    # Generar nombre de archivo
+    fecha_str = datetime.now().strftime("%Y%m%d_%H%M%S")
+    filename = f"reporte_solicitudes_{fecha_str}.xlsx"
+    
+    return StreamingResponse(
+        buffer,
+        media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        headers={"Content-Disposition": f"attachment; filename={filename}"}
+    )
+
+
+@router.get("/reportes/exportar-pdf")
+def exportar_pdf(
+    tipo_cambio: Optional[str] = None,
+    estatus: Optional[str] = None,
+    periodo: Optional[str] = None,
+    anio: Optional[int] = None,
+    mes: Optional[int] = None,
+    semana: Optional[int] = None,
+    fecha_inicio: Optional[str] = None,
+    fecha_fin: Optional[str] = None,
+    current_user: dict = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """Exportar reporte a PDF"""
+    try:
+        from reportlab.lib import colors
+        from reportlab.lib.pagesizes import letter, landscape
+        from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+        from reportlab.lib.units import inch
+        from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer
+        from reportlab.lib.enums import TA_CENTER, TA_LEFT
+    except ImportError:
+        raise HTTPException(status_code=500, detail="reportlab no está instalado. Ejecuta: pip install reportlab")
+    
+    # Obtener datos
+    datos = obtener_datos_reporte(
+        tipo_cambio=tipo_cambio,
+        estatus=estatus,
+        periodo=periodo,
+        anio=anio,
+        mes=mes,
+        semana=semana,
+        fecha_inicio=fecha_inicio,
+        fecha_fin=fecha_fin,
+        current_user=current_user,
+        db=db
+    )
+    
+    # Crear buffer
+    buffer = io.BytesIO()
+    doc = SimpleDocTemplate(buffer, pagesize=landscape(letter), topMargin=0.5*inch, bottomMargin=0.5*inch)
+    
+    elements = []
+    styles = getSampleStyleSheet()
+    
+    # Estilos personalizados
+    title_style = ParagraphStyle(
+        'CustomTitle',
+        parent=styles['Heading1'],
+        fontSize=16,
+        textColor=colors.HexColor('#16A34A'),
+        alignment=TA_CENTER,
+        spaceAfter=12
+    )
+    
+    subtitle_style = ParagraphStyle(
+        'CustomSubtitle',
+        parent=styles['Normal'],
+        fontSize=10,
+        textColor=colors.HexColor('#6B7280'),
+        alignment=TA_CENTER,
+        spaceAfter=20
+    )
+    
+    # Título
+    elements.append(Paragraph("REPORTE DE SOLICITUDES", title_style))
+    elements.append(Paragraph(f"Sistema de Gestión - Generado: {datetime.now().strftime('%d/%m/%Y %H:%M')}", subtitle_style))
+    
+    # Resumen
+    resumen = datos["resumen"]
+    resumen_text = f"""
+    <b>Total:</b> {resumen['total']} solicitudes | 
+    <b>Altas:</b> {resumen['por_tipo']['altas']} | 
+    <b>Bajas:</b> {resumen['por_tipo']['bajas']} | 
+    <b>Reasignaciones:</b> {resumen['por_tipo']['reasignaciones']}<br/>
+    <b>Aplicados:</b> {resumen['por_estatus']['aplicados']} | 
+    <b>Pendientes:</b> {resumen['por_estatus']['pendientes']} | 
+    <b>Rechazados:</b> {resumen['por_estatus']['rechazados']} | 
+    <b>Cancelados:</b> {resumen['por_estatus']['cancelados']}
+    """
+    elements.append(Paragraph(resumen_text, styles['Normal']))
+    elements.append(Spacer(1, 20))
+    
+    # Tabla de datos
+    table_data = [["Folio", "Tipo", "Estatus", "Fecha", "Persona Afectada", "Solicitante", "Descripción"]]
+    
+    for item in datos["items"]:
+        table_data.append([
+            item["folio"],
+            item["tipo_cambio"],
+            item["estatus"],
+            item["fecha_creacion"][:10] if item["fecha_creacion"] else "",
+            item["persona_afectada"][:25] if item["persona_afectada"] else "",
+            item["propuesto_por"][:20] if item["propuesto_por"] else "",
+            item["resumen"][:40] + "..." if len(item["resumen"]) > 40 else item["resumen"]
+        ])
+    
+    if len(table_data) > 1:
+        table = Table(table_data, colWidths=[1.3*inch, 1*inch, 1*inch, 1*inch, 1.8*inch, 1.5*inch, 2.4*inch])
+        
+        table.setStyle(TableStyle([
+            # Encabezado
+            ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#16A34A')),
+            ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
+            ('ALIGN', (0, 0), (-1, 0), 'CENTER'),
+            ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+            ('FONTSIZE', (0, 0), (-1, 0), 9),
+            ('BOTTOMPADDING', (0, 0), (-1, 0), 10),
+            ('TOPPADDING', (0, 0), (-1, 0), 10),
+            
+            # Cuerpo
+            ('BACKGROUND', (0, 1), (-1, -1), colors.white),
+            ('TEXTCOLOR', (0, 1), (-1, -1), colors.HexColor('#374151')),
+            ('ALIGN', (0, 1), (-1, -1), 'LEFT'),
+            ('FONTNAME', (0, 1), (-1, -1), 'Helvetica'),
+            ('FONTSIZE', (0, 1), (-1, -1), 8),
+            ('TOPPADDING', (0, 1), (-1, -1), 6),
+            ('BOTTOMPADDING', (0, 1), (-1, -1), 6),
+            
+            # Bordes
+            ('GRID', (0, 0), (-1, -1), 0.5, colors.HexColor('#E5E7EB')),
+            
+            # Alternar colores de filas
+            *[('BACKGROUND', (0, i), (-1, i), colors.HexColor('#F9FAFB')) for i in range(2, len(table_data), 2)]
+        ]))
+        
+        elements.append(table)
+    else:
+        elements.append(Paragraph("No hay datos para mostrar con los filtros seleccionados.", styles['Normal']))
+    
+    # Construir PDF
+    doc.build(elements)
+    buffer.seek(0)
+    
+    # Generar nombre de archivo
+    fecha_str = datetime.now().strftime("%Y%m%d_%H%M%S")
+    filename = f"reporte_solicitudes_{fecha_str}.pdf"
+    
+    return StreamingResponse(
+        buffer,
+        media_type="application/pdf",
+        headers={"Content-Disposition": f"attachment; filename={filename}"}
+    )
+
